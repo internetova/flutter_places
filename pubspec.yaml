@@ -27,7 +27,7 @@ flutter:
     - res/
 
   fonts:
-    - family: Robot
+    - family: Roboto
       fonts:
         - asset: res/fonts/Roboto-Thin.ttf
           weight: 100
