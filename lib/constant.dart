@@ -20,3 +20,11 @@ const kColorBlackMain = Color(0xff21222C);
 const kColorBlackSecondary = Color(0xff3B3E5B);
 const kColorBlackSecondary2 = Color(0xff7C7E92);
 const kColorBlackInactiveBlack = Color.fromRGBO(124, 126, 146, 0.56);
+
+const kFontLargeTitle = TextStyle(
+  color: kColorWhiteSecondary,
+  fontFamily: 'Roboto',
+  fontSize: 32.0,
+  height: 1.125,
+  fontWeight: FontWeight.w700,
+);

@@ -12,14 +12,25 @@ class _SightListScreenState extends State<SightListScreen> {
     return Scaffold(
       backgroundColor: kColorWhiteWhite,
       appBar: AppBar(
-        title: Text(
-          'Список\nинтересных мест',
-          style: TextStyle(
-            color: kColorWhiteSecondary,
-            fontFamily: 'Roboto',
-            fontSize: 32.0,
-            height: 1.125,
-            fontWeight: FontWeight.w700,
+        title: RichText(
+          text: TextSpan(
+            style: kFontLargeTitle,
+            children: <TextSpan>[
+              TextSpan(
+                text: 'С',
+                style: TextStyle(color: kColorWhiteGreen),
+              ),
+              TextSpan(
+                text: 'писок\n',
+              ),
+              TextSpan(
+                text: 'и',
+                style: TextStyle(color: kColorWhiteYellow),
+              ),
+              TextSpan(
+                text: 'нтересных мест',
+              ),
+            ],
           ),
           textAlign: TextAlign.left,
         ),
