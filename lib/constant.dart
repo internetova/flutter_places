@@ -28,3 +28,35 @@ const kFontLargeTitle = TextStyle(
   height: 1.125,
   fontWeight: FontWeight.w700,
 );
+
+const kFontText = TextStyle(
+  color: kColorWhiteSecondary,
+  fontFamily: 'Roboto',
+  fontSize: 16.0,
+  height: 1.25,
+  fontWeight: FontWeight.w500,
+);
+
+const kFontSmall = TextStyle(
+  color: kColorWhiteSecondary2,
+  fontFamily: 'Roboto',
+  fontSize: 14.0,
+  height: 1.29,
+  fontWeight: FontWeight.w400,
+);
+
+const kFontSmallBold = TextStyle(
+  color: kColorWhiteSecondary2,
+  fontFamily: 'Roboto',
+  fontSize: 14.0,
+  height: 1.29,
+  fontWeight: FontWeight.w700,
+);
+
+const kFontSmallBoldWhite = TextStyle(
+  color: kColorWhiteWhite,
+  fontFamily: 'Roboto',
+  fontSize: 14.0,
+  height: 1.29,
+  fontWeight: FontWeight.w700,
+);

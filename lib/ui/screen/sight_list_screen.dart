@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 
+import 'package:places/domain/sight.dart';
+import '../../mocks.dart';
+import 'sight_card.dart';
+
 import '../../constant.dart';
 import 'sight_list_screen_constant.dart';
 
@@ -14,22 +18,29 @@ class _SightListScreenState extends State<SightListScreen> {
     return Scaffold(
       backgroundColor: kColorWhiteWhite,
       appBar: AppBar(
-        title: RichText(
-          text: TextSpan(
-            style: kFontLargeTitle,
-            children: appBarTitle,
-          ),
-          textAlign: TextAlign.left,
+        title: Padding(
+          padding: const EdgeInsets.only(left: 16, top: 40, right: 16),
+          child: appBarTitle,
         ),
         toolbarHeight: 112.0,
         backgroundColor: Colors.transparent,
         elevation: 0,
       ),
-      body: Center(
-        child: Text(
-          'Hello !',
+      body: SingleChildScrollView(
+        child: Column(
+          children: buildCard(mocks),
         ),
       ),
     );
   }
+}
+
+List<SightCard> buildCard(List<Sight> data) {
+  var cards = <SightCard>[];
+
+  for (var item in data) {
+    cards.add(SightCard(card: item));
+  }
+
+  return cards;
 }
