@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 
 import 'package:places/domain/sight.dart';
-import '../../mocks.dart';
 import 'sight_card.dart';
+
+import '../../mocks.dart';
 
 import '../../constant.dart';
 import 'sight_list_screen_constant.dart';

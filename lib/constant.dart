@@ -29,6 +29,14 @@ const kFontLargeTitle = TextStyle(
   fontWeight: FontWeight.w700,
 );
 
+const kFontTitle = TextStyle(
+  color: kColorWhiteSecondary,
+  fontFamily: 'Roboto',
+  fontSize: 24.0,
+  height: 1.2,
+  fontWeight: FontWeight.w700,
+);
+
 const kFontText = TextStyle(
   color: kColorWhiteSecondary,
   fontFamily: 'Roboto',
@@ -37,7 +45,15 @@ const kFontText = TextStyle(
   fontWeight: FontWeight.w500,
 );
 
-const kFontSmall = TextStyle(
+const kFontSmallSecondary = TextStyle(
+  color: kColorWhiteSecondary,
+  fontFamily: 'Roboto',
+  fontSize: 14.0,
+  height: 1.29,
+  fontWeight: FontWeight.w400,
+);
+
+const kFontSmallSecondary2 = TextStyle(
   color: kColorWhiteSecondary2,
   fontFamily: 'Roboto',
   fontSize: 14.0,
@@ -45,8 +61,16 @@ const kFontSmall = TextStyle(
   fontWeight: FontWeight.w400,
 );
 
+const kFontSmallInactive = TextStyle(
+  color: kColorBlackInactiveBlack,
+  fontFamily: 'Roboto',
+  fontSize: 14.0,
+  height: 1.29,
+  fontWeight: FontWeight.w400,
+);
+
 const kFontSmallBold = TextStyle(
-  color: kColorWhiteSecondary2,
+  color: kColorWhiteSecondary,
   fontFamily: 'Roboto',
   fontSize: 14.0,
   height: 1.29,
@@ -59,4 +83,13 @@ const kFontSmallBoldWhite = TextStyle(
   fontSize: 14.0,
   height: 1.29,
   fontWeight: FontWeight.w700,
+);
+
+const kFontWightButtonNormal = TextStyle(
+  color: kColorWhiteWhite,
+  fontFamily: 'Roboto',
+  fontSize: 14.0,
+  height: 1.29,
+  fontWeight: FontWeight.w700,
+  letterSpacing: 0.3,
 );

@@ -61,7 +61,7 @@ class SightCard extends StatelessWidget {
                     ),
                     Text(
                       '${card.details}',
-                      style: kFontSmall,
+                      style: kFontSmallSecondary2,
                       overflow: TextOverflow.ellipsis,
                       maxLines: 2,
                     ),
