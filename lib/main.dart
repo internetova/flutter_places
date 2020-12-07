@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 // import 'ui/screen/sight_card.dart';
 // import 'ui/screen/sight_list_screen.dart';
+
 import 'ui/screen/sight_details.dart';
 
 import 'mocks.dart';
@@ -17,7 +18,7 @@ class App extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Places',
       // home: SightListScreen(), // список мест
-      home: SightDetails(card: mocks[0]), // подробности - описание места
+      home: SightDetails(card: mocks[0]), // подробности -описание места
     );
   }
 }
