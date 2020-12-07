@@ -19,6 +19,21 @@ class SightDetails extends StatelessWidget {
             width: double.infinity,
             height: 360,
             color: Colors.blue[400],
+            child: Stack(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(left: 16, top: 40, right: 16),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: Colors.white,
+                    ),
+                    width: 32,
+                    height: 32,
+                  ),
+                ),
+              ],
+            ),
           ),
           Padding(
             padding: const EdgeInsets.only(left: 16, top: 24, right: 16),
