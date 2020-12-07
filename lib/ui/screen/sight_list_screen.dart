@@ -15,22 +15,7 @@ class _SightListScreenState extends State<SightListScreen> {
         title: RichText(
           text: TextSpan(
             style: kFontLargeTitle,
-            children: <TextSpan>[
-              TextSpan(
-                text: 'С',
-                style: TextStyle(color: kColorWhiteGreen),
-              ),
-              TextSpan(
-                text: 'писок\n',
-              ),
-              TextSpan(
-                text: 'и',
-                style: TextStyle(color: kColorWhiteYellow),
-              ),
-              TextSpan(
-                text: 'нтересных мест',
-              ),
-            ],
+            children: appBarTitle,
           ),
           textAlign: TextAlign.left,
         ),
@@ -46,3 +31,20 @@ class _SightListScreenState extends State<SightListScreen> {
     );
   }
 }
+
+const appBarTitle = <TextSpan>[
+  TextSpan(
+    text: 'С',
+    style: TextStyle(color: kColorWhiteGreen),
+  ),
+  TextSpan(
+    text: 'писок\n',
+  ),
+  TextSpan(
+    text: 'и',
+    style: TextStyle(color: kColorWhiteYellow),
+  ),
+  TextSpan(
+    text: 'нтересных мест',
+  ),
+];
