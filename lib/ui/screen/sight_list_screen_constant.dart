@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-
-import '../../constant.dart';
+import 'package:places/constant.dart';
 
 const appBarTitle = Text(
   'Список\nинтересных мест',
-  style: kFontLargeTitle,
+  style: textStyleLargeTitle32Secondary,
   textAlign: TextAlign.left,
 );
