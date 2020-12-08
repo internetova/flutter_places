@@ -1,4 +1,6 @@
-import 'domain/sight.dart';
+
+
+import 'package:places/domain/sight.dart';
 
 final List mocks = <Sight>[
   Sight(
@@ -6,7 +8,7 @@ final List mocks = <Sight>[
     lat: 55.737064,
     lon: 37.520018,
     url: 'https://architectureguru.ru/triumfalnaya-arka-v-moskve/',
-    type: 'достопримечательсть',
+    type: 'достопримечательность',
     details:
         'Триумфальная арка или Триумфальные ворота в Москве – объект культурного наследия, расположенный на Кутузовском проспекте. Памятник воздвигнут в честь победы русского народа над Наполеоном в 1812 году. Достопримечательность относится к самым известным триумфальным воротам и аркам мира.',
   ),

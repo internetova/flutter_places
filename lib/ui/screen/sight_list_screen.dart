@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 
-import 'package:places/domain/sight.dart';
-import '../../mocks.dart';
-import 'sight_card.dart';
+import 'package:places/constant.dart';
 
-import '../../constant.dart';
-import 'sight_list_screen_constant.dart';
+import 'package:places/mocks.dart';
+import 'package:places/domain/sight.dart';
+
+import 'package:places/ui/screen/sight_card.dart';
+import 'package:places/ui/screen/sight_list_screen_constant.dart';
 
 class SightListScreen extends StatefulWidget {
   @override
@@ -16,7 +17,7 @@ class _SightListScreenState extends State<SightListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: kColorWhiteWhite,
+      backgroundColor: colorWhiteWhite,
       appBar: AppBar(
         title: Padding(
           padding: const EdgeInsets.only(left: 16, top: 40, right: 16),
@@ -27,19 +28,24 @@ class _SightListScreenState extends State<SightListScreen> {
         elevation: 0,
       ),
       body: SingleChildScrollView(
-        child: Column(
-          children: buildCard(mocks),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            children: buildCard(mocks),
+          ),
         ),
       ),
     );
   }
 }
 
-List<SightCard> buildCard(List<Sight> data) {
-  var cards = <SightCard>[];
+List<Widget> buildCard(List<Sight> data) {
+  var cards = <Widget>[];
+  cards.add(SizedBox(height: 16));
 
   for (var item in data) {
     cards.add(SightCard(card: item));
+    cards.add(SizedBox(height: 16));
   }
 
   return cards;

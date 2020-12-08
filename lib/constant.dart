@@ -1,60 +1,60 @@
 import 'package:flutter/material.dart';
 
-const kColorBackground = Color(0xffF5F5F5);
+const colorBackground = Color(0xffF5F5F5);
 
-const kColorWhiteGreen = Color(0xff4CAF50);
-const kColorWhiteYellow = Color(0xffFCDD3D);
-const kColorWhiteError = Color(0xffEF4343);
-const kColorWhiteWhite = Colors.white;
-const kColorWhiteMain = Color(0xff252849);
-const kColorWhiteSecondary = Color(0xff3B3E5B);
-const kColorWhiteSecondary2 = Color(0xff7C7E92);
-const kColorWhiteInactiveBlack = Color.fromRGBO(124, 126, 146, 0.56);
+const colorWhiteGreen = Color(0xff4CAF50);
+const colorWhiteYellow = Color(0xffFCDD3D);
+const colorWhiteError = Color(0xffEF4343);
+const colorWhiteWhite = Colors.white;
+const colorWhiteMain = Color(0xff252849);
+const colorWhiteSecondary = Color(0xff3B3E5B);
+const colorWhiteSecondary2 = Color(0xff7C7E92);
+const colorWhiteInactiveBlack = Color.fromRGBO(124, 126, 146, 0.56);
 
-const kColorBlackGreen = Color(0xff6ADA6F);
-const kColorBlackYellow = Color(0xffFFE769);
-const kColorBlackError = Color(0xffCF2A2A);
-const kColorBlackWhite = Colors.white;
-const kColorBlackDark = Color(0xff1A1A20);
-const kColorBlackMain = Color(0xff21222C);
-const kColorBlackSecondary = Color(0xff3B3E5B);
-const kColorBlackSecondary2 = Color(0xff7C7E92);
-const kColorBlackInactiveBlack = Color.fromRGBO(124, 126, 146, 0.56);
+const colorBlackGreen = Color(0xff6ADA6F);
+const colorBlackYellow = Color(0xffFFE769);
+const colorBlackError = Color(0xffCF2A2A);
+const colorBlackWhite = Colors.white;
+const colorBlackDark = Color(0xff1A1A20);
+const colorBlackMain = Color(0xff21222C);
+const colorBlackSecondary = Color(0xff3B3E5B);
+const colorBlackSecondary2 = Color(0xff7C7E92);
+const colorBlackInactiveBlack = Color.fromRGBO(124, 126, 146, 0.56);
 
-const kFontLargeTitle = TextStyle(
-  color: kColorWhiteSecondary,
+const textStyleLargeTitle32Secondary = TextStyle(
+  color: colorWhiteSecondary,
   fontFamily: 'Roboto',
   fontSize: 32.0,
   height: 1.125,
   fontWeight: FontWeight.w700,
 );
 
-const kFontText = TextStyle(
-  color: kColorWhiteSecondary,
+const textStyleText16Secondary = TextStyle(
+  color: colorWhiteSecondary,
   fontFamily: 'Roboto',
   fontSize: 16.0,
   height: 1.25,
   fontWeight: FontWeight.w500,
 );
 
-const kFontSmall = TextStyle(
-  color: kColorWhiteSecondary2,
+const textStyleSmall14Secondary2 = TextStyle(
+  color: colorWhiteSecondary2,
   fontFamily: 'Roboto',
   fontSize: 14.0,
   height: 1.29,
   fontWeight: FontWeight.w400,
 );
 
-const kFontSmallBold = TextStyle(
-  color: kColorWhiteSecondary2,
+const textStyleSmall14BoldSecondary2 = TextStyle(
+  color: colorWhiteSecondary2,
   fontFamily: 'Roboto',
   fontSize: 14.0,
   height: 1.29,
   fontWeight: FontWeight.w700,
 );
 
-const kFontSmallBoldWhite = TextStyle(
-  color: kColorWhiteWhite,
+const textStyleSmall14BoldWhite = TextStyle(
+  color: colorWhiteWhite,
   fontFamily: 'Roboto',
   fontSize: 14.0,
   height: 1.29,

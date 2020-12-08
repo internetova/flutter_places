@@ -4,6 +4,6 @@ import '../../constant.dart';
 
 const appBarTitle = Text(
   'Список\nинтересных мест',
-  style: kFontLargeTitle,
+  style: textStyleLargeTitle32Secondary,
   textAlign: TextAlign.left,
 );
