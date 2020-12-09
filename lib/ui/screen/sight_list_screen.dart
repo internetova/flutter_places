@@ -18,14 +18,19 @@ class _SightListScreenState extends State<SightListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: colorWhiteWhite,
-      appBar: AppBar(
-        title: Padding(
-          padding: const EdgeInsets.only(left: 16, top: 40, right: 16),
-          child: appBarTitle,
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(152),
+        child: AppBar(
+          flexibleSpace: Align(
+            alignment: Alignment.bottomLeft,
+            child: Container(
+              margin: EdgeInsets.only(left: 16, right: 16, bottom: 16),
+              child: appBarTitle,
+            ),
+          ),
+          backgroundColor: Colors.transparent,
+          elevation: 0,
         ),
-        toolbarHeight: 112.0,
-        backgroundColor: Colors.transparent,
-        elevation: 0,
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -41,7 +46,6 @@ class _SightListScreenState extends State<SightListScreen> {
 
 List<Widget> buildCard(List<Sight> data) {
   var cards = <Widget>[];
-  cards.add(SizedBox(height: 16));
 
   for (var item in data) {
     cards.add(SightCard(card: item));

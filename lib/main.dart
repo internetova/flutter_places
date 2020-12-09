@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:places/ui/screen/sight_details.dart';
-
-import 'mocks.dart';
+import 'package:places/ui/screen/sight_list_screen.dart';
 
 void main() {
   runApp(App());
@@ -13,8 +11,8 @@ class App extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Places',
-      // home: SightListScreen(), // список мест
-      home: SightDetails(card: mocks[0]), // подробности -описание места
+      home: SightListScreen(), // список мест
+      // home: SightDetails(card: mocks[0]), // подробности -описание места
     );
   }
 }
