@@ -19,62 +19,98 @@ class SightCard extends StatelessWidget {
             children: [
               Stack(
                 children: [
-                  Container(
-                    color: Colors.lightBlue[400],
-                    width: double.infinity,
-                    height: 96,
-                  ),
-                  Positioned(
-                    top: 16,
-                    left: 16,
-                    right: 16,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          '${card.type}',
-                          style: textStyleSmall14BoldWhite,
-                        ),
-                        Icon(
-                          Icons.favorite_border,
-                          color: Colors.white,
-                          size: 24,
-                        ),
-                      ],
-                    ),
-                  ),
+                  CardImagePreview(imgUrl: card.imgPreview),
+                  CardContentType(type: card.type),
                 ],
               ),
-              SizedBox(
-                //❓❓❓это добавить по заданию, а зачем если падингом можно
-                height: 16,
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 16, right: 16, bottom: 16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      '${card.nameSights}',
-                      style: textStyleText16Secondary,
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 2,
-                    ),
-                    SizedBox(
-                      height: 2,
-                    ),
-                    Text(
-                      '${card.details}',
-                      style: textStyleSmall14Secondary2,
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 1,
-                    ),
-                  ],
-                ),
-              )
+              CardContent(card: card),
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+class CardImagePreview extends StatelessWidget {
+  const CardImagePreview({Key key, this.imgUrl}) : super(key: key);
+  final String imgUrl;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      height: 96,
+      child: Image.network(
+        imgUrl,
+        fit: BoxFit.cover,
+        loadingBuilder: (BuildContext context, Widget child,
+            ImageChunkEvent loadingProgress) {
+          if (loadingProgress == null) return child;
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        },
+      ),
+    );
+  }
+}
+
+class CardContentType extends StatelessWidget {
+  const CardContentType({Key key, this.type}) : super(key: key);
+  final String type;
+
+  @override
+  Widget build(BuildContext context) {
+    return Positioned(
+      top: 16,
+      left: 16,
+      right: 16,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            type,
+            style: textStyleSmall14BoldWhite,
+          ),
+          Icon(
+            Icons.favorite_border,
+            color: Colors.white,
+            size: 24,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class CardContent extends StatelessWidget {
+  const CardContent({Key key, this.card}) : super(key: key);
+  final Sight card;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            card.name,
+            style: textStyleText16Secondary,
+            overflow: TextOverflow.ellipsis,
+            maxLines: 2,
+          ),
+          SizedBox(
+            height: 2,
+          ),
+          Text(
+            card.details,
+            style: textStyleSmall14Secondary2,
+            overflow: TextOverflow.ellipsis,
+            maxLines: 1,
+          ),
+        ],
       ),
     );
   }

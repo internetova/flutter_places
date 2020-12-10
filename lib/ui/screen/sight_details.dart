@@ -20,6 +20,20 @@ class SightDetails extends StatelessWidget {
               size: 32,
             ),
             expandedHeight: 360,
+            flexibleSpace: FlexibleSpaceBar(
+              background: Image.network(
+                card.imgPreview,
+                fit: BoxFit.cover,
+                loadingBuilder: (BuildContext context, Widget child,
+                    ImageChunkEvent loadingProgress) {
+                  if (loadingProgress == null) return child;
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
+                },
+              ),
+            ),
+            backgroundColor: colorBackground,
             pinned: true,
             floating: true,
             elevation: 0,
@@ -32,7 +46,7 @@ class SightDetails extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      '${card.nameSights}',
+                      card.name,
                       style: textStyleTitle24Secondary,
                     ),
                     Padding(
@@ -40,19 +54,19 @@ class SightDetails extends StatelessWidget {
                       child: Row(
                         children: [
                           Text(
-                            '${card.type}',
+                            card.type,
                             style: textStyleSmall14BoldSecondary,
                           ),
                           SizedBox(width: 16),
                           Text(
-                            'закрыто до 09:00',
+                            'закрыто до 09:00',// времеменная заглушка
                             style: textStyleSmall14Secondary2,
                           ),
                         ],
                       ),
                     ),
                     Text(
-                      '${card.details}',
+                      card.details,
                       style: textStyleSmall14Secondary,
                     ),
                     Padding(
