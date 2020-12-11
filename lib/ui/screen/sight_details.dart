@@ -28,7 +28,12 @@ class SightDetails extends StatelessWidget {
                     ImageChunkEvent loadingProgress) {
                   if (loadingProgress == null) return child;
                   return Center(
-                    child: CircularProgressIndicator(),
+                    child: CircularProgressIndicator(
+                      value: loadingProgress.expectedTotalBytes != null
+                          ? loadingProgress.cumulativeBytesLoaded /
+                              loadingProgress.expectedTotalBytes
+                          : null,
+                    ),
                   );
                 },
               ),
@@ -59,7 +64,7 @@ class SightDetails extends StatelessWidget {
                           ),
                           SizedBox(width: 16),
                           Text(
-                            'закрыто до 09:00',// времеменная заглушка
+                            'закрыто до 09:00', // времеменная заглушка
                             style: textStyleSmall14Secondary2,
                           ),
                         ],

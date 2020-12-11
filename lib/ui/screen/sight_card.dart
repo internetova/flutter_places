@@ -48,7 +48,12 @@ class CardImagePreview extends StatelessWidget {
             ImageChunkEvent loadingProgress) {
           if (loadingProgress == null) return child;
           return Center(
-            child: CircularProgressIndicator(),
+            child: CircularProgressIndicator(
+              value: loadingProgress.expectedTotalBytes != null
+                  ? loadingProgress.cumulativeBytesLoaded /
+                      loadingProgress.expectedTotalBytes
+                  : null,
+            ),
           );
         },
       ),
