@@ -11,7 +11,7 @@ class SightDetails extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: colorWhiteWhite,
+      backgroundColor: colorWhite,
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
@@ -88,7 +88,7 @@ class SightDetails extends StatelessWidget {
                           children: [
                             Icon(
                               Icons.location_on,
-                              color: colorWhiteWhite,
+                              color: colorWhite,
                               size: 24,
                             ),
                             SizedBox(width: 8),
@@ -113,7 +113,7 @@ class SightDetails extends StatelessWidget {
                               children: [
                                 Icon(
                                   Icons.calendar_today,
-                                  color: colorWhiteInactiveBlack,
+                                  color: colorInactiveBlack,
                                   size: 24,
                                 ),
                                 SizedBox(width: 8),
@@ -131,7 +131,7 @@ class SightDetails extends StatelessWidget {
                               children: [
                                 Icon(
                                   Icons.favorite_border,
-                                  color: colorWhiteSecondary,
+                                  color: colorSecondary,
                                   size: 24,
                                 ),
                                 SizedBox(width: 8),

@@ -9,6 +9,8 @@ class Sight {
     @required this.details,
     @required this.type,
     @required this.imgPreview,
+    this.planned,
+    this.visited,
   });
   final String name;
   final double lat;
@@ -17,4 +19,6 @@ class Sight {
   final String details;
   final String type;
   final String imgPreview;
+  String planned;
+  String visited;
 }

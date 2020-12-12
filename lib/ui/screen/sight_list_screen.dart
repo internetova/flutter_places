@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:places/components/bottom_NavigationBar.dart';
 
 import 'package:places/constant.dart';
 
@@ -17,7 +18,7 @@ class _SightListScreenState extends State<SightListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: colorWhiteWhite,
+      backgroundColor: colorWhite,
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(152),
         child: AppBar(
@@ -40,6 +41,7 @@ class _SightListScreenState extends State<SightListScreen> {
           ),
         ),
       ),
+      bottomNavigationBar: MainBottomNavigationBar(current: 0),
     );
   }
 }
@@ -50,7 +52,10 @@ List<Widget> buildCard(List<Sight> data) {
   var cards = <Widget>[];
 
   for (var item in data) {
-    cards.add(SightCard(card: item));
+    cards.add(SightCard(
+      card: item,
+      whereShowCard: WhereShowCard.search,
+    ));
     cards.add(SizedBox(height: 16));
   }
 
