@@ -44,6 +44,8 @@ class _SightListScreenState extends State<SightListScreen> {
   }
 }
 
+/// строит массив виджетов для отображения списка карточек интересных мест
+/// карточка и разделитель
 List<Widget> buildCard(List<Sight> data) {
   var cards = <Widget>[];
 
