@@ -32,6 +32,7 @@ class SightCard extends StatelessWidget {
   }
 }
 
+/// загружает картинку-превью карточки
 class CardImagePreview extends StatelessWidget {
   const CardImagePreview({Key key, this.imgUrl}) : super(key: key);
   final String imgUrl;
@@ -61,6 +62,8 @@ class CardImagePreview extends StatelessWidget {
   }
 }
 
+/// на картинке отображает тип карточки (музей, достопримечательность ит.п.) 
+/// и иконку 'в Избранное'
 class CardContentType extends StatelessWidget {
   const CardContentType({Key key, this.type}) : super(key: key);
   final String type;
@@ -89,6 +92,7 @@ class CardContentType extends StatelessWidget {
   }
 }
 
+/// контент карточки - название и детали
 class CardContent extends StatelessWidget {
   const CardContent({Key key, this.card}) : super(key: key);
   final Sight card;
