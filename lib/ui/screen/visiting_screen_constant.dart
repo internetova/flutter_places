@@ -7,18 +7,18 @@ const titleScreenFavorites = Text(
 );
 
 /// хочу посетить
-const blankScreenIconWill = Icon(
+const blankScreenIconPlaned = Icon(
   Icons.photo_camera_back, //временно
   color: colorInactiveBlack,
   size: 64,
 );
 
-const blankScreenHeaderWill = Text(
+const blankScreenHeaderPlaned = Text(
   'Пусто',
   style: textStyleSubtitle18Inactive,
 );
 
-const blankScreenTextWill = Text(
+const blankScreenTextPlaned = Text(
   'Отмечайте понравившиеся\nместа и они появятся здесь.',
   style: textStyleSmall14Inactive,
   textAlign: TextAlign.center,
@@ -28,18 +28,18 @@ const tabPlaned = 'Хочу посетить';
 const dataPlaned = 'Запланировано на';
 
 /// посетил
-const blankScreenIconWas = Icon(
+const blankScreenIconVisited = Icon(
   Icons.location_off_rounded, //временно
   color: colorInactiveBlack,
   size: 64,
 );
 
-const blankScreenHeaderWas = Text(
+const blankScreenHeaderVisited = Text(
   'Пусто',
   style: textStyleSubtitle18Inactive,
 );
 
-const blankScreenTextWas = Text(
+const blankScreenTextVisited = Text(
   'Завершите маршрут,\nчтобы место попало сюда.',
   style: textStyleSmall14Inactive,
   textAlign: TextAlign.center,

@@ -106,9 +106,9 @@ Widget buildFavorites(
     if (favorites.isEmpty) {
       favTabBarView = Center(
         child: BlankScreen(
-          icon: blankScreenIconWill,
-          header: blankScreenHeaderWill,
-          text: blankScreenTextWill,
+          icon: blankScreenIconPlaned,
+          header: blankScreenHeaderPlaned,
+          text: blankScreenTextPlaned,
         ),
       );
     } else {
@@ -136,9 +136,9 @@ Widget buildFavorites(
     if (favorites.isEmpty) {
       favTabBarView = Center(
         child: BlankScreen(
-          icon: blankScreenIconWas,
-          header: blankScreenHeaderWas,
-          text: blankScreenTextWas,
+          icon: blankScreenIconVisited,
+          header: blankScreenHeaderVisited,
+          text: blankScreenTextVisited,
         ),
       );
     } else {
