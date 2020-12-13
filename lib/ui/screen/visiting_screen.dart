@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:places/components/bottom_NavigationBar.dart';
+
 import 'package:places/constant.dart';
+import 'package:places/mocks.dart';
 import 'package:places/domain/sight.dart';
 import 'package:places/ui/screen/sight_card.dart';
 import 'package:places/ui/screen/visiting_screen_constant.dart';
-import 'package:places/mocks.dart';
+import 'package:places/components/bottom_NavigationBar.dart';
 
 class VisitingScreen extends StatefulWidget {
   @override
@@ -73,84 +74,64 @@ class BlankScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        icon,
-        SizedBox(height: 24),
-        header,
-        SizedBox(height: 8),
-        text,
-      ],
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          icon,
+          SizedBox(height: 24),
+          header,
+          SizedBox(height: 8),
+          text,
+        ],
+      ),
     );
   }
 }
 
-/// строим карточки для избранного
+/// строим карточки для Избранного
 /// у карточки в данных может быть поле Посетить / Посетил
 /// ‼️🤓🤓 возможно функция корявая, позже придумаю что-то более изящное
 Widget buildFavorites(
     {@required List<Sight> data, @required FavoritesCard typeCard}) {
   Widget favTabBarView;
-  var favorites = <Widget>[];
+  var favorites = <Sight>[];
 
   /// ищем в базе карточки с соответствующим типом
+  /// хочу посетить
   if (typeCard == FavoritesCard.planned) {
-    favorites = data
-        .where((item) => item.planned != null)
-        .map((item) =>
-            SightCard(card: item, whereShowCard: WhereShowCard.planned))
-        .toList();
+    favorites = data.where((item) => item.planned != null).toList();
 
     /// если нет таких, то показываем заглушку
     if (favorites.isEmpty) {
-      favTabBarView = Center(
-        child: BlankScreen(
-          icon: blankScreenIconPlaned,
-          header: blankScreenHeaderPlaned,
-          text: blankScreenTextPlaned,
-        ),
+      favTabBarView = BlankScreen(
+        icon: blankScreenIconPlaned,
+        header: blankScreenHeaderPlaned,
+        text: blankScreenTextPlaned,
       );
     } else {
       /// иначе выводим карточки
-      favTabBarView = SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            children: [
-              for (var card in favorites) ...[card, SizedBox(height: 16)],
-            ],
-          ),
-        ),
+      favTabBarView = BuildCardScreen(
+        data: favorites,
+        whereShowCard: WhereShowCard.planned,
       );
     }
   }
 
+  /// посетил
   if (typeCard == FavoritesCard.visited) {
-    favorites = data
-        .where((item) => item.visited != null)
-        .map((item) =>
-            SightCard(card: item, whereShowCard: WhereShowCard.visited))
-        .toList();
+    favorites = data.where((item) => item.visited != null).toList();
 
     if (favorites.isEmpty) {
-      favTabBarView = Center(
-        child: BlankScreen(
-          icon: blankScreenIconVisited,
-          header: blankScreenHeaderVisited,
-          text: blankScreenTextVisited,
-        ),
+      favTabBarView = BlankScreen(
+        icon: blankScreenIconVisited,
+        header: blankScreenHeaderVisited,
+        text: blankScreenTextVisited,
       );
     } else {
-      favTabBarView = SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            children: [
-              for (var card in favorites) ...[card, SizedBox(height: 16)],
-            ],
-          ),
-        ),
+      favTabBarView = BuildCardScreen(
+        data: favorites,
+        whereShowCard: WhereShowCard.visited,
       );
     }
   }
