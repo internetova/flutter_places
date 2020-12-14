@@ -28,10 +28,16 @@ class _VisitingScreenState extends State<VisitingScreen> {
               margin: EdgeInsets.symmetric(horizontal: 16, vertical: 6),
               height: 40,
               decoration: BoxDecoration(
-                color: colorSecondary,
+                color: colorBackground,
                 borderRadius: BorderRadius.circular(40),
               ),
               child: TabBar(
+                indicator: BoxDecoration(
+                  color: colorSecondary,
+                  borderRadius: BorderRadius.circular(40),
+                ),
+                unselectedLabelColor: colorInactiveBlack,
+                labelStyle: textStyleLabelFavorites,
                 tabs: [
                   Tab(
                     text: tabPlaned,

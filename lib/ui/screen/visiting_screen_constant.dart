@@ -47,3 +47,11 @@ const blankScreenTextVisited = Text(
 
 const tabVisited = 'Посетил';
 const dataVisited = 'Цель достигнута';
+
+/// стиль для табов экрана
+const textStyleLabelFavorites = TextStyle(
+  color: colorWhite,
+  fontSize: 14.0,
+  height: 1.29,
+  fontWeight: FontWeight.w700,
+);
