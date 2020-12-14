@@ -7,25 +7,25 @@ const titleScreenFavorites = Text(
 );
 
 /// хочу посетить
-const blankScreenIconPlaned = Icon(
+const blankScreenIconPlanned = Icon(
   Icons.photo_camera_back, //временно
   color: colorInactiveBlack,
   size: 64,
 );
 
-const blankScreenHeaderPlaned = Text(
+const blankScreenHeaderPlanned = Text(
   'Пусто',
   style: textStyleSubtitle18Inactive,
 );
 
-const blankScreenTextPlaned = Text(
+const blankScreenTextPlanned = Text(
   'Отмечайте понравившиеся\nместа и они появятся здесь.',
   style: textStyleSmall14Inactive,
   textAlign: TextAlign.center,
 );
 
-const tabPlaned = 'Хочу посетить';
-const dataPlaned = 'Запланировано на';
+const tabPlanned = 'Хочу посетить';
+const dataPlanned = 'Запланировано на';
 
 /// посетил
 const blankScreenIconVisited = Icon(

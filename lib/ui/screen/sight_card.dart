@@ -190,7 +190,7 @@ class CardContent extends StatelessWidget {
           if (whereShowCard == WhereShowCard.planned &&
               card.planned != null) ...[
             Text(
-              '$dataPlaned ${card.planned}',
+              '$dataPlanned ${card.planned}',
               style: textStyleSmall14WhiteGreen,
               overflow: TextOverflow.ellipsis,
               maxLines: 1,

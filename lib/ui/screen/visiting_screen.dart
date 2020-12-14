@@ -40,7 +40,7 @@ class _VisitingScreenState extends State<VisitingScreen> {
                 labelStyle: textStyleLabelFavorites,
                 tabs: [
                   Tab(
-                    text: tabPlaned,
+                    text: tabPlanned,
                   ),
                   Tab(
                     text: tabVisited,
@@ -96,8 +96,9 @@ class BlankScreen extends StatelessWidget {
 }
 
 /// строим карточки для Избранного
-/// у карточки в данных может быть поле Посетить / Посетил
-/// ‼️🤓🤓 возможно функция корявая, позже придумаю что-то более изящное
+/// у карточки в данных может быть поле Посетить или Посетил
+/// ‼️🤓🤓 знаю, что функция корявая, более изящного в голову пока не приходит
+/// уверена, что она ВРЕМЕННАЯ, по ходу буду рефакторить
 Widget buildFavorites(
     {@required List<Sight> data, @required FavoritesCard typeCard}) {
   Widget favTabBarView;
@@ -111,9 +112,9 @@ Widget buildFavorites(
     /// если нет таких, то показываем заглушку
     if (favorites.isEmpty) {
       favTabBarView = BlankScreen(
-        icon: blankScreenIconPlaned,
-        header: blankScreenHeaderPlaned,
-        text: blankScreenTextPlaned,
+        icon: blankScreenIconPlanned,
+        header: blankScreenHeaderPlanned,
+        text: blankScreenTextPlanned,
       );
     } else {
       /// иначе выводим карточки
