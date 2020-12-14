@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:places/constant.dart';
+import 'package:places/domain/sight.dart';
 import 'package:places/mocks.dart';
 import 'package:places/ui/screen/sight_card.dart';
 import 'package:places/ui/screen/sight_list_screen_constant.dart';

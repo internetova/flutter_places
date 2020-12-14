@@ -7,11 +7,8 @@ import 'package:places/ui/screen/visiting_screen_constant.dart';
 /// в зависимости от места показа карточки - Список поиска, в Избранном
 /// (запланировано, посещено) показываем разную информацию на карточке
 /// т.к. иконки и надписи отличаются
-/// ‼️🙄 честно говоря пока не знаю какие будут данные, поэтому пока так
-enum WhereShowCard { search, planned, visited }
-
-/// для поиска карточек в базе
-enum FavoritesCard { planned, visited }
+/// ‼️🙄 честно говоря пока не знаю какие будут данные и как должно будет
+/// это всё работать, поэтому пока так
 
 class SightCard extends StatelessWidget {
   const SightCard({Key key, @required this.card, @required this.whereShowCard})
@@ -101,6 +98,7 @@ class CardContentType extends StatelessWidget {
 
 /// кнопки действий: добавить в избранное, удалить, поделиться и т.п.
 /// отображается на одной линии с типом карточки
+/// в зависимости от места показа карточки кнопки меняются
 class CardActions extends StatelessWidget {
   const CardActions({Key key, @required this.whereShowCard}) : super(key: key);
   final WhereShowCard whereShowCard;
@@ -187,19 +185,17 @@ class CardContent extends StatelessWidget {
               maxLines: 1,
             ),
           ],
-          if (whereShowCard == WhereShowCard.planned &&
-              card.planned != null) ...[
+          if (whereShowCard == WhereShowCard.planned && card.date != null) ...[
             Text(
-              '$dataPlanned ${card.planned}',
+              '$dataPlanned ${card.date}',
               style: textStyleSmall14WhiteGreen,
               overflow: TextOverflow.ellipsis,
               maxLines: 1,
             ),
           ],
-          if (whereShowCard == WhereShowCard.visited &&
-              card.visited != null) ...[
+          if (whereShowCard == WhereShowCard.visited && card.date != null) ...[
             Text(
-              '$dataVisited ${card.visited}',
+              '$dataVisited ${card.date}',
               style: textStyleSmall14Secondary2,
               overflow: TextOverflow.ellipsis,
               maxLines: 1,

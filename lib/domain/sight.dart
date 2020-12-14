@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
 
-/// пока добавила поля Хочу посетить и посетил
+/// поле favorites - для определения где показываем карточку
+/// date - дата запланированного посещения или когда посетил
 /// в новой карточке этих полей нет
-/// в избранном одно из двух полей
 /// ‼️‼️ пока логика такая, дальше наверняка будет иначе, отрефакторю
+
+/// где показывать карточку: на странице поиска
+/// и в разделах избранного
+enum WhereShowCard { search, planned, visited }
+
 class Sight {
   Sight({
     @required this.name,
@@ -13,9 +18,10 @@ class Sight {
     @required this.details,
     @required this.type,
     @required this.imgPreview,
-    this.planned,
-    this.visited,
+    this.favorites,
+    this.date,
   });
+
   final String name;
   final double lat;
   final double lon;
@@ -23,6 +29,6 @@ class Sight {
   final String details;
   final String type;
   final String imgPreview;
-  String planned;
-  String visited;
+  final WhereShowCard favorites;
+  String date;
 }

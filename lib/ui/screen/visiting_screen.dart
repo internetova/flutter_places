@@ -56,8 +56,8 @@ class _VisitingScreenState extends State<VisitingScreen> {
         ),
         body: TabBarView(
           children: [
-            buildFavorites(data: mocks, typeCard: FavoritesCard.planned),
-            buildFavorites(data: mocks, typeCard: FavoritesCard.visited),
+            buildFavorites(data: mocks, typeCard: WhereShowCard.planned),
+            buildFavorites(data: mocks, typeCard: WhereShowCard.visited),
           ],
         ),
         bottomNavigationBar: MainBottomNavigationBar(current: 2),
@@ -96,51 +96,33 @@ class BlankScreen extends StatelessWidget {
 }
 
 /// строим карточки для Избранного
-/// у карточки в данных может быть поле Посетить или Посетил
+/// в зависимости от типа избранного
 /// ‼️🤓🤓 знаю, что функция корявая, более изящного в голову пока не приходит
 /// уверена, что она ВРЕМЕННАЯ, по ходу буду рефакторить
 Widget buildFavorites(
-    {@required List<Sight> data, @required FavoritesCard typeCard}) {
+    {@required List<Sight> data, @required WhereShowCard typeCard}) {
   Widget favTabBarView;
   var favorites = <Sight>[];
 
   /// ищем в базе карточки с соответствующим типом
-  /// хочу посетить
-  if (typeCard == FavoritesCard.planned) {
-    favorites = data.where((item) => item.planned != null).toList();
+  favorites = data.where((item) => item.favorites == typeCard).toList();
 
-    /// если нет таких, то показываем заглушку
-    if (favorites.isEmpty) {
-      favTabBarView = BlankScreen(
-        icon: blankScreenIconPlanned,
-        header: blankScreenHeaderPlanned,
-        text: blankScreenTextPlanned,
-      );
-    } else {
-      /// иначе выводим карточки
-      favTabBarView = BuildCardScreen(
-        data: favorites,
-        whereShowCard: WhereShowCard.planned,
-      );
-    }
-  }
+  /// если нет таких, то показываем заглушку
+  if (favorites.isEmpty) {
+    final screenContent =
+        favoritesBlankScreenContent.where((item) => item[typeCard] == typeCard).toList();
 
-  /// посетил
-  if (typeCard == FavoritesCard.visited) {
-    favorites = data.where((item) => item.visited != null).toList();
-
-    if (favorites.isEmpty) {
-      favTabBarView = BlankScreen(
-        icon: blankScreenIconVisited,
-        header: blankScreenHeaderVisited,
-        text: blankScreenTextVisited,
-      );
-    } else {
-      favTabBarView = BuildCardScreen(
-        data: favorites,
-        whereShowCard: WhereShowCard.visited,
-      );
-    }
+    favTabBarView = BlankScreen(
+      icon: screenContent[0]['blankScreenIcon'],
+      header: screenContent[0]['blankScreenHeader'],
+      text: screenContent[0]['blankScreenText'],
+    );
+  } else {
+    /// иначе выводим карточки
+    favTabBarView = BuildCardScreen(
+      data: favorites,
+      whereShowCard: typeCard,
+    );
   }
 
   return favTabBarView;
