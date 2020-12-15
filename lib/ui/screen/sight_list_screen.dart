@@ -31,7 +31,10 @@ class _SightListScreenState extends State<SightListScreen> {
           elevation: 0,
         ),
       ),
-      body: BuildCardScreen(data: mocks, whereShowCard: WhereShowCard.search),
+      body: BuildCardScreen(
+        data: mocks,
+        whereShowCard: WhereShowCard.search,
+      ),
       bottomNavigationBar: MainBottomNavigationBar(current: 0),
     );
   }

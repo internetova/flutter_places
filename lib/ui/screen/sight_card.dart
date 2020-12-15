@@ -11,8 +11,11 @@ import 'package:places/ui/screen/visiting_screen_constant.dart';
 /// это всё работать, поэтому пока так
 
 class SightCard extends StatelessWidget {
-  const SightCard({Key key, @required this.card, @required this.whereShowCard})
-      : super(key: key);
+  const SightCard({
+    Key key,
+    @required this.card,
+    @required this.whereShowCard,
+  }) : super(key: key);
   final Sight card;
   final WhereShowCard whereShowCard;
 
@@ -154,9 +157,11 @@ class CardActions extends StatelessWidget {
 /// контент карточки - название и детали
 /// зависит от места показа карточки
 class CardContent extends StatelessWidget {
-  const CardContent(
-      {Key key, @required this.card, @required this.whereShowCard})
-      : super(key: key);
+  const CardContent({
+    Key key,
+    @required this.card,
+    @required this.whereShowCard,
+  }) : super(key: key);
   final Sight card;
   final WhereShowCard whereShowCard;
 
@@ -220,9 +225,11 @@ class CardContent extends StatelessWidget {
 /// в конструкторе база данных карточек и параметр Где (в каком разделе) выводится
 /// карточка, т.к. от него зависит внутреннее наполнение карточки
 class BuildCardScreen extends StatelessWidget {
-  const BuildCardScreen(
-      {Key key, @required this.data, @required this.whereShowCard})
-      : super(key: key);
+  const BuildCardScreen({
+    Key key,
+    @required this.data,
+    @required this.whereShowCard,
+  }) : super(key: key);
   final List<Sight> data;
   final WhereShowCard whereShowCard;
 

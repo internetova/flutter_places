@@ -56,8 +56,14 @@ class _VisitingScreenState extends State<VisitingScreen> {
         ),
         body: TabBarView(
           children: [
-            buildFavorites(data: mocks, typeCard: WhereShowCard.planned),
-            buildFavorites(data: mocks, typeCard: WhereShowCard.visited),
+            buildFavorites(
+              data: mocks,
+              typeCard: WhereShowCard.planned,
+            ),
+            buildFavorites(
+              data: mocks,
+              typeCard: WhereShowCard.visited,
+            ),
           ],
         ),
         bottomNavigationBar: MainBottomNavigationBar(current: 2),
@@ -68,12 +74,12 @@ class _VisitingScreenState extends State<VisitingScreen> {
 
 /// информация когда карточек нет в разделе
 class BlankScreen extends StatelessWidget {
-  const BlankScreen(
-      {Key key,
-      @required this.icon,
-      @required this.header,
-      @required this.text})
-      : super(key: key);
+  const BlankScreen({
+    Key key,
+    @required this.icon,
+    @required this.header,
+    @required this.text,
+  }) : super(key: key);
   final Widget icon;
   final Text header;
   final Text text;
@@ -97,10 +103,10 @@ class BlankScreen extends StatelessWidget {
 
 /// строим карточки для Избранного
 /// в зависимости от типа избранного
-/// ‼️🤓🤓 знаю, что функция корявая, более изящного в голову пока не приходит
-/// уверена, что она ВРЕМЕННАЯ, по ходу буду рефакторить
-Widget buildFavorites(
-    {@required List<Sight> data, @required WhereShowCard typeCard}) {
+Widget buildFavorites({
+  @required List<Sight> data,
+  @required WhereShowCard typeCard,
+}) {
   Widget favTabBarView;
   var favorites = <Sight>[];
 
@@ -109,8 +115,9 @@ Widget buildFavorites(
 
   /// если нет таких, то показываем заглушку
   if (favorites.isEmpty) {
-    final screenContent =
-        favoritesBlankScreenContent.where((item) => item[typeCard] == typeCard).toList();
+    final screenContent = favoritesBlankScreenContent
+        .where((item) => item[typeCard] == typeCard)
+        .toList();
 
     favTabBarView = BlankScreen(
       icon: screenContent[0]['blankScreenIcon'],
