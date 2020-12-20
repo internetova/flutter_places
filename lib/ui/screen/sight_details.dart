@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:places/domain/sight.dart';
-import 'package:places/ui/screen/sight_details_constant.dart';
+import 'package:places/ui/screen/res/strings.dart';
 
 class SightDetails extends StatelessWidget {
   const SightDetails({Key key, this.card}) : super(key: key);
@@ -116,7 +116,9 @@ class SightDetails extends StatelessWidget {
                                 SizedBox(width: 8),
                                 Text(
                                   buttonTitleToSchedule,
-                                  style: Theme.of(context).primaryTextTheme.bodyText2,
+                                  style: Theme.of(context)
+                                      .primaryTextTheme
+                                      .bodyText2,
                                 ),
                               ],
                             ),

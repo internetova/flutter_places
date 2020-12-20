@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 import 'package:places/mocks.dart';
 import 'package:places/domain/sight.dart';
+import 'package:places/ui/screen/res/strings.dart';
 import 'package:places/ui/screen/sight_card.dart';
-import 'package:places/ui/screen/visiting_screen_constant.dart';
 import 'package:places/components/bottom_NavigationBar.dart';
 
 class VisitingScreen extends StatefulWidget {
@@ -71,9 +71,9 @@ class BlankScreen extends StatelessWidget {
     @required this.header,
     @required this.text,
   }) : super(key: key);
-  final Widget icon;
-  final Text header;
-  final Text text;
+  final IconData icon;
+  final String header;
+  final String text;
 
   @override
   Widget build(BuildContext context) {
@@ -81,11 +81,23 @@ class BlankScreen extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          icon,
+          Icon(
+            icon, //временно
+            color: Theme.of(context).colorScheme.background,
+            size: 64,
+          ),
           SizedBox(height: 24),
-          header,
+          Text(
+            header,
+            style: Theme.of(context).primaryTextTheme.headline6,
+            textAlign: TextAlign.center,
+          ),
           SizedBox(height: 8),
-          text,
+          Text(
+            text,
+            style: Theme.of(context).primaryTextTheme.bodyText2,
+            textAlign: TextAlign.center,
+          ),
         ],
       ),
     );
@@ -107,7 +119,7 @@ Widget buildFavorites({
   /// если нет таких, то показываем заглушку
   if (favorites.isEmpty) {
     final screenContent = favoritesBlankScreenContent
-        .where((item) => item[typeCard] == typeCard)
+        .where((item) => item['typeCard'] == typeCard)
         .toList();
 
     favTabBarView = BlankScreen(

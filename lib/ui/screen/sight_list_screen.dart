@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 import 'package:places/domain/sight.dart';
 import 'package:places/mocks.dart';
+import 'package:places/ui/screen/res/strings.dart';
 import 'package:places/ui/screen/sight_card.dart';
-import 'package:places/ui/screen/sight_list_screen_constant.dart';
 import 'package:places/components/bottom_NavigationBar.dart';
 
 class SightListScreen extends StatefulWidget {
