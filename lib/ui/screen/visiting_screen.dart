@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import 'package:places/constant.dart';
 import 'package:places/mocks.dart';
 import 'package:places/domain/sight.dart';
+import 'package:places/ui/res/app_theme.dart';
 import 'package:places/ui/screen/sight_card.dart';
 import 'package:places/ui/screen/visiting_screen_constant.dart';
 import 'package:places/components/bottom_NavigationBar.dart';
@@ -28,16 +28,10 @@ class _VisitingScreenState extends State<VisitingScreen> {
               margin: EdgeInsets.symmetric(horizontal: 16, vertical: 6),
               height: 40,
               decoration: BoxDecoration(
-                color: colorBackground,
+                color: Theme.of(context).primaryColorDark,
                 borderRadius: BorderRadius.circular(40),
               ),
               child: TabBar(
-                indicator: BoxDecoration(
-                  color: colorSecondary,
-                  borderRadius: BorderRadius.circular(40),
-                ),
-                unselectedLabelColor: colorInactiveBlack,
-                labelStyle: textStyleLabelFavorites,
                 tabs: [
                   Tab(
                     text: tabPlanned,
@@ -46,8 +40,6 @@ class _VisitingScreenState extends State<VisitingScreen> {
                     text: tabVisited,
                   ),
                 ],
-                indicatorColor: Colors.transparent,
-                indicatorWeight: 0.01,
               ),
             ),
           ),

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'package:places/constant.dart';
 import 'package:places/domain/sight.dart';
 import 'package:places/ui/screen/visiting_screen_constant.dart';
 
@@ -26,7 +25,7 @@ class SightCard extends StatelessWidget {
       child: ClipRRect(
         borderRadius: BorderRadius.circular(12),
         child: Container(
-          color: colorBackground,
+          color: Theme.of(context).primaryColorLight,
           child: Column(
             children: [
               Stack(
@@ -94,7 +93,7 @@ class CardContentType extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       type,
-      style: textStyleSmall14BoldWhite,
+      style: Theme.of(context).textTheme.subtitle2,
     );
   }
 }
@@ -109,36 +108,26 @@ class CardActions extends StatelessWidget {
   static const _search = <Widget>[
     Icon(
       Icons.favorite_border,
-      color: Colors.white,
-      size: 24,
     ),
   ];
 
   static const _planned = <Widget>[
     Icon(
       Icons.calendar_today,
-      color: Colors.white,
-      size: 24,
     ),
     SizedBox(width: 16),
     Icon(
       Icons.close,
-      color: Colors.white,
-      size: 24,
     ),
   ];
 
   static const _visited = <Widget>[
     Icon(
       Icons.share,
-      color: Colors.white,
-      size: 24,
     ),
     SizedBox(width: 16),
     Icon(
       Icons.close,
-      color: Colors.white,
-      size: 24,
     ),
   ];
 
@@ -174,7 +163,7 @@ class CardContent extends StatelessWidget {
         children: [
           Text(
             card.name,
-            style: textStyleText16Secondary,
+            style: Theme.of(context).textTheme.headline5,
             overflow: TextOverflow.ellipsis,
             maxLines: 2,
           ),
@@ -185,7 +174,7 @@ class CardContent extends StatelessWidget {
           if (whereShowCard == WhereShowCard.search) ...[
             Text(
               card.details,
-              style: textStyleSmall14Secondary2,
+              style: Theme.of(context).textTheme.bodyText2,
               overflow: TextOverflow.ellipsis,
               maxLines: 1,
             ),
@@ -193,7 +182,7 @@ class CardContent extends StatelessWidget {
           if (whereShowCard == WhereShowCard.planned && card.date != null) ...[
             Text(
               '$dataPlanned ${card.date}',
-              style: textStyleSmall14WhiteGreen,
+              style: Theme.of(context).primaryTextTheme.bodyText1,
               overflow: TextOverflow.ellipsis,
               maxLines: 1,
             ),
@@ -201,7 +190,7 @@ class CardContent extends StatelessWidget {
           if (whereShowCard == WhereShowCard.visited && card.date != null) ...[
             Text(
               '$dataVisited ${card.date}',
-              style: textStyleSmall14Secondary2,
+              style: Theme.of(context).textTheme.bodyText2,
               overflow: TextOverflow.ellipsis,
               maxLines: 1,
             ),
@@ -212,7 +201,7 @@ class CardContent extends StatelessWidget {
             ),
             Text(
               'закрыто до 09:00', // временно
-              style: textStyleSmall14Secondary2,
+              style: Theme.of(context).textTheme.bodyText2,
             ),
           ],
         ],
