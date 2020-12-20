@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:places/ui/res/app_theme.dart';
+import 'package:places/ui/res/themes.dart';
 import 'package:places/ui/screen/sight_list_screen.dart';
 
 void main() {
@@ -17,7 +17,7 @@ class App extends StatelessWidget {
       title: 'Places',
       theme: lightTheme,
       darkTheme: darkTheme,
-      themeMode: ThemeMode.system,
+      themeMode: ThemeMode.light,
       home: SightListScreen(), // список мест
       // home: SightDetails(card: mocks[1]), // подробности -описание места
       // home: VisitingScreen(), // хочу посетить / посещенные места

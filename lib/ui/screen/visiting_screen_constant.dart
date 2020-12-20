@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:places/domain/sight.dart';
-import 'package:places/ui/res/app_theme.dart';
+import 'package:places/ui/res/themes.dart';
 
 /// для таббара
 const titleScreenFavorites = Text(
