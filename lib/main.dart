@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:places/ui/res/themes.dart';
+import 'package:places/ui/screen/res/themes.dart';
 import 'package:places/ui/screen/sight_list_screen.dart';
 
 void main() {
