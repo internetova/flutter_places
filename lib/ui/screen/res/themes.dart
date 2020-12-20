@@ -16,7 +16,6 @@ class AppTheme {
       accentColor: lightAccentColor,
       backgroundColor: lightScaffoldBackgroundColor,
       scaffoldBackgroundColor: lightScaffoldBackgroundColor,
-      canvasColor: lightPrimaryColor,
       primaryTextTheme: _buildPrimaryTextTheme(base.primaryTextTheme),
       textTheme: _buildTextTheme(base.textTheme),
       colorScheme: base.colorScheme.copyWith(
@@ -46,6 +45,7 @@ class AppTheme {
         showSelectedLabels: false,
         showUnselectedLabels: false,
         backgroundColor: lightPrimaryColor,
+        type: BottomNavigationBarType.fixed,
         selectedItemColor: lightPrimaryColorDark,
         unselectedItemColor: lightSecondaryColor,
       ),
@@ -94,7 +94,6 @@ class AppTheme {
       accentColor: darkAccentColor,
       backgroundColor: darkScaffoldBackgroundColor,
       scaffoldBackgroundColor: darkScaffoldBackgroundColor,
-      canvasColor: darkPrimaryColor,
       primaryTextTheme: _buildPrimaryTextThemeDark(base.primaryTextTheme),
       textTheme: _buildTextThemeDark(base.textTheme),
       colorScheme: base.colorScheme.copyWith(
@@ -124,6 +123,7 @@ class AppTheme {
         showSelectedLabels: false,
         showUnselectedLabels: false,
         backgroundColor: darkPrimaryColor,
+        type: BottomNavigationBarType.fixed,
         selectedItemColor: colorWhite,
         unselectedItemColor: colorWhite,
       ),
