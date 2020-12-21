@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:places/ui/screen/res/themes.dart';
-import 'package:places/ui/screen/sight_list_screen.dart';
 import 'package:places/ui/screen/visiting_screen.dart';
 
 void main() {
   runApp(App());
 }
 
-final ThemeData lightTheme = AppTheme.buildTheme();
-final ThemeData darkTheme = AppTheme.buildThemeDark();
+final ThemeData _lightTheme = AppTheme.buildTheme();
+final ThemeData _darkTheme = AppTheme.buildThemeDark();
 
 class App extends StatelessWidget {
   @override
@@ -16,8 +15,8 @@ class App extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Places',
-      theme: lightTheme,
-      darkTheme: darkTheme,
+      theme: _lightTheme,
+      darkTheme: _darkTheme,
       themeMode: ThemeMode.system,
       // home: SightListScreen(), // список мест
       // home: SightDetails(card: mocks[1]), // подробности -описание места
