@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:places/constant.dart';
 
 import 'package:places/domain/sight.dart';
-import 'package:places/ui/screen/sight_details_constant.dart';
+import 'package:places/ui/screen/res/strings.dart';
 
 class SightDetails extends StatelessWidget {
   const SightDetails({Key key, this.card}) : super(key: key);
@@ -11,13 +10,13 @@ class SightDetails extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: colorWhite,
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
             leading: Icon(
               Icons.arrow_back_ios_rounded,
               size: 32,
+              color: Theme.of(context).colorScheme.onPrimary,
             ),
             expandedHeight: 360,
             flexibleSpace: FlexibleSpaceBar(
@@ -38,7 +37,6 @@ class SightDetails extends StatelessWidget {
                 },
               ),
             ),
-            backgroundColor: colorBackground,
             pinned: true,
             floating: true,
             elevation: 0,
@@ -52,7 +50,7 @@ class SightDetails extends StatelessWidget {
                   children: [
                     Text(
                       card.name,
-                      style: textStyleTitle24Secondary,
+                      style: Theme.of(context).textTheme.headline4,
                     ),
                     Padding(
                       padding: const EdgeInsets.only(top: 2, bottom: 24),
@@ -60,26 +58,26 @@ class SightDetails extends StatelessWidget {
                         children: [
                           Text(
                             card.type,
-                            style: textStyleSmall14BoldSecondary,
+                            style: Theme.of(context).textTheme.subtitle1,
                           ),
                           SizedBox(width: 16),
                           Text(
                             'закрыто до 09:00', // времеменная заглушка
-                            style: textStyleSmall14Secondary2,
+                            style: Theme.of(context).textTheme.bodyText2,
                           ),
                         ],
                       ),
                     ),
                     Text(
                       card.details,
-                      style: textStyleSmall14Secondary,
+                      style: Theme.of(context).textTheme.bodyText1,
                     ),
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 24),
                       child: Container(
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(12),
-                          color: colorWhiteGreen,
+                          color: Theme.of(context).accentColor,
                         ),
                         width: double.infinity,
                         height: 48,
@@ -88,13 +86,11 @@ class SightDetails extends StatelessWidget {
                           children: [
                             Icon(
                               Icons.location_on,
-                              color: colorWhite,
-                              size: 24,
                             ),
                             SizedBox(width: 8),
                             Text(
                               buttonTitleBuildRoute,
-                              style: textStyleWightButton14White,
+                              style: Theme.of(context).textTheme.button,
                             ),
                           ],
                         ),
@@ -113,13 +109,16 @@ class SightDetails extends StatelessWidget {
                               children: [
                                 Icon(
                                   Icons.calendar_today,
-                                  color: colorInactiveBlack,
+                                  color:
+                                      Theme.of(context).colorScheme.background,
                                   size: 24,
                                 ),
                                 SizedBox(width: 8),
                                 Text(
                                   buttonTitleToSchedule,
-                                  style: textStyleSmall14Inactive,
+                                  style: Theme.of(context)
+                                      .primaryTextTheme
+                                      .bodyText2,
                                 ),
                               ],
                             ),
@@ -131,13 +130,14 @@ class SightDetails extends StatelessWidget {
                               children: [
                                 Icon(
                                   Icons.favorite_border,
-                                  color: colorSecondary,
+                                  color:
+                                      Theme.of(context).colorScheme.secondary,
                                   size: 24,
                                 ),
                                 SizedBox(width: 8),
                                 Text(
                                   buttonTitleAddToFavourites,
-                                  style: textStyleSmall14Secondary,
+                                  style: Theme.of(context).textTheme.bodyText1,
                                 ),
                               ],
                             ),

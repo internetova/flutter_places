@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 
-import 'package:places/constant.dart';
 import 'package:places/domain/sight.dart';
 import 'package:places/mocks.dart';
+import 'package:places/ui/screen/res/strings.dart';
 import 'package:places/ui/screen/sight_card.dart';
-import 'package:places/ui/screen/sight_list_screen_constant.dart';
 import 'package:places/components/bottom_NavigationBar.dart';
 
 class SightListScreen extends StatefulWidget {
@@ -16,7 +15,6 @@ class _SightListScreenState extends State<SightListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: colorWhite,
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(152),
         child: AppBar(
@@ -24,11 +22,12 @@ class _SightListScreenState extends State<SightListScreen> {
             alignment: Alignment.bottomLeft,
             child: Container(
               margin: EdgeInsets.only(left: 16, right: 16, bottom: 16),
-              child: appBarTitle,
+              child: Text(
+                appBarTitle,
+                style: Theme.of(context).textTheme.headline3,
+              ),
             ),
           ),
-          backgroundColor: Colors.transparent,
-          elevation: 0,
         ),
       ),
       body: BuildCardScreen(
