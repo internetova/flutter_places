@@ -22,7 +22,8 @@ class AppTheme {
         background: lightBackgroundColor,
         secondary: lightSecondaryColor,
         secondaryVariant: lightSecondaryVariant,
-        onPrimary: lightPrimaryColor,
+        onPrimary: lightOnPrimaryColor,
+        primary: lightPrimaryColorDark,
       ),
       appBarTheme: base.appBarTheme.copyWith(
         color: lightPrimaryColor,
@@ -100,7 +101,8 @@ class AppTheme {
         background: darkBackgroundColor,
         secondary: darkSecondaryColor,
         secondaryVariant: darkSecondaryVariant,
-        onPrimary: colorWhite,
+        onPrimary: darkOnPrimaryColor,
+        primary: colorWhite,
       ),
       appBarTheme: base.appBarTheme.copyWith(
         color: darkPrimaryColor,

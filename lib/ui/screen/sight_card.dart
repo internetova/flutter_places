@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:places/components/iconSvg.dart';
 
 import 'package:places/domain/sight.dart';
 import 'package:places/ui/screen/res/strings.dart';
+import 'package:places/ui/screen/res/assets.dart';
 
 /// в зависимости от места показа карточки - Список поиска, в Избранном
 /// (запланировано, посещено) показываем разную информацию на карточке
@@ -101,44 +103,67 @@ class CardContentType extends StatelessWidget {
 /// кнопки действий: добавить в избранное, удалить, поделиться и т.п.
 /// отображается на одной линии с типом карточки
 /// в зависимости от места показа карточки кнопки меняются
-class CardActions extends StatelessWidget {
+class CardActions extends StatefulWidget {
   const CardActions({Key key, @required this.whereShowCard}) : super(key: key);
   final WhereShowCard whereShowCard;
 
-  static const _search = <Widget>[
-    Icon(
-      Icons.favorite_border,
+  @override
+  _CardActionsState createState() => _CardActionsState();
+}
+
+class _CardActionsState extends State<CardActions> {
+  final _search = <Widget>[
+    InkWell(
+      onTap: () {
+        print('onPressed Избранное');
+      },
+      child: IconSvg(icon: icFavorites),
     ),
   ];
 
-  static const _planned = <Widget>[
-    Icon(
-      Icons.calendar_today,
+  var _planned = <Widget>[
+    InkWell(
+      onTap: () {
+        print('onPressed Календарь');
+      },
+      child: IconSvg(icon: icCalendar),
     ),
     SizedBox(width: 16),
-    Icon(
-      Icons.close,
+    InkWell(
+      onTap: () {
+        print('onPressed Удалить');
+      },
+      child: IconSvg(icon: icDelete),
     ),
   ];
 
-  static const _visited = <Widget>[
-    Icon(
-      Icons.share,
+  final _visited = <Widget>[
+    InkWell(
+      onTap: () {
+        print('onPressed Поделиться');
+      },
+      child: IconSvg(icon: icShare),
     ),
     SizedBox(width: 16),
-    Icon(
-      Icons.close,
+    InkWell(
+      onTap: () {
+        print('onPressed Удалить');
+      },
+      child: IconSvg(icon: icDelete),
     ),
   ];
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        if (whereShowCard == WhereShowCard.search) ..._search,
-        if (whereShowCard == WhereShowCard.planned) ..._planned,
-        if (whereShowCard == WhereShowCard.visited) ..._visited,
-      ],
+    return Container(
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (widget.whereShowCard == WhereShowCard.search) ..._search,
+          if (widget.whereShowCard == WhereShowCard.planned) ..._planned,
+          if (widget.whereShowCard == WhereShowCard.visited) ..._visited,
+        ],
+      ),
     );
   }
 }
@@ -181,7 +206,7 @@ class CardContent extends StatelessWidget {
           ],
           if (whereShowCard == WhereShowCard.planned && card.date != null) ...[
             Text(
-              '$dataPlanned ${card.date}',
+              '$datePlanned ${card.date}',
               style: Theme.of(context).primaryTextTheme.bodyText1,
               overflow: TextOverflow.ellipsis,
               maxLines: 1,
@@ -189,7 +214,7 @@ class CardContent extends StatelessWidget {
           ],
           if (whereShowCard == WhereShowCard.visited && card.date != null) ...[
             Text(
-              '$dataVisited ${card.date}',
+              '$dateVisited ${card.date}',
               style: Theme.of(context).textTheme.bodyText2,
               overflow: TextOverflow.ellipsis,
               maxLines: 1,
