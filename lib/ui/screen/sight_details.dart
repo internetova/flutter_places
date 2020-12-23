@@ -117,16 +117,17 @@ class SightDetails extends StatelessWidget {
                     SizedBox(height: 24),
                     Divider(),
                     Padding(
-                      padding: const EdgeInsets.only(top: 16, bottom: 16),
+                      padding: const EdgeInsets.only(top: 8, bottom: 8),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Expanded(
                             flex: 1,
-                            child: InkWell(
-                              onTap: () {
+                            child: FlatButton(
+                              onPressed: () {
                                 print('onTaped Запланировать');
                               },
+                              height: 40,
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
@@ -149,10 +150,11 @@ class SightDetails extends StatelessWidget {
                           ),
                           Expanded(
                             flex: 1,
-                            child: InkWell(
-                              onTap: () {
+                            child: FlatButton(
+                              onPressed: () {
                                 print('onTaped Избранное');
                               },
+                              height: 40,
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [

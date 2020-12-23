@@ -34,9 +34,9 @@ class SightCard extends StatelessWidget {
                 children: [
                   CardImagePreview(imgUrl: card.imgPreview),
                   Positioned(
-                    top: 16,
+                    top: 8,
                     left: 16,
-                    right: 16,
+                    right: 8,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -113,43 +113,41 @@ class CardActions extends StatefulWidget {
 
 class _CardActionsState extends State<CardActions> {
   final _search = <Widget>[
-    InkWell(
-      onTap: () {
+    IconButton(
+      onPressed: () {
         print('onPressed Избранное');
       },
-      child: IconSvg(icon: icFavorites),
+      icon: IconSvg(icon: icFavorites),
     ),
   ];
 
   var _planned = <Widget>[
-    InkWell(
-      onTap: () {
+    IconButton(
+      onPressed: () {
         print('onPressed Календарь');
       },
-      child: IconSvg(icon: icCalendar),
+      icon: IconSvg(icon: icCalendar),
     ),
-    SizedBox(width: 16),
-    InkWell(
-      onTap: () {
+    IconButton(
+      onPressed: () {
         print('onPressed Удалить');
       },
-      child: IconSvg(icon: icDelete),
+      icon: IconSvg(icon: icDelete),
     ),
   ];
 
   final _visited = <Widget>[
-    InkWell(
-      onTap: () {
+    IconButton(
+      onPressed: () {
         print('onPressed Поделиться');
       },
-      child: IconSvg(icon: icShare),
+      icon: IconSvg(icon: icShare),
     ),
-    SizedBox(width: 16),
-    InkWell(
-      onTap: () {
+    IconButton(
+      onPressed: () {
         print('onPressed Удалить');
       },
-      child: IconSvg(icon: icDelete),
+      icon: IconSvg(icon: icDelete),
     ),
   ];
 
