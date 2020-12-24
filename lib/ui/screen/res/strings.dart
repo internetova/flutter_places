@@ -42,8 +42,15 @@ const List<Map> favoritesBlankScreenContent = const [
   },
 ];
 
-/// страница фильтров
+/// экран фильтров
 const clearFilters = 'Очистить';
 const titleCategories = 'КАТЕГОРИИ';
 const titleSlider = 'Расстояние';
 const titleButton = 'ПОКАЗАТЬ';
+
+/// экран настройки
+const titleScreenSettings = Text(
+  'Настройки',
+);
+const itemThemeDark = 'Тёмная тема';
+const itemTutorial = 'Смотреть туториал';

@@ -36,3 +36,6 @@ const icParticular = '$_baseResPath/catalog/particular.svg';
 const icRestaurant = '$_baseResPath/catalog/restaurant.svg';
 const icIsChose = '$_baseResPath/tick_choice.svg';
 const icTick = '$_baseResPath/tick.svg';
+
+/// настройки
+const icInfo = '$_baseResPath/info.svg';

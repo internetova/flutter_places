@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:places/ui/screen/res/colors.dart';
 import 'package:places/ui/screen/res/text_styles.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AppTheme {
   AppTheme();
@@ -63,6 +64,7 @@ class AppTheme {
         thumbColor: lightPrimaryColor,
         activeTrackColor: lightAccentColor,
       ),
+      switchTheme: base.switchTheme.copyWith(),
     );
   }
 
@@ -174,5 +176,45 @@ class AppTheme {
       bodyText1: textSmall14.copyWith(color: darkAccentColor),
       bodyText2: textSmall14.copyWith(color: darkBackgroundColor),
     );
+  }
+}
+
+extension CustomColorScheme on ColorScheme {
+  Color get white => colorWhite;
+}
+
+class ThemeNotifier extends ChangeNotifier {
+  final String key = 'theme';
+  SharedPreferences _prefs;
+  bool _darkTheme;
+
+  bool get darkTheme => _darkTheme;
+
+  ThemeNotifier() {
+    _darkTheme = true;
+    _loadFromPrefs();
+  }
+
+  toggleTheme() {
+    _darkTheme = !_darkTheme;
+    _saveToPrefs();
+    notifyListeners();
+  }
+
+  _initPrefs() async {
+    if (_prefs == null) {
+      _prefs = await SharedPreferences.getInstance();
+    }
+  }
+
+  _loadFromPrefs() async {
+    await _initPrefs();
+    _darkTheme = _prefs.getBool(key) ?? true;
+    notifyListeners();
+  }
+
+  _saveToPrefs() async {
+    await _initPrefs();
+    _prefs.setBool(key, _darkTheme);
   }
 }
