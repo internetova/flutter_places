@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart';
-
 const _baseResPath = 'res/icons';
 
 /// bottom Navigation Bar
