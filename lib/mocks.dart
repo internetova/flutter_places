@@ -1,3 +1,6 @@
+import 'package:places/domain/categories.dart';
+import 'package:places/ui/screen/res/assets.dart';
+
 import 'domain/sight.dart';
 
 final List mocks = <Sight>[
@@ -82,4 +85,14 @@ final List mocks = <Sight>[
     imgPreview:
         'https://i1.photo.2gis.com/images/branch/0/30258560047532609_3605.jpg',
   ),
+];
+
+/// категории для фильтра поиска
+final List<Categories> categories = [
+  Categories(id: 1, name: 'Отель', icon: icHotel),
+  Categories(id: 2, name: 'Ресторан', icon: icRestaurant),
+  Categories(id: 3, name: 'Особое место', icon: icParticular),
+  Categories(id: 4, name: 'Парк', icon: icPark),
+  Categories(id: 5, name: 'Музей', icon: icMuseum),
+  Categories(id: 6, name: 'Кафе', icon: icCafe),
 ];

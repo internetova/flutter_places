@@ -5,7 +5,7 @@ import 'package:places/mocks.dart';
 import 'package:places/domain/sight.dart';
 import 'package:places/ui/screen/res/strings.dart';
 import 'package:places/ui/screen/sight_card.dart';
-import 'package:places/components/bottom_NavigationBar.dart';
+import 'package:places/components/bottom_navigationbar.dart';
 
 class VisitingScreen extends StatefulWidget {
   @override

@@ -58,6 +58,11 @@ class AppTheme {
         color: lightIconColor,
         size: 24,
       ),
+      sliderTheme: base.sliderTheme.copyWith(
+        trackHeight: 2,
+        thumbColor: lightPrimaryColor,
+        activeTrackColor: lightAccentColor,
+      ),
     );
   }
 
@@ -71,6 +76,7 @@ class AppTheme {
       subtitle2: textSmall14Bold.copyWith(color: lightPrimaryColor),
       bodyText1: textSmall14.copyWith(color: lightSecondaryColor),
       bodyText2: textSmall14.copyWith(color: lightSecondaryVariant),
+      caption: textSuperSmall12.copyWith(color: lightSecondaryColor),
       button: textButton,
     );
   }
@@ -78,6 +84,7 @@ class AppTheme {
   static _buildPrimaryTextTheme(TextTheme base) {
     return base.copyWith(
       headline6: textSubtitle18.copyWith(color: lightBackgroundColor),
+      subtitle1: textText16Regular.copyWith(color: lightPrimaryColorDark),
       bodyText1: textSmall14.copyWith(color: lightAccentColor),
       bodyText2: textSmall14.copyWith(color: lightBackgroundColor),
     );
@@ -137,6 +144,11 @@ class AppTheme {
         color: darkIconColor,
         size: 24,
       ),
+      sliderTheme: base.sliderTheme.copyWith(
+        trackHeight: 2,
+        thumbColor: colorWhite,
+        activeTrackColor: darkAccentColor,
+      ),
     );
   }
 
@@ -150,6 +162,7 @@ class AppTheme {
       subtitle2: textSmall14Bold.copyWith(color: colorWhite),
       bodyText1: textSmall14.copyWith(color: colorWhite),
       bodyText2: textSmall14.copyWith(color: darkBackgroundColor),
+      caption: textSuperSmall12.copyWith(color: darkSecondaryColor),
       button: textButton,
     );
   }
@@ -157,6 +170,7 @@ class AppTheme {
   static _buildPrimaryTextThemeDark(TextTheme base) {
     return base.copyWith(
       headline6: textSubtitle18.copyWith(color: darkBackgroundColor),
+      subtitle1: textText16Regular.copyWith(color: darkOnPrimaryColor),
       bodyText1: textSmall14.copyWith(color: darkAccentColor),
       bodyText2: textSmall14.copyWith(color: darkBackgroundColor),
     );

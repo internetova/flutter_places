@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 /// Subtitle 18
 /// Text 16
 /// Small 14
+/// Super small 12
 
 /// Стили текстов
 
@@ -33,6 +34,10 @@ const textText16 = TextStyle(
   fontWeight: FontWeight.w500,
 );
 
+final textText16Regular = textText16.copyWith(
+  fontWeight: FontWeight.w400,
+);
+
 const textSmall14 = TextStyle(
   fontSize: 14.0,
   height: 1.29,
@@ -45,4 +50,10 @@ final textSmall14Bold = textSmall14.copyWith(
 
 final textButton = textSmall14Bold.copyWith(
   letterSpacing: 0.3,
+);
+
+const textSuperSmall12 = TextStyle(
+  fontSize: 12.0,
+  height: 1.33,
+  fontWeight: FontWeight.w400,
 );

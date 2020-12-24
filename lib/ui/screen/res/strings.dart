@@ -41,3 +41,9 @@ const List<Map> favoritesBlankScreenContent = const [
     'blankScreenText': 'Завершите маршрут,\nчтобы место попало сюда.',
   },
 ];
+
+/// страница фильтров
+const clearFilters = 'Очистить';
+const titleCategories = 'КАТЕГОРИИ';
+const titleSlider = 'Расстояние';
+const titleButton = 'ПОКАЗАТЬ';

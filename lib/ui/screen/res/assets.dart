@@ -19,7 +19,17 @@ const icFavorites = '$_baseResPath/heart.svg';
 /// другие кнопки
 const icGo = '$_baseResPath/go.svg';
 const icArrow = '$_baseResPath/arrow.svg';
+const icArrowLeading = '$_baseResPath/arrow_leading.svg';
 
 /// пустые страницы
 const icEmptyPlanned = '$_baseResPath/empty_pages/card.svg';
 const icEmptyVisited = '$_baseResPath/empty_pages/go.svg';
+
+/// категории фильтра поиска
+const icCafe = '$_baseResPath/catalog/cafe.svg';
+const icHotel = '$_baseResPath/catalog/hotel.svg';
+const icMuseum = '$_baseResPath/catalog/museum.svg';
+const icPark = '$_baseResPath/catalog/park.svg';
+const icParticular = '$_baseResPath/catalog/particular.svg';
+const icRestaurant = '$_baseResPath/catalog/restaurant.svg';
+const icIsChose = '$_baseResPath/tick_choice.svg';
