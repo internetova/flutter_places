@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:places/components/icon_svg.dart';
 
 import 'package:places/domain/sight.dart';
+import 'package:places/ui/screen/res/sizes.dart';
 import 'package:places/ui/screen/res/strings.dart';
 import 'package:places/ui/screen/res/assets.dart';
 
@@ -24,31 +26,45 @@ class SightCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return AspectRatio(
       aspectRatio: 3 / 2,
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(12),
-        child: Container(
+      child: Ink(
+        decoration: ShapeDecoration(
           color: Theme.of(context).primaryColorLight,
-          child: Column(
-            children: [
-              Stack(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(radiusCard),
+          ),
+        ),
+        child: InkWell(
+          splashColor: Theme.of(context).primaryColor,
+          borderRadius: BorderRadius.circular(radiusCard),
+          onTap: () {
+            print(card.name);
+          },
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(radiusCard),
+            child: Container(
+              child: Column(
                 children: [
-                  CardImagePreview(imgUrl: card.imgPreview),
-                  Positioned(
-                    top: 8,
-                    left: 16,
-                    right: 8,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        CardContentType(type: card.type),
-                        CardActions(whereShowCard: whereShowCard),
-                      ],
-                    ),
+                  Stack(
+                    children: [
+                      CardImagePreview(imgUrl: card.imgPreview),
+                      Positioned(
+                        top: 8,
+                        left: 16,
+                        right: 8,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            CardContentType(type: card.type),
+                            CardActions(whereShowCard: whereShowCard),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
+                  CardContent(card: card, whereShowCard: whereShowCard),
                 ],
               ),
-              CardContent(card: card, whereShowCard: whereShowCard),
-            ],
+            ),
           ),
         ),
       ),

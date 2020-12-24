@@ -1,10 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:places/mocks.dart';
 import 'package:places/ui/screen/res/themes.dart';
-import 'package:places/ui/screen/settings_screen.dart';
-import 'package:places/ui/screen/sight_details.dart';
-import 'package:places/ui/screen/sight_list_screen.dart';
-import 'package:places/ui/screen/visiting_screen.dart';
 import 'package:places/ui/screen/filters_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -30,8 +25,8 @@ class App extends StatelessWidget {
             // home: SightListScreen(), // список мест
             // home: SightDetails(card: mocks[1]), // подробности -описание места
             // home: VisitingScreen(), // хочу посетить / посещенные места
-            // home: FiltersScreen(), // страница с фильтрами поиска
-            home: SettingsScreen(), // страница с фильтрами поиска
+            home: FiltersScreen(), // страница с фильтрами поиска
+            // home: SettingsScreen(), // страница с фильтрами поиска
           );
         },
       ),

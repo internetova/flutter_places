@@ -13,6 +13,7 @@ class FiltersScreen extends StatefulWidget {
 class _FiltersScreenState extends State<FiltersScreen> {
   /// индикаторы выбранных категорий
   List<bool> _selectedCategories = _clearSelected(categories);
+
   /// данные слайдера
   double _startValue = 100;
   double _endValue = 10000;
@@ -50,34 +51,41 @@ class _FiltersScreenState extends State<FiltersScreen> {
           SliverGrid.count(
             crossAxisCount: 3,
             children: List.generate(categories.length, (index) {
-              return FlatButton(
-                onPressed: () {
-                  setState(() {
-                    _selectedCategories[index] = !_selectedCategories[index];
-                  });
-                },
+              return Center(
                 child: Stack(
                   children: [
                     SizedBox(
                       width: 96,
                       height: 92,
                     ),
-                    Container(
-                      margin: EdgeInsets.symmetric(horizontal: 16),
-                      width: 64,
-                      height: 64,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(50),
-                        color: Theme.of(context).accentColor.withOpacity(0.16),
-                      ),
-                    ),
                     Positioned(
-                      top: 16,
+                      top: 0,
                       left: 0,
                       right: 0,
-                      child: SvgPicture.asset(
-                        categories[index].icon,
-                        color: Theme.of(context).accentColor,
+                      child: SizedBox(
+                        width: 64,
+                        height: 64,
+                        child: Ink(
+                          decoration: ShapeDecoration(
+                            color:
+                                Theme.of(context).accentColor.withOpacity(0.16),
+                            shape: CircleBorder(),
+                          ),
+                          child: IconButton(
+                            icon: SvgPicture.asset(
+                              categories[index].icon,
+                              color: Theme.of(context).accentColor,
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                _selectedCategories[index] =
+                                    !_selectedCategories[index];
+                              });
+                            },
+                            splashColor:
+                                Theme.of(context).accentColor.withOpacity(0.5),
+                          ),
+                        ),
                       ),
                     ),
                     Positioned(
@@ -177,7 +185,6 @@ Widget _showSelected(BuildContext context) {
             borderRadius: BorderRadius.circular(50),
             color: Theme.of(context).colorScheme.primary,
           ),
-
         ),
         Positioned(
           top: 0,
@@ -186,7 +193,7 @@ Widget _showSelected(BuildContext context) {
           bottom: 0,
           child: SvgPicture.asset(
             icTick,
-           color: Theme.of(context).primaryColor,
+            color: Theme.of(context).primaryColor,
           ),
         ),
       ],
