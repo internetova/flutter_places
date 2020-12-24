@@ -162,7 +162,7 @@ class AppTheme {
       subtitle2: textSmall14Bold.copyWith(color: colorWhite),
       bodyText1: textSmall14.copyWith(color: colorWhite),
       bodyText2: textSmall14.copyWith(color: darkBackgroundColor),
-      caption: textSuperSmall12.copyWith(color: darkSecondaryColor),
+      caption: textSuperSmall12.copyWith(color: colorWhite),
       button: textButton,
     );
   }

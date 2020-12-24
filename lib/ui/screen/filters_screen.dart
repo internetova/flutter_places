@@ -13,11 +13,10 @@ class FiltersScreen extends StatefulWidget {
 class _FiltersScreenState extends State<FiltersScreen> {
   /// индикаторы выбранных категорий
   List<bool> _selectedCategories = _clearSelected(categories);
-
   /// данные слайдера
-  double startValue = 100;
-  double endValue = 10000;
-  RangeValues values = RangeValues(100, 10000);
+  double _startValue = 100;
+  double _endValue = 10000;
+  RangeValues _currentRangeValues = _startDataSlider();
 
   @override
   Widget build(BuildContext context) {
@@ -36,6 +35,7 @@ class _FiltersScreenState extends State<FiltersScreen> {
                 onPressed: () {
                   setState(() {
                     _selectedCategories = _clearSelected(categories);
+                    _currentRangeValues = _startDataSlider();
                   });
                 },
                 child: Text(
@@ -90,7 +90,7 @@ class _FiltersScreenState extends State<FiltersScreen> {
                         textAlign: TextAlign.center,
                       ),
                     ),
-                    if (_selectedCategories[index]) _showSelected(),
+                    if (_selectedCategories[index]) _showSelected(context),
                   ],
                 ),
               );
@@ -111,25 +111,25 @@ class _FiltersScreenState extends State<FiltersScreen> {
                         style: Theme.of(context).primaryTextTheme.subtitle1,
                       ),
                       Text(
-                        'от ${convertMeterToKm(values.start)} ${convertMeterToKm(values.end)}',
+                        'от ${_convertMeterToKm(_currentRangeValues.start)} ${_convertMeterToKm(_currentRangeValues.end)}',
                         style: Theme.of(context)
                             .primaryTextTheme
                             .subtitle1
                             .copyWith(
-                                color:
-                                    Theme.of(context).colorScheme.secondaryVariant),
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .secondaryVariant),
                       ),
                     ],
                   ),
                 ),
                 RangeSlider(
-                  min: startValue,
-                  max: endValue,
-                  values: values,
-
-                  onChanged: (value) {
+                  min: _startValue,
+                  max: _endValue,
+                  values: _currentRangeValues,
+                  onChanged: (RangeValues values) {
                     setState(() {
-                      values = value;
+                      _currentRangeValues = values;
                     });
                   },
                 ),
@@ -164,11 +164,33 @@ class _FiltersScreenState extends State<FiltersScreen> {
 }
 
 /// показывает метку на выбранной категории
-Widget _showSelected() {
+Widget _showSelected(BuildContext context) {
   return Positioned(
-    top: 44,
-    right: 12,
-    child: SvgPicture.asset(icIsChose),
+    top: 46,
+    right: 16,
+    child: Stack(
+      children: [
+        Container(
+          width: 16,
+          height: 16,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(50),
+            color: Theme.of(context).colorScheme.primary,
+          ),
+
+        ),
+        Positioned(
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          child: SvgPicture.asset(
+            icTick,
+           color: Theme.of(context).primaryColor,
+          ),
+        ),
+      ],
+    ),
   );
 }
 
@@ -179,12 +201,14 @@ List<bool> _clearSelected(List categories) {
   return categories.map((e) => false).toList();
 }
 
-/// для слайдера метры в километры
-String convertMeterToKm(double value) {
-
+/// для слайдера строка Расстояние метры в километры
+String _convertMeterToKm(double value) {
   if (value < 1000) {
     return '${value.toStringAsFixed(0)} м';
   } else {
     return '${(value / 1000).toStringAsFixed(2)} км';
   }
 }
+
+/// стартовые данные для слайдера
+RangeValues _startDataSlider() => RangeValues(100, 3000);

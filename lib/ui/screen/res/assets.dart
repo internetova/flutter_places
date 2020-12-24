@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 const _baseResPath = 'res/icons';
 
 /// bottom Navigation Bar
@@ -33,3 +35,4 @@ const icPark = '$_baseResPath/catalog/park.svg';
 const icParticular = '$_baseResPath/catalog/particular.svg';
 const icRestaurant = '$_baseResPath/catalog/restaurant.svg';
 const icIsChose = '$_baseResPath/tick_choice.svg';
+const icTick = '$_baseResPath/tick.svg';
