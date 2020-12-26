@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:places/mocks.dart';
 import 'package:places/domain/sight.dart';
+import 'package:places/ui/screen/res/sizes.dart';
 import 'package:places/ui/screen/res/strings.dart';
 import 'package:places/ui/screen/sight_card.dart';
 import 'package:places/components/bottom_navigationbar.dart';
@@ -25,7 +26,7 @@ class _VisitingScreenState extends State<VisitingScreen> {
           bottom: PreferredSize(
             preferredSize: Size.fromHeight(60),
             child: Container(
-              margin: EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
               height: 40,
               decoration: BoxDecoration(
                 color: Theme.of(context).primaryColorDark,
@@ -58,7 +59,7 @@ class _VisitingScreenState extends State<VisitingScreen> {
             ),
           ],
         ),
-        bottomNavigationBar: MainBottomNavigationBar(current: 2),
+        bottomNavigationBar: const MainBottomNavigationBar(current: 2),
       ),
     );
   }
@@ -88,13 +89,13 @@ class BlankScreen extends StatelessWidget {
             width: 64,
             height: 64,
           ),
-          SizedBox(height: 24),
+          sizedBoxW24,
           Text(
             header,
             style: Theme.of(context).primaryTextTheme.headline6,
             textAlign: TextAlign.center,
           ),
-          SizedBox(height: 8),
+          sizedBoxW8,
           Text(
             text,
             style: Theme.of(context).primaryTextTheme.bodyText2,

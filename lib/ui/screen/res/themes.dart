@@ -64,7 +64,11 @@ class AppTheme {
         thumbColor: lightPrimaryColor,
         activeTrackColor: lightAccentColor,
       ),
-      switchTheme: base.switchTheme.copyWith(),
+      floatingActionButtonTheme: base.floatingActionButtonTheme.copyWith(
+        backgroundColor: lightAccentColor,
+        elevation: 0,
+        highlightElevation: 0,
+      ),
     );
   }
 
@@ -151,6 +155,11 @@ class AppTheme {
         thumbColor: colorWhite,
         activeTrackColor: darkAccentColor,
       ),
+      floatingActionButtonTheme: base.floatingActionButtonTheme.copyWith(
+        backgroundColor: darkAccentColor,
+        elevation: 0,
+        highlightElevation: 0,
+      ),
     );
   }
 
@@ -179,8 +188,12 @@ class AppTheme {
   }
 }
 
+/// постоянный цвет в обоих темах
 extension CustomColorScheme on ColorScheme {
   Color get white => colorWhite;
+  Color get secondary => colorSecondary;
+  Color get secondary2 => colorSecondary2;
+  Color get inactiveBlack => colorInactiveBlack;
 }
 
 class ThemeNotifier extends ChangeNotifier {

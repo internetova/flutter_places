@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:places/components/bottom_NavigationBar.dart';
@@ -12,7 +13,6 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,43 +26,53 @@ class _SettingsScreenState extends State<SettingsScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Consumer<ThemeNotifier>(
-                builder: (context, notifier, child) => SwitchListTile(
-                  contentPadding: EdgeInsets.symmetric(horizontal: 0),
-                  activeColor: Theme.of(context).colorScheme.white,
-                  activeTrackColor: Theme.of(context).accentColor,
-                  inactiveThumbColor: Theme.of(context).colorScheme.white,
-                  inactiveTrackColor: Theme.of(context).colorScheme.background,
-                  title: Text(
-                    itemThemeDark,
-                    style: Theme.of(context).primaryTextTheme.subtitle1,
-                  ),
-                  value: notifier.darkTheme,
-                  onChanged: (currentValue) {
-                    notifier.toggleTheme();
-                  },
-                ),
-              ),
+              _buildThemeMode(),
               Divider(),
-              ListTile(
-                contentPadding: EdgeInsets.symmetric(horizontal: 0),
-                title: Text(
-                  itemTutorial,
-                  style: Theme.of(context).primaryTextTheme.subtitle1,
-                ),
-                trailing: IconButton(
-                    icon: SvgPicture.asset(icInfo,
-                        color: Theme.of(context).accentColor),
-                    onPressed: () {
-                      print('onPressed Туториал');
-                    }),
-              ),
+              _buildTutorial(),
               Divider(),
             ],
           ),
         ),
       ),
-      bottomNavigationBar: MainBottomNavigationBar(current: 3),
+      bottomNavigationBar: const MainBottomNavigationBar(current: 3),
+    );
+  }
+
+  /// Тёмная тема
+  Widget _buildThemeMode() {
+    return Consumer<ThemeNotifier>(
+      builder: (context, notifier, child) => ListTile(
+        contentPadding: const EdgeInsets.symmetric(horizontal: 0),
+        title: Text(
+          itemThemeDark,
+          style: Theme.of(context).primaryTextTheme.subtitle1,
+        ),
+        trailing: CupertinoSwitch(
+            trackColor: Theme.of(context).colorScheme.inactiveBlack,
+            value: notifier.darkTheme,
+            onChanged: (currentValue) {
+              notifier.toggleTheme();
+            }),
+      ),
+    );
+  }
+
+  /// Смотреть туториал
+  Widget _buildTutorial() {
+    return ListTile(
+      contentPadding: const EdgeInsets.symmetric(horizontal: 0),
+      title: Text(
+        itemTutorial,
+        style: Theme.of(context).primaryTextTheme.subtitle1,
+      ),
+      trailing: IconButton(
+          icon: SvgPicture.asset(
+            icInfo,
+            color: Theme.of(context).accentColor,
+          ),
+          onPressed: () {
+            print('onPressed Туториал');
+          }),
     );
   }
 }

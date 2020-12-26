@@ -21,7 +21,7 @@ class _SightListScreenState extends State<SightListScreen> {
           flexibleSpace: Align(
             alignment: Alignment.bottomLeft,
             child: Container(
-              margin: EdgeInsets.only(left: 16, right: 16, bottom: 16),
+              margin: const EdgeInsets.only(left: 16, right: 16, bottom: 16),
               child: Text(
                 appBarTitle,
                 style: Theme.of(context).textTheme.headline3,
@@ -34,7 +34,7 @@ class _SightListScreenState extends State<SightListScreen> {
         data: mocks,
         whereShowCard: WhereShowCard.search,
       ),
-      bottomNavigationBar: MainBottomNavigationBar(current: 0),
+      bottomNavigationBar: const MainBottomNavigationBar(current: 0),
     );
   }
 }

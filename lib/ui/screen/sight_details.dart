@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:places/components/icon_svg.dart';
 
 import 'package:places/domain/sight.dart';
+import 'package:places/ui/screen/res/sizes.dart';
 import 'package:places/ui/screen/res/strings.dart';
 import 'package:places/ui/screen/res/assets.dart';
 
@@ -18,7 +19,7 @@ class SightDetails extends StatelessWidget {
             leading: Stack(
               children: [
                 Container(
-                  margin: EdgeInsets.only(left: 16, top: 12),
+                  margin: const EdgeInsets.only(left: 16, top: 12),
                   decoration: BoxDecoration(
                     color: Theme.of(context).primaryColor,
                     borderRadius: BorderRadius.circular(10),
@@ -78,7 +79,7 @@ class SightDetails extends StatelessWidget {
                             card.type,
                             style: Theme.of(context).textTheme.subtitle1,
                           ),
-                          SizedBox(width: 16),
+                          sizedBoxW16,
                           Text(
                             'закрыто до 09:00', // времеменная заглушка
                             style: Theme.of(context).textTheme.bodyText2,
@@ -90,23 +91,23 @@ class SightDetails extends StatelessWidget {
                       card.details,
                       style: Theme.of(context).textTheme.bodyText1,
                     ),
-                    SizedBox(height: 24),
+                    sizedBoxW24,
                     FlatButton(
                       onPressed: () {
                         print('onPressed Построить маршрут');
                       },
                       color: Theme.of(context).accentColor,
-                      height: 48,
+                      height: heightBigButton,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.all(
-                          Radius.circular(12),
+                          Radius.circular(radiusCard),
                         ),
                       ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           IconSvg(icon: icGo),
-                          SizedBox(width: 8),
+                          sizedBoxW8,
                           Text(
                             buttonTitleBuildRoute,
                             style: Theme.of(context).textTheme.button,
@@ -114,7 +115,7 @@ class SightDetails extends StatelessWidget {
                         ],
                       ),
                     ),
-                    SizedBox(height: 24),
+                    sizedBoxW24,
                     Divider(),
                     Padding(
                       padding: const EdgeInsets.only(top: 8, bottom: 8),
