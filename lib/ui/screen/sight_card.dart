@@ -30,13 +30,9 @@ class SightCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(radiusCard),
         clipBehavior: Clip.antiAlias,
         color: Theme.of(context).primaryColorLight,
-        child: Ink(
-          child: InkWell(
-            splashColor: Theme.of(context).primaryColor,
-            onTap: () {
-              print(card.name);
-            },
-            child: Column(
+        child: Stack(
+          children: [
+            Column(
               children: [
                 Stack(
                   children: [
@@ -45,20 +41,29 @@ class SightCard extends StatelessWidget {
                       top: 8,
                       left: 16,
                       right: 12,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          CardContentType(type: card.type),
-                          CardActions(whereShowCard: whereShowCard),
-                        ],
-                      ),
+                      child: CardContentType(type: card.type),
                     ),
                   ],
                 ),
                 CardContent(card: card, whereShowCard: whereShowCard),
               ],
             ),
-          ),
+            Positioned.fill(
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  onTap: () {
+                    print('onTap: ${card.name}');
+                  },
+                ),
+              ),
+            ),
+            Positioned(
+              top: 8,
+              right: 16,
+              child: CardActions(whereShowCard: whereShowCard),
+            ),
+          ],
         ),
       ),
     );
