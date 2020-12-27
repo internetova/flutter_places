@@ -91,7 +91,7 @@ class SightDetails extends StatelessWidget {
                       card.details,
                       style: Theme.of(context).textTheme.bodyText1,
                     ),
-                    sizedBoxW24,
+                    sizedBoxH24,
                     FlatButton(
                       onPressed: () {
                         print('onPressed Построить маршрут');
@@ -115,7 +115,7 @@ class SightDetails extends StatelessWidget {
                         ],
                       ),
                     ),
-                    sizedBoxW24,
+                    sizedBoxH24,
                     Divider(),
                     Padding(
                       padding: const EdgeInsets.only(top: 8, bottom: 8),
@@ -138,7 +138,7 @@ class SightDetails extends StatelessWidget {
                                         .colorScheme
                                         .background,
                                   ),
-                                  SizedBox(width: 8),
+                                  sizedBoxW8,
                                   Text(
                                     buttonTitleToSchedule,
                                     style: Theme.of(context)
@@ -164,7 +164,7 @@ class SightDetails extends StatelessWidget {
                                     color:
                                         Theme.of(context).colorScheme.onPrimary,
                                   ),
-                                  SizedBox(width: 8),
+                                  sizedBoxW8,
                                   Text(
                                     buttonTitleAddToFavourites,
                                     style:

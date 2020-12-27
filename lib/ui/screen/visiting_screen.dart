@@ -89,7 +89,7 @@ class BlankScreen extends StatelessWidget {
             width: 64,
             height: 64,
           ),
-          sizedBoxW24,
+          sizedBoxH24,
           Text(
             header,
             style: Theme.of(context).primaryTextTheme.headline6,

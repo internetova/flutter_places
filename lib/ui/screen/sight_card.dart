@@ -134,6 +134,7 @@ class _CardActionsState extends State<CardActions> {
         print('onPressed Избранное');
       },
       icon: IconSvg(icon: icFavorites),
+      splashRadius: 24,
     ),
   ];
 
@@ -143,12 +144,14 @@ class _CardActionsState extends State<CardActions> {
         print('onPressed Календарь');
       },
       icon: IconSvg(icon: icCalendar),
+      splashRadius: 24,
     ),
     IconButton(
       onPressed: () {
         print('onPressed Удалить');
       },
       icon: IconSvg(icon: icDelete),
+      splashRadius: 24,
     ),
   ];
 
@@ -158,12 +161,14 @@ class _CardActionsState extends State<CardActions> {
         print('onPressed Поделиться');
       },
       icon: IconSvg(icon: icShare),
+      splashRadius: 24,
     ),
     IconButton(
       onPressed: () {
         print('onPressed Удалить');
       },
       icon: IconSvg(icon: icDelete),
+      splashRadius: 24,
     ),
   ];
 
@@ -270,7 +275,7 @@ class BuildCardScreen extends StatelessWidget {
           children: [
             for (var card in data) ...[
               SightCard(card: card, whereShowCard: whereShowCard),
-              SizedBox(height: 16)
+              sizedBoxH16
             ],
           ],
         ),

@@ -33,16 +33,36 @@ class _FiltersScreenState extends State<FiltersScreen> {
   );
 
   /// деревня для теста
-  final _moPoint = CenterPoint(
-    lat: 55.994511,
-    lon: 37.604592,
-    name: 'Чиверёво',
-  );
+  // final _moPoint = CenterPoint(
+  //   lat: 55.994511,
+  //   lon: 37.604592,
+  //   name: 'Чиверёво',
+  // );
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      appBar: _buildFilterAppBar(),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(16, 24, 16, 0),
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              _buildCategories(categories, _selectedCategories),
+              _buildHeaderSlider(),
+              _buildSlider(),
+            ],
+          ),
+        ),
+      ),
+      floatingActionButton: _buildButtonResults(),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+    );
+  }
+
+  /// AppBar
+  Widget _buildFilterAppBar() => AppBar(
         toolbarHeight: 80,
         leading: buildLeadingIcon(context, icon: icArrow),
         leadingWidth: 64,
@@ -63,24 +83,7 @@ class _FiltersScreenState extends State<FiltersScreen> {
             ),
           ),
         ),
-      ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 24, 16, 0),
-          child: Column(
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              _buildCategories(categories, _selectedCategories),
-              _buildHeaderSlider(),
-              _buildSlider(),
-            ],
-          ),
-        ),
-      ),
-      floatingActionButton: _buildButtonResults(),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-    );
-  }
+      );
 
   /// стартовые элементы для построения карточки категории
   Widget _buildCategories(List<Categories> catalog, List<Map> selectedCat) =>
@@ -306,7 +309,11 @@ bool _arePointsNear(
   final kx = cos(pi * centerPoint.lat / 180.0) * ky;
   final dx = (centerPoint.lon - checkPointLon).abs() * kx;
   final dy = (centerPoint.lat - checkPointLat).abs() * ky;
-  return sqrt(dx * dx + dy * dy) <= (distance.end / 1000).round();
+  final d = sqrt(dx * dx + dy * dy);
+  final minDistance = (distance.start / 1000).round();
+  final maxDistance = (distance.end / 1000).round();
+
+  return d >= minDistance && d <= maxDistance;
 }
 
 /// стартовая точка поиска с названием и координатами
