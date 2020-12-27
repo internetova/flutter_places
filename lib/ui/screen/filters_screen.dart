@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'dart:math';
+
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:places/components/icon_leading_appbar.dart';
 import 'package:places/domain/categories.dart';
+import 'package:places/domain/sight.dart';
 import 'package:places/mocks.dart';
 import 'package:places/ui/screen/res/assets.dart';
 import 'package:places/ui/screen/res/sizes.dart';
@@ -14,12 +17,27 @@ class FiltersScreen extends StatefulWidget {
 
 class _FiltersScreenState extends State<FiltersScreen> {
   /// индикаторы выбранных категорий
-  List<bool> _selectedCategories = _clearSelected(categories);
+  List<Map> _selectedCategories = _clearSelected(categories);
 
   /// данные слайдера
   double _startValue = 100;
   double _endValue = 10000;
   RangeValues _currentRangeValues = _startDataSlider();
+
+  /// центральная точка поиска
+  /// красная площадь для теста
+  final _moscowPoint = CenterPoint(
+    lat: 55.753564,
+    lon: 37.621085,
+    name: 'Москва, Красная площадь',
+  );
+
+  /// деревня для теста
+  final _moPoint = CenterPoint(
+    lat: 55.994511,
+    lon: 37.604592,
+    name: 'Чиверёво',
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -65,7 +83,7 @@ class _FiltersScreenState extends State<FiltersScreen> {
   }
 
   /// стартовые элементы для построения карточки категории
-  Widget _buildCategories(List<Categories> catalog, List<bool> selectedCat) =>
+  Widget _buildCategories(List<Categories> catalog, List<Map> selectedCat) =>
       Center(
         child: Wrap(
           spacing: 12.0,
@@ -98,7 +116,8 @@ class _FiltersScreenState extends State<FiltersScreen> {
                           ),
                           onPressed: () {
                             setState(() {
-                              selectedCat[index] = !selectedCat[index];
+                              selectedCat[index]['isSelected'] =
+                                  !selectedCat[index]['isSelected'];
                             });
                           },
                           splashColor:
@@ -117,7 +136,7 @@ class _FiltersScreenState extends State<FiltersScreen> {
                       textAlign: TextAlign.center,
                     ),
                   ),
-                  if (selectedCat[index]) _showSelected(),
+                  if (selectedCat[index]['isSelected']) _showSelected(),
                 ],
               ),
           ],
@@ -185,7 +204,7 @@ class _FiltersScreenState extends State<FiltersScreen> {
         },
       );
 
-  /// кнопка с результами
+  /// кнопка с результатами
   Widget _buildButtonResults() => Container(
         margin: const EdgeInsets.symmetric(horizontal: 16),
         width: double.infinity,
@@ -199,18 +218,68 @@ class _FiltersScreenState extends State<FiltersScreen> {
             ),
           ),
           label: Text(
-            titleButton,
+            _filterCard(
+                data: mocks, // база карточек
+                categories: _selectedCategories, // выбранные категории
+                centerPoint: _moscowPoint, // точка отсчёта расстояния
+                distance: _currentRangeValues), // удалённость от точки отсчёта
             style: Theme.of(context).textTheme.button,
           ),
         ),
       );
 }
 
-/// создаем массив с метками выделенных категорий
+/// результат в массив с id найденных карточек
+String _filterCard(
+    {@required List<Sight> data,
+    @required List<Map> categories,
+    @required CenterPoint centerPoint,
+    @required RangeValues distance}) {
+  List result = [];
+  int countCheckCategory = 0;
+
+  for (var i = 0; i < categories.length; i++) {
+    /// если есть выбранные категории
+    if (categories[i]['isSelected']) {
+      for (var k = 0; k < data.length; k++) {
+        if (data[k].type == categories[i]['type'] &&
+            _arePointsNear(
+                checkPointLat: data[k].lat,
+                checkPointLon: data[k].lon,
+                centerPoint: centerPoint,
+                distance: distance)) {
+          result.add(data[k].id);
+        }
+      }
+      countCheckCategory++;
+    }
+  }
+
+  /// если нет выбранных категорий
+  if (countCheckCategory == 0) {
+    for (var k = 0; k < data.length; k++) {
+      if (_arePointsNear(
+          checkPointLat: data[k].lat,
+          checkPointLon: data[k].lon,
+          centerPoint: centerPoint,
+          distance: distance)) {
+        result.add(data[k].id);
+      }
+    }
+  }
+
+  return '$titleButton (${result.length})';
+}
+
+/// создаем массив с id и метками выделенных категорий
 /// со старта все false
 /// также используем при очистке выбранных категорий
-List<bool> _clearSelected(List categories) {
-  return categories.map((e) => false).toList();
+/// ‼️❓пока на всякий случай добавила id и type категории
+List<Map> _clearSelected(List<Categories> categories) {
+  return categories
+      .map((e) =>
+          {'id': e.id, 'type': e.name.toLowerCase(), 'isSelected': false})
+      .toList();
 }
 
 /// для слайдера строка Расстояние метры в километры
@@ -222,5 +291,29 @@ String _convertMeterToKm(double value) {
   }
 }
 
-/// стартовые данные для слайдера
+/// стартовые данные для слайдера в метрах
 RangeValues _startDataSlider() => RangeValues(100, 3000);
+
+/// поиск карточек по расстоянию
+/// https://stackoverflow.com/questions/24680247/check-if-a-latitude-and-longitude-is-within-a-circle-google-maps
+/// distance в метрах, переводим в км
+bool _arePointsNear(
+    {@required double checkPointLat,
+    @required double checkPointLon,
+    @required CenterPoint centerPoint,
+    @required RangeValues distance}) {
+  const ky = 40000 / 360;
+  final kx = cos(pi * centerPoint.lat / 180.0) * ky;
+  final dx = (centerPoint.lon - checkPointLon).abs() * kx;
+  final dy = (centerPoint.lat - checkPointLat).abs() * ky;
+  return sqrt(dx * dx + dy * dy) <= (distance.end / 1000).round();
+}
+
+/// стартовая точка поиска с названием и координатами
+class CenterPoint {
+  CenterPoint({@required this.lat, @required this.lon, @required this.name});
+
+  final double lat;
+  final double lon;
+  final String name;
+}

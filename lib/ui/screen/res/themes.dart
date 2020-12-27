@@ -215,9 +215,7 @@ class ThemeNotifier extends ChangeNotifier {
   }
 
   _initPrefs() async {
-    if (_prefs == null) {
-      _prefs = await SharedPreferences.getInstance();
-    }
+      _prefs ??= await SharedPreferences.getInstance();
   }
 
   _loadFromPrefs() async {

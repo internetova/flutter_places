@@ -11,6 +11,7 @@ enum WhereShowCard { search, planned, visited }
 
 class Sight {
   Sight({
+    @required this.id,
     @required this.name,
     @required this.lat,
     @required this.lon,
@@ -22,6 +23,7 @@ class Sight {
     this.date,
   });
 
+  final int id;
   final String name;
   final double lat;
   final double lon;
