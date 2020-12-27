@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:places/components/icon_svg.dart';
+import 'package:places/components/icon_action_button.dart';
 
 import 'package:places/domain/sight.dart';
 import 'package:places/ui/screen/res/sizes.dart';
@@ -26,44 +26,37 @@ class SightCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return AspectRatio(
       aspectRatio: 3 / 2,
-      child: Ink(
-        decoration: ShapeDecoration(
-          color: Theme.of(context).primaryColorLight,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(radiusCard),
-          ),
-        ),
-        child: InkWell(
-          splashColor: Theme.of(context).primaryColor,
-          borderRadius: BorderRadius.circular(radiusCard),
-          onTap: () {
-            print(card.name);
-          },
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(radiusCard),
-            child: Container(
-              child: Column(
-                children: [
-                  Stack(
-                    children: [
-                      CardImagePreview(imgUrl: card.imgPreview),
-                      Positioned(
-                        top: 8,
-                        left: 16,
-                        right: 8,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            CardContentType(type: card.type),
-                            CardActions(whereShowCard: whereShowCard),
-                          ],
-                        ),
+      child: Material(
+        borderRadius: BorderRadius.circular(radiusCard),
+        clipBehavior: Clip.antiAlias,
+        color: Theme.of(context).primaryColorLight,
+        child: Ink(
+          child: InkWell(
+            splashColor: Theme.of(context).primaryColor,
+            onTap: () {
+              print(card.name);
+            },
+            child: Column(
+              children: [
+                Stack(
+                  children: [
+                    CardImagePreview(imgUrl: card.imgPreview),
+                    Positioned(
+                      top: 8,
+                      left: 16,
+                      right: 12,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          CardContentType(type: card.type),
+                          CardActions(whereShowCard: whereShowCard),
+                        ],
                       ),
-                    ],
-                  ),
-                  CardContent(card: card, whereShowCard: whereShowCard),
-                ],
-              ),
+                    ),
+                  ],
+                ),
+                CardContent(card: card, whereShowCard: whereShowCard),
+              ],
             ),
           ),
         ),
@@ -129,46 +122,41 @@ class CardActions extends StatefulWidget {
 
 class _CardActionsState extends State<CardActions> {
   final _search = <Widget>[
-    IconButton(
+    IconActionButton(
       onPressed: () {
         print('onPressed Избранное');
       },
-      icon: IconSvg(icon: icFavorites),
-      splashRadius: 24,
+      icon: icFavorites,
     ),
   ];
 
   var _planned = <Widget>[
-    IconButton(
+    IconActionButton(
       onPressed: () {
         print('onPressed Календарь');
       },
-      icon: IconSvg(icon: icCalendar),
-      splashRadius: 24,
+      icon: icCalendar,
     ),
-    IconButton(
+    IconActionButton(
       onPressed: () {
         print('onPressed Удалить');
       },
-      icon: IconSvg(icon: icDelete),
-      splashRadius: 24,
+      icon: icDelete,
     ),
   ];
 
   final _visited = <Widget>[
-    IconButton(
+    IconActionButton(
       onPressed: () {
         print('onPressed Поделиться');
       },
-      icon: IconSvg(icon: icShare),
-      splashRadius: 24,
+      icon: icShare,
     ),
-    IconButton(
+    IconActionButton(
       onPressed: () {
         print('onPressed Удалить');
       },
-      icon: IconSvg(icon: icDelete),
-      splashRadius: 24,
+      icon: icDelete,
     ),
   ];
 
