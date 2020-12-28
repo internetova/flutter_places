@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-/// кнопки для карточек, т.к. у IconButton рипл эффект перекрывается картинкой
-/// меняю на FlatButton
+/// кнопки для карточек поверх картинки
 class IconActionButton extends StatelessWidget {
   IconActionButton({
     Key key,

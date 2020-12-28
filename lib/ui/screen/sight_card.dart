@@ -50,7 +50,7 @@ class SightCard extends StatelessWidget {
             ),
             Positioned.fill(
               child: Material(
-                color: Colors.transparent,
+                type: MaterialType.transparency,
                 child: InkWell(
                   onTap: () {
                     print('onTap: ${card.name}');
