@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:places/mocks.dart';
 import 'package:places/domain/sight.dart';
+import 'package:places/ui/screen/res/sizes.dart';
 import 'package:places/ui/screen/res/strings.dart';
 import 'package:places/ui/screen/sight_card.dart';
-import 'package:places/components/bottom_NavigationBar.dart';
+import 'package:places/components/bottom_navigationbar.dart';
 
+/// экран с избранными карточками - Хочу посетить / Посетил
 class VisitingScreen extends StatefulWidget {
   @override
   _VisitingScreenState createState() => _VisitingScreenState();
@@ -24,7 +27,7 @@ class _VisitingScreenState extends State<VisitingScreen> {
           bottom: PreferredSize(
             preferredSize: Size.fromHeight(60),
             child: Container(
-              margin: EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
               height: 40,
               decoration: BoxDecoration(
                 color: Theme.of(context).primaryColorDark,
@@ -57,7 +60,7 @@ class _VisitingScreenState extends State<VisitingScreen> {
             ),
           ],
         ),
-        bottomNavigationBar: MainBottomNavigationBar(current: 2),
+        bottomNavigationBar: const MainBottomNavigationBar(current: 2),
       ),
     );
   }
@@ -71,7 +74,7 @@ class BlankScreen extends StatelessWidget {
     @required this.header,
     @required this.text,
   }) : super(key: key);
-  final IconData icon;
+  final String icon;
   final String header;
   final String text;
 
@@ -81,18 +84,19 @@ class BlankScreen extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(
-            icon, //временно
+          SvgPicture.asset(
+            icon,
             color: Theme.of(context).colorScheme.background,
-            size: 64,
+            width: 64,
+            height: 64,
           ),
-          SizedBox(height: 24),
+          sizedBoxH24,
           Text(
             header,
             style: Theme.of(context).primaryTextTheme.headline6,
             textAlign: TextAlign.center,
           ),
-          SizedBox(height: 8),
+          sizedBoxW8,
           Text(
             text,
             style: Theme.of(context).primaryTextTheme.bodyText2,

@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:places/components/icon_action_button.dart';
 
 import 'package:places/domain/sight.dart';
+import 'package:places/ui/screen/res/sizes.dart';
 import 'package:places/ui/screen/res/strings.dart';
+import 'package:places/ui/screen/res/assets.dart';
 
+/// карточка достопримечательности
 /// в зависимости от места показа карточки - Список поиска, в Избранном
 /// (запланировано, посещено) показываем разную информацию на карточке
 /// т.к. иконки и надписи отличаются
 /// ‼️🙄 честно говоря пока не знаю какие будут данные и как должно будет
 /// это всё работать, поэтому пока так
-
 class SightCard extends StatelessWidget {
   const SightCard({
     Key key,
@@ -22,32 +26,44 @@ class SightCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return AspectRatio(
       aspectRatio: 3 / 2,
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(12),
-        child: Container(
-          color: Theme.of(context).primaryColorLight,
-          child: Column(
-            children: [
-              Stack(
-                children: [
-                  CardImagePreview(imgUrl: card.imgPreview),
-                  Positioned(
-                    top: 16,
-                    left: 16,
-                    right: 16,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        CardContentType(type: card.type),
-                        CardActions(whereShowCard: whereShowCard),
-                      ],
+      child: Material(
+        borderRadius: BorderRadius.circular(radiusCard),
+        clipBehavior: Clip.antiAlias,
+        color: Theme.of(context).primaryColorLight,
+        child: Stack(
+          children: [
+            Column(
+              children: [
+                Stack(
+                  children: [
+                    CardImagePreview(imgUrl: card.imgPreview),
+                    Positioned(
+                      top: 8,
+                      left: 16,
+                      right: 12,
+                      child: CardContentType(type: card.type),
                     ),
-                  ),
-                ],
+                  ],
+                ),
+                CardContent(card: card, whereShowCard: whereShowCard),
+              ],
+            ),
+            Positioned.fill(
+              child: Material(
+                type: MaterialType.transparency,
+                child: InkWell(
+                  onTap: () {
+                    print('onTap: ${card.name}');
+                  },
+                ),
               ),
-              CardContent(card: card, whereShowCard: whereShowCard),
-            ],
-          ),
+            ),
+            Positioned(
+              top: 8,
+              right: 16,
+              child: CardActions(whereShowCard: whereShowCard),
+            ),
+          ],
         ),
       ),
     );
@@ -101,44 +117,65 @@ class CardContentType extends StatelessWidget {
 /// кнопки действий: добавить в избранное, удалить, поделиться и т.п.
 /// отображается на одной линии с типом карточки
 /// в зависимости от места показа карточки кнопки меняются
-class CardActions extends StatelessWidget {
+class CardActions extends StatefulWidget {
   const CardActions({Key key, @required this.whereShowCard}) : super(key: key);
   final WhereShowCard whereShowCard;
 
-  static const _search = <Widget>[
-    Icon(
-      Icons.favorite_border,
+  @override
+  _CardActionsState createState() => _CardActionsState();
+}
+
+class _CardActionsState extends State<CardActions> {
+  final _search = <Widget>[
+    IconActionButton(
+      onPressed: () {
+        print('onPressed Избранное');
+      },
+      icon: icFavorites,
     ),
   ];
 
-  static const _planned = <Widget>[
-    Icon(
-      Icons.calendar_today,
+  var _planned = <Widget>[
+    IconActionButton(
+      onPressed: () {
+        print('onPressed Календарь');
+      },
+      icon: icCalendar,
     ),
-    SizedBox(width: 16),
-    Icon(
-      Icons.close,
+    IconActionButton(
+      onPressed: () {
+        print('onPressed Удалить');
+      },
+      icon: icDelete,
     ),
   ];
 
-  static const _visited = <Widget>[
-    Icon(
-      Icons.share,
+  final _visited = <Widget>[
+    IconActionButton(
+      onPressed: () {
+        print('onPressed Поделиться');
+      },
+      icon: icShare,
     ),
-    SizedBox(width: 16),
-    Icon(
-      Icons.close,
+    IconActionButton(
+      onPressed: () {
+        print('onPressed Удалить');
+      },
+      icon: icDelete,
     ),
   ];
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        if (whereShowCard == WhereShowCard.search) ..._search,
-        if (whereShowCard == WhereShowCard.planned) ..._planned,
-        if (whereShowCard == WhereShowCard.visited) ..._visited,
-      ],
+    return Container(
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (widget.whereShowCard == WhereShowCard.search) ..._search,
+          if (widget.whereShowCard == WhereShowCard.planned) ..._planned,
+          if (widget.whereShowCard == WhereShowCard.visited) ..._visited,
+        ],
+      ),
     );
   }
 }
@@ -181,7 +218,7 @@ class CardContent extends StatelessWidget {
           ],
           if (whereShowCard == WhereShowCard.planned && card.date != null) ...[
             Text(
-              '$dataPlanned ${card.date}',
+              '$datePlanned ${card.date}',
               style: Theme.of(context).primaryTextTheme.bodyText1,
               overflow: TextOverflow.ellipsis,
               maxLines: 1,
@@ -189,7 +226,7 @@ class CardContent extends StatelessWidget {
           ],
           if (whereShowCard == WhereShowCard.visited && card.date != null) ...[
             Text(
-              '$dataVisited ${card.date}',
+              '$dateVisited ${card.date}',
               style: Theme.of(context).textTheme.bodyText2,
               overflow: TextOverflow.ellipsis,
               maxLines: 1,
@@ -231,7 +268,7 @@ class BuildCardScreen extends StatelessWidget {
           children: [
             for (var card in data) ...[
               SightCard(card: card, whereShowCard: whereShowCard),
-              SizedBox(height: 16)
+              sizedBoxH16
             ],
           ],
         ),

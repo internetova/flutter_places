@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:places/domain/sight.dart';
+import 'package:places/ui/screen/res/assets.dart';
 
 /// Текстовые контстанты
 /// sight_list_screen
@@ -18,25 +19,38 @@ const titleScreenFavorites = Text(
 
 /// хочу посетить
 const tabPlanned = 'Хочу посетить';
-const dataPlanned = 'Запланировано на';
+const datePlanned = 'Запланировано на';
 
 /// посетил
 const tabVisited = 'Посетил';
-const dataVisited = 'Цель достигнута';
+const dateVisited = 'Цель достигнута';
 
 /// данные для вывода на странице Избранное
 /// когда нет карточек в нужной категории
 const List<Map> favoritesBlankScreenContent = const [
   {
     'typeCard': WhereShowCard.planned,
-    'blankScreenIcon': Icons.photo_camera_back, //временно
+    'blankScreenIcon': icEmptyPlanned,
     'blankScreenHeader': 'Пусто',
     'blankScreenText': 'Отмечайте понравившиеся\nместа и они появятся здесь.',
   },
   {
     'typeCard': WhereShowCard.visited,
-    'blankScreenIcon': Icons.location_off_rounded,
+    'blankScreenIcon': icEmptyVisited,
     'blankScreenHeader': 'Пусто',
     'blankScreenText': 'Завершите маршрут,\nчтобы место попало сюда.',
   },
 ];
+
+/// экран фильтров
+const clearFilters = 'Очистить';
+const titleCategories = 'КАТЕГОРИИ';
+const titleSlider = 'Расстояние';
+const titleButton = 'ПОКАЗАТЬ';
+
+/// экран настройки
+const titleScreenSettings = Text(
+  'Настройки',
+);
+const itemThemeDark = 'Тёмная тема';
+const itemTutorial = 'Смотреть туториал';

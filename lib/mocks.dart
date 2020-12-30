@@ -1,7 +1,11 @@
+import 'package:places/domain/categories.dart';
+import 'package:places/ui/screen/res/assets.dart';
+
 import 'domain/sight.dart';
 
 final List mocks = <Sight>[
   Sight(
+    id: 1,
     name: 'Триумфальная арка',
     lat: 55.737064,
     lon: 37.520018,
@@ -13,6 +17,7 @@ final List mocks = <Sight>[
         'https://i1.photo.2gis.com/images/geo/32/4503599659565451_527f.jpg',
   ),
   Sight(
+    id: 2,
     name: 'Бункер-42 на Таганке',
     lat: 55.742583,
     lon: 37.649447,
@@ -26,6 +31,7 @@ final List mocks = <Sight>[
     date: '12 окт. 2020',
   ),
   Sight(
+    id: 3,
     name: 'Нереальное место',
     lat: 55.762781,
     lon: 37.664158,
@@ -39,26 +45,29 @@ final List mocks = <Sight>[
     date: '12 янв. 2021',
   ),
   Sight(
+    id: 4,
     name: 'Московский кремль',
     lat: 55.751549,
     lon: 37.618879,
     url: 'https://www.kreml.ru',
-    type: 'достопримечательность',
+    type: 'музей',
     details:
         'Московский Кремль — один из крупнейших архитектурно-градостроительных ансамблей мира. Он раскинулся в центре столицы России на высоком холме над Москвой-рекой. Высота стен Кремля, узкие бойницы, площадки боя, мерный шаг башен — все говорит о том, что прежде всего это крепость. Но стоит войти в Кремль — и впечатление меняется.',
     imgPreview: 'https://ptoday.ru/wp-content/uploads/2019/09/rusya.jpg',
   ),
   Sight(
+    id: 5,
     name: 'Выставка достижений народного хозяйства',
     lat: 55.826690,
     lon: 37.637578,
     url: 'https://vdnh.ru',
-    type: 'достопримечательность',
+    type: 'парк',
     details:
         'Выставочный комплекс в Останкинском районе Северо-Восточного административного округа города Москвы, второй по величине выставочный комплекс в городе. Входит в 50 крупнейших выставочных центров мира. Ежегодно ВДНХ посещают 30 млн гостей.',
     imgPreview: 'https://turisticum.ru/img/moscow/vdnh/9.jpg',
   ),
   Sight(
+    id: 6,
     name: 'Государственная Третьяковская галерея',
     lat: 55.742251,
     lon: 37.620522,
@@ -72,6 +81,7 @@ final List mocks = <Sight>[
     date: '4 янв. 2021',
   ),
   Sight(
+    id: 7,
     name: 'Государственный академический Большой театр России',
     lat: 55.760245,
     lon: 37.618832,
@@ -82,4 +92,28 @@ final List mocks = <Sight>[
     imgPreview:
         'https://i1.photo.2gis.com/images/branch/0/30258560047532609_3605.jpg',
   ),
+  Sight(
+    id: 8,
+    name: 'Часовня Смоленской иконы Божией Матери в Чиверёве',
+    lat: 55.988344,
+    lon: 37.608042,
+    url: 'https://yandex.ru',
+    type: 'особое место',
+    details:
+    'Первая деревянная часовня здесь была построена в 1844 году. Впоследствии она сгорела и на ее месте в 1902 году по проекту епархиального архитектора Николая Николаевича Благовещенского была построена кирпичная часовня.',
+    imgPreview:
+    'https://sobory.ru/pic/09160/09168_20081121_230953.jpg',
+    favorites: WhereShowCard.visited,
+    date: '10 окт. 2020',
+  ),
+];
+
+/// категории для фильтра поиска
+final List<Categories> categories = [
+  Categories(id: 1, name: 'Отель', icon: icHotel),
+  Categories(id: 2, name: 'Ресторан', icon: icRestaurant),
+  Categories(id: 3, name: 'Особое место', icon: icParticular),
+  Categories(id: 4, name: 'Парк', icon: icPark),
+  Categories(id: 5, name: 'Музей', icon: icMuseum),
+  Categories(id: 6, name: 'Кафе', icon: icCafe),
 ];
