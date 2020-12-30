@@ -10,6 +10,7 @@ import 'package:places/ui/screen/res/assets.dart';
 import 'package:places/ui/screen/res/sizes.dart';
 import 'package:places/ui/screen/res/strings.dart';
 
+/// экран фильтра для поиска
 class FiltersScreen extends StatefulWidget {
   @override
   _FiltersScreenState createState() => _FiltersScreenState();
@@ -64,7 +65,7 @@ class _FiltersScreenState extends State<FiltersScreen> {
   /// AppBar
   Widget _buildFilterAppBar() => AppBar(
         toolbarHeight: 80,
-        leading: buildLeadingIcon(context, icon: icArrow),
+        leading: SmallLeadingIcon(icon: icArrow),
         leadingWidth: 64,
         title: Align(
           alignment: Alignment.centerRight,

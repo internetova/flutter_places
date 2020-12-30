@@ -6,6 +6,7 @@ import 'package:places/ui/screen/res/sizes.dart';
 import 'package:places/ui/screen/res/strings.dart';
 import 'package:places/ui/screen/res/assets.dart';
 
+/// экран с подроным описанием карточки / достопримечательности
 class SightDetails extends StatelessWidget {
   const SightDetails({Key key, this.card}) : super(key: key);
   final Sight card;

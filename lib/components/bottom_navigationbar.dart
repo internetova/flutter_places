@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:places/ui/screen/res/assets.dart';
 
+/// BottomNavigationBar приложения
 class MainBottomNavigationBar extends StatelessWidget {
   const MainBottomNavigationBar({Key key, @required this.current})
       : super(key: key);
