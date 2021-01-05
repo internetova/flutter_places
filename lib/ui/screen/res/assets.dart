@@ -20,6 +20,7 @@ const icFavorites = '$_baseResPath/heart.svg';
 const icGo = '$_baseResPath/go.svg';
 const icArrow = '$_baseResPath/arrow.svg';
 const icArrowLeading = '$_baseResPath/arrow_leading.svg';
+const icView = '$_baseResPath/view.svg';
 
 /// пустые страницы
 const icEmptyPlanned = '$_baseResPath/empty_pages/card.svg';

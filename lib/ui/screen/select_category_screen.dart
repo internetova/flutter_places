@@ -7,10 +7,13 @@ import 'package:places/mocks.dart';
 import 'package:places/ui/screen/res/assets.dart';
 import 'package:places/ui/screen/res/sizes.dart';
 import 'package:places/ui/screen/res/strings.dart';
-import 'package:places/ui/screen/res/themes.dart';
 
 /// выбор категории -> из добавления нового места AddSightScreen
 class SelectCategoryScreen extends StatefulWidget {
+  const SelectCategoryScreen({Key key, this.selectedCategory})
+      : super(key: key);
+  final String selectedCategory;
+
   @override
   _SelectCategoryScreenState createState() => _SelectCategoryScreenState();
 }
@@ -18,18 +21,34 @@ class SelectCategoryScreen extends StatefulWidget {
 class _SelectCategoryScreenState extends State<SelectCategoryScreen> {
   /// кнопка сохранения при старте отключена
   bool _isButtonEnabled = false;
-  var _onPressed;
+  VoidCallback _onPressed;
 
   /// категории
   List<Categories> _categories = categories;
 
-  /// id выбранной категории
-  int _selectedCategory;
+  /// название выбранной категории
+  String _selectedCategory;
+
+  /// счётчик выбора категорий
+  /// если он 0, то категория передаётся с предыдущего экрана
+  /// иначе берем выбранную категорию на этом экране
+  int _counterSelection = 0;
 
   @override
   Widget build(BuildContext context) {
+    /// widget.selectedCategory передаём в конструктор из формы предыдущего экрана
+    /// по логике там либо null либо выбранная категория из этого экрана
+    /// если категория уже выбрана то кнопка для сохранения сразу активна
+    /// _counterSelection == 0 - ещё не выбирали другую категорию
+    if (widget.selectedCategory != null && _counterSelection == 0) {
+      _isButtonEnabled = true;
+      _selectedCategory = widget.selectedCategory;
+    }
+
     if (_isButtonEnabled) {
       _onPressed = () {
+        String currentCategory = _selectedCategory;
+        Navigator.pop(context, currentCategory);
         print('onPressed Сохранить');
       };
     }
@@ -43,12 +62,13 @@ class _SelectCategoryScreenState extends State<SelectCategoryScreen> {
         onPressed: _onPressed,
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      resizeToAvoidBottomInset: false,
     );
   }
 
   /// AppBar
   Widget _buildSelectCategoryAppBar() => AppBar(
-        toolbarHeight: 80,
+        toolbarHeight: toolbarHeightStandard,
         leading: SmallLeadingIcon(icon: icArrow),
         leadingWidth: 64,
         title: Text(
@@ -60,13 +80,13 @@ class _SelectCategoryScreenState extends State<SelectCategoryScreen> {
   /// категории
   _buildCategories() => SingleChildScrollView(
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
           child: Column(
             children: [
               for (var i = 0; i < _categories.length; i++) ...[
                 _buildCategoryItem(
                     categoryItem: _categories[i],
-                    selectedId: _selectedCategory),
+                    selectedCategoryName: _selectedCategory),
                 Divider(),
               ],
             ],
@@ -76,7 +96,8 @@ class _SelectCategoryScreenState extends State<SelectCategoryScreen> {
 
   /// категория
   Widget _buildCategoryItem(
-      {@required Categories categoryItem, @required int selectedId}) {
+      {@required Categories categoryItem,
+      @required String selectedCategoryName}) {
     final Widget title = Text(
       categoryItem.name,
       style: Theme.of(context).primaryTextTheme.subtitle1,
@@ -86,12 +107,14 @@ class _SelectCategoryScreenState extends State<SelectCategoryScreen> {
 
     void myOnTap() {
       setState(() {
-        _selectedCategory = categoryItem.id;
+        _selectedCategory = categoryItem.name;
         _isButtonEnabled = true;
+        _counterSelection++;
       });
+      print(_selectedCategory);
     }
 
-    if (categoryItem.id == selectedId) {
+    if (categoryItem.name == selectedCategoryName) {
       return ListTile(
         title: title,
         trailing: IconSvg(

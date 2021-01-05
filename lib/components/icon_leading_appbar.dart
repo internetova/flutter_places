@@ -12,13 +12,16 @@ class SmallLeadingIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.only(left: 20, right: 20),
-      child: SvgPicture.asset(
-        icon,
-        color: Theme.of(context).colorScheme.onPrimary,
-        width: 24,
-        height: 24,
-      ),
-    );
+        child: IconButton(
+          icon: SvgPicture.asset(
+            icon,
+            color: Theme.of(context).colorScheme.onPrimary,
+            width: 24,
+            height: 24,
+          ),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ));
   }
 }
