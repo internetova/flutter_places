@@ -3,7 +3,7 @@ import 'package:places/ui/screen/res/assets.dart';
 
 import 'domain/sight.dart';
 
-final List mocks = <Sight>[
+final List<Sight> mocks = [
   Sight(
     id: 1,
     name: 'Триумфальная арка',

@@ -18,7 +18,7 @@ class ButtonSave extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16),
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       width: double.infinity,
       child: FloatingActionButton.extended(
         onPressed: onPressed,

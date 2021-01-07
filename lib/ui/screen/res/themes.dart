@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:places/ui/screen/res/colors.dart';
 import 'package:places/ui/screen/res/text_styles.dart';
@@ -70,6 +72,41 @@ class AppTheme {
         backgroundColor: lightAccentColor,
         elevation: 0,
         highlightElevation: 0,
+      ),
+      inputDecorationTheme: base.inputDecorationTheme.copyWith(
+        errorStyle: TextStyle(fontSize: 0),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: BorderSide(
+            color: lightAccentColor.withOpacity(0.4),
+            style: BorderStyle.solid,
+            width: 2,
+          ),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: BorderSide(
+            color: colorInactiveBlack,
+            style: BorderStyle.solid,
+            width: 1,
+          ),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: BorderSide(
+            color: lightErrorColor.withOpacity(0.40),
+            style: BorderStyle.solid,
+            width: 1,
+          ),
+        ),
+        focusedErrorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: BorderSide(
+            color: lightErrorColor.withOpacity(0.40),
+            style: BorderStyle.solid,
+            width: 2,
+          ),
+        ),
       ),
     );
   }
@@ -163,6 +200,41 @@ class AppTheme {
         backgroundColor: darkAccentColor,
         elevation: 0,
         highlightElevation: 0,
+      ),
+      inputDecorationTheme: base.inputDecorationTheme.copyWith(
+        errorStyle: TextStyle(fontSize: 0),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: BorderSide(
+            color: darkAccentColor.withOpacity(0.4),
+            style: BorderStyle.solid,
+            width: 2,
+          ),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: BorderSide(
+            color: colorInactiveBlack,
+            style: BorderStyle.solid,
+            width: 1,
+          ),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: BorderSide(
+            color: darkErrorColor.withOpacity(0.40),
+            style: BorderStyle.solid,
+            width: 1,
+          ),
+        ),
+        focusedErrorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: BorderSide(
+            color: darkErrorColor.withOpacity(0.40),
+            style: BorderStyle.solid,
+            width: 2,
+          ),
+        ),
       ),
     );
   }

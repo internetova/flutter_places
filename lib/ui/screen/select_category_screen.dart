@@ -49,7 +49,6 @@ class _SelectCategoryScreenState extends State<SelectCategoryScreen> {
       _onPressed = () {
         String currentCategory = _selectedCategory;
         Navigator.pop(context, currentCategory);
-        print('onPressed Сохранить');
       };
     }
 
@@ -111,7 +110,6 @@ class _SelectCategoryScreenState extends State<SelectCategoryScreen> {
         _isButtonEnabled = true;
         _counterSelection++;
       });
-      print(_selectedCategory);
     }
 
     if (categoryItem.name == selectedCategoryName) {
