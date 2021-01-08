@@ -18,7 +18,7 @@ class Sight {
     this.url,
     @required this.details,
     @required this.type,
-    this.imgPreview,
+    @required this.imgPreview,
     this.favorites,
     this.date,
   });

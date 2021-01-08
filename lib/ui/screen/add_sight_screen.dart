@@ -11,6 +11,7 @@ import 'package:places/ui/screen/res/sizes.dart';
 import 'package:places/ui/screen/res/strings.dart';
 import 'package:places/ui/screen/res/themes.dart';
 import 'package:places/ui/screen/select_category_screen.dart';
+import 'package:places/ui/screen/sight_list_screen.dart';
 
 /// константы для экрана
 const _emptyCategory = 'Не выбрано';
@@ -96,15 +97,14 @@ class _AddSightScreenState extends State<AddSightScreen> {
       _categoryController.text = _emptyCategory;
     } else {
       _categoryController.text = _selectedCategory;
-    }
 
-    /// если все поля что-то содержат, то кнопка активна
-    if (!_categoryController.text.contains(_emptyCategory) &&
-        _categoryController.text.isNotEmpty &&
-        _categoryController.text.isNotEmpty &&
-        _categoryController.text.isNotEmpty &&
-        _categoryController.text.isNotEmpty) {
-      _isButtonEnabled = true;
+      /// если все поля что-то содержат, то кнопка активна
+      if (_nameController.text.isNotEmpty &&
+          _latController.text.isNotEmpty &&
+          _lonController.text.isNotEmpty &&
+          _detailsController.text.isNotEmpty) {
+        _isButtonEnabled = true;
+      }
     }
 
     if (_isButtonEnabled) {
@@ -135,8 +135,10 @@ class _AddSightScreenState extends State<AddSightScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
               child: GestureDetector(
                 onTap: () {
-                  _currentFocus.unfocus();
-                  _currentFocus = null;
+                  if (_currentFocus != null) {
+                    _currentFocus.unfocus();
+                    _currentFocus = null;
+                  }
                 },
                 child: Form(
                   key: _formKey,
@@ -184,7 +186,7 @@ class _AddSightScreenState extends State<AddSightScreen> {
   /// AppBar
   Widget _buildAddSightAppBar() => AppBar(
         toolbarHeight: toolbarHeightStandard,
-        leadingWidth: 80,
+        leadingWidth: 100,
         leading: TitleLeadingAppBar(
           title: leadingAppBarAddSightScreen,
         ),
@@ -222,9 +224,9 @@ class _AddSightScreenState extends State<AddSightScreen> {
           ),
           focusedBorder: UnderlineInputBorder(
             borderSide: BorderSide(
-              color: Theme.of(context).accentColor.withOpacity(0.4),
+              color: Theme.of(context).colorScheme.inactiveBlack,
               style: BorderStyle.solid,
-              width: 2,
+              width: 1,
             ),
           ),
           errorBorder: UnderlineInputBorder(
@@ -582,6 +584,10 @@ class _AddSightScreenState extends State<AddSightScreen> {
                   /// получаем id последнего элемента в массиве
                   final int _newId = mocks.last.id + 1;
 
+                  /// временно
+                  const _imgPreview =
+                      'https://img1.fonwall.ru/o/dg/coast-beach-sand-ocean.jpeg';
+
                   /// сюда сохраним данные полей
                   Sight newSight = Sight(
                     id: _newId,
@@ -590,19 +596,18 @@ class _AddSightScreenState extends State<AddSightScreen> {
                     lat: lat,
                     lon: lon,
                     details: details,
+                    imgPreview: _imgPreview,
                   );
 
                   /// и потом добавим в общий список
                   mocks.add(newSight);
 
-                  /// очищаем поля
-                  _selectedCategory = null;
-                  _nameController.clear();
-                  _latController.clear();
-                  _lonController.clear();
-                  _detailsController.clear();
-
-                  Navigator.pop(context);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => SightListScreen(),
+                    ),
+                  );
                 },
                 child: Text(
                   'Ok',
@@ -611,6 +616,7 @@ class _AddSightScreenState extends State<AddSightScreen> {
                       .headline6
                       .copyWith(color: Theme.of(context).accentColor),
                 ),
+                splashColor: Theme.of(context).accentColor.withOpacity(0.05),
               ),
             ],
           );
