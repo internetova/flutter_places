@@ -45,12 +45,11 @@ class _SelectCategoryScreenState extends State<SelectCategoryScreen> {
       _selectedCategory = widget.selectedCategory;
     }
 
-    if (_isButtonEnabled) {
-      _onPressed = () {
-        String currentCategory = _selectedCategory;
-        Navigator.pop(context, currentCategory);
-      };
-    }
+    /// сохраняем выбранную категорию и передаём ее на предыдущий экран
+    _onPressed = () {
+      String currentCategory = _selectedCategory;
+      Navigator.pop(context, currentCategory);
+    };
 
     return Scaffold(
       appBar: _buildSelectCategoryAppBar(),
@@ -68,7 +67,10 @@ class _SelectCategoryScreenState extends State<SelectCategoryScreen> {
   /// AppBar
   Widget _buildSelectCategoryAppBar() => AppBar(
         toolbarHeight: toolbarHeightStandard,
-        leading: SmallLeadingIcon(icon: icArrow),
+        leading: SmallLeadingIcon(
+          icon: icArrow,
+          onPressed: _onPressed,
+        ),
         leadingWidth: 64,
         title: Text(
           titleAppBarSelectCategoryScreen,
@@ -104,6 +106,10 @@ class _SelectCategoryScreenState extends State<SelectCategoryScreen> {
 
     const padding = EdgeInsets.zero;
 
+    /// сохраняем выбранную категорию
+    /// делаем активной кнопку
+    /// увеличиваем счетчик кликов по категориям (т.к. по нему опредеяем был
+    /// ли выбор категории на этом экране)
     void myOnTap() {
       setState(() {
         _selectedCategory = categoryItem.name;

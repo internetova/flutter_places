@@ -5,9 +5,10 @@ import 'package:flutter_svg/flutter_svg.dart';
 /// для экранов: фильтр, категория добавление новой
 /// leadingWidth: 64
 class SmallLeadingIcon extends StatelessWidget {
-  SmallLeadingIcon({@required this.icon});
+  SmallLeadingIcon({@required this.icon, this.onPressed});
 
   final String icon;
+  final VoidCallback onPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -19,9 +20,7 @@ class SmallLeadingIcon extends StatelessWidget {
             width: 24,
             height: 24,
           ),
-          onPressed: () {
-            Navigator.pop(context);
-          },
+          onPressed: onPressed,
         ));
   }
 }

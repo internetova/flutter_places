@@ -114,6 +114,27 @@ class _AddSightScreenState extends State<AddSightScreen> {
         if (isValid) {
           _formKey.currentState.save();
 
+          /// получаем id последнего элемента в массиве
+          final int _newId = mocks.last.id + 1;
+
+          /// временно
+          const _imgPreview =
+              'https://img1.fonwall.ru/o/dg/coast-beach-sand-ocean.jpeg';
+
+          /// сюда сохраним данные полей
+          Sight newSight = Sight(
+            id: _newId,
+            type: _selectedCategory,
+            name: _name,
+            lat: _lat,
+            lon: _lon,
+            details: _details,
+            imgPreview: _imgPreview,
+          );
+
+          /// и потом добавим в общий список
+          mocks.add(newSight);
+
           /// подтверждаем сохранение данных
           _showDialog(
             category: _selectedCategory,
@@ -581,27 +602,6 @@ class _AddSightScreenState extends State<AddSightScreen> {
             actions: [
               FlatButton(
                 onPressed: () {
-                  /// получаем id последнего элемента в массиве
-                  final int _newId = mocks.last.id + 1;
-
-                  /// временно
-                  const _imgPreview =
-                      'https://img1.fonwall.ru/o/dg/coast-beach-sand-ocean.jpeg';
-
-                  /// сюда сохраним данные полей
-                  Sight newSight = Sight(
-                    id: _newId,
-                    type: category,
-                    name: name,
-                    lat: lat,
-                    lon: lon,
-                    details: details,
-                    imgPreview: _imgPreview,
-                  );
-
-                  /// и потом добавим в общий список
-                  mocks.add(newSight);
-
                   Navigator.push(
                     context,
                     MaterialPageRoute(
