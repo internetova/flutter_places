@@ -22,6 +22,8 @@ const icArrow = '$_baseResPath/arrow.svg';
 const icArrowLeading = '$_baseResPath/arrow_leading.svg';
 const icView = '$_baseResPath/view.svg';
 const icPlus = '$_baseResPath/plus.svg';
+const icFilter = '$_baseResPath/filter.svg';
+const icSearch = '$_baseResPath/search.svg';
 
 /// пустые страницы
 const icEmptyPlanned = '$_baseResPath/empty_pages/card.svg';

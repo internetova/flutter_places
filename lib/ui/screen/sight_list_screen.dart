@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:places/components/icon_svg.dart';
 
 import 'package:places/domain/sight.dart';
 import 'package:places/mocks.dart';
@@ -9,6 +8,8 @@ import 'package:places/ui/screen/res/assets.dart';
 import 'package:places/ui/screen/res/sizes.dart';
 import 'package:places/ui/screen/res/strings.dart';
 import 'package:places/ui/screen/sight_card.dart';
+import 'package:places/components/icon_svg.dart';
+import 'package:places/components/search_bar_static.dart';
 import 'package:places/components/bottom_navigationbar.dart';
 
 /// константы экрана
@@ -26,21 +27,7 @@ class _SightListScreenState extends State<SightListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(152),
-        child: AppBar(
-          flexibleSpace: Align(
-            alignment: Alignment.bottomLeft,
-            child: Container(
-              margin: const EdgeInsets.only(left: 16, right: 16, bottom: 16),
-              child: Text(
-                appBarTitle,
-                style: Theme.of(context).textTheme.headline3,
-              ),
-            ),
-          ),
-        ),
-      ),
+      appBar: _buildAppBar(),
       body: BuildCardScreen(
         data: mocks,
         whereShowCard: WhereShowCard.search,
@@ -51,6 +38,32 @@ class _SightListScreenState extends State<SightListScreen> {
     );
   }
 
+  /// ‼️ appBar - пока так, потом наверное через сливеры (учебный раздел 6)
+  Widget _buildAppBar() => PreferredSize(
+    preferredSize: Size.fromHeight(212),
+    child: AppBar(
+      flexibleSpace: Align(
+        alignment: Alignment.bottomLeft,
+        child: Container(
+          margin: const EdgeInsets.only(left: 16, right: 16, bottom: 16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                appBarTitle,
+                style: Theme.of(context).textTheme.headline3,
+              ),
+              sizedBoxH24,
+              SearchBarStatic(),
+            ],
+          ),
+        ),
+      ),
+    ),
+  );
+
+  /// кнопка добавить новое место
   Widget _buildAddNewCard() => FlatButton(
         onPressed: () {
           Navigator.push(

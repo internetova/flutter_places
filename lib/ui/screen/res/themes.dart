@@ -74,6 +74,8 @@ class AppTheme {
         highlightElevation: 0,
       ),
       inputDecorationTheme: base.inputDecorationTheme.copyWith(
+        contentPadding:
+        const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
         errorStyle: TextStyle(fontSize: 0),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
@@ -202,6 +204,8 @@ class AppTheme {
         highlightElevation: 0,
       ),
       inputDecorationTheme: base.inputDecorationTheme.copyWith(
+        contentPadding:
+        const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
         errorStyle: TextStyle(fontSize: 0),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),

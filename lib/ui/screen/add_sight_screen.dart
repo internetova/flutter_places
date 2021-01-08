@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:places/components/button_clear.dart';
 import 'package:places/components/button_save.dart';
 import 'package:places/components/button_text.dart';
 import 'package:places/components/icon_svg.dart';
@@ -222,61 +223,67 @@ class _AddSightScreenState extends State<AddSightScreen> {
     return [
       const Text('КАТЕГОРИЯ'),
       sizedBoxH12,
-      TextFormField(
-        focusNode: _categoryFocus,
-        autofocus: true,
-        controller: _categoryController,
-        showCursor: false,
-        maxLines: 1,
-        style: _selectedCategory == null
-            ? Theme.of(context)
-                .primaryTextTheme
-                .subtitle1
-                .copyWith(color: Theme.of(context).colorScheme.inactiveBlack)
-            : Theme.of(context).primaryTextTheme.subtitle1,
-        readOnly: true,
-        decoration: InputDecoration(
-          contentPadding: const EdgeInsets.fromLTRB(0, 10, 16, 10),
-          enabledBorder: UnderlineInputBorder(
-            borderSide: BorderSide(
-              color: Theme.of(context).colorScheme.inactiveBlack,
-              width: 1,
+      SizedBox(
+        height: 48,
+        child: Theme(
+          data: ThemeData(
+            inputDecorationTheme: InputDecorationTheme(
+              enabledBorder: UnderlineInputBorder(
+                borderSide: BorderSide(
+                  color: Theme.of(context).colorScheme.inactiveBlack,
+                  width: 1,
+                ),
+              ),
+              focusedBorder: UnderlineInputBorder(
+                borderSide: BorderSide(
+                  color: Theme.of(context).colorScheme.inactiveBlack,
+                  style: BorderStyle.solid,
+                  width: 1,
+                ),
+              ),
+              errorBorder: UnderlineInputBorder(
+                borderSide: BorderSide(
+                  color: Theme.of(context).errorColor.withOpacity(0.4),
+                  style: BorderStyle.solid,
+                  width: 2,
+                ),
+              ),
+              focusedErrorBorder: UnderlineInputBorder(
+                borderSide: BorderSide(
+                  color: Theme.of(context).errorColor.withOpacity(0.4),
+                  style: BorderStyle.solid,
+                  width: 2,
+                ),
+              ),
             ),
           ),
-          focusedBorder: UnderlineInputBorder(
-            borderSide: BorderSide(
-              color: Theme.of(context).colorScheme.inactiveBlack,
-              style: BorderStyle.solid,
-              width: 1,
+          child: TextFormField(
+            focusNode: _categoryFocus,
+            autofocus: true,
+            controller: _categoryController,
+            showCursor: false,
+            maxLines: 1,
+            style: _selectedCategory == null
+                ? Theme.of(context).primaryTextTheme.subtitle1.copyWith(
+                    color: Theme.of(context).colorScheme.secondary2)
+                : Theme.of(context).primaryTextTheme.subtitle1,
+            readOnly: true,
+            decoration: InputDecoration(
+              suffixIcon: Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: IconSvg(
+                  icon: icView,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
+              ),
             ),
-          ),
-          errorBorder: UnderlineInputBorder(
-            borderSide: BorderSide(
-              color: Theme.of(context).errorColor.withOpacity(0.4),
-              style: BorderStyle.solid,
-              width: 2,
-            ),
-          ),
-          focusedErrorBorder: UnderlineInputBorder(
-            borderSide: BorderSide(
-              color: Theme.of(context).errorColor.withOpacity(0.4),
-              style: BorderStyle.solid,
-              width: 2,
-            ),
-          ),
-          suffixIcon: Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: IconSvg(
-              icon: icView,
-              color: Theme.of(context).colorScheme.primary,
-            ),
+            validator: _validateCategory,
+            onSaved: (value) => setState(() => _selectedCategory = value),
+            onTap: () {
+              _returnCategoryFromSelectCategoryScreen(context);
+            },
           ),
         ),
-        validator: _validateCategory,
-        onSaved: (value) => setState(() => _selectedCategory = value),
-        onTap: () {
-          _returnCategoryFromSelectCategoryScreen(context);
-        },
       ),
     ];
   }
@@ -301,37 +308,38 @@ class _AddSightScreenState extends State<AddSightScreen> {
     return [
       const Text('НАЗВАНИЕ'),
       sizedBoxH12,
-      TextFormField(
-        focusNode: _nameFocus,
-        autofocus: true,
-        onFieldSubmitted: (_) {
-          _fieldFocusChange(context, _nameFocus, _latFocus);
-        },
-        onTap: () {
-          setState(() {
-            _currentFocus = _nameFocus;
-          });
-        },
-        controller: _nameController,
-        cursorHeight: 24,
-        maxLength: 100,
-        maxLines: 1,
-        textInputAction: TextInputAction.next,
-        style: Theme.of(context).primaryTextTheme.subtitle1,
-        decoration: InputDecoration(
-          contentPadding:
-              const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-          counterText: '',
-          suffixIcon: _clearField(
-              context: context,
-              currentFocus: _nameFocus,
-              controller: _nameController),
+      SizedBox(
+        height: heightInput,
+        child: TextFormField(
+          focusNode: _nameFocus,
+          autofocus: true,
+          onFieldSubmitted: (_) {
+            _fieldFocusChange(context, _nameFocus, _latFocus);
+          },
+          onTap: () {
+            setState(() {
+              _currentFocus = _nameFocus;
+            });
+          },
+          controller: _nameController,
+          cursorHeight: 24,
+          maxLength: 100,
+          maxLines: 1,
+          textInputAction: TextInputAction.next,
+          style: Theme.of(context).primaryTextTheme.subtitle1,
+          decoration: InputDecoration(
+            counterText: '',
+            suffixIcon: _clearField(
+                context: context,
+                currentFocus: _nameFocus,
+                controller: _nameController),
+          ),
+          inputFormatters: [
+            LengthLimitingTextInputFormatter(100),
+          ],
+          validator: _validateName,
+          onSaved: (value) => setState(() => _name = value),
         ),
-        inputFormatters: [
-          LengthLimitingTextInputFormatter(100),
-        ],
-        validator: _validateName,
-        onSaved: (value) => setState(() => _name = value),
       ),
     ];
   }
@@ -344,35 +352,36 @@ class _AddSightScreenState extends State<AddSightScreen> {
         children: [
           const Text('ШИРОТА'),
           sizedBoxH12,
-          TextFormField(
-            focusNode: _latFocus,
-            autofocus: true,
-            onFieldSubmitted: (_) {
-              _fieldFocusChange(context, _latFocus, _lonFocus);
-            },
-            onTap: () {
-              setState(() {
-                _currentFocus = _latFocus;
-              });
-            },
-            controller: _latController,
-            cursorHeight: 24,
-            maxLength: 50,
-            maxLines: 1,
-            keyboardType: TextInputType.number,
-            textInputAction: TextInputAction.next,
-            style: Theme.of(context).primaryTextTheme.subtitle1,
-            decoration: InputDecoration(
-              contentPadding:
-                  const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-              counterText: '',
-              suffixIcon: _clearField(
-                  context: context,
-                  currentFocus: _latFocus,
-                  controller: _latController),
+          SizedBox(
+            height: heightInput,
+            child: TextFormField(
+              focusNode: _latFocus,
+              autofocus: true,
+              onFieldSubmitted: (_) {
+                _fieldFocusChange(context, _latFocus, _lonFocus);
+              },
+              onTap: () {
+                setState(() {
+                  _currentFocus = _latFocus;
+                });
+              },
+              controller: _latController,
+              cursorHeight: 24,
+              maxLength: 50,
+              maxLines: 1,
+              keyboardType: TextInputType.number,
+              textInputAction: TextInputAction.next,
+              style: Theme.of(context).primaryTextTheme.subtitle1,
+              decoration: InputDecoration(
+                counterText: '',
+                suffixIcon: _clearField(
+                    context: context,
+                    currentFocus: _latFocus,
+                    controller: _latController),
+              ),
+              validator: _validateCoordinates,
+              onSaved: (value) => setState(() => _lat = double.tryParse(value)),
             ),
-            validator: _validateCoordinates,
-            onSaved: (value) => setState(() => _lat = double.tryParse(value)),
           ),
         ],
       ),
@@ -387,35 +396,36 @@ class _AddSightScreenState extends State<AddSightScreen> {
         children: [
           const Text('ДОЛГОТА'),
           sizedBoxH12,
-          TextFormField(
-            focusNode: _lonFocus,
-            autofocus: true,
-            onFieldSubmitted: (_) {
-              _fieldFocusChange(context, _lonFocus, _detailsFocus);
-            },
-            onTap: () {
-              setState(() {
-                _currentFocus = _lonFocus;
-              });
-            },
-            controller: _lonController,
-            cursorHeight: 24,
-            maxLength: 50,
-            maxLines: 1,
-            keyboardType: TextInputType.number,
-            textInputAction: TextInputAction.next,
-            style: Theme.of(context).primaryTextTheme.subtitle1,
-            decoration: InputDecoration(
-              contentPadding:
-                  const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-              counterText: '',
-              suffixIcon: _clearField(
-                  context: context,
-                  currentFocus: _lonFocus,
-                  controller: _lonController),
+          SizedBox(
+            height: heightInput,
+            child: TextFormField(
+              focusNode: _lonFocus,
+              autofocus: true,
+              onFieldSubmitted: (_) {
+                _fieldFocusChange(context, _lonFocus, _detailsFocus);
+              },
+              onTap: () {
+                setState(() {
+                  _currentFocus = _lonFocus;
+                });
+              },
+              controller: _lonController,
+              cursorHeight: 24,
+              maxLength: 50,
+              maxLines: 1,
+              keyboardType: TextInputType.number,
+              textInputAction: TextInputAction.next,
+              style: Theme.of(context).primaryTextTheme.subtitle1,
+              decoration: InputDecoration(
+                counterText: '',
+                suffixIcon: _clearField(
+                    context: context,
+                    currentFocus: _lonFocus,
+                    controller: _lonController),
+              ),
+              validator: _validateCoordinates,
+              onSaved: (value) => setState(() => _lon = double.tryParse(value)),
             ),
-            validator: _validateCoordinates,
-            onSaved: (value) => setState(() => _lon = double.tryParse(value)),
           ),
         ],
       ),
@@ -454,8 +464,6 @@ class _AddSightScreenState extends State<AddSightScreen> {
         textInputAction: TextInputAction.done,
         style: Theme.of(context).primaryTextTheme.subtitle1,
         decoration: InputDecoration(
-          contentPadding:
-              const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
           counterText: '',
           hintText: 'введите текст',
           hintStyle: Theme.of(context)
@@ -525,30 +533,7 @@ class _AddSightScreenState extends State<AddSightScreen> {
       @required FocusNode currentFocus,
       @required TextEditingController controller}) {
     if (currentFocus == _currentFocus && controller.text.isNotEmpty) {
-      return Padding(
-        padding: const EdgeInsetsDirectional.fromSTEB(12, 12, 12, 12),
-        child: SizedBox(
-          width: 24,
-          height: 24,
-          child: Ink(
-            decoration: ShapeDecoration(
-              color: Theme.of(context).colorScheme.primary,
-              shape: CircleBorder(),
-            ),
-            child: IconButton(
-              padding: EdgeInsets.zero,
-              icon: Icon(
-                Icons.close,
-                color: Theme.of(context).primaryColor,
-                size: 16,
-              ),
-              onPressed: () {
-                controller.clear();
-              },
-            ),
-          ),
-        ),
-      );
+      return ButtonClear(controller: controller);
     }
 
     return const SizedBox(width: 0);

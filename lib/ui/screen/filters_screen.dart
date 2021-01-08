@@ -65,7 +65,12 @@ class _FiltersScreenState extends State<FiltersScreen> {
   /// AppBar
   Widget _buildFilterAppBar() => AppBar(
         toolbarHeight: toolbarHeightStandard,
-        leading: SmallLeadingIcon(icon: icArrow),
+        leading: SmallLeadingIcon(
+          icon: icArrow,
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
         leadingWidth: 64,
         title: Align(
           alignment: Alignment.centerRight,
