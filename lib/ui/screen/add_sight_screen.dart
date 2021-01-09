@@ -228,15 +228,24 @@ class _AddSightScreenState extends State<AddSightScreen> {
         child: Theme(
           data: ThemeData(
             inputDecorationTheme: InputDecorationTheme(
+              errorStyle: TextStyle(fontSize: 0),
               enabledBorder: UnderlineInputBorder(
                 borderSide: BorderSide(
-                  color: Theme.of(context).colorScheme.inactiveBlack,
+                  color: _categoryController.text != _emptyCategory
+                      ? Theme.of(context).accentColor.withOpacity(0.4)
+                      : Theme.of(context)
+                          .colorScheme
+                          .inactiveBlack
+                          .withOpacity(0.24),
                   width: 1,
                 ),
               ),
               focusedBorder: UnderlineInputBorder(
                 borderSide: BorderSide(
-                  color: Theme.of(context).colorScheme.inactiveBlack,
+                  color: Theme.of(context)
+                      .colorScheme
+                      .inactiveBlack
+                      .withOpacity(0.24),
                   style: BorderStyle.solid,
                   width: 1,
                 ),
@@ -245,7 +254,7 @@ class _AddSightScreenState extends State<AddSightScreen> {
                 borderSide: BorderSide(
                   color: Theme.of(context).errorColor.withOpacity(0.4),
                   style: BorderStyle.solid,
-                  width: 2,
+                  width: 1,
                 ),
               ),
               focusedErrorBorder: UnderlineInputBorder(
@@ -264,8 +273,10 @@ class _AddSightScreenState extends State<AddSightScreen> {
             showCursor: false,
             maxLines: 1,
             style: _selectedCategory == null
-                ? Theme.of(context).primaryTextTheme.subtitle1.copyWith(
-                    color: Theme.of(context).colorScheme.secondary2)
+                ? Theme.of(context)
+                    .primaryTextTheme
+                    .subtitle1
+                    .copyWith(color: Theme.of(context).colorScheme.secondary2)
                 : Theme.of(context).primaryTextTheme.subtitle1,
             readOnly: true,
             decoration: InputDecoration(
@@ -333,6 +344,7 @@ class _AddSightScreenState extends State<AddSightScreen> {
                 context: context,
                 currentFocus: _nameFocus,
                 controller: _nameController),
+            enabledBorder: _buildBorderColor(_nameController),
           ),
           inputFormatters: [
             LengthLimitingTextInputFormatter(100),
@@ -378,6 +390,7 @@ class _AddSightScreenState extends State<AddSightScreen> {
                     context: context,
                     currentFocus: _latFocus,
                     controller: _latController),
+                enabledBorder: _buildBorderColor(_latController),
               ),
               validator: _validateCoordinates,
               onSaved: (value) => setState(() => _lat = double.tryParse(value)),
@@ -422,6 +435,7 @@ class _AddSightScreenState extends State<AddSightScreen> {
                     context: context,
                     currentFocus: _lonFocus,
                     controller: _lonController),
+                enabledBorder: _buildBorderColor(_lonController),
               ),
               validator: _validateCoordinates,
               onSaved: (value) => setState(() => _lon = double.tryParse(value)),
@@ -474,6 +488,7 @@ class _AddSightScreenState extends State<AddSightScreen> {
               context: context,
               currentFocus: _detailsFocus,
               controller: _detailsController),
+          enabledBorder: _buildBorderColor(_detailsController),
         ),
         inputFormatters: [
           LengthLimitingTextInputFormatter(300),
@@ -538,6 +553,18 @@ class _AddSightScreenState extends State<AddSightScreen> {
 
     return const SizedBox(width: 0);
   }
+
+  /// цвет границы у уже правильно заполненного поля
+  InputBorder _buildBorderColor(TextEditingController controller) =>
+      Theme.of(context).inputDecorationTheme.enabledBorder.copyWith(
+            borderSide: BorderSide(
+              color: controller.text.isNotEmpty
+                  ? Theme.of(context).accentColor.withOpacity(0.4)
+                  : Theme.of(context).colorScheme.inactiveBlack,
+              style: BorderStyle.solid,
+              width: 1,
+            ),
+          );
 
   /// показываем окно если форма валидна
   void _showDialog(
