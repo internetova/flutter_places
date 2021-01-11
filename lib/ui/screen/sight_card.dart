@@ -108,7 +108,7 @@ class CardContentType extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Text(
-      type,
+      type.toLowerCase(),
       style: Theme.of(context).textTheme.subtitle2,
     );
   }

@@ -10,6 +10,7 @@ import 'package:places/ui/screen/res/themes.dart';
 class SearchBar extends StatelessWidget {
   final TextEditingController controller;
   final FocusNode focus;
+  final Function onChanged;
   final VoidCallback onEditingComplete;
   final VoidCallback onTap;
   final List<String> data;
@@ -17,10 +18,11 @@ class SearchBar extends StatelessWidget {
   const SearchBar({
     Key key,
     this.controller,
+    this.data,
+    this.onChanged,
     this.onEditingComplete,
     this.onTap,
     this.focus,
-    this.data,
   }) : super(key: key);
 
   @override
@@ -66,7 +68,6 @@ class SearchBar extends StatelessWidget {
               suffixIcon: controller.text.isNotEmpty
                   ? ButtonClear(
                       controller: controller,
-                      data: data,
                     )
                   : const SizedBox(width: 0),
             ),
@@ -75,6 +76,7 @@ class SearchBar extends StatelessWidget {
               FilteringTextInputFormatter(RegExp(r'^[a-zа-яA-ZА-Я0-9 ]+$'),
                   allow: true)
             ],
+            onChanged: onChanged,
             onEditingComplete: onEditingComplete,
             onTap: onTap,
           ),

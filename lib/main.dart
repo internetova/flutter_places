@@ -27,7 +27,6 @@ class App extends StatelessWidget {
             darkTheme: _darkTheme,
             themeMode: ThemeMode.system,
             // home: SightListScreen(), // список мест
-            // home: SightDetails(card: mocks[1]), // подробности -описание места
             // home: VisitingScreen(), // хочу посетить / посещенные места
             // home: SettingsScreen(), // страница с фильтрами поиска
             home: SightSearchScreen(),

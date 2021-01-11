@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:places/mocks.dart';
 import 'package:places/domain/sight.dart';
-import 'package:places/ui/screen/res/sizes.dart';
 import 'package:places/ui/screen/res/strings.dart';
 import 'package:places/ui/screen/sight_card.dart';
 import 'package:places/components/bottom_navigationbar.dart';
+import 'package:places/ui/screen/widgets/empty_page.dart';
 
 /// экран с избранными карточками - Хочу посетить / Посетил
 class VisitingScreen extends StatefulWidget {
@@ -66,48 +65,6 @@ class _VisitingScreenState extends State<VisitingScreen> {
   }
 }
 
-/// информация когда карточек нет в разделе
-class BlankScreen extends StatelessWidget {
-  const BlankScreen({
-    Key key,
-    @required this.icon,
-    @required this.header,
-    @required this.text,
-  }) : super(key: key);
-  final String icon;
-  final String header;
-  final String text;
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          SvgPicture.asset(
-            icon,
-            color: Theme.of(context).colorScheme.background,
-            width: 64,
-            height: 64,
-          ),
-          sizedBoxH24,
-          Text(
-            header,
-            style: Theme.of(context).primaryTextTheme.headline6,
-            textAlign: TextAlign.center,
-          ),
-          sizedBoxW8,
-          Text(
-            text,
-            style: Theme.of(context).primaryTextTheme.bodyText2,
-            textAlign: TextAlign.center,
-          ),
-        ],
-      ),
-    );
-  }
-}
-
 /// строим карточки для Избранного
 /// в зависимости от типа избранного
 Widget buildFavorites({
@@ -126,7 +83,7 @@ Widget buildFavorites({
         .where((item) => item['typeCard'] == typeCard)
         .toList();
 
-    favTabBarView = BlankScreen(
+    favTabBarView = EmptyPage(
       icon: screenContent[0]['blankScreenIcon'],
       header: screenContent[0]['blankScreenHeader'],
       text: screenContent[0]['blankScreenText'],
