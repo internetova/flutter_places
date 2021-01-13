@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:places/components/icon_svg.dart';
-import 'package:places/ui/screen/filters_screen.dart';
 import 'package:places/ui/screen/res/assets.dart';
 import 'package:places/ui/screen/res/sizes.dart';
 import 'package:places/ui/screen/res/themes.dart';
-import 'package:places/ui/screen/sight_search_screen.dart';
 
 /// константы
 const hintText = 'Поиск';
@@ -13,6 +11,15 @@ const hintText = 'Поиск';
 /// декоративный - выполняет роль перехода на другие экраны:
 /// поиск и настройка фильтра
 class SearchBarStatic extends StatelessWidget {
+  final VoidCallback onTapSearch;
+  final VoidCallback onPressedFilter;
+
+  const SearchBarStatic({
+    Key key,
+    @required this.onTapSearch,
+    this.onPressedFilter,
+  }) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Material(
@@ -48,14 +55,7 @@ class SearchBarStatic extends StatelessWidget {
             child: Material(
               type: MaterialType.transparency,
               child: InkWell(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => SightSearchScreen(),
-                    ),
-                  );
-                },
+                onTap: onTapSearch,
               ),
             ),
           ),
@@ -69,14 +69,7 @@ class SearchBarStatic extends StatelessWidget {
                 icon: icFilter,
                 color: Theme.of(context).accentColor,
               ),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => FiltersScreen(),
-                  ),
-                );
-              },
+              onPressed: onPressedFilter,
               splashRadius: 20,
               splashColor: Theme.of(context).accentColor.withOpacity(0.25),
             ),

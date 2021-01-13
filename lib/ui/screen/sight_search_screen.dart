@@ -42,9 +42,6 @@ class _SightSearchScreenState extends State<SightSearchScreen> {
   /// для показа лоадера
   bool _isWaiting = false;
 
-  /// для отправки запросов из поисковой строки по вводу текста
-  Timer _timer;
-
   @override
   void initState() {
     super.initState();
@@ -195,7 +192,7 @@ class _SightSearchScreenState extends State<SightSearchScreen> {
     return result;
   }
 
-  /// клик по кнопке клавиатуры - завершение редактирования
+  /// клик по кнопке клавиатуры - отправить запрос на поиск
   _searchOnEditingComplete() {
     _search();
     _searchFocus.unfocus();

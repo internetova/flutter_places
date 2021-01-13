@@ -45,11 +45,12 @@ class _SelectCategoryScreenState extends State<SelectCategoryScreen> {
       _selectedCategory = widget.selectedCategory;
     }
 
-    /// сохраняем выбранную категорию и передаём ее на предыдущий экран
-    _onPressed = () {
-      String currentCategory = _selectedCategory;
-      Navigator.pop(context, currentCategory);
-    };
+    if (_isButtonEnabled) {
+      /// сохраняем выбранную категорию и передаём ее на предыдущий экран
+      _onPressed = () {
+        Navigator.pop(context, _selectedCategory);
+      };
+    }
 
     return Scaffold(
       appBar: _buildSelectCategoryAppBar(),
@@ -59,7 +60,7 @@ class _SelectCategoryScreenState extends State<SelectCategoryScreen> {
         isButtonEnabled: _isButtonEnabled,
         onPressed: _onPressed,
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       resizeToAvoidBottomInset: false,
     );
   }
