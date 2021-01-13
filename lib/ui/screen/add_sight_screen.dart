@@ -291,7 +291,7 @@ class _AddSightScreenState extends State<AddSightScreen> {
             validator: _validateCategory,
             onSaved: (value) => setState(() => _selectedCategory = value),
             onTap: () {
-              _returnCategoryFromSelectCategoryScreen(context);
+              _returnCategoryFromSelectCategoryScreen();
             },
           ),
         ),
@@ -300,7 +300,7 @@ class _AddSightScreenState extends State<AddSightScreen> {
   }
 
   /// получаем выбранную категорию из экрана с категориями
-  void _returnCategoryFromSelectCategoryScreen(BuildContext context) async {
+  void _returnCategoryFromSelectCategoryScreen() async {
     final result = await Navigator.push(
       context,
       MaterialPageRoute(

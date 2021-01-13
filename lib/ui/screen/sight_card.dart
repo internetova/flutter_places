@@ -6,6 +6,7 @@ import 'package:places/domain/sight.dart';
 import 'package:places/ui/screen/res/sizes.dart';
 import 'package:places/ui/screen/res/strings.dart';
 import 'package:places/ui/screen/res/assets.dart';
+import 'package:places/ui/screen/sight_details.dart';
 
 /// карточка достопримечательности
 /// в зависимости от места показа карточки - Список поиска, в Избранном
@@ -53,7 +54,12 @@ class SightCard extends StatelessWidget {
                 type: MaterialType.transparency,
                 child: InkWell(
                   onTap: () {
-                    print('onTap: ${card.name}');
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => SightDetails(card: card),
+                      ),
+                    );
                   },
                 ),
               ),

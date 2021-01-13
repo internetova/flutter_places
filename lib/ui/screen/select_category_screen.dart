@@ -70,7 +70,7 @@ class _SelectCategoryScreenState extends State<SelectCategoryScreen> {
         toolbarHeight: toolbarHeightStandard,
         leading: SmallLeadingIcon(
           icon: icArrow,
-          onPressed: _onPressed,
+          onPressed: _back,
         ),
         leadingWidth: 64,
         title: Text(
@@ -136,5 +136,10 @@ class _SelectCategoryScreenState extends State<SelectCategoryScreen> {
         onTap: myOnTap,
       );
     }
+  }
+
+  /// вернуться на предыдущий экран без сохранения
+  void _back() {
+    Navigator.pop(context, widget.selectedCategory);
   }
 }

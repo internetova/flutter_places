@@ -52,6 +52,8 @@ class _FiltersScreenState extends State<FiltersScreen> {
   //   name: 'Чиверёво',
   // );
 
+  /// нефильтрованные данные если юзер не настраивал фильтр
+  final List<Sight> _fullData = mocks;
   /// отфильтрованные результаты
   List<Sight> _filteredData = [];
 
@@ -63,7 +65,7 @@ class _FiltersScreenState extends State<FiltersScreen> {
       _selectedCategories = _currentStatusCategories(
           _startCategories(categories), widget.filter.categories);
       _filteredData = filterData(
-          data: mocks,
+          data: _fullData,
           categories: _filteredCategories,
           centerPoint: _startSearchPoint,
           distance: _currentRangeValues);
@@ -129,23 +131,13 @@ class _FiltersScreenState extends State<FiltersScreen> {
         toolbarHeight: toolbarHeightStandard,
         leading: SmallLeadingIcon(
           icon: icArrow,
-          onPressed: () {
-            Navigator.pop(context);
-          },
+          onPressed: _back,
         ),
         leadingWidth: 64,
         title: Align(
           alignment: Alignment.centerRight,
           child: FlatButton(
-            onPressed: () {
-              setState(() {
-                _selectedCategories = _clearCategories(categories);
-                _currentRangeValues = _startDataSlider();
-                _filteredData.clear();
-                _isButtonEnabled = false;
-                _onPressed = null;
-              });
-            },
+            onPressed: _onClearFilter,
             child: Text(
               clearFilters,
               style: Theme.of(context).textTheme.headline5.copyWith(
@@ -195,7 +187,7 @@ class _FiltersScreenState extends State<FiltersScreen> {
                               _filteredCategories =
                                   _filterCategories(_selectedCategories);
                               _filteredData = filterData(
-                                  data: mocks,
+                                  data: _fullData,
                                   categories: _filteredCategories,
                                   centerPoint: _startSearchPoint,
                                   distance: _currentRangeValues);
@@ -282,7 +274,7 @@ class _FiltersScreenState extends State<FiltersScreen> {
           setState(() {
             _currentRangeValues = values;
             _filteredData = filterData(
-                data: mocks, // база карточек
+                data: _fullData, // база карточек
                 categories: _filteredCategories, // выбранные категории
                 centerPoint: _startSearchPoint, // точка отсчёта расстояния
                 distance: _currentRangeValues);
@@ -315,6 +307,17 @@ class _FiltersScreenState extends State<FiltersScreen> {
     return categories;
   }
 
+  /// очистка фильтра по кнопке Очистить
+  void _onClearFilter() {
+    setState(() {
+      _selectedCategories = _clearCategories(categories);
+      _currentRangeValues = _startDataSlider();
+      _filteredData.clear();
+      _isButtonEnabled = false;
+      _onPressed = null;
+    });
+  }
+
   /// очистка выбранных категорий
   List<Map> _clearCategories(List<Categories> categories) {
     _filteredCategories.clear();
@@ -322,6 +325,11 @@ class _FiltersScreenState extends State<FiltersScreen> {
     return categories
         .map((e) => {'id': e.id, 'type': e.name, 'isSelected': false})
         .toList();
+  }
+
+  /// вернуться на предыдущий экран без сохранения
+  void _back() {
+    Navigator.pop(context, widget.filter);
   }
 }
 

@@ -1,15 +1,16 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:places/components/button_text.dart';
 
 import 'package:places/mocks.dart';
 import 'package:places/domain/sight.dart';
+import 'package:places/components/button_text.dart';
 import 'package:places/components/bottom_navigationbar.dart';
 import 'package:places/ui/screen/res/assets.dart';
 import 'package:places/ui/screen/res/sizes.dart';
 import 'package:places/ui/screen/res/themes.dart';
 import 'package:places/ui/screen/sight_details.dart';
+import 'package:places/ui/screen/utilities/filter_utility.dart';
 import 'package:places/ui/screen/widgets/empty_page.dart';
 import 'package:places/ui/screen/widgets/search_bar.dart';
 
@@ -21,6 +22,10 @@ const _emptyScreenText = 'Попробуйте изменить параметр
 
 /// экран поиска
 class SightSearchScreen extends StatefulWidget {
+  final FilterSettings filter;
+
+  const SightSearchScreen({Key key, this.filter}) : super(key: key);
+
   @override
   _SightSearchScreenState createState() => _SightSearchScreenState();
 }
@@ -42,6 +47,12 @@ class _SightSearchScreenState extends State<SightSearchScreen> {
   /// для показа лоадера
   bool _isWaiting = false;
 
+  /// нефильтрованные данные
+  final List<Sight> _fullData = mocks;
+
+  /// отфильтрованные результаты
+  List<Sight> _filteredData = [];
+
   @override
   void initState() {
     super.initState();
@@ -49,6 +60,14 @@ class _SightSearchScreenState extends State<SightSearchScreen> {
     _searchController.addListener(() => setState(() {}));
     _streamController = StreamController();
     _stream = _streamController.stream;
+
+    if (widget.filter != null) {
+      _filteredData = filterData(
+          data: _fullData,
+          categories: widget.filter.categories,
+          centerPoint: widget.filter.centerPoint,
+          distance: widget.filter.distance);
+    }
   }
 
   @override
@@ -121,9 +140,7 @@ class _SightSearchScreenState extends State<SightSearchScreen> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   InkWell(
-                    onTap: () {
-                      Navigator.pop(context);
-                    },
+                    onTap: _back,
                     child: Text(
                       _appBarTitle,
                       style: Theme.of(context).textTheme.headline6,
@@ -160,10 +177,13 @@ class _SightSearchScreenState extends State<SightSearchScreen> {
       return;
     }
 
+    /// на время поиска показываем лоадер
     _showLoader(true);
 
-    final result =
-        await _searchData(data: mocks, query: _searchController.text);
+    final result = await _searchData(
+      data: widget.filter != null ? _filteredData : _fullData,
+      query: _searchController.text,
+    );
 
     _showLoader(false);
 
@@ -176,7 +196,7 @@ class _SightSearchScreenState extends State<SightSearchScreen> {
     setState(() => _isWaiting = isWaiting);
   }
 
-  /// поиск в базе по запросу и фильтру
+  /// поиск в базе по запросу
   Future<List<Sight>> _searchData({List<Sight> data, String query}) async {
     List<Sight> result = [];
 
@@ -283,7 +303,7 @@ class _SightSearchScreenState extends State<SightSearchScreen> {
     );
   }
 
-  /// для карточки результатов: выделяем выделяем жирным найденный запрос
+  /// для карточки результатов: выделяем жирным найденный запрос
   List<TextSpan> _buildRichText({String string, String search}) {
     List<TextSpan> result = [];
     int findIndex = string.toLowerCase().indexOf(search.toLowerCase());
@@ -427,5 +447,10 @@ class _SightSearchScreenState extends State<SightSearchScreen> {
         ),
       ),
     );
+  }
+
+  /// вернуться на предыдущий экран
+  void _back() {
+    Navigator.pop(context, widget.filter);
   }
 }

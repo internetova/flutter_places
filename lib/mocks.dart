@@ -108,7 +108,7 @@ final List<Sight> mocks = [
   ),
   Sight(
     id: 9,
-    name: 'Кафе Дружба',
+    name: 'Ресторан Дружба',
     lat: 55.760245,
     lon: 37.618832,
     url: 'https://www.bolshoi.ru',

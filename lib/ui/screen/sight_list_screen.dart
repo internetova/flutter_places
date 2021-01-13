@@ -38,9 +38,6 @@ class _SightListScreenState extends State<SightListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if (_currentFilter != null)
-    print('_onPressed фильтр ${_currentFilter.distance} ${_currentFilter.centerPoint.name}  ${_currentFilter.categories}');
-
     return Scaffold(
       appBar: _buildAppBar(),
       body: BuildCardScreen(
@@ -71,13 +68,8 @@ class _SightListScreenState extends State<SightListScreen> {
                   ),
                   sizedBoxH24,
                   SearchBarStatic(
-                    onTapSearch: () {
-                      // _getFilteredResultFromFiltersScreen(context);
-                      print('onTapSearch');
-                    },
-                      onPressedFilter: () {
-                        _onPressedFilter();
-                      }
+                    onTapSearch: _onTapSearch,
+                    onPressedFilter: _onPressedFilter,
                   ),
                 ],
               ),
@@ -124,22 +116,14 @@ class _SightListScreenState extends State<SightListScreen> {
         ),
       );
 
-  /// получаем отфильтрованные результаты из экрана с фильтром
-  void _getFilteredResultFromFiltersScreen(BuildContext context) async {
+  /// передаем фильтр на экран поиска
+  void _onTapSearch() async {
     final FilterSettings filter = await Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => SightSearchScreen(),
+        builder: (context) => SightSearchScreen(filter: _currentFilter),
       ),
     );
-    setState(() {
-      _currentFilter = filter;
-      _filteredData = filterData(
-          data: _fullData,
-          categories: _currentFilter.categories,
-          centerPoint: _currentFilter.centerPoint,
-          distance: _currentFilter.distance);
-    });
   }
 
   /// переход на экран фильтра
@@ -160,5 +144,4 @@ class _SightListScreenState extends State<SightListScreen> {
           distance: _currentFilter.distance);
     });
   }
-
 }
