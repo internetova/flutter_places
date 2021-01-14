@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:places/components/icon_action_button.dart';
+import 'package:places/ui/screen/components/icon_action_button.dart';
 
 import 'package:places/domain/sight.dart';
 import 'package:places/ui/screen/res/sizes.dart';
 import 'package:places/ui/screen/res/strings.dart';
 import 'package:places/ui/screen/res/assets.dart';
+import 'package:places/ui/screen/sight_details.dart';
 
 /// карточка достопримечательности
 /// в зависимости от места показа карточки - Список поиска, в Избранном
@@ -14,13 +15,16 @@ import 'package:places/ui/screen/res/assets.dart';
 /// ‼️🙄 честно говоря пока не знаю какие будут данные и как должно будет
 /// это всё работать, поэтому пока так
 class SightCard extends StatelessWidget {
+  final Sight card;
+  final WhereShowCard whereShowCard;
+
   const SightCard({
     Key key,
     @required this.card,
     @required this.whereShowCard,
-  }) : super(key: key);
-  final Sight card;
-  final WhereShowCard whereShowCard;
+  })  : assert(card != null),
+        assert(whereShowCard != null),
+        super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +57,12 @@ class SightCard extends StatelessWidget {
                 type: MaterialType.transparency,
                 child: InkWell(
                   onTap: () {
-                    print('onTap: ${card.name}');
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => SightDetails(card: card),
+                      ),
+                    );
                   },
                 ),
               ),
@@ -108,7 +117,7 @@ class CardContentType extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Text(
-      type,
+      type.toLowerCase(),
       style: Theme.of(context).textTheme.subtitle2,
     );
   }

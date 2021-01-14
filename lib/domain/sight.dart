@@ -15,7 +15,7 @@ class Sight {
     @required this.name,
     @required this.lat,
     @required this.lon,
-    @required this.url,
+    this.url,
     @required this.details,
     @required this.type,
     @required this.imgPreview,

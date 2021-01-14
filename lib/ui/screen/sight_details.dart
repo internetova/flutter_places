@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:places/components/icon_svg.dart';
 
 import 'package:places/domain/sight.dart';
+import 'package:places/ui/screen/components/icon_svg.dart';
 import 'package:places/ui/screen/res/sizes.dart';
 import 'package:places/ui/screen/res/strings.dart';
 import 'package:places/ui/screen/res/assets.dart';
@@ -17,26 +17,31 @@ class SightDetails extends StatelessWidget {
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
-            leading: Stack(
-              children: [
-                Container(
-                  margin: const EdgeInsets.only(left: 16, top: 12),
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).primaryColor,
-                    borderRadius: BorderRadius.circular(10),
+            leading: InkWell(
+              onTap: () {
+                Navigator.pop(context);
+              },
+              child: Stack(
+                children: [
+                  Container(
+                    margin: const EdgeInsets.only(left: 16, top: 12),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).primaryColor,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    width: 32,
+                    height: 32,
                   ),
-                  width: 32,
-                  height: 32,
-                ),
-                Positioned(
-                  top: 16,
-                  left: 19,
-                  child: IconSvg(
-                    icon: icArrow,
-                    color: Theme.of(context).colorScheme.onPrimary,
-                  ),
-                )
-              ],
+                  Positioned(
+                    top: 16,
+                    left: 19,
+                    child: IconSvg(
+                      icon: icArrow,
+                      color: Theme.of(context).colorScheme.onPrimary,
+                    ),
+                  )
+                ],
+              ),
             ),
             expandedHeight: 360,
             flexibleSpace: FlexibleSpaceBar(
@@ -77,7 +82,7 @@ class SightDetails extends StatelessWidget {
                       child: Row(
                         children: [
                           Text(
-                            card.type,
+                            card.type.toLowerCase(),
                             style: Theme.of(context).textTheme.subtitle1,
                           ),
                           sizedBoxW16,

@@ -4,9 +4,11 @@ import 'package:places/ui/screen/res/assets.dart';
 
 /// BottomNavigationBar приложения
 class MainBottomNavigationBar extends StatelessWidget {
-  const MainBottomNavigationBar({Key key, @required this.current})
-      : super(key: key);
   final int current;
+
+  const MainBottomNavigationBar({Key key, @required this.current})
+      : assert(current != null),
+        super(key: key);
 
   @override
   Widget build(BuildContext context) {

@@ -20,10 +20,16 @@ const icFavorites = '$_baseResPath/heart.svg';
 const icGo = '$_baseResPath/go.svg';
 const icArrow = '$_baseResPath/arrow.svg';
 const icArrowLeading = '$_baseResPath/arrow_leading.svg';
+const icView = '$_baseResPath/view.svg';
+const icPlus = '$_baseResPath/plus.svg';
+const icFilter = '$_baseResPath/filter.svg';
+const icSearch = '$_baseResPath/search.svg';
+const icClear = '$_baseResPath/delete.svg';
 
 /// пустые страницы
 const icEmptyPlanned = '$_baseResPath/empty_pages/card.svg';
 const icEmptyVisited = '$_baseResPath/empty_pages/go.svg';
+const icEmptySearch = '$_baseResPath/empty_pages/search.svg';
 
 /// категории фильтра поиска
 const icCafe = '$_baseResPath/catalog/cafe.svg';

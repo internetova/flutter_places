@@ -3,20 +3,22 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 /// кнопки для карточек поверх картинки
 class IconActionButton extends StatelessWidget {
-  IconActionButton({
-    Key key,
-    @required this.icon,
-    @required this.onPressed,
-    this.width = 24,
-    this.height = 24,
-    this.color = Colors.white,
-  }) : super(key: key);
-
   final String icon;
   final double width;
   final double height;
   final Color color;
   final VoidCallback onPressed;
+
+  IconActionButton({
+    Key key,
+    @required this.icon,
+    this.onPressed,
+    this.width = 24,
+    this.height = 24,
+    this.color = Colors.white,
+  })  : assert(icon != null),
+        super(key: key);
+
 
   @override
   Widget build(BuildContext context) {

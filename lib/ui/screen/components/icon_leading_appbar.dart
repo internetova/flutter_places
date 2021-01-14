@@ -5,20 +5,27 @@ import 'package:flutter_svg/flutter_svg.dart';
 /// для экранов: фильтр, категория добавление новой
 /// leadingWidth: 64
 class SmallLeadingIcon extends StatelessWidget {
-  SmallLeadingIcon({@required this.icon});
-
   final String icon;
+  final VoidCallback onPressed;
+
+  const SmallLeadingIcon({
+    Key key,
+    @required this.icon,
+    this.onPressed,
+  })  : assert(icon != null),
+        super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.only(left: 20, right: 20),
-      child: SvgPicture.asset(
+        child: IconButton(
+      icon: SvgPicture.asset(
         icon,
         color: Theme.of(context).colorScheme.onPrimary,
         width: 24,
         height: 24,
       ),
-    );
+      onPressed: onPressed,
+    ));
   }
 }

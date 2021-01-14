@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:places/ui/screen/res/colors.dart';
 import 'package:places/ui/screen/res/text_styles.dart';
@@ -17,6 +19,7 @@ class AppTheme {
       accentColor: lightAccentColor,
       backgroundColor: lightScaffoldBackgroundColor,
       scaffoldBackgroundColor: lightScaffoldBackgroundColor,
+      disabledColor: lightPrimaryColorLight,
       primaryTextTheme: _buildPrimaryTextTheme(base.primaryTextTheme),
       textTheme: _buildTextTheme(base.textTheme),
       colorScheme: base.colorScheme.copyWith(
@@ -29,7 +32,7 @@ class AppTheme {
       appBarTheme: base.appBarTheme.copyWith(
         color: lightPrimaryColor,
         textTheme: base.textTheme.copyWith(
-          headline6: textSubtitle18.copyWith(color: lightPrimaryColorDark),
+          headline6: textSubtitle18Medium.copyWith(color: lightPrimaryColorDark),
         ),
         elevation: 0,
       ),
@@ -54,6 +57,7 @@ class AppTheme {
       buttonTheme: base.buttonTheme.copyWith(
         buttonColor: lightButtonColor,
         textTheme: ButtonTextTheme.primary,
+        disabledColor: lightPrimaryColorLight,
       ),
       iconTheme: base.iconTheme.copyWith(
         color: lightIconColor,
@@ -69,30 +73,67 @@ class AppTheme {
         elevation: 0,
         highlightElevation: 0,
       ),
+      inputDecorationTheme: base.inputDecorationTheme.copyWith(
+        contentPadding:
+        const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+        errorStyle: TextStyle(fontSize: 0),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: BorderSide(
+            color: lightAccentColor.withOpacity(0.4),
+            style: BorderStyle.solid,
+            width: 2,
+          ),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: BorderSide(
+            color: colorInactiveBlack,
+            style: BorderStyle.solid,
+            width: 1,
+          ),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: BorderSide(
+            color: lightErrorColor.withOpacity(0.40),
+            style: BorderStyle.solid,
+            width: 1,
+          ),
+        ),
+        focusedErrorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: BorderSide(
+            color: lightErrorColor.withOpacity(0.40),
+            style: BorderStyle.solid,
+            width: 2,
+          ),
+        ),
+      ),
     );
   }
 
   static _buildTextTheme(TextTheme base) {
     return base.copyWith(
-      headline6: textSubtitle18.copyWith(color: lightPrimaryColorDark),
-      headline5: textText16.copyWith(color: lightSecondaryColor),
-      headline4: textTitle24.copyWith(color: lightSecondaryColor),
-      headline3: textLargeTitle32.copyWith(color: lightPrimaryColorDark),
+      headline6: textSubtitle18Medium.copyWith(color: lightPrimaryColorDark),
+      headline5: textText16Medium.copyWith(color: lightSecondaryColor),
+      headline4: textTitle24Bold.copyWith(color: lightSecondaryColor),
+      headline3: textLargeTitle32Bold.copyWith(color: lightPrimaryColorDark),
       subtitle1: textSmall14Bold.copyWith(color: lightSecondaryColor),
       subtitle2: textSmall14Bold.copyWith(color: lightPrimaryColor),
-      bodyText1: textSmall14.copyWith(color: lightSecondaryColor),
-      bodyText2: textSmall14.copyWith(color: lightSecondaryVariant),
-      caption: textSuperSmall12.copyWith(color: lightSecondaryColor),
+      bodyText1: textSmall14Regular.copyWith(color: lightSecondaryColor),
+      bodyText2: textSmall14Regular.copyWith(color: lightSecondaryVariant),
+      caption: textSuperSmall12Regular.copyWith(color: lightSecondaryColor),
       button: textButton,
     );
   }
 
   static _buildPrimaryTextTheme(TextTheme base) {
     return base.copyWith(
-      headline6: textSubtitle18.copyWith(color: lightBackgroundColor),
+      headline6: textSubtitle18Medium.copyWith(color: lightBackgroundColor),
       subtitle1: textText16Regular.copyWith(color: lightPrimaryColorDark),
-      bodyText1: textSmall14.copyWith(color: lightAccentColor),
-      bodyText2: textSmall14.copyWith(color: lightBackgroundColor),
+      bodyText1: textSmall14Regular.copyWith(color: lightAccentColor),
+      bodyText2: textSmall14Regular.copyWith(color: lightBackgroundColor),
     );
   }
 
@@ -108,6 +149,7 @@ class AppTheme {
       accentColor: darkAccentColor,
       backgroundColor: darkScaffoldBackgroundColor,
       scaffoldBackgroundColor: darkScaffoldBackgroundColor,
+      disabledColor: darkPrimaryColorLight,
       primaryTextTheme: _buildPrimaryTextThemeDark(base.primaryTextTheme),
       textTheme: _buildTextThemeDark(base.textTheme),
       colorScheme: base.colorScheme.copyWith(
@@ -120,7 +162,7 @@ class AppTheme {
       appBarTheme: base.appBarTheme.copyWith(
         color: darkPrimaryColor,
         textTheme: base.textTheme.copyWith(
-          headline6: textSubtitle18.copyWith(color: colorWhite),
+          headline6: textSubtitle18Medium.copyWith(color: colorWhite),
         ),
         elevation: 0,
       ),
@@ -145,6 +187,7 @@ class AppTheme {
       buttonTheme: base.buttonTheme.copyWith(
         buttonColor: darkButtonColor,
         textTheme: ButtonTextTheme.primary,
+        disabledColor: lightPrimaryColorLight,
       ),
       iconTheme: base.iconTheme.copyWith(
         color: darkIconColor,
@@ -160,30 +203,67 @@ class AppTheme {
         elevation: 0,
         highlightElevation: 0,
       ),
+      inputDecorationTheme: base.inputDecorationTheme.copyWith(
+        contentPadding:
+        const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+        errorStyle: TextStyle(fontSize: 0),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: BorderSide(
+            color: darkAccentColor.withOpacity(0.4),
+            style: BorderStyle.solid,
+            width: 2,
+          ),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: BorderSide(
+            color: colorInactiveBlack,
+            style: BorderStyle.solid,
+            width: 1,
+          ),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: BorderSide(
+            color: darkErrorColor.withOpacity(0.40),
+            style: BorderStyle.solid,
+            width: 1,
+          ),
+        ),
+        focusedErrorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: BorderSide(
+            color: darkErrorColor.withOpacity(0.40),
+            style: BorderStyle.solid,
+            width: 2,
+          ),
+        ),
+      ),
     );
   }
 
   static _buildTextThemeDark(TextTheme base) {
     return base.copyWith(
-      headline6: textSubtitle18.copyWith(color: colorWhite),
-      headline5: textText16.copyWith(color: colorWhite),
-      headline4: textTitle24.copyWith(color: colorWhite),
-      headline3: textLargeTitle32.copyWith(color: colorWhite),
+      headline6: textSubtitle18Medium.copyWith(color: colorWhite),
+      headline5: textText16Medium.copyWith(color: colorWhite),
+      headline4: textTitle24Bold.copyWith(color: colorWhite),
+      headline3: textLargeTitle32Bold.copyWith(color: colorWhite),
       subtitle1: textSmall14Bold.copyWith(color: darkSecondaryVariant),
       subtitle2: textSmall14Bold.copyWith(color: colorWhite),
-      bodyText1: textSmall14.copyWith(color: colorWhite),
-      bodyText2: textSmall14.copyWith(color: darkBackgroundColor),
-      caption: textSuperSmall12.copyWith(color: colorWhite),
+      bodyText1: textSmall14Regular.copyWith(color: colorWhite),
+      bodyText2: textSmall14Regular.copyWith(color: darkBackgroundColor),
+      caption: textSuperSmall12Regular.copyWith(color: colorWhite),
       button: textButton,
     );
   }
 
   static _buildPrimaryTextThemeDark(TextTheme base) {
     return base.copyWith(
-      headline6: textSubtitle18.copyWith(color: darkBackgroundColor),
+      headline6: textSubtitle18Medium.copyWith(color: darkBackgroundColor),
       subtitle1: textText16Regular.copyWith(color: darkOnPrimaryColor),
-      bodyText1: textSmall14.copyWith(color: darkAccentColor),
-      bodyText2: textSmall14.copyWith(color: darkBackgroundColor),
+      bodyText1: textSmall14Regular.copyWith(color: darkAccentColor),
+      bodyText2: textSmall14Regular.copyWith(color: darkBackgroundColor),
     );
   }
 }
@@ -194,6 +274,8 @@ extension CustomColorScheme on ColorScheme {
   Color get secondary => colorSecondary;
   Color get secondary2 => colorSecondary2;
   Color get inactiveBlack => colorInactiveBlack;
+  Color get green => brightness == Brightness.light ? colorWhiteGreen : colorBlackGreen;
+  Color get yellow => brightness == Brightness.light ? colorWhiteYellow : colorBlackYellow;
 }
 
 class ThemeNotifier extends ChangeNotifier {

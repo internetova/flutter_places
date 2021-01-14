@@ -1,47 +1,99 @@
 import 'package:flutter/material.dart';
-import 'dart:math';
 
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:places/components/icon_leading_appbar.dart';
 import 'package:places/domain/categories.dart';
 import 'package:places/domain/sight.dart';
 import 'package:places/mocks.dart';
+import 'package:places/ui/screen/components/button_save.dart';
+import 'package:places/ui/screen/components/icon_leading_appbar.dart';
 import 'package:places/ui/screen/res/assets.dart';
 import 'package:places/ui/screen/res/sizes.dart';
 import 'package:places/ui/screen/res/strings.dart';
+import 'package:places/ui/screen/utilities/filter_utility.dart';
 
 /// экран фильтра для поиска
 class FiltersScreen extends StatefulWidget {
+  final FilterSettings filter;
+
+  const FiltersScreen({Key key, this.filter}) : super(key: key);
+
   @override
   _FiltersScreenState createState() => _FiltersScreenState();
 }
 
 class _FiltersScreenState extends State<FiltersScreen> {
-  /// индикаторы выбранных категорий
-  List<Map> _selectedCategories = _clearSelected(categories);
+  /// кнопка Показать отключена если нет результатов
+  bool _isButtonEnabled = false;
+  VoidCallback _onPressed;
+
+  /// для построения индикаторов выбранных категорий
+  List<Map> _selectedCategories;
+
+  /// только выбранные категории для функции поиска и передачи на другой экран
+  List<Map> _filteredCategories = [];
 
   /// данные слайдера
   double _startValue = 100;
   double _endValue = 10000;
-  RangeValues _currentRangeValues = _startDataSlider();
+  RangeValues _currentRangeValues;
 
-  /// центральная точка поиска
+  /// стартовая точка поиска
   /// красная площадь для теста
-  final _moscowPoint = CenterPoint(
+  final _startSearchPoint = CenterPoint(
     lat: 55.753564,
     lon: 37.621085,
     name: 'Москва, Красная площадь',
   );
 
   /// деревня для теста
-  // final _moPoint = CenterPoint(
+  // final _startSearchPoint = CenterPoint(
   //   lat: 55.994511,
   //   lon: 37.604592,
   //   name: 'Чиверёво',
   // );
 
+  /// нефильтрованные данные если юзер не настраивал фильтр
+  final List<Sight> _fullData = mocks;
+  /// отфильтрованные результаты
+  List<Sight> _filteredData = [];
+
+  @override
+  void initState() {
+    if (widget.filter != null) {
+      _filteredCategories = widget.filter.categories;
+      _currentRangeValues = widget.filter.distance;
+      _selectedCategories = _currentStatusCategories(
+          _startCategories(categories), widget.filter.categories);
+      _filteredData = filterData(
+          data: _fullData,
+          categories: _filteredCategories,
+          centerPoint: _startSearchPoint,
+          distance: _currentRangeValues);
+    } else {
+      _selectedCategories = _startCategories(categories);
+      _currentRangeValues = _startDataSlider();
+    }
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
+    if (_filteredData.isNotEmpty) {
+      _isButtonEnabled = true;
+
+      _onPressed = () {
+        final _filterSettings = FilterSettings(
+            categories: _filteredCategories,
+            distance: _currentRangeValues,
+            centerPoint: _startSearchPoint);
+
+        Navigator.pop(context, _filterSettings);
+      };
+    } else {
+      _isButtonEnabled = false;
+      _onPressed = null;
+    }
+
     return Scaffold(
       appBar: _buildFilterAppBar(),
       body: SingleChildScrollView(
@@ -57,27 +109,37 @@ class _FiltersScreenState extends State<FiltersScreen> {
           ),
         ),
       ),
-      floatingActionButton: _buildButtonResults(),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: ButtonSave(
+        title: _buildTitleButton(),
+        isButtonEnabled: _isButtonEnabled,
+        onPressed: _onPressed,
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
+  }
+
+  String _buildTitleButton() {
+    if (_filteredData.isEmpty) {
+      return filterTitleButton;
+    } else {
+      return '$filterTitleButton (${_filteredData.length})';
+    }
   }
 
   /// AppBar
   Widget _buildFilterAppBar() => AppBar(
-        toolbarHeight: 80,
-        leading: SmallLeadingIcon(icon: icArrow),
+        toolbarHeight: toolbarHeightStandard,
+        leading: SmallLeadingIcon(
+          icon: icArrow,
+          onPressed: _back,
+        ),
         leadingWidth: 64,
         title: Align(
           alignment: Alignment.centerRight,
           child: FlatButton(
-            onPressed: () {
-              setState(() {
-                _selectedCategories = _clearSelected(categories);
-                _currentRangeValues = _startDataSlider();
-              });
-            },
+            onPressed: _onClearFilter,
             child: Text(
-              clearFilters,
+              filterClearFilters,
               style: Theme.of(context).textTheme.headline5.copyWith(
                     color: Theme.of(context).accentColor,
                   ),
@@ -122,6 +184,13 @@ class _FiltersScreenState extends State<FiltersScreen> {
                             setState(() {
                               selectedCat[index]['isSelected'] =
                                   !selectedCat[index]['isSelected'];
+                              _filteredCategories =
+                                  _filterCategories(_selectedCategories);
+                              _filteredData = filterData(
+                                  data: _fullData,
+                                  categories: _filteredCategories,
+                                  centerPoint: _startSearchPoint,
+                                  distance: _currentRangeValues);
                             });
                           },
                           splashColor:
@@ -184,7 +253,7 @@ class _FiltersScreenState extends State<FiltersScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              titleSlider,
+              filterTitleSlider,
               style: Theme.of(context).primaryTextTheme.subtitle1,
             ),
             Text(
@@ -204,86 +273,64 @@ class _FiltersScreenState extends State<FiltersScreen> {
         onChanged: (RangeValues values) {
           setState(() {
             _currentRangeValues = values;
+            _filteredData = filterData(
+                data: _fullData, // база карточек
+                categories: _filteredCategories, // выбранные категории
+                centerPoint: _startSearchPoint, // точка отсчёта расстояния
+                distance: _currentRangeValues);
           });
         },
       );
 
-  /// кнопка с результатами
-  Widget _buildButtonResults() => Container(
-        margin: const EdgeInsets.symmetric(horizontal: 16),
-        width: double.infinity,
-        child: FloatingActionButton.extended(
-          onPressed: () {
-            print('onPressed Показать результаты');
-          },
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(
-              Radius.circular(radiusButton),
-            ),
-          ),
-          label: Text(
-            _filterCard(
-                data: mocks, // база карточек
-                categories: _selectedCategories, // выбранные категории
-                centerPoint: _moscowPoint, // точка отсчёта расстояния
-                distance: _currentRangeValues), // удалённость от точки отсчёта
-            style: Theme.of(context).textTheme.button,
-          ),
-        ),
-      );
-}
-
-/// результат в массив с id найденных карточек
-String _filterCard(
-    {@required List<Sight> data,
-    @required List<Map> categories,
-    @required CenterPoint centerPoint,
-    @required RangeValues distance}) {
-  List result = [];
-  int countCheckCategory = 0;
-
-  for (var i = 0; i < categories.length; i++) {
-    /// если есть выбранные категории
-    if (categories[i]['isSelected']) {
-      for (var k = 0; k < data.length; k++) {
-        if (data[k].type == categories[i]['type'] &&
-            _arePointsNear(
-                checkPointLat: data[k].lat,
-                checkPointLon: data[k].lon,
-                centerPoint: centerPoint,
-                distance: distance)) {
-          result.add(data[k].id);
-        }
-      }
-      countCheckCategory++;
-    }
+  /// оставляем только выбранные категории и передаем их в поиск
+  List<Map> _filterCategories(List<Map> categories) {
+    return categories.where((cat) => cat['isSelected'] == true).toList();
   }
 
-  /// если нет выбранных категорий
-  if (countCheckCategory == 0) {
-    for (var k = 0; k < data.length; k++) {
-      if (_arePointsNear(
-          checkPointLat: data[k].lat,
-          checkPointLon: data[k].lon,
-          centerPoint: centerPoint,
-          distance: distance)) {
-        result.add(data[k].id);
-      }
-    }
+  /// создаем массив с id и метками выделенных категорий
+  /// со старта все false если ничего не было выбрано ранее
+  /// ‼️❓пока на всякий случай добавила id и type категории
+  List<Map> _startCategories(List<Categories> categories) {
+    return categories
+        .map((e) => {'id': e.id, 'type': e.name, 'isSelected': false})
+        .toList();
   }
 
-  return '$titleButton (${result.length})';
-}
+  /// если пришли настройки фильтра с предыдущего экрана применяем выбранные категори
+  List<Map> _currentStatusCategories(
+      List<Map> categories, List<Map> filteredCategories) {
+    for (var cat in categories) {
+      for (var filteredCat in filteredCategories) {
+        if (cat['type'] == filteredCat['type']) cat['isSelected'] = true;
+      }
+    }
+    return categories;
+  }
 
-/// создаем массив с id и метками выделенных категорий
-/// со старта все false
-/// также используем при очистке выбранных категорий
-/// ‼️❓пока на всякий случай добавила id и type категории
-List<Map> _clearSelected(List<Categories> categories) {
-  return categories
-      .map((e) =>
-          {'id': e.id, 'type': e.name.toLowerCase(), 'isSelected': false})
-      .toList();
+  /// очистка фильтра по кнопке Очистить
+  void _onClearFilter() {
+    setState(() {
+      _selectedCategories = _clearCategories(categories);
+      _currentRangeValues = _startDataSlider();
+      _filteredData.clear();
+      _isButtonEnabled = false;
+      _onPressed = null;
+    });
+  }
+
+  /// очистка выбранных категорий
+  List<Map> _clearCategories(List<Categories> categories) {
+    _filteredCategories.clear();
+
+    return categories
+        .map((e) => {'id': e.id, 'type': e.name, 'isSelected': false})
+        .toList();
+  }
+
+  /// вернуться на предыдущий экран без сохранения
+  void _back() {
+    Navigator.pop(context, widget.filter);
+  }
 }
 
 /// для слайдера строка Расстояние метры в километры
@@ -297,31 +344,3 @@ String _convertMeterToKm(double value) {
 
 /// стартовые данные для слайдера в метрах
 RangeValues _startDataSlider() => RangeValues(100, 3000);
-
-/// поиск карточек по расстоянию
-/// https://stackoverflow.com/questions/24680247/check-if-a-latitude-and-longitude-is-within-a-circle-google-maps
-/// distance в метрах, переводим в км
-bool _arePointsNear(
-    {@required double checkPointLat,
-    @required double checkPointLon,
-    @required CenterPoint centerPoint,
-    @required RangeValues distance}) {
-  const ky = 40000 / 360;
-  final kx = cos(pi * centerPoint.lat / 180.0) * ky;
-  final dx = (centerPoint.lon - checkPointLon).abs() * kx;
-  final dy = (centerPoint.lat - checkPointLat).abs() * ky;
-  final d = sqrt(dx * dx + dy * dy);
-  final minDistance = (distance.start / 1000).round();
-  final maxDistance = (distance.end / 1000).round();
-
-  return d >= minDistance && d <= maxDistance;
-}
-
-/// стартовая точка поиска с названием и координатами
-class CenterPoint {
-  CenterPoint({@required this.lat, @required this.lon, @required this.name});
-
-  final double lat;
-  final double lon;
-  final String name;
-}
