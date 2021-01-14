@@ -4,6 +4,7 @@ import 'package:places/components/button_clear.dart';
 import 'package:places/components/icon_svg.dart';
 import 'package:places/ui/screen/res/assets.dart';
 import 'package:places/ui/screen/res/sizes.dart';
+import 'package:places/ui/screen/res/strings.dart';
 import 'package:places/ui/screen/res/themes.dart';
 
 /// виджет поисковой строки для экрана поиска
@@ -54,7 +55,7 @@ class SearchBar extends StatelessWidget {
             style: Theme.of(context).primaryTextTheme.subtitle1,
             decoration: InputDecoration(
               border: InputBorder.none,
-              hintText: 'Поиск',
+              hintText: searchHintText,
               counterText: '',
               prefixIcon: Padding(
                 padding: const EdgeInsets.only(left: 12, right: 12),

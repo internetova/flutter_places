@@ -8,17 +8,12 @@ import 'package:places/components/button_text.dart';
 import 'package:places/components/bottom_navigationbar.dart';
 import 'package:places/ui/screen/res/assets.dart';
 import 'package:places/ui/screen/res/sizes.dart';
+import 'package:places/ui/screen/res/strings.dart';
 import 'package:places/ui/screen/res/themes.dart';
 import 'package:places/ui/screen/sight_details.dart';
 import 'package:places/ui/screen/utilities/filter_utility.dart';
 import 'package:places/ui/screen/widgets/empty_page.dart';
 import 'package:places/ui/screen/widgets/search_bar.dart';
-
-/// константы
-const _appBarTitle = 'Список интересных мест';
-const _emptyScreenIcon = icEmptySearch;
-const _emptyScreenHeader = 'Ничего не найдено.';
-const _emptyScreenText = 'Попробуйте изменить параметры\nпоиска';
 
 /// экран поиска
 class SightSearchScreen extends StatefulWidget {
@@ -142,7 +137,7 @@ class _SightSearchScreenState extends State<SightSearchScreen> {
                   InkWell(
                     onTap: _back,
                     child: Text(
-                      _appBarTitle,
+                      searchAppBarTitle,
                       style: Theme.of(context).textTheme.headline6,
                     ),
                   ),
@@ -235,16 +230,16 @@ class _SightSearchScreenState extends State<SightSearchScreen> {
   /// ошибка поиска
   Widget _buildSearchError() {
     return Center(
-      child: Text('Ошибка'),
+      child: Text(searchError),
     );
   }
 
   /// если ничего не найдено
   Widget _buildSearchResultEmpty() {
     return const EmptyPage(
-      icon: _emptyScreenIcon,
-      header: _emptyScreenHeader,
-      text: _emptyScreenText,
+      icon: searchEmptyIcon,
+      header: searchEmptyHeader,
+      text: searchEmptyText,
     );
   }
 

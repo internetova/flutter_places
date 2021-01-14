@@ -14,17 +14,6 @@ import 'package:places/ui/screen/res/themes.dart';
 import 'package:places/ui/screen/select_category_screen.dart';
 import 'package:places/ui/screen/sight_list_screen.dart';
 
-/// константы для экрана
-const _emptyCategory = 'Не выбрано';
-const _errorEmptyCategory = 'Выберите Категорию';
-const _errorEmptyName = 'Заполните Название';
-const _errorShortName = 'Название слишком короткое';
-const _errorIncorrectName = 'Только буквы и цифры';
-const _errorEmptyCoordinates = 'Укажите данные';
-const _errorIncorrectCoordinates = 'Некорректные данные';
-const _errorEmptyDetails = 'Заполните Описание min 100 символов';
-const _errorShortDetails = 'Описание меньше 100 символов';
-
 /// регулярные выражения
 final _namePattern = RegExp(r'^[a-zа-яA-ZА-Я0-9 ]+$');
 final _coordinatesPattern = RegExp(r'^-?[0-9]{1,3}(?:\.[0-9]{1,10})?$');
@@ -95,7 +84,7 @@ class _AddSightScreenState extends State<AddSightScreen> {
   @override
   Widget build(BuildContext context) {
     if (_selectedCategory == null) {
-      _categoryController.text = _emptyCategory;
+      _categoryController.text = emptyCategory;
     } else {
       _categoryController.text = _selectedCategory;
 
@@ -221,7 +210,7 @@ class _AddSightScreenState extends State<AddSightScreen> {
   /// Поле Категория
   List<Widget> _buildCategory() {
     return [
-      const Text('КАТЕГОРИЯ'),
+      Text(addNewSightLabelSelectedCategory),
       sizedBoxH12,
       SizedBox(
         height: 48,
@@ -231,7 +220,7 @@ class _AddSightScreenState extends State<AddSightScreen> {
               errorStyle: TextStyle(fontSize: 0),
               enabledBorder: UnderlineInputBorder(
                 borderSide: BorderSide(
-                  color: _categoryController.text != _emptyCategory
+                  color: _categoryController.text != emptyCategory
                       ? Theme.of(context).accentColor.withOpacity(0.4)
                       : Theme.of(context)
                           .colorScheme
@@ -317,7 +306,7 @@ class _AddSightScreenState extends State<AddSightScreen> {
   /// поле Название
   List<Widget> _buildName() {
     return [
-      const Text('НАЗВАНИЕ'),
+      const Text(addNewSightLabelName),
       sizedBoxH12,
       SizedBox(
         height: heightInput,
@@ -363,7 +352,7 @@ class _AddSightScreenState extends State<AddSightScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text('ШИРОТА'),
+          const Text(addNewSightLabelLat),
           sizedBoxH12,
           SizedBox(
             height: heightInput,
@@ -409,7 +398,7 @@ class _AddSightScreenState extends State<AddSightScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text('ДОЛГОТА'),
+          const Text(addNewSightLabelLon),
           sizedBoxH12,
           SizedBox(
             height: heightInput,
@@ -451,16 +440,16 @@ class _AddSightScreenState extends State<AddSightScreen> {
 
   /// кнопка Указать на карте
   Widget _buildButtonShowOnMap() => ButtonText(
-        title: 'Указать на карте',
+        title: addNewSightTitleShowOnMap,
         onPressed: () {
-          print('onPressed: Указать на карте');
+          print('onPressed: $addNewSightTitleShowOnMap');
         },
       );
 
   /// поле Описание
   List<Widget> _buildDetails() {
     return [
-      const Text('ОПИСАНИЕ'),
+      const Text(addNewSightLabelDetails),
       sizedBoxH12,
       TextFormField(
         focusNode: _detailsFocus,
@@ -505,31 +494,31 @@ class _AddSightScreenState extends State<AddSightScreen> {
 
   /// валидация полей
   String _validateCategory(String value) {
-    if (value.isEmpty || value == _emptyCategory) return _errorEmptyCategory;
+    if (value.isEmpty || value == emptyCategory) return errorEmptyCategory;
 
     return null;
   }
 
   String _validateName(String value) {
     final _nameExp = _namePattern;
-    if (value.isEmpty) return _errorEmptyName;
-    if (value.length < 5) return _errorShortName;
-    if (!_nameExp.hasMatch(value)) return _errorIncorrectName;
+    if (value.isEmpty) return errorEmptyName;
+    if (value.length < 5) return errorShortName;
+    if (!_nameExp.hasMatch(value)) return errorIncorrectName;
 
     return null;
   }
 
   String _validateCoordinates(String value) {
     final _coordinatesExp = _coordinatesPattern;
-    if (value.isEmpty) return _errorEmptyCoordinates;
-    if (!_coordinatesExp.hasMatch(value)) return _errorIncorrectCoordinates;
+    if (value.isEmpty) return errorEmptyCoordinates;
+    if (!_coordinatesExp.hasMatch(value)) return errorIncorrectCoordinates;
 
     return null;
   }
 
   String _validateDetails(String value) {
-    if (value.isEmpty) return _errorEmptyDetails;
-    if (value.length < 100) return _errorShortDetails;
+    if (value.isEmpty) return errorEmptyDetails;
+    if (value.length < 100) return errorShortDetails;
 
     return null;
   }
@@ -581,7 +570,7 @@ class _AddSightScreenState extends State<AddSightScreen> {
               borderRadius: BorderRadius.circular(radiusCard),
             ),
             title: Text(
-              'Данные сохранены',
+              addNewSightAlertDialogHeader,
               style: Theme.of(context)
                   .textTheme
                   .headline6
@@ -606,11 +595,11 @@ class _AddSightScreenState extends State<AddSightScreen> {
                 ),
                 sizedBoxH12,
                 Text(
-                  'Широта:\n$lat',
+                  '$addNewSightAlertDialogLat$lat',
                   style: Theme.of(context).primaryTextTheme.bodyText2,
                 ),
                 Text(
-                  'Долгота:\n$lon',
+                  '$addNewSightAlertDialogLon$lon',
                   style: Theme.of(context).primaryTextTheme.bodyText2,
                 ),
               ],

@@ -15,11 +15,6 @@ import 'package:places/components/bottom_navigationbar.dart';
 import 'package:places/ui/screen/sight_search_screen.dart';
 import 'package:places/ui/screen/utilities/filter_utility.dart';
 
-/// константы экрана
-const _buttonTitleAddNewCard = 'НОВОЕ МЕСТО';
-const double _widthButton = 177;
-const double _radiusButton = 24;
-
 /// список интересных мест
 class SightListScreen extends StatefulWidget {
   @override
@@ -89,11 +84,11 @@ class _SightListScreenState extends State<SightListScreen> {
           );
         },
         child: Container(
-          width: _widthButton,
+          width: widthButtonAddNewCard,
           height: heightBigButton,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.all(
-              Radius.circular(_radiusButton),
+              Radius.circular(radiusButtonAddNewCard),
             ),
             gradient: LinearGradient(
               colors: [
@@ -108,7 +103,7 @@ class _SightListScreenState extends State<SightListScreen> {
               IconSvg(icon: icPlus),
               sizedBoxW8,
               Text(
-                _buttonTitleAddNewCard,
+                titleButtonAddNewCard,
                 style: Theme.of(context).textTheme.button,
               ),
             ],
@@ -118,12 +113,20 @@ class _SightListScreenState extends State<SightListScreen> {
 
   /// передаем фильтр на экран поиска
   void _onTapSearch() async {
-    final FilterSettings filter = await Navigator.push(
+    final FilterSettings _filter = await Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => SightSearchScreen(filter: _currentFilter),
       ),
     );
+    setState(() {
+      _currentFilter = _filter;
+      _filteredData = filterData(
+          data: _fullData,
+          categories: _currentFilter.categories,
+          centerPoint: _currentFilter.centerPoint,
+          distance: _currentFilter.distance);
+    });
   }
 
   /// переход на экран фильтра

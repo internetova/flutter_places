@@ -2,10 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:places/components/icon_svg.dart';
 import 'package:places/ui/screen/res/assets.dart';
 import 'package:places/ui/screen/res/sizes.dart';
+import 'package:places/ui/screen/res/strings.dart';
 import 'package:places/ui/screen/res/themes.dart';
-
-/// константы
-const hintText = 'Поиск';
 
 /// виджет поисковой строки для главного экрана
 /// декоративный - выполняет роль перехода на другие экраны:
@@ -44,7 +42,7 @@ class SearchBarStatic extends StatelessWidget {
                 ),
                 sizedBoxW12,
                 Text(
-                  hintText,
+                  searchHintText,
                   style: Theme.of(context).primaryTextTheme.subtitle1.copyWith(
                       color: Theme.of(context).colorScheme.inactiveBlack),
                 ),

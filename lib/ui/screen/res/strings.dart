@@ -5,6 +5,7 @@ import 'package:places/ui/screen/res/assets.dart';
 /// Текстовые контстанты
 /// sight_list_screen
 const appBarTitle = 'Список\nинтересных мест';
+const titleButtonAddNewCard = 'НОВОЕ МЕСТО';
 
 /// sight_details - экран с подробностями
 const buttonTitleToSchedule = 'Запланировать';
@@ -43,10 +44,10 @@ const List<Map> favoritesBlankScreenContent = const [
 ];
 
 /// экран фильтров
-const clearFilters = 'Очистить';
-const titleCategories = 'КАТЕГОРИИ';
-const titleSlider = 'Расстояние';
-const titleButton = 'ПОКАЗАТЬ';
+const filterClearFilters = 'Очистить';
+const filterTitleCategories = 'КАТЕГОРИИ';
+const filterTitleSlider = 'Расстояние';
+const filterTitleButton = 'ПОКАЗАТЬ';
 
 /// экран настройки
 const titleScreenSettings = Text(
@@ -64,3 +65,30 @@ const titleAppBarAddSightScreen = 'Новое место';
 const titleButtonSaveAddSightScreen = 'СОЗДАТЬ';
 const leadingAppBarAddSightScreen = 'Отмена';
 
+/// форма добавления нового места
+const addNewSightLabelSelectedCategory = 'КАТЕГОРИЯ';
+const addNewSightLabelName = 'НАЗВАНИЕ';
+const addNewSightLabelLat = 'ШИРОТА';
+const addNewSightLabelLon = 'ДОЛГОТА';
+const addNewSightLabelDetails = 'ОПИСАНИЕ';
+const addNewSightTitleShowOnMap = 'Указать на карте';
+const emptyCategory = 'Не выбрано';
+const errorEmptyCategory = 'Выберите Категорию';
+const errorEmptyName = 'Заполните Название';
+const errorShortName = 'Название слишком короткое';
+const errorIncorrectName = 'Только буквы и цифры';
+const errorEmptyCoordinates = 'Укажите данные';
+const errorIncorrectCoordinates = 'Некорректные данные';
+const errorEmptyDetails = 'Заполните Описание min 100 символов';
+const errorShortDetails = 'Описание меньше 100 символов';
+const addNewSightAlertDialogHeader = 'Данные сохранены';
+const addNewSightAlertDialogLat = 'Широта:\n';
+const addNewSightAlertDialogLon = 'Долгота:\n';
+
+/// Поиск
+const searchHintText = 'Поиск';
+const searchAppBarTitle = 'Список интересных мест';
+const searchEmptyIcon = icEmptySearch;
+const searchEmptyHeader = 'Ничего не найдено.';
+const searchEmptyText = 'Попробуйте изменить параметры\nпоиска';
+const searchError = 'Ошибка';

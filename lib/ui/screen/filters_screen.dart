@@ -120,9 +120,9 @@ class _FiltersScreenState extends State<FiltersScreen> {
 
   String _buildTitleButton() {
     if (_filteredData.isEmpty) {
-      return 'ПОКАЗАТЬ';
+      return filterTitleButton;
     } else {
-      return 'ПОКАЗАТЬ (${_filteredData.length})';
+      return '$filterTitleButton (${_filteredData.length})';
     }
   }
 
@@ -139,7 +139,7 @@ class _FiltersScreenState extends State<FiltersScreen> {
           child: FlatButton(
             onPressed: _onClearFilter,
             child: Text(
-              clearFilters,
+              filterClearFilters,
               style: Theme.of(context).textTheme.headline5.copyWith(
                     color: Theme.of(context).accentColor,
                   ),
@@ -253,7 +253,7 @@ class _FiltersScreenState extends State<FiltersScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              titleSlider,
+              filterTitleSlider,
               style: Theme.of(context).primaryTextTheme.subtitle1,
             ),
             Text(
