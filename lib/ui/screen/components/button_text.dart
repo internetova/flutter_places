@@ -4,10 +4,16 @@ import 'package:places/ui/screen/res/sizes.dart';
 /// текстовая кнопка сливающаяся с фоном
 /// на экране добавления нового места - Указать на карте
 class ButtonText extends StatelessWidget {
-  const ButtonText({Key key, @required this.title, @required this.onPressed}) : super(key: key);
-
   final String title;
   final VoidCallback onPressed;
+
+  const ButtonText({
+    Key key,
+    @required this.title,
+    this.onPressed,
+  })  : assert(title != null),
+        super(key: key);
+
 
   @override
   Widget build(BuildContext context) {

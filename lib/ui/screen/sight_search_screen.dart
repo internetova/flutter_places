@@ -4,8 +4,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:places/mocks.dart';
 import 'package:places/domain/sight.dart';
-import 'package:places/components/button_text.dart';
-import 'package:places/components/bottom_navigationbar.dart';
+import 'package:places/ui/screen/components/button_text.dart';
+import 'package:places/ui/screen/components/bottom_navigationbar.dart';
 import 'package:places/ui/screen/res/assets.dart';
 import 'package:places/ui/screen/res/sizes.dart';
 import 'package:places/ui/screen/res/strings.dart';
@@ -237,7 +237,7 @@ class _SightSearchScreenState extends State<SightSearchScreen> {
   /// если ничего не найдено
   Widget _buildSearchResultEmpty() {
     return const EmptyPage(
-      icon: searchEmptyIcon,
+      icon: icEmptySearch,
       header: searchEmptyHeader,
       text: searchEmptyText,
     );

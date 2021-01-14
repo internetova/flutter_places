@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:places/components/icon_action_button.dart';
+import 'package:places/ui/screen/components/icon_action_button.dart';
 
 import 'package:places/domain/sight.dart';
 import 'package:places/ui/screen/res/sizes.dart';
@@ -15,13 +15,16 @@ import 'package:places/ui/screen/sight_details.dart';
 /// ‼️🙄 честно говоря пока не знаю какие будут данные и как должно будет
 /// это всё работать, поэтому пока так
 class SightCard extends StatelessWidget {
+  final Sight card;
+  final WhereShowCard whereShowCard;
+
   const SightCard({
     Key key,
     @required this.card,
     @required this.whereShowCard,
-  }) : super(key: key);
-  final Sight card;
-  final WhereShowCard whereShowCard;
+  })  : assert(card != null),
+        assert(whereShowCard != null),
+        super(key: key);
 
   @override
   Widget build(BuildContext context) {

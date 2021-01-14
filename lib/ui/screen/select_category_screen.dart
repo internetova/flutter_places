@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:places/components/button_save.dart';
-import 'package:places/components/icon_leading_appbar.dart';
-import 'package:places/components/icon_svg.dart';
+import 'package:places/ui/screen/components/button_save.dart';
+import 'package:places/ui/screen/components/icon_leading_appbar.dart';
+import 'package:places/ui/screen/components/icon_svg.dart';
 import 'package:places/domain/categories.dart';
 import 'package:places/mocks.dart';
 import 'package:places/ui/screen/res/assets.dart';
@@ -10,9 +10,10 @@ import 'package:places/ui/screen/res/strings.dart';
 
 /// выбор категории -> из добавления нового места AddSightScreen
 class SelectCategoryScreen extends StatefulWidget {
+  final String selectedCategory;
+
   const SelectCategoryScreen({Key key, this.selectedCategory})
       : super(key: key);
-  final String selectedCategory;
 
   @override
   _SelectCategoryScreenState createState() => _SelectCategoryScreenState();

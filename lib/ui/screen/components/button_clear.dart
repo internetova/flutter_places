@@ -2,9 +2,13 @@ import 'package:flutter/material.dart';
 
 /// кнопка очистки поля
 class ButtonClear extends StatelessWidget {
-  const ButtonClear({Key key, @required this.controller}) : super(key: key);
-
   final TextEditingController controller;
+
+  const ButtonClear({
+    Key key,
+    @required this.controller,
+  })  : assert(controller != null),
+        super(key: key);
 
   @override
   Widget build(BuildContext context) {

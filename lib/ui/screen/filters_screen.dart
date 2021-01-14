@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:places/components/button_save.dart';
-import 'package:places/components/icon_leading_appbar.dart';
 import 'package:places/domain/categories.dart';
 import 'package:places/domain/sight.dart';
 import 'package:places/mocks.dart';
+import 'package:places/ui/screen/components/button_save.dart';
+import 'package:places/ui/screen/components/icon_leading_appbar.dart';
 import 'package:places/ui/screen/res/assets.dart';
 import 'package:places/ui/screen/res/sizes.dart';
 import 'package:places/ui/screen/res/strings.dart';

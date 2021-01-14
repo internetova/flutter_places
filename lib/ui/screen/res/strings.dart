@@ -88,7 +88,6 @@ const addNewSightAlertDialogLon = 'Долгота:\n';
 /// Поиск
 const searchHintText = 'Поиск';
 const searchAppBarTitle = 'Список интересных мест';
-const searchEmptyIcon = icEmptySearch;
 const searchEmptyHeader = 'Ничего не найдено.';
 const searchEmptyText = 'Попробуйте изменить параметры\nпоиска';
 const searchError = 'Ошибка';

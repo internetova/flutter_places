@@ -5,15 +5,19 @@ import 'package:places/ui/screen/res/sizes.dart';
 /// пустые страницы
 /// Избранное, результаты поиска
 class EmptyPage extends StatelessWidget {
+  final String icon;
+  final String header;
+  final String text;
+
   const EmptyPage({
     Key key,
     @required this.icon,
     @required this.header,
     @required this.text,
-  }) : super(key: key);
-  final String icon;
-  final String header;
-  final String text;
+  })  : assert(icon != null),
+        assert(header != null),
+        assert(text != null),
+        super(key: key);
 
   @override
   Widget build(BuildContext context) {

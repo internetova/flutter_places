@@ -4,16 +4,18 @@ import 'package:places/ui/screen/res/themes.dart';
 
 /// кнопка сохранить / создать при добавлении нового места
 class ButtonSave extends StatelessWidget {
+  final String title;
+  final bool isButtonEnabled;
+  final VoidCallback onPressed;
+
   ButtonSave({
     Key key,
     @required this.title,
     @required this.isButtonEnabled,
-    @required this.onPressed,
-  }) : super(key: key);
-
-  final String title;
-  final bool isButtonEnabled;
-  final VoidCallback onPressed;
+    this.onPressed,
+  })  : assert(title != null),
+        assert(isButtonEnabled != null),
+        super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -31,13 +33,13 @@ class ButtonSave extends StatelessWidget {
           title,
           style: _buildButtonColorTitle(context),
         ),
-        backgroundColor: _buildButtonColor(context),
+        backgroundColor: _getButtonColor(context),
       ),
     );
   }
 
   /// цвет кнопки в зависимоти от её состояния
-  Color _buildButtonColor(BuildContext context) {
+  Color _getButtonColor(BuildContext context) {
     if (isButtonEnabled) {
       return Theme.of(context).floatingActionButtonTheme.backgroundColor;
     } else {

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:places/components/icon_svg.dart';
+import 'package:places/ui/screen/components/icon_svg.dart';
 import 'package:places/ui/screen/res/assets.dart';
 import 'package:places/ui/screen/res/sizes.dart';
 import 'package:places/ui/screen/res/strings.dart';
@@ -14,7 +14,7 @@ class SearchBarStatic extends StatelessWidget {
 
   const SearchBarStatic({
     Key key,
-    @required this.onTapSearch,
+    this.onTapSearch,
     this.onPressedFilter,
   }) : super(key: key);
 

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:places/components/button_clear.dart';
-import 'package:places/components/button_save.dart';
-import 'package:places/components/button_text.dart';
-import 'package:places/components/icon_svg.dart';
-import 'package:places/components/title_leading_appbar.dart';
+import 'package:places/ui/screen/components/button_clear.dart';
+import 'package:places/ui/screen/components/button_save.dart';
+import 'package:places/ui/screen/components/button_text.dart';
+import 'package:places/ui/screen/components/icon_svg.dart';
+import 'package:places/ui/screen/components/title_leading_appbar.dart';
 import 'package:places/domain/sight.dart';
 import 'package:places/mocks.dart';
 import 'package:places/ui/screen/res/assets.dart';

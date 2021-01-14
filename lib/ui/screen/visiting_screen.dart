@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:places/mocks.dart';
 import 'package:places/domain/sight.dart';
 import 'package:places/ui/screen/res/strings.dart';
-import 'package:places/ui/screen/sight_card.dart';
-import 'package:places/components/bottom_navigationbar.dart';
+import 'package:places/ui/screen/widgets/sight_card.dart';
+import 'package:places/ui/screen/components/bottom_navigationbar.dart';
 import 'package:places/ui/screen/widgets/empty_page.dart';
 
 /// экран с избранными карточками - Хочу посетить / Посетил
