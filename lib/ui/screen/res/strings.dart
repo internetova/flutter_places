@@ -28,18 +28,18 @@ const dateVisited = 'Цель достигнута';
 
 /// данные для вывода на странице Избранное
 /// когда нет карточек в нужной категории
-const List<Map> favoritesBlankScreenContent = const [
+const List<Map> favoritesEmptyScreen = const [
   {
     'typeCard': WhereShowCard.planned,
-    'blankScreenIcon': icEmptyPlanned,
-    'blankScreenHeader': 'Пусто',
-    'blankScreenText': 'Отмечайте понравившиеся\nместа и они появятся здесь.',
+    'emptyScreenIcon': icEmptyPlanned,
+    'emptyScreenHeader': 'Пусто',
+    'emptyScreenText': 'Отмечайте понравившиеся\nместа и они появятся здесь.',
   },
   {
     'typeCard': WhereShowCard.visited,
-    'blankScreenIcon': icEmptyVisited,
-    'blankScreenHeader': 'Пусто',
-    'blankScreenText': 'Завершите маршрут,\nчтобы место попало сюда.',
+    'emptyScreenIcon': icEmptyVisited,
+    'emptyScreenHeader': 'Пусто',
+    'emptyScreenText': 'Завершите маршрут,\nчтобы место попало сюда.',
   },
 ];
 
@@ -71,6 +71,7 @@ const addNewSightLabelName = 'НАЗВАНИЕ';
 const addNewSightLabelLat = 'ШИРОТА';
 const addNewSightLabelLon = 'ДОЛГОТА';
 const addNewSightLabelDetails = 'ОПИСАНИЕ';
+const addNewSightHintTextDetails = 'введите текст';
 const addNewSightTitleShowOnMap = 'Указать на карте';
 const emptyCategory = 'Не выбрано';
 const errorEmptyCategory = 'Выберите Категорию';
@@ -84,6 +85,7 @@ const errorShortDetails = 'Описание меньше 100 символов';
 const addNewSightAlertDialogHeader = 'Данные сохранены';
 const addNewSightAlertDialogLat = 'Широта:\n';
 const addNewSightAlertDialogLon = 'Долгота:\n';
+const addNewSightAlertDialogSubmit = 'OK';
 
 /// Поиск
 const searchHintText = 'Поиск';

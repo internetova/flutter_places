@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:places/data.dart';
 import 'package:places/ui/screen/components/icon_action_button.dart';
 
 import 'package:places/domain/sight.dart';
@@ -7,6 +8,7 @@ import 'package:places/ui/screen/res/sizes.dart';
 import 'package:places/ui/screen/res/strings.dart';
 import 'package:places/ui/screen/res/assets.dart';
 import 'package:places/ui/screen/sight_details.dart';
+import 'package:places/ui/screen/visiting_screen.dart';
 
 /// карточка достопримечательности
 /// в зависимости от места показа карточки - Список поиска, в Избранном
@@ -18,7 +20,7 @@ class SightCard extends StatelessWidget {
   final Sight card;
   final WhereShowCard whereShowCard;
 
-  const SightCard({
+  SightCard({
     Key key,
     @required this.card,
     @required this.whereShowCard,
@@ -70,7 +72,7 @@ class SightCard extends StatelessWidget {
             Positioned(
               top: 8,
               right: 16,
-              child: CardActions(whereShowCard: whereShowCard),
+              child: CardActions(card: card, whereShowCard: whereShowCard),
             ),
           ],
         ),
@@ -126,53 +128,15 @@ class CardContentType extends StatelessWidget {
 /// кнопки действий: добавить в избранное, удалить, поделиться и т.п.
 /// отображается на одной линии с типом карточки
 /// в зависимости от места показа карточки кнопки меняются
-class CardActions extends StatefulWidget {
-  const CardActions({Key key, @required this.whereShowCard}) : super(key: key);
+class CardActions extends StatelessWidget {
+  final Sight card;
   final WhereShowCard whereShowCard;
 
-  @override
-  _CardActionsState createState() => _CardActionsState();
-}
-
-class _CardActionsState extends State<CardActions> {
-  final _search = <Widget>[
-    IconActionButton(
-      onPressed: () {
-        print('onPressed Избранное');
-      },
-      icon: icFavorites,
-    ),
-  ];
-
-  var _planned = <Widget>[
-    IconActionButton(
-      onPressed: () {
-        print('onPressed Календарь');
-      },
-      icon: icCalendar,
-    ),
-    IconActionButton(
-      onPressed: () {
-        print('onPressed Удалить');
-      },
-      icon: icDelete,
-    ),
-  ];
-
-  final _visited = <Widget>[
-    IconActionButton(
-      onPressed: () {
-        print('onPressed Поделиться');
-      },
-      icon: icShare,
-    ),
-    IconActionButton(
-      onPressed: () {
-        print('onPressed Удалить');
-      },
-      icon: icDelete,
-    ),
-  ];
+  CardActions({
+    Key key,
+    @required this.whereShowCard,
+    this.card,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -180,12 +144,62 @@ class _CardActionsState extends State<CardActions> {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          if (widget.whereShowCard == WhereShowCard.search) ..._search,
-          if (widget.whereShowCard == WhereShowCard.planned) ..._planned,
-          if (widget.whereShowCard == WhereShowCard.visited) ..._visited,
+          if (whereShowCard == WhereShowCard.search)
+            ..._buildActionsSearch(context),
+          if (whereShowCard == WhereShowCard.planned)
+            ..._buildActionsPlanned(context),
+          if (whereShowCard == WhereShowCard.visited)
+            ..._buildActionsVisited(context),
         ],
       ),
     );
+  }
+
+  /// кнопки действий для карточки главного экрана
+  List _buildActionsSearch(BuildContext context) => <Widget>[
+        IconActionButton(
+          onPressed: () {
+            print('onPressed Избранное');
+          },
+          icon: icFavorites,
+        ),
+      ];
+
+  /// кнопки действий для карточки Хочу посетить
+  List _buildActionsPlanned(BuildContext context) => <Widget>[
+        IconActionButton(
+          onPressed: () {
+            print('onPressed Календарь');
+          },
+          icon: icCalendar,
+        ),
+        IconActionButton(
+          onPressed: () {
+            _deleteCard(context);
+          },
+          icon: icDelete,
+        ),
+      ];
+
+  /// кнопки действий для карточки посетил
+  List _buildActionsVisited(BuildContext context) => <Widget>[
+        IconActionButton(
+          onPressed: () {
+            print('onPressed Поделиться');
+          },
+          icon: icShare,
+        ),
+        IconActionButton(
+          onPressed: () {
+            _deleteCard(context);
+          },
+          icon: icDelete,
+        ),
+      ];
+
+  void _deleteCard(BuildContext context) {
+    favoritesSight.removeWhere((element) => element.id == card.id);
+    VisitingScreen.of(context).updateState();
   }
 }
 
