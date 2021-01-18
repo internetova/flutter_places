@@ -472,7 +472,7 @@ class _AddSightScreenState extends State<AddSightScreen> {
         style: Theme.of(context).primaryTextTheme.subtitle1,
         decoration: InputDecoration(
           counterText: '',
-          hintText: 'введите текст',
+          hintText: addNewSightHintTextDetails,
           hintStyle: Theme.of(context)
               .primaryTextTheme
               .subtitle1
@@ -560,8 +560,13 @@ class _AddSightScreenState extends State<AddSightScreen> {
           );
 
   /// показываем окно если форма валидна
-  void _showDialog(
-      {String category, String name, double lat, double lon, String details}) {
+  void _showDialog({
+    String category,
+    String name,
+    double lat,
+    double lon,
+    String details,
+  }) {
     showDialog(
         context: context,
         builder: (context) {
@@ -615,7 +620,7 @@ class _AddSightScreenState extends State<AddSightScreen> {
                   );
                 },
                 child: Text(
-                  'Ok',
+                  addNewSightAlertDialogSubmit,
                   style: Theme.of(context)
                       .textTheme
                       .headline6
