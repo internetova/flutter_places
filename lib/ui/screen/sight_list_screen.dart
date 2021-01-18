@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:places/domain/sight.dart';
 import 'package:places/mocks.dart';
+import 'package:places/ui/screen/components/button_gradient.dart';
 import 'package:places/ui/screen/filters_screen.dart';
 import 'package:places/ui/screen/res/themes.dart';
 import 'package:places/ui/screen/add_sight_screen.dart';
@@ -39,7 +40,7 @@ class _SightListScreenState extends State<SightListScreen> {
         data: _filteredData.isNotEmpty ? _filteredData : _fullData,
         whereShowCard: WhereShowCard.search,
       ),
-      floatingActionButton: _buildAddNewCard(),
+      floatingActionButton: ButtonGradient(onPressed: _onPressedAddNewCard),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       bottomNavigationBar: const MainBottomNavigationBar(current: 0),
     );
@@ -73,43 +74,15 @@ class _SightListScreenState extends State<SightListScreen> {
         ),
       );
 
-  /// кнопка добавить новое место
-  Widget _buildAddNewCard() => FlatButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => AddSightScreen(),
-            ),
-          );
-        },
-        child: Container(
-          width: widthButtonAddNewCard,
-          height: heightBigButton,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.all(
-              Radius.circular(radiusButtonAddNewCard),
-            ),
-            gradient: LinearGradient(
-              colors: [
-                Theme.of(context).colorScheme.yellow,
-                Theme.of(context).colorScheme.green,
-              ],
-            ),
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              IconSvg(icon: icPlus),
-              sizedBoxW8,
-              Text(
-                titleButtonAddNewCard,
-                style: Theme.of(context).textTheme.button,
-              ),
-            ],
-          ),
-        ),
-      );
+  /// нажатие на градиентную кнопку - переходим на экран добавления
+  void _onPressedAddNewCard() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => AddSightScreen(),
+      ),
+    );
+  }
 
   /// передаем фильтр на экран поиска
   void _onTapSearch() async {
