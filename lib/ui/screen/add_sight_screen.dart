@@ -3,6 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:places/ui/screen/components/button_clear.dart';
 import 'package:places/ui/screen/components/button_save.dart';
 import 'package:places/ui/screen/components/button_text.dart';
+import 'package:places/ui/screen/components/card_square_img.dart';
+import 'package:places/ui/screen/components/dismiss_bg_img.dart';
 import 'package:places/ui/screen/components/icon_svg.dart';
 import 'package:places/ui/screen/components/title_leading_appbar.dart';
 import 'package:places/domain/sight.dart';
@@ -13,6 +15,8 @@ import 'package:places/ui/screen/res/strings.dart';
 import 'package:places/ui/screen/res/themes.dart';
 import 'package:places/ui/screen/select_category_screen.dart';
 import 'package:places/ui/screen/sight_list_screen.dart';
+import 'package:places/ui/screen/components/button_card_add_img.dart';
+import 'package:places/ui/screen/utilities/test_images_data.dart';
 
 /// регулярные выражения
 final _namePattern = RegExp(r'^[a-zа-яA-ZА-Я0-9 ]+$');
@@ -37,6 +41,16 @@ class _AddSightScreenState extends State<AddSightScreen> {
   double _lat;
   double _lon;
   String _details;
+
+  /// сюда сохраним фотографии для загрузки
+  List<String> _userImages = [
+    // 'res/test_data/1.jpg',
+    // 'res/test_data/4.jpg',
+    // 'res/test_data/8.jpg',
+    // 'res/test_data/1.jpg',
+    // 'res/test_data/4.jpg',
+    // 'res/test_data/8.jpg',
+  ];
 
   final _categoryController = TextEditingController();
   final _nameController = TextEditingController();
@@ -157,6 +171,22 @@ class _AddSightScreenState extends State<AddSightScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
+                      SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                          mainAxisSize: MainAxisSize.max,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            ButtonCardAddImg(
+                              onPressed: addImg,
+                            ),
+                            sizedBoxW16,
+                            if (_userImages.isNotEmpty)
+                              ..._buildImagesToUpload(_userImages),
+                          ],
+                        ),
+                      ),
+                      sizedBoxH24,
                       ..._buildCategory(),
                       sizedBoxH24,
                       ..._buildName(),
@@ -631,5 +661,56 @@ class _AddSightScreenState extends State<AddSightScreen> {
             ],
           );
         });
+  }
+
+  /// клик по кнопке добавления фотографии - заполняем тестовыми данными
+  void addImg() {
+    setState(() {
+      _userImages.add(TestImagesData.getRandomItem());
+    });
+  }
+
+  /// показать изображения для загрузки
+  List<Widget> _buildImagesToUpload(List<String> data) {
+    List<Widget> list = [];
+
+    if (data.isEmpty) {
+      return null;
+    }
+
+    for (var i = 0; i < data.length; i++) {
+      list.add(
+        GestureDetector(
+          onTap: () {
+            _deleteImage(i);
+          },
+          child: Dismissible(
+            key: UniqueKey(),
+            onDismissed: (direction) {
+              _deleteImage(i);
+            },
+            direction: DismissDirection.up,
+            background: DismissBackgroundImg(),
+            child: Stack(children: [
+              CardSquareImgDelete(
+                image: AssetImage(
+                  data[i],
+                ),
+              ),
+            ]),
+          ),
+        ),
+      );
+      list.add(sizedBoxW16);
+    }
+
+    return list;
+  }
+
+  /// удалить изображение
+  void _deleteImage(int item) {
+    setState(() {
+      _userImages.removeAt(item);
+    });
   }
 }

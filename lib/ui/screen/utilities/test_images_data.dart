@@ -4,21 +4,21 @@ import 'dart:math';
 /// на экране создания нового места
 class TestImagesData {
   static const _testData = <String>[
-    '1.jpg',
-    '2.jpg',
-    '3.jpg',
-    '4.jpg',
-    '5.jpg',
-    '6.jpg',
-    '7.jpg',
-    '8.jpg',
-    '9.jpg',
-    '10.jpg',
-    '11.jpg',
+    'res/test_data/1.jpg',
+    'res/test_data/2.jpg',
+    'res/test_data/3.jpg',
+    'res/test_data/4.jpg',
+    'res/test_data/5.jpg',
+    'res/test_data/6.jpg',
+    'res/test_data/7.jpg',
+    'res/test_data/8.jpg',
+    'res/test_data/9.jpg',
+    'res/test_data/10.jpg',
+    'res/test_data/11.jpg',
   ];
 
   // получаем рандомную картинку из тестовых данных
-  static String getRandomItem(_testData) {
+  static String getRandomItem() {
     final int random = Random().nextInt(_testData.length);
     return _testData[random];
   }

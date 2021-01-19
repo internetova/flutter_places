@@ -61,8 +61,7 @@ class SearchBar extends StatelessWidget {
                 padding: const EdgeInsets.only(left: 12, right: 12),
                 child: IconSvg(
                   icon: icSearch,
-                  width: 24,
-                  height: 24,
+                  size: 24,
                   color: Theme.of(context).colorScheme.inactiveBlack,
                 ),
               ),

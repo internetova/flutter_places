@@ -177,7 +177,7 @@ class CardActions extends StatelessWidget {
           onPressed: () {
             _deleteCard(context);
           },
-          icon: icDelete,
+          icon: icClose,
         ),
       ];
 
@@ -193,7 +193,7 @@ class CardActions extends StatelessWidget {
           onPressed: () {
             _deleteCard(context);
           },
-          icon: icDelete,
+          icon: icClose,
         ),
       ];
 
