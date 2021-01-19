@@ -18,6 +18,8 @@ const titleScreenFavorites = Text(
   'Избранное',
 );
 
+const actionDelete = 'Удалить';
+
 /// хочу посетить
 const tabPlanned = 'Хочу посетить';
 const datePlanned = 'Запланировано на';

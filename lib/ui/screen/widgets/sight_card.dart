@@ -269,33 +269,3 @@ class CardContent extends StatelessWidget {
     );
   }
 }
-
-/// строим экран с карточками
-/// в конструкторе база данных карточек и параметр Где (в каком разделе) выводится
-/// карточка, т.к. от него зависит внутреннее наполнение карточки
-class BuildCardScreen extends StatelessWidget {
-  const BuildCardScreen({
-    Key key,
-    @required this.data,
-    @required this.whereShowCard,
-  }) : super(key: key);
-  final List<Sight> data;
-  final WhereShowCard whereShowCard;
-
-  @override
-  Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            for (var card in data) ...[
-              SightCard(card: card, whereShowCard: whereShowCard),
-              sizedBoxH16
-            ],
-          ],
-        ),
-      ),
-    );
-  }
-}

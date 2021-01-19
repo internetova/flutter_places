@@ -27,6 +27,7 @@ const icFilter = '$_baseResPath/filter.svg';
 const icSearch = '$_baseResPath/search.svg';
 const icDelete = '$_baseResPath/delete.svg';
 const icClear = '$_baseResPath/clear.svg';
+const icBucket = '$_baseResPath/bucket.svg';
 
 /// пустые страницы
 const icEmptyPlanned = '$_baseResPath/empty_pages/card.svg';

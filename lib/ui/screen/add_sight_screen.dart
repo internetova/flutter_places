@@ -43,14 +43,7 @@ class _AddSightScreenState extends State<AddSightScreen> {
   String _details;
 
   /// сюда сохраним фотографии для загрузки
-  List<String> _userImages = [
-    // 'res/test_data/1.jpg',
-    // 'res/test_data/4.jpg',
-    // 'res/test_data/8.jpg',
-    // 'res/test_data/1.jpg',
-    // 'res/test_data/4.jpg',
-    // 'res/test_data/8.jpg',
-  ];
+  List<String> _userImages = [];
 
   final _categoryController = TextEditingController();
   final _nameController = TextEditingController();
