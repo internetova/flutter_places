@@ -31,17 +31,18 @@ class CardSquareImg extends StatelessWidget {
 }
 
 /// карточка с картинкой и иконкой удалить для экрана добавления нового места
-class CardSquareImgDelete extends StatelessWidget {
+class CardSquareImgWithDeleteIcon extends StatelessWidget {
   final double size;
   final ImageProvider image;
   final String icon;
 
-  const CardSquareImgDelete({
+  const CardSquareImgWithDeleteIcon({
     Key key,
     this.size = cardSizeSquareImgBig,
     @required this.image,
     this.icon = icClear,
-  }) : super(key: key);
+  })  : assert(image != null),
+        super(key: key);
 
   @override
   Widget build(BuildContext context) {

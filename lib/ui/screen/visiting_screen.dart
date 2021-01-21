@@ -65,8 +65,11 @@ class _VisitingScreenState extends State<VisitingScreen> {
           bottom: PreferredSize(
             preferredSize: Size.fromHeight(60),
             child: Container(
-              margin:
-                  const EdgeInsets.only(left: 16.0, bottom: 30.0, right: 16.0),
+              margin: const EdgeInsets.only(
+                left: 16.0,
+                bottom: 30.0,
+                right: 16.0,
+              ),
               height: 40,
               decoration: BoxDecoration(
                 color: Theme.of(context).primaryColorDark,

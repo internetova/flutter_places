@@ -664,46 +664,70 @@ class _AddSightScreenState extends State<AddSightScreen> {
   }
 
   /// показать изображения для загрузки
-  List<Widget> _buildImagesToUpload(List<String> data) {
-    List<Widget> list = [];
+  /// картинки берём из тестовой базы данных
+  List<Widget> _buildImagesToUpload(List<String> data) => data
+      .asMap()
+      .map((i, image) => MapEntry(
+            i,
+            RemovableCard(
+              id: i,
+              image: image,
+              deleteImage: _deleteImage,
+            ),
+          ))
+      .values
+      .toList();
 
-    if (data.isEmpty) {
-      return null;
-    }
+  /// удалить изображение
+  void _deleteImage(int id) {
+    setState(() {
+      _userImages.removeAt(id);
+    });
+  }
+}
 
-    for (var i = 0; i < data.length; i++) {
-      list.add(
+/// карточка с фото которую можно удалить нажатием и смахиванием вверх
+class RemovableCard extends StatelessWidget {
+  final int id;
+  final String image;
+  final Function deleteImage;
+
+  const RemovableCard({
+    Key key,
+    @required this.id,
+    @required this.image,
+    @required this.deleteImage,
+  })  : assert(id != null),
+        assert(image != null),
+        assert(deleteImage != null),
+        super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
         GestureDetector(
           onTap: () {
-            _deleteImage(i);
+            deleteImage(id);
           },
           child: Dismissible(
             key: UniqueKey(),
-            onDismissed: (direction) {
-              _deleteImage(i);
+            onDismissed: (_) {
+              deleteImage(id);
             },
             direction: DismissDirection.up,
             background: DismissBackgroundImg(),
             child: Stack(children: [
-              CardSquareImgDelete(
+              CardSquareImgWithDeleteIcon(
                 image: AssetImage(
-                  data[i],
+                  image,
                 ),
               ),
             ]),
           ),
         ),
-      );
-      list.add(sizedBoxW16);
-    }
-
-    return list;
-  }
-
-  /// удалить изображение
-  void _deleteImage(int item) {
-    setState(() {
-      _userImages.removeAt(item);
-    });
+        sizedBoxW16,
+      ],
+    );
   }
 }
