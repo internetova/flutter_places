@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'package:flutter/material.dart';
 
 /// генерация тестовых данных для добавления фотографий
 /// на экране создания нового места
@@ -17,9 +18,22 @@ class TestImagesData {
     'res/test_data/11.jpg',
   ];
 
-  // получаем рандомную картинку из тестовых данных
-  static String getRandomItem() {
-    final int random = Random().nextInt(_testData.length);
-    return _testData[random];
+  // получаем рандомные данные из тестовых данных для карточки
+  static TestImage getRandomItem() {
+    final int randomId = Random().nextInt(99000);
+    final int randomUrl = Random().nextInt(_testData.length);
+    return TestImage(id: randomId, url: _testData[randomUrl]);
   }
+}
+
+/// item карточки для удаления
+class TestImage {
+  final int id;
+  final String url;
+
+  TestImage({
+    @required this.id,
+    @required this.url,
+  }) : assert(id != null),
+        assert(url != null);
 }

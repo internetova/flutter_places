@@ -42,8 +42,8 @@ class _AddSightScreenState extends State<AddSightScreen> {
   double _lon;
   String _details;
 
-  /// сюда сохраним фотографии для загрузки
-  List<String> _userImages = [];
+  /// сюда сохраним тестовые фотографии для загрузки
+  List<TestImage> _userImages = [];
 
   final _categoryController = TextEditingController();
   final _nameController = TextEditingController();
@@ -665,40 +665,32 @@ class _AddSightScreenState extends State<AddSightScreen> {
 
   /// показать изображения для загрузки
   /// картинки берём из тестовой базы данных
-  List<Widget> _buildImagesToUpload(List<String> data) => data
-      .asMap()
-      .map((i, image) => MapEntry(
-            i,
-            RemovableCard(
-              id: i,
-              image: image,
-              deleteImage: _deleteImage,
-            ),
-          ))
-      .values
+  List<Widget> _buildImagesToUpload(List<TestImage> data) => data
+      .map(
+        (image) => RemovableCard(
+          image: image,
+          deleteImage: _deleteImage,
+        ),
+      )
       .toList();
 
-  /// удалить изображение
-  void _deleteImage(int id) {
+  void _deleteImage(TestImage image) {
     setState(() {
-      _userImages.removeAt(id);
+      _userImages.remove(image);
     });
   }
 }
 
 /// карточка с фото которую можно удалить нажатием и смахиванием вверх
 class RemovableCard extends StatelessWidget {
-  final int id;
-  final String image;
+  final TestImage image;
   final Function deleteImage;
 
   const RemovableCard({
     Key key,
-    @required this.id,
     @required this.image,
     @required this.deleteImage,
-  })  : assert(id != null),
-        assert(image != null),
+  })  : assert(image != null),
         assert(deleteImage != null),
         super(key: key);
 
@@ -708,22 +700,20 @@ class RemovableCard extends StatelessWidget {
       children: [
         GestureDetector(
           onTap: () {
-            deleteImage(id);
+            deleteImage(image);
           },
           child: Dismissible(
             key: UniqueKey(),
             onDismissed: (_) {
-              deleteImage(id);
+              deleteImage(image);
             },
             direction: DismissDirection.up,
             background: DismissBackgroundImg(),
-            child: Stack(children: [
-              CardSquareImgWithDeleteIcon(
-                image: AssetImage(
-                  image,
-                ),
+            child: CardSquareImgWithDeleteIcon(
+              image: AssetImage(
+                image.url,
               ),
-            ]),
+            ),
           ),
         ),
         sizedBoxW16,
