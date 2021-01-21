@@ -3,9 +3,9 @@ import 'package:places/data.dart';
 
 import 'package:places/domain/sight.dart';
 import 'package:places/ui/screen/res/strings.dart';
-import 'package:places/ui/screen/widgets/sight_card.dart';
 import 'package:places/ui/screen/components/bottom_navigationbar.dart';
 import 'package:places/ui/screen/widgets/empty_page.dart';
+import 'package:places/ui/screen/widgets/sight_card_visiting.dart';
 
 /// экран с избранными карточками - Хочу посетить / Посетил
 class VisitingScreen extends StatefulWidget {
@@ -18,13 +18,37 @@ class VisitingScreen extends StatefulWidget {
 }
 
 class _VisitingScreenState extends State<VisitingScreen> {
-  List<Sight> _userData = favoritesSight;
+  List<Sight> _userDataPlanned = [];
+  List<Sight> _userDataVisited = [];
+
+  @override
+  void initState() {
+    _userDataPlanned = _getCurrentData(
+      data: favoritesSight,
+      typeCard: WhereShowCard.planned,
+    );
+
+    _userDataVisited = _getCurrentData(
+      data: favoritesSight,
+      typeCard: WhereShowCard.visited,
+    );
+
+    super.initState();
+  }
 
   /// обновить базу данных после удаления карточки
   /// буду вызывать из дочернего виджета
   void updateState() {
     setState(() {
-      _userData = favoritesSight;
+      _userDataPlanned = _getCurrentData(
+        data: favoritesSight,
+        typeCard: WhereShowCard.planned,
+      );
+
+      _userDataVisited = _getCurrentData(
+        data: favoritesSight,
+        typeCard: WhereShowCard.visited,
+      );
     });
   }
 
@@ -37,10 +61,15 @@ class _VisitingScreenState extends State<VisitingScreen> {
         appBar: AppBar(
           title: titleScreenFavorites,
           backgroundColor: Colors.transparent,
+          toolbarHeight: 156,
           bottom: PreferredSize(
             preferredSize: Size.fromHeight(60),
             child: Container(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+              margin: const EdgeInsets.only(
+                left: 16.0,
+                bottom: 30.0,
+                right: 16.0,
+              ),
               height: 40,
               decoration: BoxDecoration(
                 color: Theme.of(context).primaryColorDark,
@@ -64,11 +93,11 @@ class _VisitingScreenState extends State<VisitingScreen> {
         body: TabBarView(
           children: [
             _buildFavorites(
-              data: _userData,
+              data: _userDataPlanned,
               typeCard: WhereShowCard.planned,
             ),
             _buildFavorites(
-              data: _userData,
+              data: _userDataVisited,
               typeCard: WhereShowCard.visited,
             ),
           ],
@@ -85,13 +114,9 @@ class _VisitingScreenState extends State<VisitingScreen> {
     @required WhereShowCard typeCard,
   }) {
     Widget favTabBarView;
-    var favorites = <Sight>[];
-
-    /// ищем в базе карточки с соответствующим типом
-    favorites = data.where((item) => item.favorites == typeCard).toList();
 
     /// если нет таких, то показываем заглушку
-    if (favorites.isEmpty) {
+    if (data.isEmpty) {
       final screenContent = favoritesEmptyScreen
           .where((item) => item['typeCard'] == typeCard)
           .toList();
@@ -102,13 +127,34 @@ class _VisitingScreenState extends State<VisitingScreen> {
         text: screenContent[0]['emptyScreenText'],
       );
     } else {
-      /// иначе выводим карточки
-      favTabBarView = BuildCardScreen(
-        data: favorites,
-        whereShowCard: typeCard,
+      favTabBarView = ReorderableListView(
+        children: [
+          for (var card in data) ...[
+            SightCardVisiting(
+              key: ValueKey(card),
+              card: card,
+              whereShowCard: typeCard,
+            ),
+          ],
+        ],
+        onReorder: (int oldIndex, int newIndex) {
+          setState(() {
+            if (newIndex > oldIndex) {
+              newIndex -= 1;
+            }
+
+            final newCard = data.removeAt(oldIndex);
+            data.insert(newIndex, newCard);
+          });
+        },
       );
     }
 
     return favTabBarView;
   }
+
+  /// получить текущую базу соответствующей вкладки
+  List<Sight> _getCurrentData(
+          {@required List<Sight> data, @required WhereShowCard typeCard}) =>
+      data.where((item) => item.favorites == typeCard).toList();
 }

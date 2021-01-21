@@ -6,6 +6,7 @@ import 'package:places/mocks.dart';
 import 'package:places/domain/sight.dart';
 import 'package:places/ui/screen/components/button_text.dart';
 import 'package:places/ui/screen/components/bottom_navigationbar.dart';
+import 'package:places/ui/screen/components/card_square_img.dart';
 import 'package:places/ui/screen/res/assets.dart';
 import 'package:places/ui/screen/res/sizes.dart';
 import 'package:places/ui/screen/res/strings.dart';
@@ -261,13 +262,9 @@ class _SightSearchScreenState extends State<SightSearchScreen> {
   Widget _buildSearchItem(Sight card) {
     return ListTile(
       contentPadding: const EdgeInsets.symmetric(vertical: 8.0),
-      leading: ClipRRect(
-        borderRadius: BorderRadius.circular(radiusCard),
-        child: Image(
-          width: 56.0,
-          height: 56.0,
-          image: NetworkImage(card.imgPreview),
-          fit: BoxFit.cover,
+      leading: CardSquareImg(
+        image: NetworkImage(
+          card.imgPreview,
         ),
       ),
       title: RichText(
@@ -386,7 +383,7 @@ class _SightSearchScreenState extends State<SightSearchScreen> {
   /// история поисковых запросов
   Widget _buildSearchHistory(List<String> data) {
     if (data.isEmpty) {
-      return SizedBox(width: 0);
+      return SizedBox.shrink();
     }
 
     return SingleChildScrollView(
@@ -418,7 +415,7 @@ class _SightSearchScreenState extends State<SightSearchScreen> {
                     });
                   },
                   icon: SvgPicture.asset(
-                    icClear,
+                    icDelete,
                     color: Theme.of(context).colorScheme.inactiveBlack,
                   ),
                   splashRadius: 24,

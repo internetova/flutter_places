@@ -134,6 +134,7 @@ class AppTheme {
       subtitle1: textText16Regular.copyWith(color: lightPrimaryColorDark),
       bodyText1: textSmall14Regular.copyWith(color: lightAccentColor),
       bodyText2: textSmall14Regular.copyWith(color: lightBackgroundColor),
+      caption: textSuperSmall12Medium.copyWith(color: colorWhite),
     );
   }
 
@@ -264,6 +265,7 @@ class AppTheme {
       subtitle1: textText16Regular.copyWith(color: darkOnPrimaryColor),
       bodyText1: textSmall14Regular.copyWith(color: darkAccentColor),
       bodyText2: textSmall14Regular.copyWith(color: darkBackgroundColor),
+      caption: textSuperSmall12Medium.copyWith(color: colorWhite),
     );
   }
 }

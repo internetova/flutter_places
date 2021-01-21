@@ -36,8 +36,7 @@ class SearchBarStatic extends StatelessWidget {
                 sizedBoxW12,
                 IconSvg(
                   icon: icSearch,
-                  width: 24,
-                  height: 24,
+                  size: 24,
                   color: Theme.of(context).colorScheme.inactiveBlack,
                 ),
                 sizedBoxW12,

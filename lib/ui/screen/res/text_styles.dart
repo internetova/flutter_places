@@ -57,3 +57,7 @@ const textSuperSmall12Regular = TextStyle(
   height: 1.33,
   fontWeight: FontWeight.w400,
 );
+
+final textSuperSmall12Medium = textSuperSmall12Regular.copyWith(
+  fontWeight: FontWeight.w500,
+);
