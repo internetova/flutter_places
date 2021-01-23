@@ -37,3 +37,6 @@ class TestImage {
   }) : assert(id != null),
         assert(url != null);
 }
+
+/// сюда сохраним временные фото для загрузки
+List<TestImage> userImages = [];

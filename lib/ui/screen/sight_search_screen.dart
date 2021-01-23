@@ -393,7 +393,7 @@ class _SightSearchScreenState extends State<SightSearchScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'ВЫ ИСКАЛИ',
+              searchHeaderHistory,
               style: Theme.of(context)
                   .textTheme
                   .caption

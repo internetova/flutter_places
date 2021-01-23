@@ -3,8 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:places/ui/screen/components/button_clear.dart';
 import 'package:places/ui/screen/components/button_save.dart';
 import 'package:places/ui/screen/components/button_text.dart';
-import 'package:places/ui/screen/components/card_square_img.dart';
-import 'package:places/ui/screen/components/dismiss_bg_img.dart';
 import 'package:places/ui/screen/components/icon_svg.dart';
 import 'package:places/ui/screen/components/title_leading_appbar.dart';
 import 'package:places/domain/sight.dart';
@@ -15,15 +13,19 @@ import 'package:places/ui/screen/res/strings.dart';
 import 'package:places/ui/screen/res/themes.dart';
 import 'package:places/ui/screen/select_category_screen.dart';
 import 'package:places/ui/screen/sight_list_screen.dart';
-import 'package:places/ui/screen/components/button_card_add_img.dart';
 import 'package:places/ui/screen/utilities/test_images_data.dart';
+import 'package:places/ui/screen/widgets/list_cards_with_added_img.dart';
 
 /// регулярные выражения
 final _namePattern = RegExp(r'^[a-zа-яA-ZА-Я0-9 ]+$');
 final _coordinatesPattern = RegExp(r'^-?[0-9]{1,3}(?:\.[0-9]{1,10})?$');
 
-/// добавление нового места
+/// экран добавление нового места
 class AddSightScreen extends StatefulWidget {
+  /// для обновления стэйта после удаления карточки с фото из дочерних виджетов
+  static _AddSightScreenState of(BuildContext context) =>
+      context.findAncestorStateOfType<_AddSightScreenState>();
+
   @override
   _AddSightScreenState createState() => _AddSightScreenState();
 }
@@ -69,6 +71,7 @@ class _AddSightScreenState extends State<AddSightScreen> {
     _latController.addListener(() => setState(() {}));
     _lonController.addListener(() => setState(() {}));
     _detailsController.addListener(() => setState(() {}));
+    _userImages = userImages;
   }
 
   @override
@@ -86,6 +89,14 @@ class _AddSightScreenState extends State<AddSightScreen> {
     _detailsFocus.dispose();
 
     super.dispose();
+  }
+
+  /// обновить базу данных после удаления карточки
+  /// буду вызывать из дочернего виджета
+  void updateState() {
+    setState(() {
+      _userImages = userImages;
+    });
   }
 
   @override
@@ -164,20 +175,9 @@ class _AddSightScreenState extends State<AddSightScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: Row(
-                          mainAxisSize: MainAxisSize.max,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            ButtonCardAddImg(
-                              onPressed: addImg,
-                            ),
-                            sizedBoxW16,
-                            if (_userImages.isNotEmpty)
-                              ..._buildImagesToUpload(_userImages),
-                          ],
-                        ),
+                      ListCardsWithAddedImg(
+                        data: _userImages,
+                        addImage: _addImg,
                       ),
                       sizedBoxH24,
                       ..._buildCategory(),
@@ -210,7 +210,7 @@ class _AddSightScreenState extends State<AddSightScreen> {
                 onPressed: _submitForm,
               ),
             ),
-          )
+          ),
         ],
       ),
       // resizeToAvoidBottomInset: false,
@@ -233,7 +233,13 @@ class _AddSightScreenState extends State<AddSightScreen> {
   /// Поле Категория
   List<Widget> _buildCategory() {
     return [
-      Text(addNewSightLabelSelectedCategory),
+      Text(
+        addNewSightLabelSelectedCategory,
+        style: Theme.of(context)
+            .textTheme
+            .caption
+            .copyWith(color: Theme.of(context).colorScheme.inactiveBlack),
+      ),
       sizedBoxH12,
       SizedBox(
         height: 48,
@@ -657,67 +663,9 @@ class _AddSightScreenState extends State<AddSightScreen> {
   }
 
   /// клик по кнопке добавления фотографии - заполняем тестовыми данными
-  void addImg() {
+  void _addImg() {
     setState(() {
       _userImages.add(TestImagesData.getRandomItem());
     });
-  }
-
-  /// показать изображения для загрузки
-  /// картинки берём из тестовой базы данных
-  List<Widget> _buildImagesToUpload(List<TestImage> data) => data
-      .map(
-        (image) => RemovableCard(
-          image: image,
-          deleteImage: _deleteImage,
-        ),
-      )
-      .toList();
-
-  void _deleteImage(TestImage image) {
-    setState(() {
-      _userImages.remove(image);
-    });
-  }
-}
-
-/// карточка с фото которую можно удалить нажатием и смахиванием вверх
-class RemovableCard extends StatelessWidget {
-  final TestImage image;
-  final Function deleteImage;
-
-  const RemovableCard({
-    Key key,
-    @required this.image,
-    @required this.deleteImage,
-  })  : assert(image != null),
-        assert(deleteImage != null),
-        super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        GestureDetector(
-          onTap: () {
-            deleteImage(image);
-          },
-          child: Dismissible(
-            key: UniqueKey(),
-            onDismissed: (_) {
-              deleteImage(image);
-            },
-            direction: DismissDirection.up,
-            background: DismissBackgroundImg(),
-            child: CardSquareImgWithDeleteIcon(
-              image: AssetImage(
-                image.url,
-              ),
-            ),
-          ),
-        ),
-        sizedBoxW16,
-      ],
-    );
   }
 }

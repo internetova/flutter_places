@@ -128,15 +128,13 @@ class _VisitingScreenState extends State<VisitingScreen> {
       );
     } else {
       favTabBarView = ReorderableListView(
-        children: [
-          for (var card in data) ...[
-            SightCardVisiting(
-              key: ValueKey(card),
-              card: card,
-              whereShowCard: typeCard,
-            ),
-          ],
-        ],
+        children: data
+            .map((card) => SightCardVisiting(
+                  key: ValueKey(card),
+                  card: card,
+                  whereShowCard: typeCard,
+                ))
+            .toList(),
         onReorder: (int oldIndex, int newIndex) {
           setState(() {
             if (newIndex > oldIndex) {
@@ -154,7 +152,9 @@ class _VisitingScreenState extends State<VisitingScreen> {
   }
 
   /// получить текущую базу соответствующей вкладки
-  List<Sight> _getCurrentData(
-          {@required List<Sight> data, @required WhereShowCard typeCard}) =>
+  List<Sight> _getCurrentData({
+    @required List<Sight> data,
+    @required WhereShowCard typeCard,
+  }) =>
       data.where((item) => item.favorites == typeCard).toList();
 }

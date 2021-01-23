@@ -22,15 +22,15 @@ class SightCardVisiting extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(16.0, 0, 16.0, 24.0),
+    return Container(
+      margin: const EdgeInsets.fromLTRB(16.0, 0, 16.0, 16.0),
       child: Stack(
         children: [
           DismissBackgroundCard(),
           Dismissible(
             key: UniqueKey(),
-            onDismissed: (direction) {
-              favoritesSight.removeWhere((element) => element.id == card.id);
+            onDismissed: (_) {
+              favoritesSight.remove(card);
               VisitingScreen.of(context).updateState();
             },
             direction: DismissDirection.endToStart,
@@ -52,6 +52,7 @@ class DismissBackgroundCard extends StatelessWidget {
     return AspectRatio(
       aspectRatio: 3 / 2,
       child: Container(
+        margin: const EdgeInsets.fromLTRB(16.0, 0, 16.0, 1),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(radiusCard),
           color: Theme.of(context).errorColor,
