@@ -46,3 +46,8 @@ const icTick = '$_baseResPath/tick.svg';
 
 /// настройки
 const icInfo = '$_baseResPath/info.svg';
+
+/// туториал
+const icPage1 = '$_baseResPath/tutorial/frame-1.svg';
+const icPage2 = '$_baseResPath/tutorial/frame-2.svg';
+const icPage3 = '$_baseResPath/tutorial/frame-3.svg';

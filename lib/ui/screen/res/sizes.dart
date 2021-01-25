@@ -22,3 +22,4 @@ const sizedBoxH8 = SizedBox(height: 8);
 const sizedBoxH12 = SizedBox(height: 12);
 const sizedBoxH16 = SizedBox(height: 16);
 const sizedBoxH24 = SizedBox(height: 24);
+const sizedBoxH40 = SizedBox(height: 40);
