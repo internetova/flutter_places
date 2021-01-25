@@ -100,9 +100,6 @@ class _FiltersScreenState extends State<FiltersScreen> {
 
     return Scaffold(
       body: CustomScrollView(
-        physics: Platform.isAndroid
-            ? ClampingScrollPhysics()
-            : BouncingScrollPhysics(),
         slivers: [
           _buildFilterAppBar(),
           SliverToBoxAdapter(

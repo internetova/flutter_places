@@ -24,9 +24,6 @@ class ListCardsWithAddedImg extends StatelessWidget {
   Widget build(BuildContext context) => SizedBox(
     height: cardSizeSquareImgBig,
     child: ListView.builder(
-      physics: Platform.isAndroid
-          ? ClampingScrollPhysics()
-          : BouncingScrollPhysics(),
       scrollDirection: Axis.horizontal,
       itemCount: data.length + 1,
       itemBuilder: _buildCardItem,

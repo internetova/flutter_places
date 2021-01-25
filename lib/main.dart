@@ -30,11 +30,11 @@ class App extends StatelessWidget {
             darkTheme: _darkTheme,
             themeMode: ThemeMode.system,
             // home: SightListScreen(), // список мест
-            // home: VisitingScreen(), // хочу посетить / посещенные места
+            home: VisitingScreen(), // хочу посетить / посещенные места
             // home: SettingsScreen(), // страница с фильтрами поиска
             // home: AddSightScreen(),
             // home: SightSearchScreen(),
-            home: FiltersScreen(),
+            // home: FiltersScreen(),
           );
         },
       ),

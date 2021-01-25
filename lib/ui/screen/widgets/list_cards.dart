@@ -23,9 +23,6 @@ class ListCards extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => ListView.separated(
-        physics: Platform.isAndroid
-            ? ClampingScrollPhysics()
-            : BouncingScrollPhysics(),
         itemCount: data.length,
         itemBuilder: _buildCardItem,
         separatorBuilder: _buildSeparatorItem,
