@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 import 'package:flutter_svg/flutter_svg.dart';
@@ -9,6 +11,7 @@ import 'package:places/ui/screen/components/icon_leading_appbar.dart';
 import 'package:places/ui/screen/res/assets.dart';
 import 'package:places/ui/screen/res/sizes.dart';
 import 'package:places/ui/screen/res/strings.dart';
+import 'package:places/ui/screen/res/themes.dart';
 import 'package:places/ui/screen/utilities/filter_utility.dart';
 
 /// экран фильтра для поиска
@@ -54,6 +57,7 @@ class _FiltersScreenState extends State<FiltersScreen> {
 
   /// нефильтрованные данные если юзер не настраивал фильтр
   final List<Sight> _fullData = mocks;
+
   /// отфильтрованные результаты
   List<Sight> _filteredData = [];
 
@@ -95,26 +99,52 @@ class _FiltersScreenState extends State<FiltersScreen> {
     }
 
     return Scaffold(
-      appBar: _buildFilterAppBar(),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 24, 16, 0),
-          child: Column(
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              _buildCategories(categories, _selectedCategories),
-              _buildHeaderSlider(),
-              _buildSlider(),
-            ],
+      body: CustomScrollView(
+        slivers: [
+          _buildFilterAppBar(),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 16.0,
+                vertical: 24.0,
+              ),
+              child: _buildTitleFilter(),
+            ),
           ),
-        ),
+          SliverPadding(
+            padding: EdgeInsets.symmetric(horizontal: 24.0),
+            sliver: _buildCategories(categories, _selectedCategories),
+          ),
+          SliverList(
+            delegate: SliverChildListDelegate([
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16.0,
+                  vertical: 24.0,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildHeaderSlider(),
+                    _buildSlider(),
+                  ],
+                ),
+              ),
+            ]),
+          ),
+          SliverFillRemaining(
+            hasScrollBody: false,
+            child: Align(
+              alignment: Alignment.bottomCenter,
+              child: ButtonSave(
+                title: _buildTitleButton(),
+                isButtonEnabled: _isButtonEnabled,
+                onPressed: _onPressed,
+              ),
+            ),
+          ),
+        ],
       ),
-      floatingActionButton: ButtonSave(
-        title: _buildTitleButton(),
-        isButtonEnabled: _isButtonEnabled,
-        onPressed: _onPressed,
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
 
@@ -127,13 +157,15 @@ class _FiltersScreenState extends State<FiltersScreen> {
   }
 
   /// AppBar
-  Widget _buildFilterAppBar() => AppBar(
+  Widget _buildFilterAppBar() => SliverAppBar(
         toolbarHeight: toolbarHeightStandard,
         leading: SmallLeadingIcon(
           icon: icArrow,
           onPressed: _back,
         ),
         leadingWidth: 64,
+        elevation: 0,
+        pinned: true,
         title: Align(
           alignment: Alignment.centerRight,
           child: FlatButton(
@@ -148,15 +180,27 @@ class _FiltersScreenState extends State<FiltersScreen> {
         ),
       );
 
-  /// стартовые элементы для построения карточки категории
+  /// Заголовок
+  Widget _buildTitleFilter() => Text(
+        filterTitleCategories,
+        style: Theme.of(context).textTheme.caption.copyWith(
+              color: Theme.of(context).colorScheme.inactiveBlack,
+            ),
+      );
+
+  /// список карточек категорий
   Widget _buildCategories(List<Categories> catalog, List<Map> selectedCat) =>
-      Center(
-        child: Wrap(
-          spacing: 12.0,
-          runSpacing: 40.0,
-          children: [
-            for (var index = 0; index < catalog.length; index++)
-              Stack(
+      SliverGrid(
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 3,
+          crossAxisSpacing: 10.0,
+          mainAxisSpacing: 40.0,
+          // childAspectRatio: 1.5,
+        ),
+        delegate: SliverChildBuilderDelegate(
+          (BuildContext context, int index) {
+            return Center(
+              child: Stack(
                 children: [
                   const SizedBox(
                     width: 96,
@@ -212,7 +256,9 @@ class _FiltersScreenState extends State<FiltersScreen> {
                   if (selectedCat[index]['isSelected']) _showSelected(),
                 ],
               ),
-          ],
+            );
+          },
+          childCount: catalog.length,
         ),
       );
 

@@ -6,15 +6,18 @@ import 'package:places/ui/screen/res/assets.dart';
 class DismissBackgroundImg extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Align(
-        alignment: Alignment.bottomCenter,
-        child: IconSvg(
-          icon: icViewUp,
-          color: Theme.of(context).colorScheme.primary,
-          size: 30,
+    return Stack(
+      children: [
+        Positioned(
+          bottom: 0,
+          left: 24,
+          child: IconSvg(
+            icon: icViewUp,
+            color: Theme.of(context).colorScheme.primary,
+            size: 30,
+          ),
         ),
-      ),
+      ],
     );
   }
 }

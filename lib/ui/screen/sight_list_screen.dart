@@ -9,7 +9,7 @@ import 'package:places/ui/screen/add_sight_screen.dart';
 import 'package:places/ui/screen/res/assets.dart';
 import 'package:places/ui/screen/res/sizes.dart';
 import 'package:places/ui/screen/res/strings.dart';
-import 'package:places/ui/screen/widgets/build_card_list.dart';
+import 'package:places/ui/screen/widgets/list_cards.dart';
 import 'package:places/ui/screen/widgets/sight_card.dart';
 import 'package:places/ui/screen/components/icon_svg.dart';
 import 'package:places/ui/screen/components/search_bar_static.dart';
@@ -37,9 +37,12 @@ class _SightListScreenState extends State<SightListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: _buildAppBar(),
-      body: BuildCardList(
-        data: _filteredData.isNotEmpty ? _filteredData : _fullData,
-        whereShowCard: WhereShowCard.search,
+      body: Padding(
+        padding: const EdgeInsets.fromLTRB(16.0, 20.0, 16.0, 0),
+        child: ListCards(
+          data: _filteredData.isNotEmpty ? _filteredData : _fullData,
+          whereShowCard: WhereShowCard.search,
+        ),
       ),
       floatingActionButton: ButtonGradient(onPressed: _onPressedAddNewCard),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,

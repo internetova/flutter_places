@@ -95,3 +95,4 @@ const searchAppBarTitle = 'Список интересных мест';
 const searchEmptyHeader = 'Ничего не найдено.';
 const searchEmptyText = 'Попробуйте изменить параметры\nпоиска';
 const searchError = 'Ошибка';
+const searchHeaderHistory = 'ВЫ ИСКАЛИ';
