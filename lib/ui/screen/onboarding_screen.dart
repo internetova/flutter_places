@@ -6,6 +6,7 @@ import 'package:places/ui/screen/res/sizes.dart';
 import 'package:places/ui/screen/res/strings.dart';
 import 'package:places/ui/screen/res/themes.dart';
 
+/// экран туториала
 class OnboardingScreen extends StatefulWidget {
   /// для обновления значения текущей страницы при перелистывании
   static _OnboardingScreenState of(BuildContext context) =>
@@ -41,8 +42,22 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           _buttonSkip(_data, _currentPage),
         ],
       ),
-      body: TutorialList(
-        data: _data,
+      body: Stack(
+        children: [
+          TutorialList(
+            data: _data,
+          ),
+          Positioned.fill(
+            bottom: 100,
+            child: Align(
+              alignment: Alignment.bottomCenter,
+              child: PageSelector(
+                data: _data,
+                currentIndex: _currentPage,
+              ),
+            ),
+          ),
+        ],
       ),
       floatingActionButton: _buttonStart(_data, _currentPage),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
@@ -119,16 +134,13 @@ List<TutorialItem> _dataPages = [
   ),
 ];
 
-/// виджет контента
+/// виджет контента c индикатором страниц
 class TutorialItemWidget extends StatelessWidget {
   final TutorialItem item;
-  final int currentIndex;
 
   TutorialItemWidget({
     @required this.item,
-    @required this.currentIndex,
-  })  : assert(item != null),
-        assert(currentIndex != null);
+  }) : assert(item != null);
 
   @override
   Widget build(BuildContext context) {
@@ -136,36 +148,27 @@ class TutorialItemWidget extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              SvgPicture.asset(
-                item.icon,
-                width: 104,
-                height: 104,
-                color: Theme.of(context).colorScheme.primary,
-              ),
-              sizedBoxH40,
-              Text(
-                item.title,
-                style: Theme.of(context).textTheme.headline4.copyWith(
-                      color: Theme.of(context).colorScheme.primary,
-                    ),
-                textAlign: TextAlign.center,
-              ),
-              sizedBoxH8,
-              Text(
-                item.text,
-                style: Theme.of(context).textTheme.bodyText2,
-                textAlign: TextAlign.center,
-              ),
-            ],
+          SvgPicture.asset(
+            item.icon,
+            width: 104,
+            height: 104,
+            color: Theme.of(context).colorScheme.primary,
           ),
-          const SizedBox(height: 117),
-          PageSelector(
-            data: _dataPages,
-            currentIndex: currentIndex,
+          sizedBoxH40,
+          Text(
+            item.title,
+            style: Theme.of(context).textTheme.headline4.copyWith(
+                  color: Theme.of(context).colorScheme.primary,
+                ),
+            textAlign: TextAlign.center,
           ),
+          sizedBoxH8,
+          Text(
+            item.text,
+            style: Theme.of(context).textTheme.bodyText2,
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 140),
         ],
       ),
     );
@@ -255,7 +258,6 @@ class TutorialList extends StatelessWidget {
         itemBuilder: (BuildContext context, int index) {
           return TutorialItemWidget(
             item: data[index],
-            currentIndex: index,
           );
         });
   }
