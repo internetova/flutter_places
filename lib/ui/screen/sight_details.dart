@@ -5,68 +5,27 @@ import 'package:places/ui/screen/components/icon_svg.dart';
 import 'package:places/ui/screen/res/sizes.dart';
 import 'package:places/ui/screen/res/strings.dart';
 import 'package:places/ui/screen/res/assets.dart';
+import 'package:places/ui/screen/widgets/sight_details_slider.dart';
 
-/// экран с подроным описанием карточки / достопримечательности
+/// экран с подробным описанием карточки / достопримечательности
 class SightDetails extends StatelessWidget {
-  const SightDetails({Key key, this.card}) : super(key: key);
   final Sight card;
+
+  const SightDetails({Key key, @required this.card})
+      : assert(card != null),
+        super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: CustomScrollView(
-        slivers: [
-          SliverAppBar(
-            leading: InkWell(
-              onTap: () {
-                Navigator.pop(context);
-              },
-              child: Stack(
-                children: [
-                  Container(
-                    margin: const EdgeInsets.only(left: 16, top: 12),
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).primaryColor,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    width: 32,
-                    height: 32,
-                  ),
-                  Positioned(
-                    top: 16,
-                    left: 19,
-                    child: IconSvg(
-                      icon: icArrow,
-                      color: Theme.of(context).colorScheme.onPrimary,
-                    ),
-                  )
-                ],
-              ),
+      body: Column(
+        children: [
+          Expanded(
+            child: SightDetailsSlider(
+              images: card.images,
             ),
-            expandedHeight: 360,
-            flexibleSpace: FlexibleSpaceBar(
-              background: Image.network(
-                card.imgPreview,
-                fit: BoxFit.cover,
-                loadingBuilder: (BuildContext context, Widget child,
-                    ImageChunkEvent loadingProgress) {
-                  if (loadingProgress == null) return child;
-                  return Center(
-                    child: CircularProgressIndicator(
-                      value: loadingProgress.expectedTotalBytes != null
-                          ? loadingProgress.cumulativeBytesLoaded /
-                              loadingProgress.expectedTotalBytes
-                          : null,
-                    ),
-                  );
-                },
-              ),
-            ),
-            pinned: true,
-            floating: true,
-            elevation: 0,
           ),
-          SliverFillRemaining(
+          Expanded(
             child: SingleChildScrollView(
               child: Padding(
                 padding: const EdgeInsets.only(left: 16, top: 24, right: 16),

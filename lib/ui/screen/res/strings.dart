@@ -96,3 +96,7 @@ const searchEmptyHeader = 'Ничего не найдено.';
 const searchEmptyText = 'Попробуйте изменить параметры\nпоиска';
 const searchError = 'Ошибка';
 const searchHeaderHistory = 'ВЫ ИСКАЛИ';
+
+/// Туториал скрин
+const tutorialButtonAppBarTitle = 'Пропустить';
+const tutorialButtonTitle = 'НА СТАРТ';

@@ -19,6 +19,7 @@ class Sight {
     @required this.details,
     @required this.type,
     @required this.imgPreview,
+    this.images,
     this.favorites,
     this.date,
   });
@@ -31,6 +32,7 @@ class Sight {
   final String details;
   final String type;
   final String imgPreview;
+  final List<String> images;
   final WhereShowCard favorites;
   String date;
 }
