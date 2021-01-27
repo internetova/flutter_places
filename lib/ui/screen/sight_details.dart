@@ -18,16 +18,17 @@ class SightDetails extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        children: [
-          Expanded(
-            child: SightDetailsSlider(
+      body: CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            expandedHeight: 360,
+            flexibleSpace: SightDetailsSlider(
               images: card.images,
             ),
           ),
-          Expanded(
-            child: SingleChildScrollView(
-              child: Padding(
+          SliverList(
+            delegate: SliverChildListDelegate([
+              Padding(
                 padding: const EdgeInsets.only(left: 16, top: 24, right: 16),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -88,7 +89,6 @@ class SightDetails extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Expanded(
-                            flex: 1,
                             child: FlatButton(
                               onPressed: () {
                                 print('onTaped Запланировать');
@@ -115,7 +115,6 @@ class SightDetails extends StatelessWidget {
                             ),
                           ),
                           Expanded(
-                            flex: 1,
                             child: FlatButton(
                               onPressed: () {
                                 print('onTaped Избранное');
@@ -145,7 +144,7 @@ class SightDetails extends StatelessWidget {
                   ],
                 ),
               ),
-            ),
+            ]),
           ),
         ],
       ),
