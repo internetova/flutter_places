@@ -21,6 +21,7 @@ class SightDetails extends StatelessWidget {
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
+            automaticallyImplyLeading: false,
             expandedHeight: 360,
             flexibleSpace: SightDetailsSlider(
               images: card.images,

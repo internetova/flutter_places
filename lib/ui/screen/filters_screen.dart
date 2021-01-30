@@ -112,7 +112,7 @@ class _FiltersScreenState extends State<FiltersScreen> {
             ),
           ),
           SliverPadding(
-            padding: EdgeInsets.symmetric(horizontal: 24.0),
+            padding: const EdgeInsets.symmetric(horizontal: 24.0),
             sliver: _buildCategories(categories, _selectedCategories),
           ),
           SliverList(
@@ -195,7 +195,6 @@ class _FiltersScreenState extends State<FiltersScreen> {
           crossAxisCount: 3,
           crossAxisSpacing: 10.0,
           mainAxisSpacing: 40.0,
-          // childAspectRatio: 1.5,
         ),
         delegate: SliverChildBuilderDelegate(
           (BuildContext context, int index) {

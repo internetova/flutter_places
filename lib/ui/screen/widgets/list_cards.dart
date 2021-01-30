@@ -1,8 +1,5 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:places/domain/sight.dart';
-import 'package:places/ui/screen/res/sizes.dart';
 import 'package:places/ui/screen/widgets/sight_card.dart';
 
 /// строим часть экрана где выводятся карточки
@@ -22,16 +19,18 @@ class ListCards extends StatelessWidget {
         super(key: key);
 
   @override
-  Widget build(BuildContext context) => ListView.separated(
-        itemCount: data.length,
-        itemBuilder: _buildCardItem,
-        separatorBuilder: _buildSeparatorItem,
+  Widget build(BuildContext context) => SliverList(
+        delegate: SliverChildBuilderDelegate(
+          (BuildContext context, int index) {
+            return Padding(
+              padding: EdgeInsets.only(bottom: 16.0),
+              child: SightCard(
+                card: data[index],
+                whereShowCard: whereShowCard,
+              ),
+            );
+          },
+          childCount: data.length,
+        ),
       );
-
-  Widget _buildCardItem(BuildContext context, int index) => SightCard(
-        card: data[index],
-        whereShowCard: whereShowCard,
-      );
-
-  Widget _buildSeparatorItem(BuildContext context, int index) => sizedBoxH16;
 }
