@@ -144,10 +144,6 @@ class _SightListScreenState extends State<SightListScreen> {
     });
   }
 
-  void _onTapSearch2() {
-    print(_onTapSearch2);
-  }
-
   /// переход на экран фильтра
   /// настройки фильтра возвращаем сюда и фильтруем данные
   _onPressedFilter() async {
