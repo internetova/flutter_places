@@ -40,10 +40,11 @@ class _SightListScreenState extends State<SightListScreen> {
       body: SafeArea(
         child: CustomScrollView(
           slivers: [
-            SliverPersistentHeader(
-              pinned: true,
-              delegate: _StickyHeaderDelegate(),
-            ),
+            _buildSliverAppBar(),
+            // SliverPersistentHeader(
+            //   pinned: true,
+            //   delegate: _StickyHeaderDelegate(),
+            // ),
             SliverPadding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               sliver: ListCards(
@@ -59,6 +60,61 @@ class _SightListScreenState extends State<SightListScreen> {
       bottomNavigationBar: const MainBottomNavigationBar(current: 0),
     );
   }
+
+  /// SliverAppBar
+  Widget _buildSliverAppBar() => SliverAppBar(
+        expandedHeight: 216.0,
+        floating: false,
+        pinned: true,
+        elevation: 0,
+        flexibleSpace: LayoutBuilder(
+            builder: (BuildContext context, BoxConstraints constraints) {
+          double top = constraints.biggest.height;
+          return FlexibleSpaceBar(
+            centerTitle: true,
+            title: AnimatedOpacity(
+              duration: Duration(milliseconds: 300),
+              opacity: top == 56.0 ? 1.0 : 0.0,
+              child: Text(
+                searchAppBarTitle,
+                style: Theme.of(context).textTheme.headline6.copyWith(
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                textAlign: TextAlign.center,
+              ),
+            ),
+            background: Container(
+              color: Theme.of(context).primaryColor,
+              padding: EdgeInsets.symmetric(horizontal: 16),
+              child: Stack(
+                children: [
+                  Positioned(
+                    bottom: 104,
+                    child: Text(
+                      appBarTitle,
+                      style: Theme.of(context).textTheme.headline3.copyWith(
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
+                    ),
+                  ),
+                  Positioned(
+                    bottom: 34,
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints.tight(
+                        Size(constraints.maxWidth - 32, heightInput),
+                      ),
+                      child: SearchBarStatic(
+                        onTapSearch: _onTapSearch,
+                        onPressedFilter: _onPressedFilter,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        }),
+      );
 
   /// нажатие на градиентную кнопку - переходим на экран добавления
   void _onPressedAddNewCard() {
@@ -88,6 +144,10 @@ class _SightListScreenState extends State<SightListScreen> {
     });
   }
 
+  void _onTapSearch2() {
+    print(_onTapSearch2);
+  }
+
   /// переход на экран фильтра
   /// настройки фильтра возвращаем сюда и фильтруем данные
   _onPressedFilter() async {
@@ -108,7 +168,8 @@ class _SightListScreenState extends State<SightListScreen> {
   }
 }
 
-/// AppBar
+/// AppBar тоже работает, пока оставлю тут 🤓
+/// возможно потом удалю
 class _StickyHeaderDelegate extends SliverPersistentHeaderDelegate {
   @override
   Widget build(
