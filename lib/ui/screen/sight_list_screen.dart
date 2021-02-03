@@ -4,14 +4,10 @@ import 'package:places/domain/sight.dart';
 import 'package:places/mocks.dart';
 import 'package:places/ui/screen/components/button_gradient.dart';
 import 'package:places/ui/screen/filters_screen.dart';
-import 'package:places/ui/screen/res/themes.dart';
 import 'package:places/ui/screen/add_sight_screen.dart';
-import 'package:places/ui/screen/res/assets.dart';
 import 'package:places/ui/screen/res/sizes.dart';
 import 'package:places/ui/screen/res/strings.dart';
 import 'package:places/ui/screen/widgets/list_cards.dart';
-import 'package:places/ui/screen/widgets/sight_card.dart';
-import 'package:places/ui/screen/components/icon_svg.dart';
 import 'package:places/ui/screen/components/search_bar_static.dart';
 import 'package:places/ui/screen/components/bottom_navigationbar.dart';
 import 'package:places/ui/screen/sight_search_screen.dart';
@@ -19,6 +15,9 @@ import 'package:places/ui/screen/utilities/filter_utility.dart';
 
 /// список интересных мест
 class SightListScreen extends StatefulWidget {
+  static _SightListScreenState of(BuildContext context) =>
+      context.findAncestorStateOfType<_SightListScreenState>();
+
   @override
   _SightListScreenState createState() => _SightListScreenState();
 }
@@ -36,12 +35,18 @@ class _SightListScreenState extends State<SightListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: _buildAppBar(),
-      body: Padding(
-        padding: const EdgeInsets.fromLTRB(16.0, 20.0, 16.0, 0),
-        child: ListCards(
-          data: _filteredData.isNotEmpty ? _filteredData : _fullData,
-          whereShowCard: WhereShowCard.search,
+      body: SafeArea(
+        child: CustomScrollView(
+          slivers: [
+            _buildSliverAppBar(),
+            SliverPadding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              sliver: ListCards(
+                data: _filteredData.isNotEmpty ? _filteredData : _fullData,
+                whereShowCard: WhereShowCard.search,
+              ),
+            ),
+          ],
         ),
       ),
       floatingActionButton: ButtonGradient(onPressed: _onPressedAddNewCard),
@@ -50,32 +55,59 @@ class _SightListScreenState extends State<SightListScreen> {
     );
   }
 
-  /// ‼️ appBar - пока так, потом наверное через сливеры (учебный раздел 6)
-  Widget _buildAppBar() => PreferredSize(
-        preferredSize: Size.fromHeight(212),
-        child: AppBar(
-          flexibleSpace: Align(
-            alignment: Alignment.bottomLeft,
-            child: Container(
-              margin: const EdgeInsets.only(left: 16, right: 16, bottom: 16),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
+  /// SliverAppBar
+  Widget _buildSliverAppBar() => SliverAppBar(
+        expandedHeight: 216.0,
+        floating: false,
+        pinned: true,
+        elevation: 0,
+        flexibleSpace: LayoutBuilder(
+            builder: (BuildContext context, BoxConstraints constraints) {
+          double top = constraints.biggest.height;
+          return FlexibleSpaceBar(
+            centerTitle: true,
+            title: AnimatedOpacity(
+              duration: Duration(milliseconds: 300),
+              opacity: top == 56.0 ? 1.0 : 0.0,
+              child: Text(
+                searchAppBarTitle,
+                style: Theme.of(context).textTheme.headline6.copyWith(
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                textAlign: TextAlign.center,
+              ),
+            ),
+            background: Container(
+              color: Theme.of(context).primaryColor,
+              padding: EdgeInsets.symmetric(horizontal: 16),
+              child: Stack(
                 children: [
-                  Text(
-                    appBarTitle,
-                    style: Theme.of(context).textTheme.headline3,
+                  Positioned(
+                    bottom: 104,
+                    child: Text(
+                      appBarTitle,
+                      style: Theme.of(context).textTheme.headline3.copyWith(
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
+                    ),
                   ),
-                  sizedBoxH24,
-                  SearchBarStatic(
-                    onTapSearch: _onTapSearch,
-                    onPressedFilter: _onPressedFilter,
+                  Positioned(
+                    bottom: 34,
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints.tight(
+                        Size(constraints.maxWidth - 32, heightInput),
+                      ),
+                      child: SearchBarStatic(
+                        onTapSearch: _onTapSearch,
+                        onPressedFilter: _onPressedFilter,
+                      ),
+                    ),
                   ),
                 ],
               ),
             ),
-          ),
-        ),
+          );
+        }),
       );
 
   /// нажатие на градиентную кнопку - переходим на экран добавления

@@ -63,7 +63,7 @@ class _SightDetailsSliderState extends State<SightDetailsSlider> {
               top: 36,
               left: 16,
               child: _ButtonBack(),
-            )
+            ),
           ],
         );
       },
@@ -119,20 +119,24 @@ class _ProgressIndicatorImages extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: data
           .asMap()
-          .map((i, element) => MapEntry(
+          .map(
+            (i, element) => MapEntry(
               i,
               Expanded(
                 child: Container(
                   height: 8,
                   decoration: BoxDecoration(
-                      color: _getColor(
-                        context,
-                        index: i,
-                        currentIndex: currentIndex,
-                      ),
-                      borderRadius: BorderRadius.circular(8)),
+                    color: _getColor(
+                      context,
+                      index: i,
+                      currentIndex: currentIndex,
+                    ),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
                 ),
-              )))
+              ),
+            ),
+          )
           .values
           .toList(),
     );
