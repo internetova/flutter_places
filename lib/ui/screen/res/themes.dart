@@ -278,6 +278,8 @@ extension CustomColorScheme on ColorScheme {
   Color get inactiveBlack => colorInactiveBlack;
   Color get green => brightness == Brightness.light ? colorWhiteGreen : colorBlackGreen;
   Color get yellow => brightness == Brightness.light ? colorWhiteYellow : colorBlackYellow;
+  Color get green2 => brightness == Brightness.light ? colorWhiteGreen2 : colorBlackGreen2;
+  Color get yellow2 => brightness == Brightness.light ? colorWhiteYellow2 : colorBlackYellow2;
 }
 
 class ThemeNotifier extends ChangeNotifier {

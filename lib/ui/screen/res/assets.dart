@@ -51,3 +51,6 @@ const icInfo = '$_baseResPath/info.svg';
 const icPage1 = '$_baseResPath/tutorial/frame-1.svg';
 const icPage2 = '$_baseResPath/tutorial/frame-2.svg';
 const icPage3 = '$_baseResPath/tutorial/frame-3.svg';
+
+/// сплэш
+const icSplashLogo = '$_baseResPath/splash_logo.svg';
