@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 
 import 'package:places/domain/sight.dart';
@@ -41,10 +39,6 @@ class _SightListScreenState extends State<SightListScreen> {
         child: CustomScrollView(
           slivers: [
             _buildSliverAppBar(),
-            // SliverPersistentHeader(
-            //   pinned: true,
-            //   delegate: _StickyHeaderDelegate(),
-            // ),
             SliverPadding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               sliver: ListCards(
@@ -161,93 +155,5 @@ class _SightListScreenState extends State<SightListScreen> {
           centerPoint: _currentFilter.centerPoint,
           distance: _currentFilter.distance);
     });
-  }
-}
-
-/// AppBar тоже работает, пока оставлю тут 🤓
-/// возможно потом удалю
-class _StickyHeaderDelegate extends SliverPersistentHeaderDelegate {
-  @override
-  Widget build(
-      BuildContext context, double shrinkOffset, bool overlapsContent) {
-    return LayoutBuilder(builder: (context, constraints) {
-      return Container(
-        height: maxExtent,
-        color: Theme.of(context).primaryColor,
-        padding: EdgeInsets.symmetric(horizontal: 16),
-        child: Stack(
-          children: [
-            Positioned.fill(
-              top: 16,
-              child: Text(
-                searchAppBarTitle,
-                style: Theme.of(context).textTheme.headline6.copyWith(
-                      color: Theme.of(context)
-                          .colorScheme
-                          .primary
-                          .withOpacity(titleSmallOpacity(shrinkOffset)),
-                    ),
-                textAlign: TextAlign.center,
-              ),
-            ),
-            Positioned(
-              bottom: 104,
-              child: Text(
-                appBarTitle,
-                style: Theme.of(context).textTheme.headline3.copyWith(
-                      color: Theme.of(context)
-                          .colorScheme
-                          .primary
-                          .withOpacity(titleOpacity(shrinkOffset)),
-                    ),
-              ),
-            ),
-            Positioned(
-              bottom: 34,
-              child: ConstrainedBox(
-                constraints: BoxConstraints.tight(
-                  Size(constraints.maxWidth - 32, heightInput),
-                ),
-                child: Opacity(
-                  opacity: titleOpacity(shrinkOffset),
-                  child: SearchBarStatic(
-                    onTapSearch: SightListScreen.of(context)._onTapSearch,
-                    onPressedFilter:
-                        SightListScreen.of(context)._onPressedFilter,
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      );
-    });
-  }
-
-  @override
-  double get maxExtent => 216;
-
-  @override
-  double get minExtent => 56;
-
-  @override
-  bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) {
-    return false;
-  }
-
-  /// параметр Opacity для скрытия заголовка
-  double titleOpacity(double shrinkOffset) {
-    // simple formula: fade out text as soon as shrinkOffset > 0
-    return 1.0 - (max(0.0, shrinkOffset) / maxExtent);
-    // more complex formula: starts fading out text when shrinkOffset > minExtent
-    // return 1.0 - max(0.0, (shrinkOffset - minExtent)) / (maxExtent - minExtent);
-  }
-
-  /// параметр Opacity для появления title
-  double titleSmallOpacity(double shrinkOffset) {
-    // simple formula: fade out text as soon as shrinkOffset > 0
-    // return max(0.0, shrinkOffset) / maxExtent;
-    // more complex formula: starts fading out text when shrinkOffset > minExtent
-    return max(0.0, (shrinkOffset - minExtent)) / (maxExtent - minExtent);
   }
 }
