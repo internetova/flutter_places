@@ -12,7 +12,7 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   /// чтобы отследить завершение инициализации приложения
-  Future<bool> _isInitialized;
+  Future<bool> _isInitialized = Future.delayed(const Duration(seconds: 2), () => true);
 
   @override
   void initState() {
@@ -51,7 +51,7 @@ class _SplashScreenState extends State<SplashScreen> {
     /// 2. прошло минимальное время отображения сплэш-экрана.
     try {
       await Future.wait([
-        _isInitialized = Future.delayed(const Duration(seconds: 2), () => true),
+        _isInitialized,
         Future.delayed(const Duration(seconds: 2)),
       ]);
 
