@@ -1,21 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:places/ui/screen/components/icon_svg.dart';
+import 'package:places/ui/screen/onboarding_screen.dart';
 import 'package:places/ui/screen/res/assets.dart';
 import 'package:places/ui/screen/res/sizes.dart';
 import 'package:places/ui/screen/res/themes.dart';
+import 'package:places/ui/screen/sight_list_screen.dart';
 
 /// сплэш-экран приложения
 class SplashScreen extends StatefulWidget {
+  /// первый старт приложения
+  final bool isFirstStart;
+
+  /// пока поставлю true
+  const SplashScreen({Key key, this.isFirstStart = true})
+      : assert(isFirstStart != null),
+        super(key: key);
+
   @override
   _SplashScreenState createState() => _SplashScreenState();
 }
 
 class _SplashScreenState extends State<SplashScreen> {
   /// чтобы отследить завершение инициализации приложения
-  Future<bool> _isInitialized = Future.delayed(const Duration(seconds: 2), () => true);
+  Future<bool> _isInitialized;
 
   @override
   void initState() {
+    _isInitialized = _initializeApp();
     _navigateToNext();
     super.initState();
   }
@@ -42,6 +53,12 @@ class _SplashScreenState extends State<SplashScreen> {
     );
   }
 
+  /// инициализация приложения
+  /// имитируем подготовку данных и возвращаем готовность
+  Future<bool> _initializeApp() async {
+    return Future.delayed(const Duration(seconds: 2), () => true);
+  }
+
   /// логика перехода либо на онбординг, если был первый вход,
   /// либо на главный экран
   Future<void> _navigateToNext() async {
@@ -54,6 +71,13 @@ class _SplashScreenState extends State<SplashScreen> {
         _isInitialized,
         Future.delayed(const Duration(seconds: 2)),
       ]);
+
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (BuildContext context) =>
+              widget.isFirstStart ? OnboardingScreen() : SightListScreen(),
+        ),
+      );
 
       print('Переход на следующий экран');
     } catch (e) {

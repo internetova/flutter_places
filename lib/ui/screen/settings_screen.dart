@@ -72,7 +72,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             color: Theme.of(context).accentColor,
           ),
           onPressed: () {
-            print('onPressed Туториал');
+            Navigator.of(context).pushReplacementNamed('/onboarding');
           }),
     );
   }
