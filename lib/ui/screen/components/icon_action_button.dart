@@ -25,17 +25,20 @@ class IconActionButton extends StatelessWidget {
     return SizedBox(
       width: 32,
       height: 32,
-      child: FlatButton(
+      child: TextButton(
         onPressed: onPressed,
+        style: TextButton.styleFrom(
+          shape: CircleBorder(),
+          // splashColor: Theme.of(context).primaryColorLight.withOpacity(0.50),
+          padding: EdgeInsets.all(4),
+          elevation: 0,
+        ),
         child: SvgPicture.asset(
           icon,
           width: width,
           height: height,
           color: color,
         ),
-        shape: CircleBorder(),
-        splashColor: Theme.of(context).primaryColorLight.withOpacity(0.50),
-        padding: EdgeInsets.all(4),
       ),
     );
   }

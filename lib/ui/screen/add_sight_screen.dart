@@ -639,7 +639,7 @@ class _AddSightScreenState extends State<AddSightScreen> {
               ],
             ),
             actions: [
-              FlatButton(
+              TextButton(
                 onPressed: () {
                   Navigator.push(
                     context,
@@ -655,7 +655,6 @@ class _AddSightScreenState extends State<AddSightScreen> {
                       .headline6
                       .copyWith(color: Theme.of(context).accentColor),
                 ),
-                splashColor: Theme.of(context).accentColor.withOpacity(0.05),
               ),
             ],
           );

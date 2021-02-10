@@ -79,13 +79,15 @@ class _ButtonBack extends StatelessWidget {
       constraints: BoxConstraints.tight(
         Size(32.0, 32.0),
       ),
-      child: FlatButton(
-        padding: EdgeInsets.zero,
-        color: Theme.of(context).primaryColor,
-        height: heightBigButton,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(
-            Radius.circular(10),
+      child: TextButton(
+        style: TextButton.styleFrom(
+          padding: EdgeInsets.zero,
+          backgroundColor: Theme.of(context).primaryColor,
+          minimumSize: Size.fromHeight(heightBigButton),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(
+              Radius.circular(10),
+            ),
           ),
         ),
         child: IconSvg(
