@@ -100,3 +100,9 @@ const searchHeaderHistory = 'ВЫ ИСКАЛИ';
 /// Туториал скрин
 const tutorialButtonAppBarTitle = 'Пропустить';
 const tutorialButtonTitle = 'НА СТАРТ';
+
+/// BottomNavigationBar
+const bottomNavigationBarItemLabelList = 'Список';
+const bottomNavigationBarItemLabelMap = 'Карта';
+const bottomNavigationBarItemLabelFavorites = 'Избранное';
+const bottomNavigationBarItemLabelSettings = 'Настройки';

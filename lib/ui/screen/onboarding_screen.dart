@@ -72,7 +72,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         title: tutorialButtonTitle,
         isButtonEnabled: true,
         onPressed: () {
-          print('onPressed $tutorialButtonTitle');
+          Navigator.of(context).pushReplacementNamed('/');
         },
       );
     }
@@ -194,7 +194,8 @@ class PageSelector extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: data
           .asMap()
-          .map((i, element) => MapEntry(
+          .map(
+            (i, element) => MapEntry(
               i,
               Container(
                 margin: EdgeInsets.all(4),
@@ -211,7 +212,9 @@ class PageSelector extends StatelessWidget {
                       currentIndex: currentIndex,
                     ),
                     borderRadius: BorderRadius.circular(8)),
-              )))
+              ),
+            ),
+          )
           .values
           .toList(),
     );
