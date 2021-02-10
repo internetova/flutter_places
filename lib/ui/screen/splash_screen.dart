@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:places/ui/screen/components/icon_svg.dart';
 import 'package:places/ui/screen/onboarding_screen.dart';
+import 'package:places/ui/screen/res/app_routes.dart';
 import 'package:places/ui/screen/res/assets.dart';
 import 'package:places/ui/screen/res/sizes.dart';
 import 'package:places/ui/screen/res/themes.dart';
@@ -62,8 +63,6 @@ class _SplashScreenState extends State<SplashScreen> {
   /// логика перехода либо на онбординг, если был первый вход,
   /// либо на главный экран
   Future<void> _navigateToNext() async {
-    print('Старт приложения');
-
     /// 1. завершена инициализация
     /// 2. прошло минимальное время отображения сплэш-экрана.
     try {
@@ -72,14 +71,8 @@ class _SplashScreenState extends State<SplashScreen> {
         Future.delayed(const Duration(seconds: 2)),
       ]);
 
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(
-          builder: (BuildContext context) =>
-              widget.isFirstStart ? OnboardingScreen() : SightListScreen(),
-        ),
-      );
-
-      print('Переход на следующий экран');
+      Navigator.of(context).pushReplacementNamed(
+          widget.isFirstStart ? AppRoutes.onboarding : AppRoutes.home);
     } catch (e) {
       print('Ошибка: $e');
     }
