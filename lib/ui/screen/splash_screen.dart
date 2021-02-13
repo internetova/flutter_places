@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:places/ui/screen/components/icon_svg.dart';
-import 'package:places/ui/screen/onboarding_screen.dart';
 import 'package:places/ui/screen/res/app_routes.dart';
 import 'package:places/ui/screen/res/assets.dart';
 import 'package:places/ui/screen/res/sizes.dart';
 import 'package:places/ui/screen/res/themes.dart';
-import 'package:places/ui/screen/sight_list_screen.dart';
 
 /// сплэш-экран приложения
 class SplashScreen extends StatefulWidget {

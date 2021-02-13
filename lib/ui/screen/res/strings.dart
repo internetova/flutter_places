@@ -88,6 +88,7 @@ const addNewSightAlertDialogHeader = 'Данные сохранены';
 const addNewSightAlertDialogLat = 'Широта:\n';
 const addNewSightAlertDialogLon = 'Долгота:\n';
 const addNewSightAlertDialogSubmit = 'OK';
+const addNewSightAlertDialogCancel = 'ОТМЕНА';
 
 /// Поиск
 const searchHintText = 'Поиск';
@@ -106,3 +107,8 @@ const bottomNavigationBarItemLabelList = 'Список';
 const bottomNavigationBarItemLabelMap = 'Карта';
 const bottomNavigationBarItemLabelFavorites = 'Избранное';
 const bottomNavigationBarItemLabelSettings = 'Настройки';
+
+/// загрузка фото при добавлении нового места
+const imageUploadCamera = 'Камера';
+const imageUploadPhoto = 'Фотография';
+const imageUploadFail = 'Файл';

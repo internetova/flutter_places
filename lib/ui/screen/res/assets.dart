@@ -54,3 +54,8 @@ const icPage3 = '$_baseResPath/tutorial/frame-3.svg';
 
 /// сплэш
 const icSplashLogo = '$_baseResPath/splash_logo.svg';
+
+/// загрузка фото при добавлении нового места
+const icCamera = '$_baseResPath/camera.svg';
+const icPhoto = '$_baseResPath/photo.svg';
+const icFail = '$_baseResPath/fail.svg';
