@@ -25,6 +25,7 @@ class SightDetails extends StatelessWidget {
             expandedHeight: 360,
             flexibleSpace: SightDetailsSlider(
               images: card.images,
+              whereShowSlider: WhereShowSlider.screen,
             ),
           ),
           SliverList(

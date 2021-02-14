@@ -9,6 +9,7 @@ import 'package:places/ui/screen/res/strings.dart';
 import 'package:places/ui/screen/res/assets.dart';
 import 'package:places/ui/screen/sight_details.dart';
 import 'package:places/ui/screen/visiting_screen.dart';
+import 'package:places/ui/screen/widgets/sight_details_bottom_sheet.dart';
 
 /// карточка достопримечательности
 /// в зависимости от места показа карточки - Список поиска, в Избранном
@@ -59,12 +60,9 @@ class SightCard extends StatelessWidget {
                 type: MaterialType.transparency,
                 child: InkWell(
                   onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => SightDetails(card: card),
-                      ),
-                    );
+                    whereShowCard == WhereShowCard.search
+                        ? _showDetailsBottomSheet(context)
+                        : _showDetailsScreen(context);
                   },
                 ),
               ),
@@ -76,6 +74,26 @@ class SightCard extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  /// показать боттомшит с деталями
+  void _showDetailsBottomSheet(BuildContext context) async {
+    showModalBottomSheet(
+      context: context,
+      builder: (_) {
+        return SightDetailsBottomSheet(card: card);
+      },
+    );
+  }
+
+  /// перейти на отдельный экран с деталями
+  void _showDetailsScreen(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => SightDetails(card: card),
       ),
     );
   }

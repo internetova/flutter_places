@@ -17,7 +17,7 @@ class ChoiceOfLoadingImages extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               Container(
-                height: 176,
+                height: 178,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(radiusCard),
                   color: Theme.of(context).primaryColor,
@@ -35,7 +35,10 @@ class ChoiceOfLoadingImages extends StatelessWidget {
                 style: TextButton.styleFrom(
                   primary: Theme.of(context).accentColor,
                   padding: EdgeInsets.zero,
-                  minimumSize: Size(double.infinity, heightBigButton),
+                  minimumSize: Size(
+                    double.infinity,
+                    heightBigButton,
+                  ),
                   alignment: Alignment.center,
                   backgroundColor: Theme.of(context).primaryColor,
                   shape: RoundedRectangleBorder(
