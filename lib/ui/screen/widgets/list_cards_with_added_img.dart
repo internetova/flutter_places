@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:places/ui/screen/add_sight_screen.dart';
 import 'package:places/ui/screen/components/button_card_add_img.dart';

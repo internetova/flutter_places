@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 
 import 'package:flutter_svg/flutter_svg.dart';
@@ -168,7 +166,7 @@ class _FiltersScreenState extends State<FiltersScreen> {
         pinned: true,
         title: Align(
           alignment: Alignment.centerRight,
-          child: FlatButton(
+          child: TextButton(
             onPressed: _onClearFilter,
             child: Text(
               filterClearFilters,

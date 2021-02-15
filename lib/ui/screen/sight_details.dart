@@ -25,6 +25,7 @@ class SightDetails extends StatelessWidget {
             expandedHeight: 360,
             flexibleSpace: SightDetailsSlider(
               images: card.images,
+              whereShowSlider: WhereShowSlider.screen,
             ),
           ),
           SliverList(
@@ -59,15 +60,17 @@ class SightDetails extends StatelessWidget {
                       style: Theme.of(context).textTheme.bodyText1,
                     ),
                     sizedBoxH24,
-                    FlatButton(
+                    TextButton(
                       onPressed: () {
                         print('onPressed Построить маршрут');
                       },
-                      color: Theme.of(context).accentColor,
-                      height: heightBigButton,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(radiusCard),
+                      style: TextButton.styleFrom(
+                        backgroundColor: Theme.of(context).accentColor,
+                        minimumSize: Size(double.infinity, heightBigButton),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(radiusCard),
+                          ),
                         ),
                       ),
                       child: Row(
@@ -90,11 +93,13 @@ class SightDetails extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Expanded(
-                            child: FlatButton(
+                            child: TextButton(
                               onPressed: () {
                                 print('onTaped Запланировать');
                               },
-                              height: 40,
+                              style: TextButton.styleFrom(
+                                minimumSize: Size.fromHeight(40),
+                              ),
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
@@ -116,11 +121,13 @@ class SightDetails extends StatelessWidget {
                             ),
                           ),
                           Expanded(
-                            child: FlatButton(
+                            child: TextButton(
                               onPressed: () {
                                 print('onTaped Избранное');
                               },
-                              height: 40,
+                              style: TextButton.styleFrom(
+                                minimumSize: Size.fromHeight(40),
+                              ),
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [

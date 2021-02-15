@@ -11,7 +11,7 @@ class TitleLeadingAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FlatButton(
+    return TextButton(
       child: Text(
         title,
         style: Theme.of(context)
@@ -19,7 +19,6 @@ class TitleLeadingAppBar extends StatelessWidget {
             .headline5
             .copyWith(color: Theme.of(context).colorScheme.secondary2),
       ),
-      splashColor: Theme.of(context).accentColor.withOpacity(0.05),
       onPressed: () {
         Navigator.pop(context);
       },

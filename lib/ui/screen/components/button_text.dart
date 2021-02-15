@@ -14,24 +14,22 @@ class ButtonText extends StatelessWidget {
   })  : assert(title != null),
         super(key: key);
 
-
   @override
   Widget build(BuildContext context) {
-    return FlatButton(
+    return TextButton(
       onPressed: onPressed,
-      child: SizedBox(
-        width: double.infinity,
-        child: Text(
-          title,
-          style: Theme.of(context)
-              .textTheme
-              .headline5
-              .copyWith(color: Theme.of(context).accentColor),
-        ),
+      style: TextButton.styleFrom(
+        padding: EdgeInsets.zero,
+        minimumSize: Size(double.infinity, heightBigButton),
+        alignment: Alignment.centerLeft,
       ),
-      height: heightBigButton,
-      padding: EdgeInsets.zero,
-      splashColor: Colors.transparent,
+      child: Text(
+        title,
+        style: Theme.of(context)
+            .textTheme
+            .headline5
+            .copyWith(color: Theme.of(context).accentColor),
+      ),
     );
   }
 }

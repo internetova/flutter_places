@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:places/ui/screen/onboarding_screen.dart';
+import 'package:places/ui/screen/res/app_routes.dart';
 import 'package:places/ui/screen/res/themes.dart';
 import 'package:places/ui/screen/settings_screen.dart';
 import 'package:places/ui/screen/sight_list_screen.dart';
@@ -25,10 +26,10 @@ class App extends StatelessWidget {
             title: 'Places',
             theme: notifier.darkTheme ? _darkTheme : _lightTheme,
             routes: {
-              '/': (context) => SightListScreen(),
-              '/visiting': (context) => VisitingScreen(),
-              '/settings': (context) => SettingsScreen(),
-              '/onboarding': (context) => OnboardingScreen(),
+              AppRoutes.home: (context) => SightListScreen(),
+              AppRoutes.visiting: (context) => VisitingScreen(),
+              AppRoutes.settings: (context) => SettingsScreen(),
+              AppRoutes.onboarding: (context) => OnboardingScreen(),
             },
           );
         },

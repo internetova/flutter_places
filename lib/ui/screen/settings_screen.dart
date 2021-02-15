@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:places/ui/screen/components/bottom_NavigationBar.dart';
+import 'package:places/ui/screen/res/app_routes.dart';
 import 'package:places/ui/screen/res/assets.dart';
 import 'package:places/ui/screen/res/strings.dart';
 import 'package:places/ui/screen/res/themes.dart';
@@ -72,7 +73,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             color: Theme.of(context).accentColor,
           ),
           onPressed: () {
-            Navigator.of(context).pushReplacementNamed('/onboarding');
+            Navigator.of(context).pushReplacementNamed(AppRoutes.onboarding);
           }),
     );
   }

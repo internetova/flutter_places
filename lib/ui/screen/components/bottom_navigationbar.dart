@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:places/ui/screen/res/app_routes.dart';
 import 'package:places/ui/screen/res/assets.dart';
 import 'package:places/ui/screen/res/strings.dart';
 
@@ -18,16 +19,16 @@ class MainBottomNavigationBar extends StatelessWidget {
       onTap: (current) {
         switch (current) {
           case 0:
-            Navigator.of(context).pushReplacementNamed('/');
+            Navigator.of(context).pushReplacementNamed(AppRoutes.home);
             break;
           case 1:
             print('onTaped Карта');
             break;
           case 2:
-            Navigator.of(context).pushReplacementNamed('/visiting');
+            Navigator.of(context).pushReplacementNamed(AppRoutes.visiting);
             break;
           case 3:
-            Navigator.of(context).pushReplacementNamed('/settings');
+            Navigator.of(context).pushReplacementNamed(AppRoutes.settings);
             break;
         }
       },

@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:places/domain/categories.dart';
 import 'package:places/ui/screen/res/assets.dart';
 

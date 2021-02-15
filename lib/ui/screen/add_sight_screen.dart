@@ -14,6 +14,7 @@ import 'package:places/ui/screen/res/themes.dart';
 import 'package:places/ui/screen/select_category_screen.dart';
 import 'package:places/ui/screen/sight_list_screen.dart';
 import 'package:places/ui/screen/utilities/test_images_data.dart';
+import 'package:places/ui/screen/widgets/choice_of_loading_images.dart';
 import 'package:places/ui/screen/widgets/list_cards_with_added_img.dart';
 
 /// регулярные выражения
@@ -639,7 +640,7 @@ class _AddSightScreenState extends State<AddSightScreen> {
               ],
             ),
             actions: [
-              FlatButton(
+              TextButton(
                 onPressed: () {
                   Navigator.push(
                     context,
@@ -655,7 +656,6 @@ class _AddSightScreenState extends State<AddSightScreen> {
                       .headline6
                       .copyWith(color: Theme.of(context).accentColor),
                 ),
-                splashColor: Theme.of(context).accentColor.withOpacity(0.05),
               ),
             ],
           );
@@ -667,5 +667,16 @@ class _AddSightScreenState extends State<AddSightScreen> {
     setState(() {
       _userImages.add(TestImagesData.getRandomItem());
     });
+    _showImageLoadingWindow();
+  }
+
+  /// окно для выбора загрузки фотографий
+  Future<void> _showImageLoadingWindow() async {
+    return showDialog(
+        context: context,
+        // barrierDismissible: true,
+        builder: (_) {
+          return ChoiceOfLoadingImages();
+        });
   }
 }

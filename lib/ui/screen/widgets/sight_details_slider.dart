@@ -3,13 +3,17 @@ import 'package:places/ui/screen/components/icon_svg.dart';
 import 'package:places/ui/screen/res/assets.dart';
 import 'package:places/ui/screen/res/sizes.dart';
 
+/// где показывать - на скрине или боттомшите
+enum WhereShowSlider { screen, bottomSheet }
+
 /// слайдер фотографий
 class SightDetailsSlider extends StatefulWidget {
   final List<String> images;
+  final WhereShowSlider whereShowSlider;
 
   const SightDetailsSlider({
     Key key,
-    @required this.images,
+    @required this.images, this.whereShowSlider,
   })  : assert(images != null),
         super(key: key);
 
@@ -59,7 +63,7 @@ class _SightDetailsSliderState extends State<SightDetailsSlider> {
                 ),
               ),
             ),
-            Positioned(
+            if (widget.whereShowSlider == WhereShowSlider.screen) Positioned(
               top: 36,
               left: 16,
               child: _ButtonBack(),
@@ -71,7 +75,7 @@ class _SightDetailsSliderState extends State<SightDetailsSlider> {
   }
 }
 
-/// кнопка назад
+/// кнопка Назад при показе на отдельном скрине
 class _ButtonBack extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -79,13 +83,15 @@ class _ButtonBack extends StatelessWidget {
       constraints: BoxConstraints.tight(
         Size(32.0, 32.0),
       ),
-      child: FlatButton(
-        padding: EdgeInsets.zero,
-        color: Theme.of(context).primaryColor,
-        height: heightBigButton,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(
-            Radius.circular(10),
+      child: TextButton(
+        style: TextButton.styleFrom(
+          padding: EdgeInsets.zero,
+          backgroundColor: Theme.of(context).primaryColor,
+          minimumSize: Size.fromHeight(heightBigButton),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(
+              Radius.circular(10),
+            ),
           ),
         ),
         child: IconSvg(
@@ -93,7 +99,7 @@ class _ButtonBack extends StatelessWidget {
           color: Theme.of(context).colorScheme.onPrimary,
         ),
         onPressed: () {
-          Navigator.pop(context);
+          Navigator.of(context).pop();
         },
       ),
     );

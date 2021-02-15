@@ -110,6 +110,9 @@ class AppTheme {
           ),
         ),
       ),
+      bottomSheetTheme: base.bottomSheetTheme.copyWith(
+        backgroundColor: Colors.transparent,
+      ),
     );
   }
 
@@ -240,6 +243,9 @@ class AppTheme {
             width: 2,
           ),
         ),
+      ),
+      bottomSheetTheme: base.bottomSheetTheme.copyWith(
+        backgroundColor: Colors.transparent,
       ),
     );
   }
