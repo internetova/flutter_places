@@ -79,12 +79,14 @@ class SightCard extends StatelessWidget {
   }
 
   /// показать боттомшит с деталями
-  void _showDetailsBottomSheet(BuildContext context) async {
+  void _showDetailsBottomSheet(BuildContext context) {
     showModalBottomSheet(
       context: context,
       builder: (_) {
         return SightDetailsBottomSheet(card: card);
       },
+      isScrollControlled: true,
+      isDismissible: true,
     );
   }
 
