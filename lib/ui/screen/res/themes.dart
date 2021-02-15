@@ -113,6 +113,7 @@ class AppTheme {
       bottomSheetTheme: base.bottomSheetTheme.copyWith(
         backgroundColor: Colors.transparent,
       ),
+
     );
   }
 
