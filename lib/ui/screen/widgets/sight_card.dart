@@ -190,7 +190,7 @@ class CardActions extends StatelessWidget {
   List _buildActionsPlanned(BuildContext context) => <Widget>[
         IconActionButton(
           onPressed: () async {
-            var res = await _setReminder(context);
+            var res = await _setReminderTime(context);
 
             if (res != null) {
               print(res);
@@ -228,12 +228,23 @@ class CardActions extends StatelessWidget {
     VisitingScreen.of(context).updateState();
   }
 
-  /// установить напоминание о запланированном посещениее места
-  Future<DateTime> _setReminder(BuildContext context) => showDatePicker(
+  /// установить напоминание Календарь о запланированном посещении места
+  Future<DateTime> _setReminderCalendar(BuildContext context) => showDatePicker(
       context: context,
       initialDate: DateTime.now(),
       firstDate: DateTime.now(),
       lastDate: DateTime.now().add(Duration(days: 180)),
+      builder: (BuildContext context, Widget child) {
+        return Theme(
+          data: _setTheme(context),
+          child: child,
+        );
+      });
+
+  /// установить напоминание Часы о запланированном посещении места
+  Future<TimeOfDay> _setReminderTime(BuildContext context) => showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.now(),
       builder: (BuildContext context, Widget child) {
         return Theme(
           data: _setTheme(context),
