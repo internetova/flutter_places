@@ -23,9 +23,8 @@ class SightDetailsBottomSheet extends StatelessWidget {
       maxChildSize: 0.9,
       builder: (BuildContext context, ScrollController scrollController) {
         return ClipRRect(
-          borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(radiusCard),
-            topRight: Radius.circular(radiusCard),
+          borderRadius: BorderRadius.vertical(
+            top: Radius.circular(radiusCard),
           ),
           child: Container(
             color: Theme.of(context).primaryColor,
