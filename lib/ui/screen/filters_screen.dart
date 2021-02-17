@@ -11,12 +11,17 @@ import 'package:places/ui/screen/res/sizes.dart';
 import 'package:places/ui/screen/res/strings.dart';
 import 'package:places/ui/screen/res/themes.dart';
 import 'package:places/ui/screen/utilities/filter_utility.dart';
+import 'package:places/ui/screen/widgets/filter_category_item.dart';
 
 /// экран фильтра для поиска
 class FiltersScreen extends StatefulWidget {
   final FilterSettings filter;
 
   const FiltersScreen({Key key, this.filter}) : super(key: key);
+
+  /// для доступа к методу обработки кликов по категориям из дочернего виджета
+  static _FiltersScreenState of(BuildContext context) =>
+      context.findAncestorStateOfType<_FiltersScreenState>();
 
   @override
   _FiltersScreenState createState() => _FiltersScreenState();
@@ -78,6 +83,20 @@ class _FiltersScreenState extends State<FiltersScreen> {
     super.initState();
   }
 
+  /// вызываем из дочернего виджета [FilterCategoryItem]
+  /// выбор / отмена категорий для фильтра, фильтрация базы данных
+  void setCategories(Map selectedCat) {
+    setState(() {
+      selectedCat['isSelected'] = !selectedCat['isSelected'];
+      _filteredCategories = _filterCategories(_selectedCategories);
+      _filteredData = filterData(
+          data: _fullData,
+          categories: _filteredCategories,
+          centerPoint: _startSearchPoint,
+          distance: _currentRangeValues);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     if (_filteredData.isNotEmpty) {
@@ -96,6 +115,10 @@ class _FiltersScreenState extends State<FiltersScreen> {
       _onPressed = null;
     }
 
+    /// физическая ширина и высота экрана
+    final _screenWidth = MediaQuery.of(context).size.width;
+    final _screenHeight = MediaQuery.of(context).size.height;
+
     return Scaffold(
       body: CustomScrollView(
         slivers: [
@@ -109,9 +132,9 @@ class _FiltersScreenState extends State<FiltersScreen> {
               child: _buildTitleFilter(),
             ),
           ),
-          SliverPadding(
-            padding: const EdgeInsets.symmetric(horizontal: 24.0),
-            sliver: _buildCategories(categories, _selectedCategories),
+          _buildCategories(
+            _screenWidth,
+            _screenHeight,
           ),
           SliverList(
             delegate: SliverChildListDelegate([
@@ -186,8 +209,26 @@ class _FiltersScreenState extends State<FiltersScreen> {
             ),
       );
 
-  /// список карточек категорий
-  Widget _buildCategories(List<Categories> catalog, List<Map> selectedCat) =>
+  /// категории в зависимости от разрешения экрана
+  Widget _buildCategories(double width, double height) {
+    return width <= 375 && height <= 667 // iphone 8
+        ? _categoriesSmallSize(
+            categories,
+            _selectedCategories,
+          )
+        : SliverPadding(
+            padding: const EdgeInsets.symmetric(horizontal: 24.0),
+            sliver: _categoriesNormalSize(
+              categories,
+              _selectedCategories,
+            ),
+          );
+  }
+
+  /// список карточек категорий для нормальных экранов
+  /// показываем карточки гридами
+  Widget _categoriesNormalSize(
+          List<Categories> catalog, List<Map> selectedCat) =>
       SliverGrid(
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 3,
@@ -196,98 +237,33 @@ class _FiltersScreenState extends State<FiltersScreen> {
         ),
         delegate: SliverChildBuilderDelegate(
           (BuildContext context, int index) {
-            return Center(
-              child: Stack(
-                children: [
-                  const SizedBox(
-                    width: 96,
-                    height: 92,
-                  ),
-                  Positioned(
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    child: SizedBox(
-                      width: 64,
-                      height: 64,
-                      child: Ink(
-                        decoration: ShapeDecoration(
-                          color:
-                              Theme.of(context).accentColor.withOpacity(0.16),
-                          shape: CircleBorder(),
-                        ),
-                        child: IconButton(
-                          icon: SvgPicture.asset(
-                            catalog[index].icon,
-                            color: Theme.of(context).accentColor,
-                          ),
-                          onPressed: () {
-                            setState(() {
-                              selectedCat[index]['isSelected'] =
-                                  !selectedCat[index]['isSelected'];
-                              _filteredCategories =
-                                  _filterCategories(_selectedCategories);
-                              _filteredData = filterData(
-                                  data: _fullData,
-                                  categories: _filteredCategories,
-                                  centerPoint: _startSearchPoint,
-                                  distance: _currentRangeValues);
-                            });
-                          },
-                          splashColor:
-                              Theme.of(context).accentColor.withOpacity(0.5),
-                        ),
-                      ),
-                    ),
-                  ),
-                  Positioned(
-                    bottom: 0,
-                    left: 0,
-                    right: 0,
-                    child: Text(
-                      catalog[index].name,
-                      style: Theme.of(context).textTheme.caption,
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                  if (selectedCat[index]['isSelected']) _showSelected(),
-                ],
-              ),
+            return FilterCategoryItem(
+              catalog: catalog[index],
+              selectedCat: selectedCat[index],
             );
           },
           childCount: catalog.length,
         ),
       );
 
-  /// показывает метку на выбранной категории
-  Widget _showSelected() {
-    return Positioned(
-      top: 46,
-      right: 16,
-      child: Stack(
-        children: [
-          Container(
-            width: 16,
-            height: 16,
-            decoration: ShapeDecoration(
-              shape: CircleBorder(),
-              color: Theme.of(context).colorScheme.primary,
-            ),
-          ),
-          Positioned(
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            child: SvgPicture.asset(
-              icTick,
-              color: Theme.of(context).primaryColor,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+  /// список карточек категорий для маленьких экранов 375 х 667 iphone 8
+  /// показываем категории в одну прокручиваемую строку
+  Widget _categoriesSmallSize(
+          List<Categories> catalog, List<Map> selectedCat) =>
+      SliverToBoxAdapter(
+        child: Container(
+          height: 100.0,
+          child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: catalog.length,
+              itemBuilder: (context, index) {
+                return FilterCategoryItem(
+                  catalog: catalog[index],
+                  selectedCat: selectedCat[index],
+                );
+              }),
+        ),
+      );
 
   /// заголовок для слайдера
   Widget _buildHeaderSlider() => Padding(
