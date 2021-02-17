@@ -60,11 +60,11 @@ class _SightListScreenState extends State<SightListScreen> {
   /// SliverAppBar в зависимости от ориентации экрана
   Widget _buildSliverAppBar() {
     return MediaQuery.of(context).orientation == Orientation.portrait
-        ? SliverAppBarPortrait(
+        ? _SliverAppBarPortrait(
             onTapSearch: _onTapSearch,
             onPressedFilter: _onPressedFilter,
           )
-        : SliverAppBarLandscape(
+        : _SliverAppBarLandscape(
             onTapSearch: _onTapSearch,
             onPressedFilter: _onPressedFilter,
           );
@@ -73,7 +73,7 @@ class _SightListScreenState extends State<SightListScreen> {
   /// отображение списка карточек в зависимости от ориентации экрана
   Widget _buildListCard({List<Sight> data}) {
     return MediaQuery.of(context).orientation == Orientation.portrait
-        ? ListCards(
+        ? ListCardsPortrait(
             data: data,
             whereShowCard: WhereShowCard.search,
           )
@@ -132,11 +132,11 @@ class _SightListScreenState extends State<SightListScreen> {
 }
 
 /// appBar портретная ориентация
-class SliverAppBarPortrait extends StatelessWidget {
+class _SliverAppBarPortrait extends StatelessWidget {
   final VoidCallback onTapSearch;
   final VoidCallback onPressedFilter;
 
-  const SliverAppBarPortrait({
+  const _SliverAppBarPortrait({
     Key key,
     this.onTapSearch,
     this.onPressedFilter,
@@ -201,11 +201,11 @@ class SliverAppBarPortrait extends StatelessWidget {
 }
 
 /// appBar ландшафтная ориентация
-class SliverAppBarLandscape extends StatelessWidget {
+class _SliverAppBarLandscape extends StatelessWidget {
   final VoidCallback onTapSearch;
   final VoidCallback onPressedFilter;
 
-  const SliverAppBarLandscape({
+  const _SliverAppBarLandscape({
     Key key,
     this.onTapSearch,
     this.onPressedFilter,

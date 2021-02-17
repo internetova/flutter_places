@@ -1,15 +1,19 @@
+import 'dart:io';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:places/data.dart';
 import 'package:places/ui/screen/components/icon_action_button.dart';
 
 import 'package:places/domain/sight.dart';
-import 'package:places/ui/screen/res/colors.dart';
 import 'package:places/ui/screen/res/sizes.dart';
 import 'package:places/ui/screen/res/strings.dart';
 import 'package:places/ui/screen/res/assets.dart';
+import 'package:places/ui/screen/res/themes.dart';
 import 'package:places/ui/screen/sight_details.dart';
 import 'package:places/ui/screen/visiting_screen.dart';
+import 'package:places/ui/screen/widgets/reminder_time_ios.dart';
 import 'package:places/ui/screen/widgets/sight_details_bottom_sheet.dart';
 
 /// карточка достопримечательности
@@ -190,7 +194,19 @@ class CardActions extends StatelessWidget {
   List _buildActionsPlanned(BuildContext context) => <Widget>[
         IconActionButton(
           onPressed: () async {
-            var res = await _setReminderTime(context);
+            var res;
+
+            if (Platform.isAndroid) {
+              res = await _setReminderTimeAndroid(context);
+            }
+
+            if (Platform.isIOS) {
+              res = await showModalBottomSheet(
+                  context: context,
+                  builder: (_) {
+                    return ReminderTimeIOSBottomSheet();
+                  });
+            }
 
             if (res != null) {
               print(res);
@@ -228,52 +244,17 @@ class CardActions extends StatelessWidget {
     VisitingScreen.of(context).updateState();
   }
 
-  /// установить напоминание Календарь о запланированном посещении места
-  Future<DateTime> _setReminderCalendar(BuildContext context) => showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime.now(),
-      lastDate: DateTime.now().add(Duration(days: 180)),
-      builder: (BuildContext context, Widget child) {
-        return Theme(
-          data: _setTheme(context),
-          child: child,
-        );
-      });
-
-  /// установить напоминание Часы о запланированном посещении места
-  Future<TimeOfDay> _setReminderTime(BuildContext context) => showTimePicker(
-      context: context,
-      initialTime: TimeOfDay.now(),
-      builder: (BuildContext context, Widget child) {
-        return Theme(
-          data: _setTheme(context),
-          child: child,
-        );
-      });
-
-  /// тема для пикера
-  /// ‼️ в дизайне не нашла тему!
-  /// пока тут накидала
-  ThemeData _setTheme(BuildContext context) {
-    return Theme.of(context).brightness == Brightness.light
-        ? ThemeData.light().copyWith(
-            primaryColor: colorPicker,
-            accentColor: colorPicker,
-            colorScheme: ColorScheme.light(
-              primary: colorPicker,
-            ),
-          )
-        : ThemeData.dark().copyWith(
-            colorScheme: ColorScheme.dark(
-              primary: colorBlackError,
-              onPrimary: colorWhite,
-              surface: colorBlackDark,
-              onSurface: colorWhite,
-            ),
-            dialogBackgroundColor: colorBlackMain,
-          );
-  }
+  /// установить напоминание Часы о запланированном посещении места Android
+  Future<TimeOfDay> _setReminderTimeAndroid(BuildContext context) =>
+      showTimePicker(
+          context: context,
+          initialTime: TimeOfDay.now(),
+          builder: (BuildContext context, Widget child) {
+            return Theme(
+              data: setThemePicker(context),
+              child: child,
+            );
+          });
 }
 
 /// контент карточки - название и детали

@@ -6,11 +6,11 @@ import 'package:places/ui/screen/widgets/sight_card.dart';
 /// в конструкторе база данных карточек и параметр Где (в каком разделе) выводится
 /// карточка, т.к. от него зависит внутреннее наполнение карточки
 /// этот для главной страницы
-class ListCards extends StatelessWidget {
+class ListCardsPortrait extends StatelessWidget {
   final List<Sight> data;
   final WhereShowCard whereShowCard;
 
-  const ListCards({
+  const ListCardsPortrait({
     Key key,
     @required this.data,
     @required this.whereShowCard,
