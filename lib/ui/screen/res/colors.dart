@@ -6,6 +6,8 @@ const colorBackground = Color(0xffF5F5F5);
 const colorSecondary = Color(0xff3B3E5B);
 const colorSecondary2 = Color(0xff7C7E92);
 const colorInactiveBlack = Color.fromRGBO(124, 126, 146, 0.56);
+const colorPicker = Color(0xFF8CC152);
+
 
 const colorWhiteGreen = Color(0xff4CAF50);
 const colorWhiteGreen2 = Color(0xff68B74E); // сплэш экран градиент

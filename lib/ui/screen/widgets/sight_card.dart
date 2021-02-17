@@ -4,6 +4,7 @@ import 'package:places/data.dart';
 import 'package:places/ui/screen/components/icon_action_button.dart';
 
 import 'package:places/domain/sight.dart';
+import 'package:places/ui/screen/res/colors.dart';
 import 'package:places/ui/screen/res/sizes.dart';
 import 'package:places/ui/screen/res/strings.dart';
 import 'package:places/ui/screen/res/assets.dart';
@@ -188,8 +189,12 @@ class CardActions extends StatelessWidget {
   /// кнопки действий для карточки Хочу посетить
   List _buildActionsPlanned(BuildContext context) => <Widget>[
         IconActionButton(
-          onPressed: () {
-            print('onPressed Календарь');
+          onPressed: () async {
+            var res = await _setReminderTime(context);
+
+            if (res != null) {
+              print(res);
+            }
           },
           icon: icCalendar,
         ),
@@ -217,22 +222,71 @@ class CardActions extends StatelessWidget {
         ),
       ];
 
+  /// удалить карточку
   void _deleteCard(BuildContext context) {
     favoritesSight.removeWhere((element) => element.id == card.id);
     VisitingScreen.of(context).updateState();
+  }
+
+  /// установить напоминание Календарь о запланированном посещении места
+  Future<DateTime> _setReminderCalendar(BuildContext context) => showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime.now(),
+      lastDate: DateTime.now().add(Duration(days: 180)),
+      builder: (BuildContext context, Widget child) {
+        return Theme(
+          data: _setTheme(context),
+          child: child,
+        );
+      });
+
+  /// установить напоминание Часы о запланированном посещении места
+  Future<TimeOfDay> _setReminderTime(BuildContext context) => showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.now(),
+      builder: (BuildContext context, Widget child) {
+        return Theme(
+          data: _setTheme(context),
+          child: child,
+        );
+      });
+
+  /// тема для пикера
+  /// ‼️ в дизайне не нашла тему!
+  /// пока тут накидала
+  ThemeData _setTheme(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.light
+        ? ThemeData.light().copyWith(
+            primaryColor: colorPicker,
+            accentColor: colorPicker,
+            colorScheme: ColorScheme.light(
+              primary: colorPicker,
+            ),
+          )
+        : ThemeData.dark().copyWith(
+            colorScheme: ColorScheme.dark(
+              primary: colorBlackError,
+              onPrimary: colorWhite,
+              surface: colorBlackDark,
+              onSurface: colorWhite,
+            ),
+            dialogBackgroundColor: colorBlackMain,
+          );
   }
 }
 
 /// контент карточки - название и детали
 /// зависит от места показа карточки
 class CardContent extends StatelessWidget {
+  final Sight card;
+  final WhereShowCard whereShowCard;
+
   const CardContent({
     Key key,
     @required this.card,
     @required this.whereShowCard,
   }) : super(key: key);
-  final Sight card;
-  final WhereShowCard whereShowCard;
 
   @override
   Widget build(BuildContext context) {

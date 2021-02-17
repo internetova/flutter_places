@@ -29,7 +29,6 @@ class IconActionButton extends StatelessWidget {
         onPressed: onPressed,
         style: TextButton.styleFrom(
           shape: CircleBorder(),
-          // splashColor: Theme.of(context).primaryColorLight.withOpacity(0.50),
           padding: EdgeInsets.all(4),
           elevation: 0,
         ),
