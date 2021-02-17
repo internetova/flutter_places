@@ -34,3 +34,39 @@ class ListCards extends StatelessWidget {
         ),
       );
 }
+
+/// для ландшафтного отображения
+class ListCardsLandscape extends StatelessWidget {
+  final List<Sight> data;
+  final WhereShowCard whereShowCard;
+
+  const ListCardsLandscape({
+    Key key,
+    @required this.data,
+    @required this.whereShowCard,
+  })  : assert(data != null),
+        assert(whereShowCard != null),
+        super(key: key);
+
+  @override
+  Widget build(BuildContext context) => SliverGrid(
+        delegate: SliverChildBuilderDelegate(
+          (BuildContext context, int index) {
+            return Padding(
+              padding: EdgeInsets.only(bottom: 16.0),
+              child: SightCard(
+                card: data[index],
+                whereShowCard: whereShowCard,
+              ),
+            );
+          },
+          childCount: data.length,
+        ),
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          crossAxisSpacing: 36.0,
+          mainAxisSpacing: 16.0,
+          childAspectRatio: 3 / 2,
+        ),
+      );
+}
