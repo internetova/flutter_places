@@ -58,30 +58,38 @@ class _SightListScreenState extends State<SightListScreen> {
   }
 
   /// SliverAppBar в зависимости от ориентации экрана
-  Widget _buildSliverAppBar() {
-    return MediaQuery.of(context).orientation == Orientation.portrait
-        ? _SliverAppBarPortrait(
-            onTapSearch: _onTapSearch,
-            onPressedFilter: _onPressedFilter,
-          )
-        : _SliverAppBarLandscape(
-            onTapSearch: _onTapSearch,
-            onPressedFilter: _onPressedFilter,
-          );
-  }
+  Widget _buildSliverAppBar() => OrientationBuilder(
+        builder: (BuildContext context, Orientation orientation) {
+          if (orientation == Orientation.portrait) {
+            return _SliverAppBarPortrait(
+              onTapSearch: _onTapSearch,
+              onPressedFilter: _onPressedFilter,
+            );
+          } else {
+            return _SliverAppBarLandscape(
+              onTapSearch: _onTapSearch,
+              onPressedFilter: _onPressedFilter,
+            );
+          }
+        },
+      );
 
   /// отображение списка карточек в зависимости от ориентации экрана
-  Widget _buildListCard({List<Sight> data}) {
-    return MediaQuery.of(context).orientation == Orientation.portrait
-        ? ListCardsPortrait(
-            data: data,
-            whereShowCard: WhereShowCard.search,
-          )
-        : ListCardsLandscape(
-            data: data,
-            whereShowCard: WhereShowCard.search,
-          );
-  }
+  Widget _buildListCard({List<Sight> data}) => OrientationBuilder(
+        builder: (BuildContext context, Orientation orientation) {
+          if (orientation == Orientation.portrait) {
+            return ListCardsPortrait(
+              data: data,
+              whereShowCard: WhereShowCard.search,
+            );
+          } else {
+            return ListCardsLandscape(
+              data: data,
+              whereShowCard: WhereShowCard.search,
+            );
+          }
+        },
+      );
 
   /// нажатие на градиентную кнопку - переходим на экран добавления
   void _onPressedAddNewCard() {
