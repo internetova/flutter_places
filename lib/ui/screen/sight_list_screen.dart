@@ -34,17 +34,19 @@ class _SightListScreenState extends State<SightListScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final double _paddingHorizontal =
+        MediaQuery.of(context).orientation == Orientation.portrait
+            ? 16.0
+            : 34.0;
     return Scaffold(
       body: SafeArea(
         child: CustomScrollView(
           slivers: [
             _buildSliverAppBar(),
             SliverPadding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              sliver: ListCards(
-                data: _filteredData.isNotEmpty ? _filteredData : _fullData,
-                whereShowCard: WhereShowCard.search,
-              ),
+              padding: EdgeInsets.symmetric(horizontal: _paddingHorizontal),
+              sliver: _buildListCard(
+                  data: _filteredData.isNotEmpty ? _filteredData : _fullData),
             ),
           ],
         ),
@@ -55,59 +57,38 @@ class _SightListScreenState extends State<SightListScreen> {
     );
   }
 
-  /// SliverAppBar
-  Widget _buildSliverAppBar() => SliverAppBar(
-        expandedHeight: 216.0,
-        floating: false,
-        pinned: true,
-        elevation: 0,
-        flexibleSpace: LayoutBuilder(
-            builder: (BuildContext context, BoxConstraints constraints) {
-          double top = constraints.biggest.height;
-          return FlexibleSpaceBar(
-            centerTitle: true,
-            title: AnimatedOpacity(
-              duration: Duration(milliseconds: 300),
-              opacity: top == 56.0 ? 1.0 : 0.0,
-              child: Text(
-                searchAppBarTitle,
-                style: Theme.of(context).textTheme.headline6.copyWith(
-                      color: Theme.of(context).colorScheme.primary,
-                    ),
-                textAlign: TextAlign.center,
-              ),
-            ),
-            background: Container(
-              color: Theme.of(context).primaryColor,
-              padding: EdgeInsets.symmetric(horizontal: 16),
-              child: Stack(
-                children: [
-                  Positioned(
-                    bottom: 104,
-                    child: Text(
-                      appBarTitle,
-                      style: Theme.of(context).textTheme.headline3.copyWith(
-                            color: Theme.of(context).colorScheme.primary,
-                          ),
-                    ),
-                  ),
-                  Positioned(
-                    bottom: 34,
-                    child: ConstrainedBox(
-                      constraints: BoxConstraints.tight(
-                        Size(constraints.maxWidth - 32, heightInput),
-                      ),
-                      child: SearchBarStatic(
-                        onTapSearch: _onTapSearch,
-                        onPressedFilter: _onPressedFilter,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          );
-        }),
+  /// SliverAppBar в зависимости от ориентации экрана
+  Widget _buildSliverAppBar() => OrientationBuilder(
+        builder: (BuildContext context, Orientation orientation) {
+          if (orientation == Orientation.portrait) {
+            return _SliverAppBarPortrait(
+              onTapSearch: _onTapSearch,
+              onPressedFilter: _onPressedFilter,
+            );
+          } else {
+            return _SliverAppBarLandscape(
+              onTapSearch: _onTapSearch,
+              onPressedFilter: _onPressedFilter,
+            );
+          }
+        },
+      );
+
+  /// отображение списка карточек в зависимости от ориентации экрана
+  Widget _buildListCard({List<Sight> data}) => OrientationBuilder(
+        builder: (BuildContext context, Orientation orientation) {
+          if (orientation == Orientation.portrait) {
+            return ListCardsPortrait(
+              data: data,
+              whereShowCard: WhereShowCard.search,
+            );
+          } else {
+            return ListCardsLandscape(
+              data: data,
+              whereShowCard: WhereShowCard.search,
+            );
+          }
+        },
       );
 
   /// нажатие на градиентную кнопку - переходим на экран добавления
@@ -155,5 +136,130 @@ class _SightListScreenState extends State<SightListScreen> {
           centerPoint: _currentFilter.centerPoint,
           distance: _currentFilter.distance);
     });
+  }
+}
+
+/// appBar портретная ориентация
+class _SliverAppBarPortrait extends StatelessWidget {
+  final VoidCallback onTapSearch;
+  final VoidCallback onPressedFilter;
+
+  const _SliverAppBarPortrait({
+    Key key,
+    this.onTapSearch,
+    this.onPressedFilter,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return SliverAppBar(
+      expandedHeight: 216.0,
+      floating: false,
+      pinned: true,
+      elevation: 0,
+      flexibleSpace: LayoutBuilder(
+          builder: (BuildContext context, BoxConstraints constraints) {
+        double top = constraints.biggest.height;
+        return FlexibleSpaceBar(
+          centerTitle: true,
+          title: AnimatedOpacity(
+            duration: Duration(milliseconds: 300),
+            opacity: top == 56.0 ? 1.0 : 0.0,
+            child: Text(
+              searchAppBarTitle,
+              style: Theme.of(context).textTheme.headline6.copyWith(
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
+              textAlign: TextAlign.center,
+            ),
+          ),
+          background: Container(
+            color: Theme.of(context).primaryColor,
+            padding: EdgeInsets.symmetric(horizontal: 16),
+            child: Stack(
+              children: [
+                Positioned(
+                  bottom: 104,
+                  child: Text(
+                    appBarTitle,
+                    style: Theme.of(context).textTheme.headline3.copyWith(
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
+                  ),
+                ),
+                Positioned(
+                  bottom: 34,
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints.tight(
+                      Size(constraints.maxWidth - 32, heightInput),
+                    ),
+                    child: SearchBarStatic(
+                      onTapSearch: onTapSearch,
+                      onPressedFilter: onPressedFilter,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      }),
+    );
+  }
+}
+
+/// appBar ландшафтная ориентация
+class _SliverAppBarLandscape extends StatelessWidget {
+  final VoidCallback onTapSearch;
+  final VoidCallback onPressedFilter;
+
+  const _SliverAppBarLandscape({
+    Key key,
+    this.onTapSearch,
+    this.onPressedFilter,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return SliverAppBar(
+      expandedHeight: 112.0,
+      floating: false,
+      pinned: true,
+      elevation: 0,
+      title: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        child: Text(
+          searchAppBarTitle,
+          style: Theme.of(context).textTheme.headline6.copyWith(
+                color: Theme.of(context).colorScheme.primary,
+              ),
+        ),
+      ),
+      flexibleSpace: LayoutBuilder(
+          builder: (BuildContext context, BoxConstraints constraints) {
+        return FlexibleSpaceBar(
+          background: Container(
+            color: Theme.of(context).primaryColor,
+            padding: EdgeInsets.symmetric(horizontal: 34),
+            child: Stack(
+              children: [
+                Positioned(
+                  bottom: 14,
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints.tight(
+                      Size(constraints.maxWidth - 68, heightInput),
+                    ),
+                    child: SearchBarStatic(
+                      onTapSearch: onTapSearch,
+                      onPressedFilter: onPressedFilter,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      }),
+    );
   }
 }

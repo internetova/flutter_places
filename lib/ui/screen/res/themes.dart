@@ -289,6 +289,29 @@ extension CustomColorScheme on ColorScheme {
   Color get yellow2 => brightness == Brightness.light ? colorWhiteYellow2 : colorBlackYellow2;
 }
 
+/// тема для пикера - календарь, часы Андроид
+/// ‼️ в дизайне не нашла тему!
+/// пока тут накидала
+ThemeData setThemePicker(BuildContext context) {
+  return Theme.of(context).brightness == Brightness.light
+      ? ThemeData.light().copyWith(
+    primaryColor: colorPicker,
+    accentColor: colorPicker,
+    colorScheme: ColorScheme.light(
+      primary: colorPicker,
+    ),
+  )
+      : ThemeData.dark().copyWith(
+    colorScheme: ColorScheme.dark(
+      primary: colorBlackError,
+      onPrimary: colorWhite,
+      surface: colorBlackDark,
+      onSurface: colorWhite,
+    ),
+    dialogBackgroundColor: colorBlackMain,
+  );
+}
+
 class ThemeNotifier extends ChangeNotifier {
   final String key = 'theme';
   SharedPreferences _prefs;

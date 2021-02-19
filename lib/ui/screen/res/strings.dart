@@ -112,3 +112,6 @@ const bottomNavigationBarItemLabelSettings = 'Настройки';
 const imageUploadCamera = 'Камера';
 const imageUploadPhoto = 'Фотография';
 const imageUploadFail = 'Файл';
+
+/// cupertino пикер
+const cupertinoPickerSelect = 'Выбрать';
