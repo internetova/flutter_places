@@ -34,62 +34,63 @@ class _SightListScreenState extends State<SightListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final double _paddingHorizontal =
-        MediaQuery.of(context).orientation == Orientation.portrait
-            ? 16.0
-            : 34.0;
-    return Scaffold(
-      body: SafeArea(
-        child: CustomScrollView(
-          slivers: [
-            _buildSliverAppBar(),
-            SliverPadding(
-              padding: EdgeInsets.symmetric(horizontal: _paddingHorizontal),
-              sliver: _buildListCard(
-                  data: _filteredData.isNotEmpty ? _filteredData : _fullData),
+    return OrientationBuilder(
+      builder: (BuildContext context, Orientation orientation) {
+        return Scaffold(
+          body: SafeArea(
+            child: CustomScrollView(
+              slivers: [
+                _buildSliverAppBar(orientation),
+                SliverPadding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal:
+                        orientation == Orientation.portrait ? 16.0 : 34.0,
+                  ),
+                  sliver: _buildListCard(orientation,
+                      data:
+                          _filteredData.isNotEmpty ? _filteredData : _fullData),
+                ),
+              ],
             ),
-          ],
-        ),
-      ),
-      floatingActionButton: ButtonGradient(onPressed: _onPressedAddNewCard),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      bottomNavigationBar: const MainBottomNavigationBar(current: 0),
+          ),
+          floatingActionButton: ButtonGradient(onPressed: _onPressedAddNewCard),
+          floatingActionButtonLocation:
+              FloatingActionButtonLocation.centerFloat,
+          bottomNavigationBar: const MainBottomNavigationBar(current: 0),
+        );
+      },
     );
   }
 
   /// SliverAppBar в зависимости от ориентации экрана
-  Widget _buildSliverAppBar() => OrientationBuilder(
-        builder: (BuildContext context, Orientation orientation) {
-          if (orientation == Orientation.portrait) {
-            return _SliverAppBarPortrait(
-              onTapSearch: _onTapSearch,
-              onPressedFilter: _onPressedFilter,
-            );
-          } else {
-            return _SliverAppBarLandscape(
-              onTapSearch: _onTapSearch,
-              onPressedFilter: _onPressedFilter,
-            );
-          }
-        },
+  Widget _buildSliverAppBar(Orientation orientation) {
+    if (orientation == Orientation.portrait) {
+      return _SliverAppBarPortrait(
+        onTapSearch: _onTapSearch,
+        onPressedFilter: _onPressedFilter,
       );
+    } else {
+      return _SliverAppBarLandscape(
+        onTapSearch: _onTapSearch,
+        onPressedFilter: _onPressedFilter,
+      );
+    }
+  }
 
   /// отображение списка карточек в зависимости от ориентации экрана
-  Widget _buildListCard({List<Sight> data}) => OrientationBuilder(
-        builder: (BuildContext context, Orientation orientation) {
-          if (orientation == Orientation.portrait) {
-            return ListCardsPortrait(
-              data: data,
-              whereShowCard: WhereShowCard.search,
-            );
-          } else {
-            return ListCardsLandscape(
-              data: data,
-              whereShowCard: WhereShowCard.search,
-            );
-          }
-        },
+  Widget _buildListCard(Orientation orientation, {List<Sight> data}) {
+    if (orientation == Orientation.portrait) {
+      return ListCardsPortrait(
+        data: data,
+        whereShowCard: WhereShowCard.search,
       );
+    } else {
+      return ListCardsLandscape(
+        data: data,
+        whereShowCard: WhereShowCard.search,
+      );
+    }
+  }
 
   /// нажатие на градиентную кнопку - переходим на экран добавления
   void _onPressedAddNewCard() {
