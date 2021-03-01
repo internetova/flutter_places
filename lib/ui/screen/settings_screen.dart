@@ -21,6 +21,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       appBar: AppBar(
         title: titleScreenSettings,
         centerTitle: true,
+        automaticallyImplyLeading: false,
       ),
       body: SingleChildScrollView(
         child: Padding(

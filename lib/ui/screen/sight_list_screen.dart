@@ -158,6 +158,7 @@ class _SliverAppBarPortrait extends StatelessWidget {
       floating: false,
       pinned: true,
       elevation: 0,
+      automaticallyImplyLeading: false,
       flexibleSpace: LayoutBuilder(
           builder: (BuildContext context, BoxConstraints constraints) {
         double top = constraints.biggest.height;

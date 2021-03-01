@@ -89,6 +89,7 @@ class _VisitingScreenState extends State<VisitingScreen> {
           ),
           centerTitle: true,
           elevation: 0,
+          automaticallyImplyLeading: false,
         ),
         body: TabBarView(
           children: [

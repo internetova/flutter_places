@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:places/dio_test.dart';
 import 'package:places/ui/screen/onboarding_screen.dart';
 import 'package:places/ui/screen/res/app_routes.dart';
 import 'package:places/ui/screen/res/themes.dart';
@@ -25,11 +26,13 @@ class App extends StatelessWidget {
             debugShowCheckedModeBanner: false,
             title: 'Places',
             theme: notifier.darkTheme ? _darkTheme : _lightTheme,
+            initialRoute: AppRoutes.dioTest, // временно
             routes: {
               AppRoutes.home: (context) => SightListScreen(),
               AppRoutes.visiting: (context) => VisitingScreen(),
               AppRoutes.settings: (context) => SettingsScreen(),
               AppRoutes.onboarding: (context) => OnboardingScreen(),
+              AppRoutes.dioTest: (context) => DioTest(), // временно
             },
           );
         },
