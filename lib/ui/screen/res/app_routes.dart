@@ -6,4 +6,5 @@ class AppRoutes {
   static const String settings = '/settings';
   static const String onboarding = '/onboarding';
   static const String dioTest = '/dioTest'; // временно для тестирования
+  static const String backendTest = '/backendTest'; // временно для тестирования
 }
