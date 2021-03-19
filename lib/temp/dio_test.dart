@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:places/data/res/http_strings.dart';
 
+/// удалить после сдачи задания
 /// учебное тестирование dio
 class DioTest extends StatefulWidget {
   final String title = 'Dio Test';

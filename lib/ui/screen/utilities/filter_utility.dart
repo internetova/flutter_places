@@ -7,11 +7,12 @@ import 'package:places/domain/sight.dart';
 /// вынесла в отдельный файл
 
 /// поиск карточек по фильтру
-List<Sight> filterData(
-    {@required List<Sight> data,
-    @required List<Map> categories,
-    @required CenterPoint centerPoint,
-    @required RangeValues distance}) {
+List<Sight> filterData({
+  @required List<Sight> data,
+  @required List<Map> categories,
+  @required CenterPoint centerPoint,
+  @required RangeValues distance,
+}) {
   List<Sight> result = [];
 
   for (var i = 0; i < categories.length; i++) {
@@ -33,11 +34,12 @@ List<Sight> filterData(
 /// поиск карточек по расстоянию
 /// https://stackoverflow.com/questions/24680247/check-if-a-latitude-and-longitude-is-within-a-circle-google-maps
 /// distance в метрах, переводим в км
-bool _arePointsNear(
-    {@required double checkPointLat,
-    @required double checkPointLon,
-    @required CenterPoint centerPoint,
-    @required RangeValues distance}) {
+bool _arePointsNear({
+  @required double checkPointLat,
+  @required double checkPointLon,
+  @required CenterPoint centerPoint,
+  @required RangeValues distance,
+}) {
   const ky = 40000 / 360;
   final kx = cos(pi * centerPoint.lat / 180.0) * ky;
   final dx = (centerPoint.lon - checkPointLon).abs() * kx;

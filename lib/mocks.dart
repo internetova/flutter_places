@@ -14,9 +14,11 @@ final List<Sight> mocks = [
     details:
         'Триумфальная арка или Триумфальные ворота в Москве – объект культурного наследия, расположенный на Кутузовском проспекте. Памятник воздвигнут в честь победы русского народа над Наполеоном в 1812 году. Достопримечательность относится к самым известным триумфальным воротам и аркам мира.',
     imgPreview:
-        'https://i1.photo.2gis.com/images/geo/32/4503599659565451_527f.jpg',
+        'https://architectureguru.ru/wp-content/uploads/2015/09/1-18.jpg',
+        // 'https://i1.photo.2gis.com/images/geo/32/4503599659565451_527f.jpg',
     images: [
       'https://i1.photo.2gis.com/images/geo/32/4503599659565451_527f.jpg',
+      'https://architectureguru.ru/wp-content/uploads/2015/09/1-18.jpg',
       'https://picsum.photos/1000/600?random=1',
       'https://picsum.photos/1000/600?random=2',
       'https://picsum.photos/1000/600?random=3',
@@ -222,6 +224,26 @@ final List<Sight> mocks = [
     imgPreview: 'https://img2.fonwall.ru/o/ht/cake-dessert-food-sweet.jpeg',
     images: [
       'https://img2.fonwall.ru/o/ht/cake-dessert-food-sweet.jpeg',
+      'https://picsum.photos/1000/600?random=1',
+      'https://picsum.photos/1000/600?random=2',
+      'https://picsum.photos/1000/600?random=3',
+      'https://picsum.photos/1000/600?random=4',
+      'https://picsum.photos/1000/600?random=5',
+      'https://picsum.photos/1000/600?random=6',
+    ],
+  ),
+  Sight(
+    id: 11,
+    name: 'Клязьминское водохранилище',
+    lat: 55.989198,
+    lon: 37.601605,
+    url: 'https://www.bolshoi.ru',
+    type: 'Парк',
+    details:
+'Одно из водохранилищ системы канала имени Москвы. Расположено в Московской области в пределах городских округов: Химки, Долгопрудный и Мытищи.',
+imgPreview:  'https://i.ytimg.com/vi/xzGdmpsmNW4/maxresdefault.jpg',
+    images: [
+      'https://i.ytimg.com/vi/xzGdmpsmNW4/maxresdefault.jpg',
       'https://picsum.photos/1000/600?random=1',
       'https://picsum.photos/1000/600?random=2',
       'https://picsum.photos/1000/600?random=3',

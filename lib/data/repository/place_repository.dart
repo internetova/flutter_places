@@ -1,88 +1,132 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
+import 'package:places/data/api/api_client.dart';
+import 'package:places/data/api/api_constants.dart';
+import 'package:places/data/api/api_error.dart';
 import 'package:places/data/model/place.dart';
-import 'package:places/data/res/http_strings.dart';
+import 'package:places/data/model/places_filter_request_dto.dart';
+import 'package:places/data/model/search_filter.dart';
 
-/// Реализует сетевые запросы
-/// Выполняет парсинг данных
-/// Возвращает готовые к использованию объекты
+/// запрос данных с сервера
+/// преобразование в объекты программы
+/// возвращаем оъекты или ошибку (пока null)
 class PlaceRepository {
-  static const String baseUrl = 'https://test-backend-flutter.surfstudio.ru';
-  static const String placesUrl = '/place';
-  static const String filteredPlacesUrl = '/filtered_places';
+  final ApiClient _client;
 
-  final _dio = Dio(
-    BaseOptions(
-      baseUrl: baseUrl,
-      connectTimeout: 5000,
-      receiveTimeout: 5000,
-      sendTimeout: 5000,
-      responseType: ResponseType.json,
-    ),
-  );
+  PlaceRepository(this._client);
 
-  void initInterceptors() {
-    _dio.interceptors.add(InterceptorsWrapper(
-      onError: (err) {},
-      onRequest: (options) {
-        print('Отправлен запрос: ${options.baseUrl}${options.path}');
-      },
-      onResponse: (response) {
-        print('Получен ответ: $response');
-      },
-    ));
-  }
-
-  /// получить все интересные места
-  Future<void> get() async {
-    initInterceptors();
-
-    final response = await _dio.get(placesUrl);
-
-    if (response.statusCode == 200) {
-      final jsonData = response.data as List<dynamic>;
-      final objectData =
-      jsonData.map((item) => Place.fromJson(item)).toList();
-
-      print(objectData);
-
-      return;
-    }
-    throw Exception(
-      'Ошибка http запроса. Код ошибки: ${response.statusCode}',
-    );
-  }
-
-  Future<void> getItem() async {
-    initInterceptors();
-
-    final response = await _dio.get(placesUrl, queryParameters: {'id': 22});
-
-    if (response.statusCode == 200) {
-      final jsonData = response.data as List<dynamic>;
-      final objectData =
-          jsonData.map((item) => Place.fromJson(item)).toList();
-
-      print(objectData);
-      return;
-    } else if (response.statusCode == 404) {
-      print(ErrorResponseStrings.e404);
-      return;
-    }
-
-    throw Exception(
-      'Ошибка http запроса. Код ошибки: ${response.statusCode}',
-    );
-  }
-
-  Future<void> postHTTP(dynamic data) async {
+  /// все несортированные для теста
+  Future<List<Place>> getAllPlaces() async {
     try {
-      Response response = await _dio.post(placesUrl, data: data);
+      final response = await _client.get(ApiConstants.placesUrl);
+      final places =
+          (response.data as List).map((e) => Place.fromJson(e)).toList();
+      print('Repository places: $places');
 
-      print(response);
-    } on DioError catch(e) {
-      print(e);
+      return places;
+    } on DioError catch (e) {
+      ApiError.printError(e);
+
+      return null;
+    }
+  }
+
+  /// запрашивает данные согласно фильтру юзера
+  /// [nameFilter] может быть null
+  Future<List<Place>> getPlaces(SearchFilter filter) async {
+    try {
+      final data = PlacesFilterRequestDto(
+        lat: filter.userLocation.lat,
+        lng: filter.userLocation.lng,
+        radius: filter.radius,
+        typeFilter: filter.typeFilter,
+        nameFilter: filter.searchWords != null ? filter.searchWords.trim() : null,
+      ).toJson();
+
+      print(data);
+
+      final response = await _client.post(
+        ApiConstants.filteredPlacesUrl,
+        data: jsonEncode(data),
+      );
+      final places =
+          (response.data as List).map((e) => Place.fromJson(e)).toList();
+
+      places.sort((a, b)  => a.distance.compareTo(b.distance));
+
+      print('Repository filtered places: $places');
+
+      return places;
+    } on DioError catch (e) {
+      ApiError.printError(e);
+
+      return null;
+    }
+  }
+
+  /// получить место по id
+  Future<Place> getPlaceDetail(int id) async {
+    try {
+      final response = await _client.get('${ApiConstants.placesUrl}/$id');
+      final place = Place.fromJson((response.data as Map<String, dynamic>));
+      print('Repository place: $place');
+
+      return place;
+    } on DioError catch (e) {
+      ApiError.printError(e);
+
+      return null;
+    }
+  }
+
+  /// добавить новое место
+  Future<Place> addNewPlace(Place place) async {
+    try {
+      final response = await _client.post(
+        ApiConstants.placesUrl,
+        data: jsonEncode(place.toJson()),
+      );
+      final newPlace = Place.fromJson((response.data as Map<String, dynamic>));
+
+      return newPlace;
+    } on DioError catch (e) {
+      ApiError.printError(e);
+
+      return null;
+    }
+  }
+
+  /// добавить список мест для теста
+  Future<void> addPlacesList(List<Place> data) async {
+    data.forEach(addNewPlace);
+  }
+
+  /// ‼️❓ ДЛЯ теста
+  /// удалить место
+  Future<void> removePlace(int id) async {
+    try {
+      await _client.delete('${ApiConstants.placesUrl}/$id');
+
+      print('Удалено!');
+    } on DioError catch (e) {
+      ApiError.printError(e);
+    }
+  }
+
+  /// обновить место
+  Future<void> updatePlace(Place place) async {
+    try {
+      final url = '${ApiConstants.placesUrl}/${place.id}';
+
+      await _client.put(
+        url,
+        data: jsonEncode(place.toJson()),
+      );
+
+      print('Обновлено!');
+    } on DioError catch (e) {
+      ApiError.printError(e);
     }
   }
 }
