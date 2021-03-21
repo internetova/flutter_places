@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:places/data/api/api_client.dart';
+import 'package:places/data/interactor/place_interactor.dart';
+import 'package:places/data/repository/api_place_repository.dart';
+import 'package:places/data/repository/local_place_repository.dart';
 import 'package:places/temp/dio_test.dart';
 import 'package:places/temp/test_backend.dart';
 import 'package:places/ui/screen/onboarding_screen.dart';
@@ -27,7 +31,8 @@ class App extends StatelessWidget {
             debugShowCheckedModeBanner: false,
             title: 'Places',
             theme: notifier.darkTheme ? _darkTheme : _lightTheme,
-            initialRoute: AppRoutes.backendTest, // временно
+            initialRoute: AppRoutes.backendTest,
+            // временно
             routes: {
               AppRoutes.home: (context) => SightListScreen(),
               AppRoutes.visiting: (context) => VisitingScreen(),

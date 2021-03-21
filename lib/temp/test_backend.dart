@@ -3,7 +3,7 @@ import 'package:flutter/rendering.dart';
 import 'package:places/data/api/api_client.dart';
 import 'package:places/data/model/place.dart';
 import 'package:places/data/model/search_filter.dart';
-import 'package:places/data/repository/place_repository.dart';
+import 'package:places/data/repository/api_place_repository.dart';
 import 'package:places/ui/screen/components/bottom_navigationbar.dart';
 import 'package:places/ui/screen/res/sizes.dart';
 
@@ -16,7 +16,7 @@ class TestBackend extends StatefulWidget {
 }
 
 class _TestBackendState extends State<TestBackend> {
-  PlaceRepository _placeRepository;
+  ApiPlaceRepository _placeRepository;
 
   /// для тестирования запросов
   final _testId = 157;
@@ -57,7 +57,7 @@ class _TestBackendState extends State<TestBackend> {
 
   @override
   void initState() {
-    _placeRepository = PlaceRepository(ApiClient());
+    _placeRepository = ApiPlaceRepository(ApiClient());
 
     super.initState();
   }
@@ -77,7 +77,7 @@ class _TestBackendState extends State<TestBackend> {
             TextButton(
               child: Text('Фильтр POST [/filtered_places]'),
               onPressed: () async {
-                final response = await _placeRepository.getPlaces(_filter);
+                final response = await _placeRepository.getPlaces(filter: _filter);
                 print('UI Фильтрация мест (${response.length} шт.): $response');
               },
               style: TextButton.styleFrom(

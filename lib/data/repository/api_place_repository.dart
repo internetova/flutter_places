@@ -1,20 +1,23 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:places/data/api/api_client.dart';
 import 'package:places/data/api/api_constants.dart';
 import 'package:places/data/api/api_error.dart';
 import 'package:places/data/model/place.dart';
 import 'package:places/data/model/places_filter_request_dto.dart';
 import 'package:places/data/model/search_filter.dart';
+import 'package:places/data/repository/repository.dart';
 
+/// УДАЛЁННЫЙ РЕПОЗИТОРИЙ
 /// запрос данных с сервера
 /// преобразование в объекты программы
 /// возвращаем оъекты или ошибку (пока null)
-class PlaceRepository {
+class ApiPlaceRepository extends Repository  {
   final ApiClient _client;
 
-  PlaceRepository(this._client);
+  ApiPlaceRepository(this._client);
 
   /// все несортированные для теста
   Future<List<Place>> getAllPlaces() async {
@@ -33,15 +36,17 @@ class PlaceRepository {
   }
 
   /// запрашивает данные согласно фильтру юзера
-  /// [nameFilter] может быть null
-  Future<List<Place>> getPlaces(SearchFilter filter) async {
+  /// [nameFilter] может быть null, текстовый поиск по полю name
+  @override
+  Future<List<Place>> getPlaces({@required SearchFilter filter}) async {
     try {
       final data = PlacesFilterRequestDto(
         lat: filter.userLocation.lat,
         lng: filter.userLocation.lng,
         radius: filter.radius,
         typeFilter: filter.typeFilter,
-        nameFilter: filter.searchWords != null ? filter.searchWords.trim() : null,
+        nameFilter:
+            filter.searchWords != null ? filter.searchWords.trim() : null,
       ).toJson();
 
       print(data);
@@ -53,7 +58,7 @@ class PlaceRepository {
       final places =
           (response.data as List).map((e) => Place.fromJson(e)).toList();
 
-      places.sort((a, b)  => a.distance.compareTo(b.distance));
+      places.sort((a, b) => a.distance.compareTo(b.distance));
 
       print('Repository filtered places: $places');
 
@@ -66,6 +71,7 @@ class PlaceRepository {
   }
 
   /// получить место по id
+  @override
   Future<Place> getPlaceDetail(int id) async {
     try {
       final response = await _client.get('${ApiConstants.placesUrl}/$id');
@@ -81,6 +87,7 @@ class PlaceRepository {
   }
 
   /// добавить новое место
+  @override
   Future<Place> addNewPlace(Place place) async {
     try {
       final response = await _client.post(
@@ -104,6 +111,7 @@ class PlaceRepository {
 
   /// ‼️❓ ДЛЯ теста
   /// удалить место
+  @override
   Future<void> removePlace(int id) async {
     try {
       await _client.delete('${ApiConstants.placesUrl}/$id');
@@ -115,6 +123,7 @@ class PlaceRepository {
   }
 
   /// обновить место
+  @override
   Future<void> updatePlace(Place place) async {
     try {
       final url = '${ApiConstants.placesUrl}/${place.id}';
