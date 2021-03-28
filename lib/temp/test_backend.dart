@@ -26,8 +26,9 @@ class _TestBackendState extends State<TestBackend> {
   final SearchFilter _filter = SearchFilter(
     radius: 10000.0,
     typeFilter: ['cafe', 'park', 'other'],
-    searchWords: 'натюрморт',
   );
+
+  final keyWords = 'натюрморт';
 
   /// тестирование Пост запроса
   final Place _testAdd = Place(
@@ -77,7 +78,7 @@ class _TestBackendState extends State<TestBackend> {
             TextButton(
               child: Text('Фильтр POST [/filtered_places]'),
               onPressed: () async {
-                final response = await _placeRepository.getPlaces(filter: _filter);
+                final response = await _placeRepository.getPlaces(filter: _filter, keywords: keyWords);
                 print('UI Фильтрация мест (${response.length} шт.): $response');
               },
               style: TextButton.styleFrom(

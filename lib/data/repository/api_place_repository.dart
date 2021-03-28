@@ -14,7 +14,7 @@ import 'package:places/data/repository/repository.dart';
 /// запрос данных с сервера
 /// преобразование в объекты программы
 /// возвращаем оъекты или ошибку (пока null)
-class ApiPlaceRepository extends Repository  {
+class ApiPlaceRepository implements Repository<Place> {
   final ApiClient _client;
 
   ApiPlaceRepository(this._client);
@@ -25,7 +25,7 @@ class ApiPlaceRepository extends Repository  {
       final response = await _client.get(ApiConstants.placesUrl);
       final places =
           (response.data as List).map((e) => Place.fromJson(e)).toList();
-      print('Repository places: $places');
+      print('ApiRepository getAllPlaces (${places.length} шт.): $places');
 
       return places;
     } on DioError catch (e) {
@@ -36,20 +36,21 @@ class ApiPlaceRepository extends Repository  {
   }
 
   /// запрашивает данные согласно фильтру юзера
-  /// [nameFilter] может быть null, текстовый поиск по полю name
+  /// [nameFilter] может быть null - текстовый поиск по полю name
+  /// [keywords] - ключевые слова для поиска
   @override
-  Future<List<Place>> getPlaces({@required SearchFilter filter}) async {
+  Future<List<Place>> getPlaces(
+      {@required SearchFilter filter, String keywords}) async {
     try {
       final data = PlacesFilterRequestDto(
         lat: filter.userLocation.lat,
         lng: filter.userLocation.lng,
         radius: filter.radius,
         typeFilter: filter.typeFilter,
-        nameFilter:
-            filter.searchWords != null ? filter.searchWords.trim() : null,
+        nameFilter: keywords != null ? keywords.trim() : null,
       ).toJson();
 
-      print(data);
+      print('ApiRepository запрос: PlacesFilterRequestDto $data');
 
       final response = await _client.post(
         ApiConstants.filteredPlacesUrl,
@@ -58,9 +59,8 @@ class ApiPlaceRepository extends Repository  {
       final places =
           (response.data as List).map((e) => Place.fromJson(e)).toList();
 
-      places.sort((a, b) => a.distance.compareTo(b.distance));
-
-      print('Repository filtered places: $places');
+      print(
+          'ApiRepository ответ filtered places (${places.length} шт.): $places');
 
       return places;
     } on DioError catch (e) {
@@ -76,7 +76,7 @@ class ApiPlaceRepository extends Repository  {
     try {
       final response = await _client.get('${ApiConstants.placesUrl}/$id');
       final place = Place.fromJson((response.data as Map<String, dynamic>));
-      print('Repository place: $place');
+      print('ApiRepository place: $place');
 
       return place;
     } on DioError catch (e) {
@@ -104,7 +104,7 @@ class ApiPlaceRepository extends Repository  {
     }
   }
 
-  /// добавить список мест для теста
+  /// добавить список мест для теста с моковыми данными
   Future<void> addPlacesList(List<Place> data) async {
     data.forEach(addNewPlace);
   }
@@ -116,7 +116,7 @@ class ApiPlaceRepository extends Repository  {
     try {
       await _client.delete('${ApiConstants.placesUrl}/$id');
 
-      print('Удалено!');
+      print('ApiRepository: Удалено!');
     } on DioError catch (e) {
       ApiError.printError(e);
     }
@@ -133,7 +133,7 @@ class ApiPlaceRepository extends Repository  {
         data: jsonEncode(place.toJson()),
       );
 
-      print('Обновлено!');
+      print('ApiRepository: Обновлено!');
     } on DioError catch (e) {
       ApiError.printError(e);
     }

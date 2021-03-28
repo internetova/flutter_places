@@ -4,6 +4,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:places/data.dart';
+import 'package:places/data/interactor/place_interactor.dart';
+import 'package:places/data/local_storage/local_storage.dart';
+import 'package:places/domain/card_type.dart';
 import 'package:places/ui/screen/components/icon_action_button.dart';
 
 import 'package:places/domain/sight.dart';
@@ -20,18 +23,19 @@ import 'package:places/ui/screen/widgets/sight_details_bottom_sheet.dart';
 /// в зависимости от места показа карточки - Список поиска, в Избранном
 /// (запланировано, посещено) показываем разную информацию на карточке
 /// т.к. иконки и надписи отличаются
-/// ‼️🙄 честно говоря пока не знаю какие будут данные и как должно будет
-/// это всё работать, поэтому пока так
+/// [card] карточка одна на все сценарии использования, разделяем с помощью [cardType]
+/// [cardType] тип карточки для отображения в соответствующем разделе с
+/// правильными кнопками действий на карточке и внутренним наполнением
 class SightCard extends StatelessWidget {
   final Sight card;
-  final WhereShowCard whereShowCard;
+  final CardType cardType;
 
   SightCard({
     Key key,
     @required this.card,
-    @required this.whereShowCard,
+    @required this.cardType,
   })  : assert(card != null),
-        assert(whereShowCard != null),
+        assert(cardType != null),
         super(key: key);
 
   @override
@@ -57,7 +61,7 @@ class SightCard extends StatelessWidget {
                     ),
                   ],
                 ),
-                CardContent(card: card, whereShowCard: whereShowCard),
+                CardContent(card: card, cardType: cardType),
               ],
             ),
             Positioned.fill(
@@ -65,7 +69,7 @@ class SightCard extends StatelessWidget {
                 type: MaterialType.transparency,
                 child: InkWell(
                   onTap: () {
-                    whereShowCard == WhereShowCard.search
+                    cardType == CardType.search
                         ? _showDetailsBottomSheet(context)
                         : _showDetailsScreen(context);
                   },
@@ -75,7 +79,7 @@ class SightCard extends StatelessWidget {
             Positioned(
               top: 8,
               right: 16,
-              child: CardActions(card: card, whereShowCard: whereShowCard),
+              child: CardActions(card: card, cardType: cardType),
             ),
           ],
         ),
@@ -108,7 +112,10 @@ class SightCard extends StatelessWidget {
 
 /// загружает картинку-превью карточки
 class CardImagePreview extends StatelessWidget {
-  const CardImagePreview({Key key, @required this.imgUrl}) : super(key: key);
+  const CardImagePreview({
+    Key key,
+    @required this.imgUrl,
+  }) : super(key: key);
   final String imgUrl;
 
   @override
@@ -152,14 +159,14 @@ class CardContentType extends StatelessWidget {
 
 /// кнопки действий: добавить в избранное, удалить, поделиться и т.п.
 /// отображается на одной линии с типом карточки
-/// в зависимости от места показа карточки кнопки меняются
+/// в зависимости от [cardType] места показа карточки кнопки меняются
 class CardActions extends StatelessWidget {
   final Sight card;
-  final WhereShowCard whereShowCard;
+  final CardType cardType;
 
   CardActions({
     Key key,
-    @required this.whereShowCard,
+    @required this.cardType,
     this.card,
   }) : super(key: key);
 
@@ -169,12 +176,9 @@ class CardActions extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          if (whereShowCard == WhereShowCard.search)
-            ..._buildActionsSearch(context),
-          if (whereShowCard == WhereShowCard.planned)
-            ..._buildActionsPlanned(context),
-          if (whereShowCard == WhereShowCard.visited)
-            ..._buildActionsVisited(context),
+          if (cardType == CardType.search) ..._buildActionsSearch(context),
+          if (cardType == CardType.planned) ..._buildActionsPlanned(context),
+          if (cardType == CardType.visited) ..._buildActionsVisited(context),
         ],
       ),
     );
@@ -185,6 +189,10 @@ class CardActions extends StatelessWidget {
         IconActionButton(
           onPressed: () {
             print('onPressed Избранное');
+
+            /// для теста PlaceInteractor пока передам то, что есть в памяти
+            /// потом модифицирую, судя по всему в следующем задании про стримы
+            PlaceInteractor().toggleFavorites(LocalStorage.testToggleFavorites);
           },
           icon: icFavorites,
         ),
@@ -261,12 +269,12 @@ class CardActions extends StatelessWidget {
 /// зависит от места показа карточки
 class CardContent extends StatelessWidget {
   final Sight card;
-  final WhereShowCard whereShowCard;
+  final CardType cardType;
 
   const CardContent({
     Key key,
     @required this.card,
-    @required this.whereShowCard,
+    @required this.cardType,
   }) : super(key: key);
 
   @override
@@ -286,7 +294,7 @@ class CardContent extends StatelessWidget {
             width: double.infinity,
             height: 2,
           ),
-          if (whereShowCard == WhereShowCard.search) ...[
+          if (cardType == CardType.search) ...[
             Text(
               card.details,
               style: Theme.of(context).textTheme.bodyText2,
@@ -294,7 +302,7 @@ class CardContent extends StatelessWidget {
               maxLines: 1,
             ),
           ],
-          if (whereShowCard == WhereShowCard.planned && card.date != null) ...[
+          if (cardType == CardType.planned && card.date != null) ...[
             Text(
               '$datePlanned ${card.date}',
               style: Theme.of(context).primaryTextTheme.bodyText1,
@@ -302,7 +310,7 @@ class CardContent extends StatelessWidget {
               maxLines: 1,
             ),
           ],
-          if (whereShowCard == WhereShowCard.visited && card.date != null) ...[
+          if (cardType == CardType.visited && card.date != null) ...[
             Text(
               '$dateVisited ${card.date}',
               style: Theme.of(context).textTheme.bodyText2,
@@ -310,7 +318,7 @@ class CardContent extends StatelessWidget {
               maxLines: 1,
             ),
           ],
-          if (whereShowCard != WhereShowCard.search) ...[
+          if (cardType != CardType.search) ...[
             SizedBox(
               height: 12,
             ),

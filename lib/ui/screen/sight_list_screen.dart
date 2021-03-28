@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-
+import 'package:places/data/interactor/place_interactor.dart';
 import 'package:places/domain/sight.dart';
+import 'package:places/domain/card_type.dart';
 import 'package:places/mocks.dart';
 import 'package:places/ui/screen/components/button_gradient.dart';
 import 'package:places/ui/screen/filters_screen.dart';
@@ -31,6 +32,12 @@ class _SightListScreenState extends State<SightListScreen> {
 
   /// отфильтрованные данные
   List<Sight> _filteredData = [];
+
+  @override
+  void initState() {
+    PlaceInteractor().getPlaces();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -82,12 +89,12 @@ class _SightListScreenState extends State<SightListScreen> {
     if (orientation == Orientation.portrait) {
       return ListCardsPortrait(
         data: data,
-        whereShowCard: WhereShowCard.search,
+        cardType: CardType.search,
       );
     } else {
       return ListCardsLandscape(
         data: data,
-        whereShowCard: WhereShowCard.search,
+        cardType: CardType.search,
       );
     }
   }

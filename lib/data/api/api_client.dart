@@ -27,7 +27,7 @@ class ApiClient {
 
   /// получить с сервера
   Future<Response> get(String url) async {
-    initInterceptors();
+    // initInterceptors();
 
     final Response response = await _client.get(url);
     return response;
@@ -35,7 +35,7 @@ class ApiClient {
 
   /// отправить на сервер
   Future<Response> post(String url, {dynamic data}) async {
-    initInterceptors();
+    // initInterceptors();
 
     final Response response = await _client.post(url, data: data);
     return response;
@@ -43,7 +43,7 @@ class ApiClient {
 
   /// обновить существующую позицию
   Future<Response> put(String url, {@required dynamic data}) async {
-    initInterceptors();
+    // initInterceptors();
 
     final Response response = await _client.put(url, data: data);
     return response;
@@ -51,7 +51,7 @@ class ApiClient {
 
   /// удалить
   Future<Response> delete(String url) async {
-    initInterceptors();
+    // initInterceptors();
 
     final Response response = await _client.delete(url);
     return response;
