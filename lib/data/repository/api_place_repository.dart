@@ -66,6 +66,7 @@ class ApiPlaceRepository implements Repository<Place> {
     } on DioError catch (e) {
       ApiError.printError(e);
 
+      /// ‼️ null временно, пока не добавим обработчик ошибок
       return null;
     }
   }
@@ -82,6 +83,7 @@ class ApiPlaceRepository implements Repository<Place> {
     } on DioError catch (e) {
       ApiError.printError(e);
 
+      /// ‼️ null временно, пока не добавим обработчик ошибок
       return null;
     }
   }
@@ -100,6 +102,7 @@ class ApiPlaceRepository implements Repository<Place> {
     } on DioError catch (e) {
       ApiError.printError(e);
 
+      /// ‼️ null временно, пока не добавим обработчик ошибок
       return null;
     }
   }

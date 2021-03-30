@@ -46,6 +46,7 @@ class Place {
         distance = json['distance'] != null ? json['distance'] as double : null;
 
   Map<String, dynamic> toJson({bool addId = false}) => {
+        /// данные на сервер для создания нового места отправляются без ID
         if (addId) 'id': id,
         'lat': lat,
         'lng': lng,

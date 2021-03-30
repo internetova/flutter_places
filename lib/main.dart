@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:places/temp/dio_test.dart';
 import 'package:places/temp/test_backend.dart';
 import 'package:places/ui/screen/onboarding_screen.dart';
 import 'package:places/ui/screen/res/app_routes.dart';
@@ -33,7 +32,6 @@ class App extends StatelessWidget {
               AppRoutes.visiting: (context) => VisitingScreen(),
               AppRoutes.settings: (context) => SettingsScreen(),
               AppRoutes.onboarding: (context) => OnboardingScreen(),
-              AppRoutes.dioTest: (context) => DioTest(), // временно
               AppRoutes.backendTest: (context) => TestBackend(), // временно
             },
           );
