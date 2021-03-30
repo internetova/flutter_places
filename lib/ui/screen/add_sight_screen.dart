@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:places/data/interactor/place_interactor.dart';
+import 'package:places/data/local_storage/local_storage.dart';
 import 'package:places/ui/screen/components/button_clear.dart';
 import 'package:places/ui/screen/components/button_save.dart';
 import 'package:places/ui/screen/components/button_text.dart';
@@ -143,6 +145,9 @@ class _AddSightScreenState extends State<AddSightScreen> {
 
           /// и потом добавим в общий список
           mocks.add(newSight);
+
+          /// test Interactor
+          PlaceInteractor().addNewPlace(LocalStorage.testAddNewPlace);
 
           /// подтверждаем сохранение данных
           _showDialog(

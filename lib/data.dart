@@ -1,4 +1,5 @@
 import 'package:places/domain/sight.dart';
+import 'package:places/domain/card_type.dart';
 
 /// сохраненные пользователем данные
 /// для раздела Избранное (хочу посетить / посетил)
@@ -23,7 +24,7 @@ List<Sight> favoritesSight = [
       'https://picsum.photos/1000/600?random=5',
       'https://picsum.photos/1000/600?random=6',
     ],
-    favorites: WhereShowCard.visited,
+    favorites: CardType.visited,
     date: '12 окт. 2020',
   ),
   Sight(
@@ -46,7 +47,7 @@ List<Sight> favoritesSight = [
       'https://picsum.photos/1000/600?random=5',
       'https://picsum.photos/1000/600?random=6',
     ],
-    favorites: WhereShowCard.planned,
+    favorites: CardType.planned,
     date: '12 янв. 2021',
   ),
   Sight(
@@ -68,7 +69,7 @@ List<Sight> favoritesSight = [
       'https://picsum.photos/1000/600?random=5',
       'https://picsum.photos/1000/600?random=6',
     ],
-    favorites: WhereShowCard.planned,
+    favorites: CardType.planned,
     date: '25 янв. 2021',
   ),
   Sight(
@@ -91,7 +92,7 @@ List<Sight> favoritesSight = [
       'https://picsum.photos/1000/600?random=5',
       'https://picsum.photos/1000/600?random=6',
     ],
-    favorites: WhereShowCard.planned,
+    favorites: CardType.planned,
     date: '4 янв. 2021',
   ),
   Sight(
@@ -113,7 +114,7 @@ List<Sight> favoritesSight = [
       'https://picsum.photos/1000/600?random=5',
       'https://picsum.photos/1000/600?random=6',
     ],
-    favorites: WhereShowCard.visited,
+    favorites: CardType.visited,
     date: '10 окт. 2020',
   ),
 ];

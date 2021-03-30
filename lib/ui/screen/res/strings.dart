@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:places/domain/sight.dart';
+import 'package:places/domain/card_type.dart';
 import 'package:places/ui/screen/res/assets.dart';
 
 /// Текстовые контстанты
@@ -32,13 +32,13 @@ const dateVisited = 'Цель достигнута';
 /// когда нет карточек в нужной категории
 const List<Map> favoritesEmptyScreen = const [
   {
-    'typeCard': WhereShowCard.planned,
+    'typeCard': CardType.planned,
     'emptyScreenIcon': icEmptyPlanned,
     'emptyScreenHeader': 'Пусто',
     'emptyScreenText': 'Отмечайте понравившиеся\nместа и они появятся здесь.',
   },
   {
-    'typeCard': WhereShowCard.visited,
+    'typeCard': CardType.visited,
     'emptyScreenIcon': icEmptyVisited,
     'emptyScreenHeader': 'Пусто',
     'emptyScreenText': 'Завершите маршрут,\nчтобы место попало сюда.',

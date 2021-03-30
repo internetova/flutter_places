@@ -15,6 +15,7 @@ const icCalendar = '$_baseResPath/calendar.svg';
 const icClose = '$_baseResPath/close.svg';
 const icShare = '$_baseResPath/share.svg';
 const icFavorites = '$_baseResPath/heart.svg';
+const icFavoritesFull = '$_baseResPath/heart_full.svg';
 
 /// другие кнопки
 const icGo = '$_baseResPath/go.svg';

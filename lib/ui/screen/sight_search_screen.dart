@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:places/data/interactor/place_interactor.dart';
 
 import 'package:places/mocks.dart';
 import 'package:places/domain/sight.dart';
@@ -218,6 +219,8 @@ class _SightSearchScreenState extends State<SightSearchScreen> {
       data: _dataResults,
       controller: _searchController,
     );
+
+    PlaceInteractor().saveKeywords(_searchController.text);
   }
 
   /// клик по полю поиска
@@ -284,6 +287,8 @@ class _SightSearchScreenState extends State<SightSearchScreen> {
           data: _dataResults,
           controller: _searchController,
         );
+
+        PlaceInteractor().saveKeywords(_searchController.text);
 
         Navigator.push(
           context,
@@ -433,6 +438,8 @@ class _SightSearchScreenState extends State<SightSearchScreen> {
                 setState(() {
                   data.clear();
                 });
+
+                PlaceInteractor().clearSearchHistory();
               },
             ),
           ],

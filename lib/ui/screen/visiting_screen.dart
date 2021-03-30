@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:places/data.dart';
+import 'package:places/data/interactor/place_interactor.dart';
 
 import 'package:places/domain/sight.dart';
+import 'package:places/domain/card_type.dart';
 import 'package:places/ui/screen/res/strings.dart';
 import 'package:places/ui/screen/components/bottom_navigationbar.dart';
 import 'package:places/ui/screen/widgets/empty_page.dart';
@@ -25,13 +27,18 @@ class _VisitingScreenState extends State<VisitingScreen> {
   void initState() {
     _userDataPlanned = _getCurrentData(
       data: favoritesSight,
-      typeCard: WhereShowCard.planned,
+      typeCard: CardType.planned,
     );
 
     _userDataVisited = _getCurrentData(
       data: favoritesSight,
-      typeCard: WhereShowCard.visited,
+      typeCard: CardType.visited,
     );
+
+    /// тест Interactor
+    PlaceInteractor().getFavoritesPlaces();
+    PlaceInteractor().getPlannedPlaces();
+    PlaceInteractor().getVisitedPlaces();
 
     super.initState();
   }
@@ -42,12 +49,12 @@ class _VisitingScreenState extends State<VisitingScreen> {
     setState(() {
       _userDataPlanned = _getCurrentData(
         data: favoritesSight,
-        typeCard: WhereShowCard.planned,
+        typeCard: CardType.planned,
       );
 
       _userDataVisited = _getCurrentData(
         data: favoritesSight,
-        typeCard: WhereShowCard.visited,
+        typeCard: CardType.visited,
       );
     });
   }
@@ -89,16 +96,17 @@ class _VisitingScreenState extends State<VisitingScreen> {
           ),
           centerTitle: true,
           elevation: 0,
+          automaticallyImplyLeading: false,
         ),
         body: TabBarView(
           children: [
             _buildFavorites(
               data: _userDataPlanned,
-              typeCard: WhereShowCard.planned,
+              typeCard: CardType.planned,
             ),
             _buildFavorites(
               data: _userDataVisited,
-              typeCard: WhereShowCard.visited,
+              typeCard: CardType.visited,
             ),
           ],
         ),
@@ -111,7 +119,7 @@ class _VisitingScreenState extends State<VisitingScreen> {
   /// в зависимости от типа избранного
   Widget _buildFavorites({
     @required List<Sight> data,
-    @required WhereShowCard typeCard,
+    @required CardType typeCard,
   }) {
     Widget favTabBarView;
 
@@ -132,7 +140,7 @@ class _VisitingScreenState extends State<VisitingScreen> {
             .map((card) => SightCardVisiting(
                   key: ValueKey(card),
                   card: card,
-                  whereShowCard: typeCard,
+                  cardType: typeCard,
                 ))
             .toList(),
         onReorder: (int oldIndex, int newIndex) {
@@ -154,7 +162,7 @@ class _VisitingScreenState extends State<VisitingScreen> {
   /// получить текущую базу соответствующей вкладки
   List<Sight> _getCurrentData({
     @required List<Sight> data,
-    @required WhereShowCard typeCard,
+    @required CardType typeCard,
   }) =>
       data.where((item) => item.favorites == typeCard).toList();
 }

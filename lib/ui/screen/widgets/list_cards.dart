@@ -1,21 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:places/domain/sight.dart';
+import 'package:places/domain/card_type.dart';
 import 'package:places/ui/screen/widgets/sight_card.dart';
 
+/// для главной страницы
 /// строим часть экрана где выводятся карточки
-/// в конструкторе база данных карточек и параметр Где (в каком разделе) выводится
-/// карточка, т.к. от него зависит внутреннее наполнение карточки
-/// этот для главной страницы
+/// [data] список мест
+/// [cardType] тип карточки для отображения в соответствующем разделе с
+/// правильными кнопками действий на карточке и внутренним наполнением
 class ListCardsPortrait extends StatelessWidget {
   final List<Sight> data;
-  final WhereShowCard whereShowCard;
+  final CardType cardType;
 
   const ListCardsPortrait({
     Key key,
     @required this.data,
-    @required this.whereShowCard,
+    @required this.cardType,
   })  : assert(data != null),
-        assert(whereShowCard != null),
+        assert(cardType != null),
         super(key: key);
 
   @override
@@ -26,7 +28,7 @@ class ListCardsPortrait extends StatelessWidget {
               padding: EdgeInsets.only(bottom: 16.0),
               child: SightCard(
                 card: data[index],
-                whereShowCard: whereShowCard,
+                cardType: cardType,
               ),
             );
           },
@@ -36,16 +38,19 @@ class ListCardsPortrait extends StatelessWidget {
 }
 
 /// для ландшафтного отображения
+/// [data] список мест
+/// [cardType] тип карточки для отображения в соответствующем разделе с
+/// правильными кнопками действий на карточке и внутренним наполнением
 class ListCardsLandscape extends StatelessWidget {
   final List<Sight> data;
-  final WhereShowCard whereShowCard;
+  final CardType cardType;
 
   const ListCardsLandscape({
     Key key,
     @required this.data,
-    @required this.whereShowCard,
+    @required this.cardType,
   })  : assert(data != null),
-        assert(whereShowCard != null),
+        assert(cardType != null),
         super(key: key);
 
   @override
@@ -56,7 +61,7 @@ class ListCardsLandscape extends StatelessWidget {
               padding: EdgeInsets.only(bottom: 16.0),
               child: SightCard(
                 card: data[index],
-                whereShowCard: whereShowCard,
+                cardType: cardType,
               ),
             );
           },
