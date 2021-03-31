@@ -7,17 +7,16 @@ class IconActionButton extends StatelessWidget {
   final double width;
   final double height;
   final Color color;
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
 
   IconActionButton({
-    Key key,
-    @required this.icon,
+    Key? key,
+    required this.icon,
     this.onPressed,
     this.width = 24,
     this.height = 24,
     this.color = Colors.white,
-  })  : assert(icon != null),
-        super(key: key);
+  })  : super(key: key);
 
 
   @override

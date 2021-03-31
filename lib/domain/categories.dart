@@ -1,12 +1,10 @@
-import 'package:flutter/material.dart';
-
 /// категории интересных мест
 /// пока только используются в фильтре
 class Categories {
   Categories({
-    @required this.id,
-    @required this.name,
-    @required this.icon,
+    required this.id,
+    required this.name,
+    required this.icon,
   });
 
   final int id;

@@ -5,14 +5,13 @@ import 'package:places/ui/screen/res/sizes.dart';
 /// на экране добавления нового места - Указать на карте
 class ButtonText extends StatelessWidget {
   final String title;
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
 
   const ButtonText({
-    Key key,
-    @required this.title,
+    Key? key,
+    required this.title,
     this.onPressed,
-  })  : assert(title != null),
-        super(key: key);
+  })  : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +26,7 @@ class ButtonText extends StatelessWidget {
         title,
         style: Theme.of(context)
             .textTheme
-            .headline5
+            .headline5!
             .copyWith(color: Theme.of(context).accentColor),
       ),
     );

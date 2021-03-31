@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:places/data/model/place.dart';
 import 'package:places/domain/card_type.dart';
 
@@ -15,19 +14,19 @@ class UiPlace extends Place {
   final List<String> urls;
   final String placeType;
   final String description;
-  final double distance;
+  final double? distance;
   final bool isFavorite;
   final CardType cardType;
-  final DateTime date;
+  final DateTime? date;
 
   UiPlace({
-    @required this.id,
-    @required this.lat,
-    @required this.lng,
-    @required this.name,
-    @required this.urls,
-    @required this.placeType,
-    @required this.description,
+    required this.id,
+    required this.lat,
+    required this.lng,
+    required this.name,
+    required this.urls,
+    required this.placeType,
+    required this.description,
     this.distance,
     this.isFavorite = false,
     this.cardType = CardType.search,
@@ -43,7 +42,7 @@ class UiPlace extends Place {
         );
 
   /// место из api переводим в места для ui
-  static UiPlace fromPlace(Place place, {bool isFavorite, CardType cardType}) {
+  static UiPlace fromPlace(Place place, {bool? isFavorite, CardType? cardType}) {
     return UiPlace(
       id: place.id,
       lat: place.lat,
@@ -80,8 +79,8 @@ class UiPlace extends Place {
   /// постоянно меняться? 👀 пока оставлю старое
   /// todo: вопрос с дистанцией
   static UiPlace updateFromApi({
-    @required UiPlace localPlace,
-    @required Place apiPlace,
+    required UiPlace localPlace,
+    required Place apiPlace,
   }) {
     return UiPlace(
       id: localPlace.id,

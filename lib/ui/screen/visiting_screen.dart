@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:places/data.dart';
 import 'package:places/data/interactor/place_interactor.dart';
-
-import 'package:places/domain/sight.dart';
 import 'package:places/domain/card_type.dart';
-import 'package:places/ui/screen/res/strings.dart';
+import 'package:places/domain/sight.dart';
 import 'package:places/ui/screen/components/bottom_navigationbar.dart';
+
+import 'package:places/ui/screen/res/strings.dart';
 import 'package:places/ui/screen/widgets/empty_page.dart';
 import 'package:places/ui/screen/widgets/sight_card_visiting.dart';
 
 /// экран с избранными карточками - Хочу посетить / Посетил
 class VisitingScreen extends StatefulWidget {
   /// для обновления стэйта после удаления карточки из дочерних виджетов
-  static _VisitingScreenState of(BuildContext context) =>
+  static _VisitingScreenState? of(BuildContext context) =>
       context.findAncestorStateOfType<_VisitingScreenState>();
 
   @override
@@ -118,8 +118,8 @@ class _VisitingScreenState extends State<VisitingScreen> {
   /// строим карточки для Избранного
   /// в зависимости от типа избранного
   Widget _buildFavorites({
-    @required List<Sight> data,
-    @required CardType typeCard,
+    required List<Sight> data,
+    required CardType typeCard,
   }) {
     Widget favTabBarView;
 
@@ -161,8 +161,8 @@ class _VisitingScreenState extends State<VisitingScreen> {
 
   /// получить текущую базу соответствующей вкладки
   List<Sight> _getCurrentData({
-    @required List<Sight> data,
-    @required CardType typeCard,
+    required List<Sight> data,
+    required CardType typeCard,
   }) =>
       data.where((item) => item.favorites == typeCard).toList();
 }

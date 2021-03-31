@@ -5,9 +5,8 @@ import 'package:places/ui/screen/res/themes.dart';
 class TitleLeadingAppBar extends StatelessWidget {
   final String title;
 
-  const TitleLeadingAppBar({Key key, @required this.title})
-      : assert(title != null),
-        super(key: key);
+  const TitleLeadingAppBar({Key? key, required this.title})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +15,7 @@ class TitleLeadingAppBar extends StatelessWidget {
         title,
         style: Theme.of(context)
             .textTheme
-            .headline5
+            .headline5!
             .copyWith(color: Theme.of(context).colorScheme.secondary2),
       ),
       onPressed: () {

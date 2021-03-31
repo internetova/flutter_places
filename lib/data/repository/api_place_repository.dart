@@ -1,10 +1,10 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:places/data/api/api_client.dart';
 import 'package:places/data/api/api_constants.dart';
 import 'package:places/data/api/api_error.dart';
+import 'package:places/data/local_storage/local_storage.dart';
 import 'package:places/data/model/place.dart';
 import 'package:places/data/model/places_filter_request_dto.dart';
 import 'package:places/data/model/search_filter.dart';
@@ -13,7 +13,7 @@ import 'package:places/data/repository/repository.dart';
 /// УДАЛЁННЫЙ РЕПОЗИТОРИЙ
 /// запрос данных с сервера
 /// преобразование в объекты программы
-/// возвращаем оъекты или ошибку (пока null)
+/// возвращаем оъекты или ошибку
 class ApiPlaceRepository implements Repository<Place> {
   final ApiClient _client;
 
@@ -29,9 +29,7 @@ class ApiPlaceRepository implements Repository<Place> {
 
       return places;
     } on DioError catch (e) {
-      ApiError.printError(e);
-
-      return null;
+      throw Exception(ApiError.printError(e));
     }
   }
 
@@ -40,7 +38,11 @@ class ApiPlaceRepository implements Repository<Place> {
   /// [keywords] - ключевые слова для поиска
   @override
   Future<List<Place>> getPlaces(
-      {@required SearchFilter filter, String keywords}) async {
+      {SearchFilter? userFilter, String? keywords}) async {
+    /// если юзер не задал фильтр, то берём дефолтный
+    SearchFilter filter =
+        userFilter == null ? LocalStorage.defaultSearchFilter : userFilter;
+
     try {
       final data = PlacesFilterRequestDto(
         lat: filter.userLocation.lat,
@@ -66,8 +68,7 @@ class ApiPlaceRepository implements Repository<Place> {
     } on DioError catch (e) {
       ApiError.printError(e);
 
-      /// ‼️ null временно, пока не добавим обработчик ошибок
-      return null;
+      throw Exception(e.message);
     }
   }
 
@@ -83,8 +84,7 @@ class ApiPlaceRepository implements Repository<Place> {
     } on DioError catch (e) {
       ApiError.printError(e);
 
-      /// ‼️ null временно, пока не добавим обработчик ошибок
-      return null;
+      throw Exception(e.message);
     }
   }
 
@@ -102,8 +102,7 @@ class ApiPlaceRepository implements Repository<Place> {
     } on DioError catch (e) {
       ApiError.printError(e);
 
-      /// ‼️ null временно, пока не добавим обработчик ошибок
-      return null;
+      throw Exception(e.message);
     }
   }
 
@@ -121,7 +120,7 @@ class ApiPlaceRepository implements Repository<Place> {
 
       print('ApiRepository: Удалено!');
     } on DioError catch (e) {
-      ApiError.printError(e);
+      throw Exception(ApiError.printError(e));
     }
   }
 

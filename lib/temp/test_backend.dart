@@ -16,7 +16,7 @@ class TestBackend extends StatefulWidget {
 }
 
 class _TestBackendState extends State<TestBackend> {
-  ApiPlaceRepository _placeRepository;
+  late ApiPlaceRepository _placeRepository;
 
   /// для тестирования запросов
   final _testId = 157;
@@ -32,6 +32,7 @@ class _TestBackendState extends State<TestBackend> {
 
   /// тестирование Пост запроса
   final Place _testAdd = Place(
+    id: 0,
     lat: 55.737064,
     lng: 37.520018,
     name: 'Тест',
@@ -78,7 +79,7 @@ class _TestBackendState extends State<TestBackend> {
             TextButton(
               child: Text('Фильтр POST [/filtered_places]'),
               onPressed: () async {
-                final response = await _placeRepository.getPlaces(filter: _filter, keywords: keyWords);
+                final List<Place> response = await (_placeRepository.getPlaces(userFilter: _filter, keywords: keyWords));
                 print('UI Фильтрация мест (${response.length} шт.): $response');
               },
               style: TextButton.styleFrom(
@@ -115,7 +116,7 @@ class _TestBackendState extends State<TestBackend> {
             TextButton(
               child: Text('Все места GET [/place]'),
               onPressed: () async {
-                final response = await _placeRepository.getAllPlaces();
+                final response = await (_placeRepository.getAllPlaces());
                 print('UI Список мест (${response.length} шт.): $response');
               },
               style: TextButton.styleFrom(

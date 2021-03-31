@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import 'package:places/domain/sight.dart';
 import 'package:places/ui/screen/components/icon_svg.dart';
 import 'package:places/ui/screen/res/sizes.dart';
@@ -11,9 +10,8 @@ import 'package:places/ui/screen/widgets/sight_details_slider.dart';
 class SightDetails extends StatelessWidget {
   final Sight card;
 
-  const SightDetails({Key key, @required this.card})
-      : assert(card != null),
-        super(key: key);
+  const SightDetails({Key? key, required this.card})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {

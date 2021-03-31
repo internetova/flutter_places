@@ -10,10 +10,9 @@ class ButtonGradient extends StatelessWidget {
   final VoidCallback onPressed;
 
   const ButtonGradient({
-    Key key,
-    this.onPressed,
-  })  : assert(onPressed != null),
-        super(key: key);
+    Key? key,
+    required this.onPressed,
+  })  : super(key: key);
 
   @override
   Widget build(BuildContext context) {

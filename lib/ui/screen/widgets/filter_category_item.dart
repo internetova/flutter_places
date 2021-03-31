@@ -14,12 +14,10 @@ class FilterCategoryItem extends StatelessWidget {
   final Map selectedCat;
 
   const FilterCategoryItem({
-    Key key,
-    @required this.catalog,
-    @required this.selectedCat,
-  })  : assert(catalog != null),
-        assert(selectedCat != null),
-        super(key: key);
+    Key? key,
+    required this.catalog,
+    required this.selectedCat,
+  })  : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +46,7 @@ class FilterCategoryItem extends StatelessWidget {
                     color: Theme.of(context).accentColor,
                   ),
                   onPressed: () {
-                    FiltersScreen.of(context).setCategories(selectedCat);
+                    FiltersScreen.of(context)!.setCategories(selectedCat);
                   },
                   splashColor: Theme.of(context).accentColor.withOpacity(0.5),
                 ),

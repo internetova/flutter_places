@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:places/data.dart';
-import 'package:places/domain/sight.dart';
 import 'package:places/domain/card_type.dart';
+import 'package:places/domain/sight.dart';
 import 'package:places/ui/screen/components/icon_svg.dart';
 import 'package:places/ui/screen/res/assets.dart';
 import 'package:places/ui/screen/res/sizes.dart';
@@ -16,9 +16,9 @@ class SightCardVisiting extends StatelessWidget {
   final CardType cardType;
 
   const SightCardVisiting({
-    Key key,
-    @required this.card,
-    @required this.cardType,
+    Key? key,
+    required this.card,
+    required this.cardType,
   }) : super(key: key);
 
   @override
@@ -32,7 +32,7 @@ class SightCardVisiting extends StatelessWidget {
             key: UniqueKey(),
             onDismissed: (_) {
               favoritesSight.remove(card);
-              VisitingScreen.of(context).updateState();
+              VisitingScreen.of(context)!.updateState();
             },
             direction: DismissDirection.endToStart,
             child: SightCard(

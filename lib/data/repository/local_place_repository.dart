@@ -1,14 +1,16 @@
 import 'package:places/data/local_storage/local_storage.dart';
-import 'package:places/data/model/ui_place.dart';
 import 'package:places/data/model/search_filter.dart';
+import 'package:places/data/model/ui_place.dart';
 import 'package:places/data/repository/repository.dart';
+import 'package:places/data/res/error_response_strings.dart';
 
 /// ЛОКАЛЬНЫЙ РЕПОЗИТОРИЙ
 /// для имитации локального хранилища используется класс [LocalStorage]
 class LocalPlaceRepository implements Repository<UiPlace> {
   /// показать избранные
   @override
-  Future<List<UiPlace>> getPlaces({SearchFilter filter}) async {
+  Future<List<UiPlace>> getPlaces(
+      {SearchFilter? userFilter, String? keywords}) async {
     final response = await Future.delayed(Duration(seconds: 1), () {
       final result = LocalStorage.favoritesPlaces;
 
@@ -30,8 +32,9 @@ class LocalPlaceRepository implements Repository<UiPlace> {
       if (indexPlaces != -1) {
         return LocalStorage.favoritesPlaces[indexPlaces];
       } else {
-        print('LocalRepository в Избранном: такого объекта нет');
-        return null;
+        print(ErrorResponseStrings.e404);
+
+        throw Exception(ErrorResponseStrings.e404);
       }
     });
     print('LocalRepository Детали места: $response');
@@ -52,11 +55,11 @@ class LocalPlaceRepository implements Repository<UiPlace> {
 
         return LocalStorage.favoritesPlaces.last;
       } else {
-        print('LocalRepository Добавлено в Избранное: такой объект уже есть');
-        return null;
+        print('LocalRepository addNewPlace в Избранное: такой объект уже есть');
+        throw Exception(ErrorResponseStrings.e409);
       }
     });
-    print('LocalRepository Добавлено в Избранное: $response');
+    print('LocalRepository addNewPlace в Избранное: $response');
 
     return response;
   }
@@ -70,13 +73,13 @@ class LocalPlaceRepository implements Repository<UiPlace> {
       if (result != -1) {
         LocalStorage.favoritesPlaces.removeAt(result);
       } else {
-        print('LocalRepository: Такой элемент не найден!');
+        print('LocalRepository removePlace: Такой элемент не найден!');
       }
     });
   }
 
   /// переключатель кнопки Избранное
-  Future<bool> toggleFavoritesButton(UiPlace place) async {
+  Future<bool> toggleFavorite(UiPlace place) async {
     if (place.isFavorite) {
       await removePlace(place.id);
       return false;
@@ -96,7 +99,7 @@ class LocalPlaceRepository implements Repository<UiPlace> {
       if (result != -1) {
         LocalStorage.favoritesPlaces[result] = place;
       } else {
-        print('LocalRepository: Такой элемент не найден!');
+        print('LocalRepository updatePlace: Такой элемент не найден!');
       }
     });
   }

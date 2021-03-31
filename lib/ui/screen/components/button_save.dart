@@ -6,16 +6,14 @@ import 'package:places/ui/screen/res/themes.dart';
 class ButtonSave extends StatelessWidget {
   final String title;
   final bool isButtonEnabled;
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
 
   ButtonSave({
-    Key key,
-    @required this.title,
-    @required this.isButtonEnabled,
+    Key? key,
+    required this.title,
+    required this.isButtonEnabled,
     this.onPressed,
-  })  : assert(title != null),
-        assert(isButtonEnabled != null),
-        super(key: key);
+  })  : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +37,7 @@ class ButtonSave extends StatelessWidget {
   }
 
   /// цвет кнопки в зависимоти от её состояния
-  Color _getButtonColor(BuildContext context) {
+  Color? _getButtonColor(BuildContext context) {
     if (isButtonEnabled) {
       return Theme.of(context).floatingActionButtonTheme.backgroundColor;
     } else {
@@ -48,11 +46,11 @@ class ButtonSave extends StatelessWidget {
   }
 
   /// цвет названия кнопки в зависимоти от её состояния
-  TextStyle _buildButtonColorTitle(BuildContext context) {
+  TextStyle? _buildButtonColorTitle(BuildContext context) {
     if (isButtonEnabled) {
       return Theme.of(context).textTheme.button;
     } else {
-      return Theme.of(context).textTheme.button.copyWith(
+      return Theme.of(context).textTheme.button!.copyWith(
             color: Theme.of(context).colorScheme.inactiveBlack,
           );
     }

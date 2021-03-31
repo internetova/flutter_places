@@ -1,4 +1,4 @@
-import 'package:places/domain/categories.dart';
+import 'domain/categories.dart';
 import 'package:places/ui/screen/res/assets.dart';
 
 import 'domain/sight.dart';

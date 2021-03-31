@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:places/data/interactor/settings_interactor.dart';
-import 'package:places/ui/screen/components/bottom_NavigationBar.dart';
+import 'package:places/ui/screen/components/bottom_navigationbar.dart';
 import 'package:places/ui/screen/res/app_routes.dart';
 import 'package:places/ui/screen/res/assets.dart';
 import 'package:places/ui/screen/res/strings.dart';
@@ -53,7 +53,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         ),
         trailing: CupertinoSwitch(
             trackColor: Theme.of(context).colorScheme.inactiveBlack,
-            value: notifier.darkTheme,
+            value: notifier.darkTheme!,
             onChanged: (currentValue) {
               notifier.toggleTheme();
               SettingsInteractor.toggleTheme();

@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:places/data/local_storage/local_storage.dart';
 import 'package:places/data/model/coordinates.dart';
 
@@ -11,8 +10,7 @@ class SearchFilter {
   final List<String> typeFilter;
 
   SearchFilter({
-    @required this.radius,
-    @required this.typeFilter,
-  })  : assert(radius != null),
-        assert(typeFilter != null);
+    required this.radius,
+    required this.typeFilter,
+  });
 }

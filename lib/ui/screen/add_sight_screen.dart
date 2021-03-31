@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:places/data/interactor/place_interactor.dart';
 import 'package:places/data/local_storage/local_storage.dart';
+import 'package:places/domain/sight.dart';
 import 'package:places/ui/screen/components/button_clear.dart';
 import 'package:places/ui/screen/components/button_save.dart';
 import 'package:places/ui/screen/components/button_text.dart';
 import 'package:places/ui/screen/components/icon_svg.dart';
 import 'package:places/ui/screen/components/title_leading_appbar.dart';
-import 'package:places/domain/sight.dart';
 import 'package:places/mocks.dart';
 import 'package:places/ui/screen/res/assets.dart';
 import 'package:places/ui/screen/res/sizes.dart';
@@ -26,7 +26,7 @@ final _coordinatesPattern = RegExp(r'^-?[0-9]{1,3}(?:\.[0-9]{1,10})?$');
 /// экран добавление нового места
 class AddSightScreen extends StatefulWidget {
   /// для обновления стэйта после удаления карточки с фото из дочерних виджетов
-  static _AddSightScreenState of(BuildContext context) =>
+  static _AddSightScreenState? of(BuildContext context) =>
       context.findAncestorStateOfType<_AddSightScreenState>();
 
   @override
@@ -38,14 +38,14 @@ class _AddSightScreenState extends State<AddSightScreen> {
 
   /// кнопка сохранения при старте отключена
   bool _isButtonEnabled = false;
-  VoidCallback _submitForm;
+  VoidCallback? _submitForm;
 
   /// сюда сохраним данные из формы
-  String _selectedCategory;
-  String _name;
-  double _lat;
-  double _lon;
-  String _details;
+  late String _selectedCategory;
+  late String _name;
+  late double _lat;
+  late double _lon;
+  late String _details;
 
   /// сюда сохраним тестовые фотографии для загрузки
   List<TestImage> _userImages = [];
@@ -63,7 +63,7 @@ class _AddSightScreenState extends State<AddSightScreen> {
   final _detailsFocus = FocusNode();
 
   /// для передачи фокуса по тапам по полям и через клавиатуру
-  FocusNode _currentFocus;
+  FocusNode? _currentFocus;
 
   @override
   void initState() {
@@ -75,6 +75,8 @@ class _AddSightScreenState extends State<AddSightScreen> {
     _lonController.addListener(() => setState(() {}));
     _detailsController.addListener(() => setState(() {}));
     _userImages = userImages;
+    _selectedCategory = emptyCategory;
+    _categoryController.text = _selectedCategory;
   }
 
   @override
@@ -104,7 +106,7 @@ class _AddSightScreenState extends State<AddSightScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if (_selectedCategory == null) {
+    if (_selectedCategory == emptyCategory) {
       _categoryController.text = emptyCategory;
     } else {
       _categoryController.text = _selectedCategory;
@@ -120,10 +122,10 @@ class _AddSightScreenState extends State<AddSightScreen> {
 
     if (_isButtonEnabled) {
       _submitForm = () {
-        final isValid = _formKey.currentState.validate();
+        final isValid = _formKey.currentState!.validate();
 
         if (isValid) {
-          _formKey.currentState.save();
+          _formKey.currentState!.save();
 
           /// получаем id последнего элемента в массиве
           final int _newId = mocks.last.id + 1;
@@ -131,6 +133,10 @@ class _AddSightScreenState extends State<AddSightScreen> {
           /// временно
           const _imgPreview =
               'https://img1.fonwall.ru/o/dg/coast-beach-sand-ocean.jpeg';
+          const _images = [
+            'https://picsum.photos/1000/600?random=1',
+            'https://picsum.photos/1000/600?random=2',
+          ];
 
           /// сюда сохраним данные полей
           Sight newSight = Sight(
@@ -141,6 +147,7 @@ class _AddSightScreenState extends State<AddSightScreen> {
             lon: _lon,
             details: _details,
             imgPreview: _imgPreview,
+            images: _images,
           );
 
           /// и потом добавим в общий список
@@ -162,7 +169,7 @@ class _AddSightScreenState extends State<AddSightScreen> {
     }
 
     return Scaffold(
-      appBar: _buildAddSightAppBar(),
+      appBar: _buildAddSightAppBar() as PreferredSizeWidget?,
       body: CustomScrollView(
         slivers: <Widget>[
           SliverToBoxAdapter(
@@ -171,7 +178,7 @@ class _AddSightScreenState extends State<AddSightScreen> {
               child: GestureDetector(
                 onTap: () {
                   if (_currentFocus != null) {
-                    _currentFocus.unfocus();
+                    _currentFocus!.unfocus();
                     _currentFocus = null;
                   }
                 },
@@ -243,7 +250,7 @@ class _AddSightScreenState extends State<AddSightScreen> {
         addNewSightLabelSelectedCategory,
         style: Theme.of(context)
             .textTheme
-            .caption
+            .caption!
             .copyWith(color: Theme.of(context).colorScheme.inactiveBlack),
       ),
       sizedBoxH12,
@@ -296,10 +303,10 @@ class _AddSightScreenState extends State<AddSightScreen> {
             controller: _categoryController,
             showCursor: false,
             maxLines: 1,
-            style: _selectedCategory == null
+            style: _selectedCategory == emptyCategory
                 ? Theme.of(context)
                     .primaryTextTheme
-                    .subtitle1
+                    .subtitle1!
                     .copyWith(color: Theme.of(context).colorScheme.secondary2)
                 : Theme.of(context).primaryTextTheme.subtitle1,
             readOnly: true,
@@ -313,7 +320,7 @@ class _AddSightScreenState extends State<AddSightScreen> {
               ),
             ),
             validator: _validateCategory,
-            onSaved: (value) => setState(() => _selectedCategory = value),
+            onSaved: (value) => setState(() => _selectedCategory = value as String),
             onTap: () {
               _returnCategoryFromSelectCategoryScreen();
             },
@@ -375,7 +382,7 @@ class _AddSightScreenState extends State<AddSightScreen> {
             LengthLimitingTextInputFormatter(100),
           ],
           validator: _validateName,
-          onSaved: (value) => setState(() => _name = value),
+          onSaved: (value) => setState(() => _name = value as String),
         ),
       ),
     ];
@@ -419,7 +426,8 @@ class _AddSightScreenState extends State<AddSightScreen> {
                 enabledBorder: _buildBorderColor(_latController),
               ),
               validator: _validateCoordinates,
-              onSaved: (value) => setState(() => _lat = double.tryParse(value)),
+              onSaved: (value) =>
+                  setState(() => _lat = double.tryParse(value!) as double),
             ),
           ),
         ],
@@ -465,7 +473,8 @@ class _AddSightScreenState extends State<AddSightScreen> {
                 enabledBorder: _buildBorderColor(_lonController),
               ),
               validator: _validateCoordinates,
-              onSaved: (value) => setState(() => _lon = double.tryParse(value)),
+              onSaved: (value) =>
+                  setState(() => _lon = double.tryParse(value!) as double),
             ),
           ),
         ],
@@ -510,7 +519,7 @@ class _AddSightScreenState extends State<AddSightScreen> {
           hintText: addNewSightHintTextDetails,
           hintStyle: Theme.of(context)
               .primaryTextTheme
-              .subtitle1
+              .subtitle1!
               .copyWith(color: Theme.of(context).colorScheme.inactiveBlack),
           suffixIcon: _clearField(
               context: context,
@@ -522,37 +531,37 @@ class _AddSightScreenState extends State<AddSightScreen> {
           LengthLimitingTextInputFormatter(300),
         ],
         validator: _validateDetails,
-        onSaved: (value) => setState(() => _details = value),
+        onSaved: (value) => setState(() => _details = value as String),
       ),
     ];
   }
 
   /// валидация полей
-  String _validateCategory(String value) {
-    if (value.isEmpty || value == emptyCategory) return errorEmptyCategory;
+  String? _validateCategory(String? value) {
+    if (value!.isEmpty || value == emptyCategory) return errorEmptyCategory;
 
     return null;
   }
 
-  String _validateName(String value) {
+  String? _validateName(String? value) {
     final _nameExp = _namePattern;
-    if (value.isEmpty) return errorEmptyName;
+    if (value!.isEmpty) return errorEmptyName;
     if (value.length < 5) return errorShortName;
     if (!_nameExp.hasMatch(value)) return errorIncorrectName;
 
     return null;
   }
 
-  String _validateCoordinates(String value) {
+  String? _validateCoordinates(String? value) {
     final _coordinatesExp = _coordinatesPattern;
-    if (value.isEmpty) return errorEmptyCoordinates;
+    if (value!.isEmpty) return errorEmptyCoordinates;
     if (!_coordinatesExp.hasMatch(value)) return errorIncorrectCoordinates;
 
     return null;
   }
 
-  String _validateDetails(String value) {
-    if (value.isEmpty) return errorEmptyDetails;
+  String? _validateDetails(String? value) {
+    if (value!.isEmpty) return errorEmptyDetails;
     if (value.length < 100) return errorShortDetails;
 
     return null;
@@ -572,9 +581,9 @@ class _AddSightScreenState extends State<AddSightScreen> {
 
   /// очистка поля по кнопке
   Widget _clearField(
-      {@required BuildContext context,
-      @required FocusNode currentFocus,
-      @required TextEditingController controller}) {
+      {required BuildContext context,
+      required FocusNode currentFocus,
+      required TextEditingController controller}) {
     if (currentFocus == _currentFocus && controller.text.isNotEmpty) {
       return ButtonClear(controller: controller);
     }
@@ -584,7 +593,7 @@ class _AddSightScreenState extends State<AddSightScreen> {
 
   /// цвет границы у уже правильно заполненного поля
   InputBorder _buildBorderColor(TextEditingController controller) =>
-      Theme.of(context).inputDecorationTheme.enabledBorder.copyWith(
+      Theme.of(context).inputDecorationTheme.enabledBorder!.copyWith(
             borderSide: BorderSide(
               color: controller.text.isNotEmpty
                   ? Theme.of(context).accentColor.withOpacity(0.4)
@@ -596,11 +605,11 @@ class _AddSightScreenState extends State<AddSightScreen> {
 
   /// показываем окно если форма валидна
   void _showDialog({
-    String category,
-    String name,
-    double lat,
-    double lon,
-    String details,
+    String? category,
+    String? name,
+    double? lat,
+    double? lon,
+    String? details,
   }) {
     showDialog(
         context: context,
@@ -613,7 +622,7 @@ class _AddSightScreenState extends State<AddSightScreen> {
               addNewSightAlertDialogHeader,
               style: Theme.of(context)
                   .textTheme
-                  .headline6
+                  .headline6!
                   .copyWith(color: Theme.of(context).accentColor),
             ),
             content: Column(
@@ -621,16 +630,16 @@ class _AddSightScreenState extends State<AddSightScreen> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Text(
-                  category,
+                  category!,
                   style: Theme.of(context).primaryTextTheme.subtitle1,
                 ),
                 sizedBoxH12,
                 Text(
-                  name,
+                  name!,
                   style: Theme.of(context).primaryTextTheme.subtitle1,
                 ),
                 Text(
-                  '${details.substring(0, 100)} ...',
+                  '${details!.substring(0, 100)} ...',
                   style: Theme.of(context).primaryTextTheme.subtitle1,
                 ),
                 sizedBoxH12,
@@ -658,7 +667,7 @@ class _AddSightScreenState extends State<AddSightScreen> {
                   addNewSightAlertDialogSubmit,
                   style: Theme.of(context)
                       .textTheme
-                      .headline6
+                      .headline6!
                       .copyWith(color: Theme.of(context).accentColor),
                 ),
               ),

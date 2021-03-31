@@ -31,12 +31,10 @@ class SightCard extends StatelessWidget {
   final CardType cardType;
 
   SightCard({
-    Key key,
-    @required this.card,
-    @required this.cardType,
-  })  : assert(card != null),
-        assert(cardType != null),
-        super(key: key);
+    Key? key,
+    required this.card,
+    required this.cardType,
+  })  : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -113,8 +111,8 @@ class SightCard extends StatelessWidget {
 /// загружает картинку-превью карточки
 class CardImagePreview extends StatelessWidget {
   const CardImagePreview({
-    Key key,
-    @required this.imgUrl,
+    Key? key,
+    required this.imgUrl,
   }) : super(key: key);
   final String imgUrl;
 
@@ -127,13 +125,13 @@ class CardImagePreview extends StatelessWidget {
         imgUrl,
         fit: BoxFit.cover,
         loadingBuilder: (BuildContext context, Widget child,
-            ImageChunkEvent loadingProgress) {
+            ImageChunkEvent? loadingProgress) {
           if (loadingProgress == null) return child;
           return Center(
             child: CircularProgressIndicator(
               value: loadingProgress.expectedTotalBytes != null
                   ? loadingProgress.cumulativeBytesLoaded /
-                      loadingProgress.expectedTotalBytes
+                      loadingProgress.expectedTotalBytes!
                   : null,
             ),
           );
@@ -145,13 +143,13 @@ class CardImagePreview extends StatelessWidget {
 
 /// на картинке отображает тип карточки (музей, достопримечательность и т.п.)
 class CardContentType extends StatelessWidget {
-  const CardContentType({Key key, @required this.type}) : super(key: key);
-  final String type;
+  const CardContentType({Key? key, required this.type}) : super(key: key);
+  final String? type;
 
   @override
   Widget build(BuildContext context) {
     return Text(
-      type.toLowerCase(),
+      type!.toLowerCase(),
       style: Theme.of(context).textTheme.subtitle2,
     );
   }
@@ -161,12 +159,12 @@ class CardContentType extends StatelessWidget {
 /// отображается на одной линии с типом карточки
 /// в зависимости от [cardType] места показа карточки кнопки меняются
 class CardActions extends StatelessWidget {
-  final Sight card;
+  final Sight? card;
   final CardType cardType;
 
   CardActions({
-    Key key,
-    @required this.cardType,
+    Key? key,
+    required this.cardType,
     this.card,
   }) : super(key: key);
 
@@ -176,9 +174,9 @@ class CardActions extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          if (cardType == CardType.search) ..._buildActionsSearch(context),
-          if (cardType == CardType.planned) ..._buildActionsPlanned(context),
-          if (cardType == CardType.visited) ..._buildActionsVisited(context),
+          if (cardType == CardType.search) ..._buildActionsSearch(context) as Iterable<Widget>,
+          if (cardType == CardType.planned) ..._buildActionsPlanned(context) as Iterable<Widget>,
+          if (cardType == CardType.visited) ..._buildActionsVisited(context) as Iterable<Widget>,
         ],
       ),
     );
@@ -248,19 +246,19 @@ class CardActions extends StatelessWidget {
 
   /// удалить карточку
   void _deleteCard(BuildContext context) {
-    favoritesSight.removeWhere((element) => element.id == card.id);
-    VisitingScreen.of(context).updateState();
+    favoritesSight.removeWhere((element) => element.id == card!.id);
+    VisitingScreen.of(context)!.updateState();
   }
 
   /// установить напоминание Часы о запланированном посещении места Android
-  Future<TimeOfDay> _setReminderTimeAndroid(BuildContext context) =>
+  Future<TimeOfDay?> _setReminderTimeAndroid(BuildContext context) =>
       showTimePicker(
           context: context,
           initialTime: TimeOfDay.now(),
-          builder: (BuildContext context, Widget child) {
+          builder: (BuildContext context, Widget? child) {
             return Theme(
               data: setThemePicker(context),
-              child: child,
+              child: child!,
             );
           });
 }
@@ -272,9 +270,9 @@ class CardContent extends StatelessWidget {
   final CardType cardType;
 
   const CardContent({
-    Key key,
-    @required this.card,
-    @required this.cardType,
+    Key? key,
+    required this.card,
+    required this.cardType,
   }) : super(key: key);
 
   @override

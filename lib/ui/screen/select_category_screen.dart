@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:places/domain/categories.dart';
 import 'package:places/ui/screen/components/button_save.dart';
 import 'package:places/ui/screen/components/icon_leading_appbar.dart';
 import 'package:places/ui/screen/components/icon_svg.dart';
-import 'package:places/domain/categories.dart';
 import 'package:places/mocks.dart';
 import 'package:places/ui/screen/res/assets.dart';
 import 'package:places/ui/screen/res/sizes.dart';
@@ -10,9 +10,9 @@ import 'package:places/ui/screen/res/strings.dart';
 
 /// выбор категории -> из добавления нового места AddSightScreen
 class SelectCategoryScreen extends StatefulWidget {
-  final String selectedCategory;
+  final String? selectedCategory;
 
-  const SelectCategoryScreen({Key key, this.selectedCategory})
+  const SelectCategoryScreen({Key? key, this.selectedCategory})
       : super(key: key);
 
   @override
@@ -22,13 +22,13 @@ class SelectCategoryScreen extends StatefulWidget {
 class _SelectCategoryScreenState extends State<SelectCategoryScreen> {
   /// кнопка сохранения при старте отключена
   bool _isButtonEnabled = false;
-  VoidCallback _onPressed;
+  VoidCallback? _onPressed;
 
   /// категории
   List<Categories> _categories = categories;
 
   /// название выбранной категории
-  String _selectedCategory;
+  String? _selectedCategory;
 
   /// счётчик выбора категорий
   /// если он 0, то категория передаётся с предыдущего экрана
@@ -54,7 +54,7 @@ class _SelectCategoryScreenState extends State<SelectCategoryScreen> {
     }
 
     return Scaffold(
-      appBar: _buildSelectCategoryAppBar(),
+      appBar: _buildSelectCategoryAppBar() as PreferredSizeWidget?,
       body: _buildCategories(),
       floatingActionButton: ButtonSave(
         title: titleButtonSaveSelectCategoryScreen,
@@ -99,8 +99,8 @@ class _SelectCategoryScreenState extends State<SelectCategoryScreen> {
 
   /// категория
   Widget _buildCategoryItem(
-      {@required Categories categoryItem,
-      @required String selectedCategoryName}) {
+      {required Categories categoryItem,
+      required String? selectedCategoryName}) {
     final Widget title = Text(
       categoryItem.name,
       style: Theme.of(context).primaryTextTheme.subtitle1,

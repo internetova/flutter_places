@@ -9,7 +9,7 @@ import 'package:places/ui/screen/res/themes.dart';
 /// экран туториала
 class OnboardingScreen extends StatefulWidget {
   /// для обновления значения текущей страницы при перелистывании
-  static _OnboardingScreenState of(BuildContext context) =>
+  static _OnboardingScreenState? of(BuildContext context) =>
       context.findAncestorStateOfType<_OnboardingScreenState>();
 
   @override
@@ -18,7 +18,7 @@ class OnboardingScreen extends StatefulWidget {
 
 class _OnboardingScreenState extends State<OnboardingScreen> {
   final List<TutorialItem> _data = _dataPages;
-  int _currentPage;
+  int? _currentPage;
 
   @override
   void initState() {
@@ -39,7 +39,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       appBar: AppBar(
         toolbarHeight: toolbarHeightStandard,
         actions: [
-          _buttonSkip(_data, _currentPage),
+          _buttonSkip(_data, _currentPage!),
         ],
       ),
       body: Stack(
@@ -53,7 +53,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               alignment: Alignment.bottomCenter,
               child: PageSelector(
                 data: _data,
-                currentIndex: _currentPage,
+                currentIndex: _currentPage!,
               ),
             ),
           ),
@@ -66,7 +66,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   }
 
   /// кнопка старт
-  Widget _buttonStart(List<TutorialItem> data, int currentIndex) {
+  Widget _buttonStart(List<TutorialItem> data, int? currentIndex) {
     if (currentIndex == data.length - 1) {
       return ButtonSave(
         title: tutorialButtonTitle,
@@ -107,12 +107,10 @@ class TutorialItem {
   final String text;
 
   TutorialItem({
-    @required this.icon,
-    @required this.title,
-    @required this.text,
-  })  : assert(icon != null),
-        assert(title != null),
-        assert(text != null);
+    required this.icon,
+    required this.title,
+    required this.text,
+  });
 }
 
 /// Список страниц с контентом
@@ -139,8 +137,8 @@ class TutorialItemWidget extends StatelessWidget {
   final TutorialItem item;
 
   TutorialItemWidget({
-    @required this.item,
-  }) : assert(item != null);
+    required this.item,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -157,7 +155,7 @@ class TutorialItemWidget extends StatelessWidget {
           sizedBoxH40,
           Text(
             item.title,
-            style: Theme.of(context).textTheme.headline4.copyWith(
+            style: Theme.of(context).textTheme.headline4!.copyWith(
                   color: Theme.of(context).colorScheme.primary,
                 ),
             textAlign: TextAlign.center,
@@ -181,12 +179,10 @@ class PageSelector extends StatelessWidget {
   final int currentIndex;
 
   const PageSelector({
-    Key key,
-    @required this.data,
-    @required this.currentIndex,
-  })  : assert(data != null),
-        assert(currentIndex != null),
-        super(key: key);
+    Key? key,
+    required this.data,
+    required this.currentIndex,
+  })  : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -221,7 +217,7 @@ class PageSelector extends StatelessWidget {
   }
 
   /// цвет индикатора текущей страницы
-  Color _getColor(BuildContext context, {int index, int currentIndex}) {
+  Color _getColor(BuildContext context, {int? index, int? currentIndex}) {
     if (index == currentIndex) {
       return Theme.of(context).accentColor;
     } else {
@@ -230,7 +226,7 @@ class PageSelector extends StatelessWidget {
   }
 
   /// ширина индикатора текущей страницы
-  double _getWidth(BuildContext context, {int index, int currentIndex}) {
+  double _getWidth(BuildContext context, {int? index, int? currentIndex}) {
     if (index == currentIndex) {
       return 24;
     } else {
@@ -245,16 +241,15 @@ class TutorialList extends StatelessWidget {
   final PageController _controller = PageController(initialPage: 0);
 
   TutorialList({
-    Key key,
-    @required this.data,
-  })  : assert(data != null),
-        super(key: key);
+    Key? key,
+    required this.data,
+  })  : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return PageView.builder(
         onPageChanged: (value) {
-          OnboardingScreen.of(context).updateState(value);
+          OnboardingScreen.of(context)!.updateState(value);
         },
         controller: _controller,
         itemCount: data.length,

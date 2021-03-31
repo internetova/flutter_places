@@ -1,5 +1,5 @@
-import 'package:places/domain/sight.dart';
-import 'package:places/domain/card_type.dart';
+import '../../../domain/sight.dart';
+import '../../../domain/card_type.dart';
 
 /// сохраненные пользователем данные
 /// для раздела Избранное (хочу посетить / посетил)

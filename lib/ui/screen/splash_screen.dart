@@ -11,9 +11,8 @@ class SplashScreen extends StatefulWidget {
   final bool isFirstStart;
 
   /// пока поставлю true
-  const SplashScreen({Key key, this.isFirstStart = true})
-      : assert(isFirstStart != null),
-        super(key: key);
+  const SplashScreen({Key? key, this.isFirstStart = true})
+      : super(key: key);
 
   @override
   _SplashScreenState createState() => _SplashScreenState();
@@ -21,7 +20,7 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   /// чтобы отследить завершение инициализации приложения
-  Future<bool> _isInitialized;
+  Future<bool>? _isInitialized;
 
   @override
   void initState() {
@@ -65,7 +64,7 @@ class _SplashScreenState extends State<SplashScreen> {
     /// 2. прошло минимальное время отображения сплэш-экрана.
     try {
       await Future.wait([
-        _isInitialized,
+        _isInitialized!,
         Future.delayed(const Duration(seconds: 2)),
       ]);
 

@@ -1,5 +1,4 @@
 import 'dart:math';
-import 'package:flutter/material.dart';
 
 /// генерация тестовых данных для добавления фотографий
 /// на экране создания нового места
@@ -32,10 +31,9 @@ class TestImage {
   final String url;
 
   TestImage({
-    @required this.id,
-    @required this.url,
-  }) : assert(id != null),
-        assert(url != null);
+    required this.id,
+    required this.url,
+  });
 }
 
 /// сюда сохраним временные фото для загрузки

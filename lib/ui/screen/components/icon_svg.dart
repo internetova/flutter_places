@@ -8,10 +8,10 @@ class IconSvg extends StatelessWidget {
   final Color color;
 
   IconSvg({
-    @required this.icon,
+    required this.icon,
     this.size = 24,
     this.color = Colors.white,
-  }) : assert(icon != null);
+  });
 
   @override
   Widget build(BuildContext context) {

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import 'package:places/domain/categories.dart';
 import 'package:places/domain/sight.dart';
 import 'package:places/mocks.dart';
@@ -14,12 +13,12 @@ import 'package:places/ui/screen/widgets/filter_category_item.dart';
 
 /// экран фильтра для поиска
 class FiltersScreen extends StatefulWidget {
-  final FilterSettings filter;
+  final FilterSettings? filter;
 
-  const FiltersScreen({Key key, this.filter}) : super(key: key);
+  const FiltersScreen({Key? key, this.filter}) : super(key: key);
 
   /// для доступа к методу обработки кликов по категориям из дочернего виджета
-  static _FiltersScreenState of(BuildContext context) =>
+  static _FiltersScreenState? of(BuildContext context) =>
       context.findAncestorStateOfType<_FiltersScreenState>();
 
   @override
@@ -29,10 +28,10 @@ class FiltersScreen extends StatefulWidget {
 class _FiltersScreenState extends State<FiltersScreen> {
   /// кнопка Показать отключена если нет результатов
   bool _isButtonEnabled = false;
-  VoidCallback _onPressed;
+  VoidCallback? _onPressed;
 
   /// для построения индикаторов выбранных категорий
-  List<Map> _selectedCategories;
+  List<Map>? _selectedCategories;
 
   /// только выбранные категории для функции поиска и передачи на другой экран
   List<Map> _filteredCategories = [];
@@ -40,7 +39,7 @@ class _FiltersScreenState extends State<FiltersScreen> {
   /// данные слайдера
   double _startValue = 100;
   double _endValue = 10000;
-  RangeValues _currentRangeValues;
+  RangeValues? _currentRangeValues;
 
   /// стартовая точка поиска
   /// красная площадь для теста
@@ -66,10 +65,10 @@ class _FiltersScreenState extends State<FiltersScreen> {
   @override
   void initState() {
     if (widget.filter != null) {
-      _filteredCategories = widget.filter.categories;
-      _currentRangeValues = widget.filter.distance;
+      _filteredCategories = widget.filter!.categories;
+      _currentRangeValues = widget.filter!.distance;
       _selectedCategories = _currentStatusCategories(
-          _startCategories(categories), widget.filter.categories);
+          _startCategories(categories), widget.filter!.categories);
       _filteredData = filterData(
           data: _fullData,
           categories: _filteredCategories,
@@ -87,7 +86,7 @@ class _FiltersScreenState extends State<FiltersScreen> {
   void setCategories(Map selectedCat) {
     setState(() {
       selectedCat['isSelected'] = !selectedCat['isSelected'];
-      _filteredCategories = _filterCategories(_selectedCategories);
+      _filteredCategories = _filterCategories(_selectedCategories!);
       _filteredData = filterData(
           data: _fullData,
           categories: _filteredCategories,
@@ -192,7 +191,7 @@ class _FiltersScreenState extends State<FiltersScreen> {
             onPressed: _onClearFilter,
             child: Text(
               filterClearFilters,
-              style: Theme.of(context).textTheme.headline5.copyWith(
+              style: Theme.of(context).textTheme.headline5!.copyWith(
                     color: Theme.of(context).accentColor,
                   ),
             ),
@@ -203,7 +202,7 @@ class _FiltersScreenState extends State<FiltersScreen> {
   /// Заголовок
   Widget _buildTitleFilter() => Text(
         filterTitleCategories,
-        style: Theme.of(context).textTheme.caption.copyWith(
+        style: Theme.of(context).textTheme.caption!.copyWith(
               color: Theme.of(context).colorScheme.inactiveBlack,
             ),
       );
@@ -227,7 +226,7 @@ class _FiltersScreenState extends State<FiltersScreen> {
   /// список карточек категорий для нормальных экранов
   /// показываем карточки гридами
   Widget _categoriesNormalSize(
-          List<Categories> catalog, List<Map> selectedCat) =>
+          List<Categories> catalog, List<Map>? selectedCat) =>
       SliverGrid(
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 3,
@@ -238,7 +237,7 @@ class _FiltersScreenState extends State<FiltersScreen> {
           (BuildContext context, int index) {
             return FilterCategoryItem(
               catalog: catalog[index],
-              selectedCat: selectedCat[index],
+              selectedCat: selectedCat![index],
             );
           },
           childCount: catalog.length,
@@ -248,7 +247,7 @@ class _FiltersScreenState extends State<FiltersScreen> {
   /// список карточек категорий для маленьких экранов 375 х 667 iphone 8
   /// показываем категории в одну прокручиваемую строку
   Widget _categoriesSmallSize(
-          List<Categories> catalog, List<Map> selectedCat) =>
+          List<Categories> catalog, List<Map>? selectedCat) =>
       SliverToBoxAdapter(
         child: Container(
           height: 100.0,
@@ -258,7 +257,7 @@ class _FiltersScreenState extends State<FiltersScreen> {
               itemBuilder: (context, index) {
                 return FilterCategoryItem(
                   catalog: catalog[index],
-                  selectedCat: selectedCat[index],
+                  selectedCat: selectedCat![index],
                 );
               }),
         ),
@@ -275,8 +274,8 @@ class _FiltersScreenState extends State<FiltersScreen> {
               style: Theme.of(context).primaryTextTheme.subtitle1,
             ),
             Text(
-              'от ${_convertMeterToKm(_currentRangeValues.start)} до ${_convertMeterToKm(_currentRangeValues.end)}',
-              style: Theme.of(context).primaryTextTheme.subtitle1.copyWith(
+              'от ${_convertMeterToKm(_currentRangeValues!.start)} до ${_convertMeterToKm(_currentRangeValues!.end)}',
+              style: Theme.of(context).primaryTextTheme.subtitle1!.copyWith(
                   color: Theme.of(context).colorScheme.secondaryVariant),
             ),
           ],
@@ -287,7 +286,7 @@ class _FiltersScreenState extends State<FiltersScreen> {
   Widget _buildSlider() => RangeSlider(
         min: _startValue,
         max: _endValue,
-        values: _currentRangeValues,
+        values: _currentRangeValues!,
         onChanged: (RangeValues values) {
           setState(() {
             _currentRangeValues = values;

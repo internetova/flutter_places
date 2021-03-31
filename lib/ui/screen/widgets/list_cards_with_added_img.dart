@@ -9,14 +9,13 @@ import 'package:places/ui/screen/utilities/test_images_data.dart';
 /// список добавленных фото на странице добавления нового места
 class ListCardsWithAddedImg extends StatelessWidget {
   final List<TestImage> data;
-  final Function addImage;
+  final Function? addImage;
 
   const ListCardsWithAddedImg({
-    Key key,
-    @required this.data,
+    Key? key,
+    required this.data,
     this.addImage,
-  })  : assert(data != null),
-        super(key: key);
+  })  : super(key: key);
 
   @override
   Widget build(BuildContext context) => SizedBox(
@@ -31,7 +30,7 @@ class ListCardsWithAddedImg extends StatelessWidget {
   Widget _buildCardItem(BuildContext context, int index) {
     if (index == 0) {
       return ButtonCardAddImg(
-        onPressed: addImage,
+        onPressed: addImage as void Function(),
       );
     }
 
@@ -46,10 +45,9 @@ class RemovableCardWithAddedImg extends StatelessWidget {
   final TestImage image;
 
   const RemovableCardWithAddedImg({
-    Key key,
-    @required this.image,
-  })  : assert(image != null),
-        super(key: key);
+    Key? key,
+    required this.image,
+  })  : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -80,6 +78,6 @@ class RemovableCardWithAddedImg extends StatelessWidget {
 
   void _deleteImage(BuildContext context) {
     userImages.remove(image);
-    AddSightScreen.of(context).updateState();
+    AddSightScreen.of(context)!.updateState();
   }
 }

@@ -9,16 +9,15 @@ enum WhereShowSlider { screen, bottomSheet }
 /// слайдер фотографий
 class SightDetailsSlider extends StatefulWidget {
   final List<String> images;
-  final WhereShowSlider whereShowSlider;
+  final WhereShowSlider? whereShowSlider;
 
   const SightDetailsSlider({
-    Key key,
-    @required this.images, this.whereShowSlider,
-  })  : assert(images != null),
-        super(key: key);
+    Key? key,
+    required this.images, this.whereShowSlider,
+  })  : super(key: key);
 
   /// для обновления индекса текущей фотографии из дочернего виджета
-  static _SightDetailsSliderState of(BuildContext context) =>
+  static _SightDetailsSliderState? of(BuildContext context) =>
       context.findAncestorStateOfType<_SightDetailsSliderState>();
 
   @override
@@ -27,7 +26,7 @@ class SightDetailsSlider extends StatefulWidget {
 
 class _SightDetailsSliderState extends State<SightDetailsSlider> {
   /// индикатор просмотренных фотографий
-  int _currentImage;
+  late int _currentImage;
 
   @override
   void initState() {
@@ -112,12 +111,10 @@ class _ProgressIndicatorImages extends StatelessWidget {
   final int currentIndex;
 
   const _ProgressIndicatorImages({
-    Key key,
-    @required this.data,
-    @required this.currentIndex,
-  })  : assert(data != null),
-        assert(currentIndex != null),
-        super(key: key);
+    Key? key,
+    required this.data,
+    required this.currentIndex,
+  })  : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -149,7 +146,7 @@ class _ProgressIndicatorImages extends StatelessWidget {
   }
 
   /// цвет индикатора просмотренных фотографий
-  Color _getColor(BuildContext context, {int index, int currentIndex}) {
+  Color _getColor(BuildContext context, {required int index, required int currentIndex}) {
     if (index < currentIndex || index == currentIndex) {
       return Theme.of(context).colorScheme.primary;
     } else {
@@ -162,9 +159,8 @@ class _ProgressIndicatorImages extends StatelessWidget {
 class _SliderItem extends StatelessWidget {
   final String url;
 
-  const _SliderItem({Key key, @required this.url})
-      : assert(url != null),
-        super(key: key);
+  const _SliderItem({Key? key, required this.url})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -172,13 +168,13 @@ class _SliderItem extends StatelessWidget {
       url,
       fit: BoxFit.cover,
       loadingBuilder: (BuildContext context, Widget child,
-          ImageChunkEvent loadingProgress) {
+          ImageChunkEvent? loadingProgress) {
         if (loadingProgress == null) return child;
         return Center(
           child: CircularProgressIndicator(
             value: loadingProgress.expectedTotalBytes != null
                 ? loadingProgress.cumulativeBytesLoaded /
-                    loadingProgress.expectedTotalBytes
+                    loadingProgress.expectedTotalBytes!
                 : null,
           ),
         );
@@ -191,15 +187,14 @@ class _ListSliderItems extends StatelessWidget {
   final List<String> images;
   final PageController _controller = PageController(initialPage: 0);
 
-  _ListSliderItems({Key key, @required this.images})
-      : assert(images != null),
-        super(key: key);
+  _ListSliderItems({Key? key, required this.images})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return PageView.builder(
       onPageChanged: (value) {
-        SightDetailsSlider.of(context)._updateState(value);
+        SightDetailsSlider.of(context)!._updateState(value);
       },
       controller: _controller,
       itemCount: images.length,

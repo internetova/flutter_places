@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart';
-
 /// Запрос списка интересных мест с фильтром
 /// параметры запроса
 /// Модель данных с параметрами фильтра. Все поля не обязательные,
@@ -11,13 +9,13 @@ class PlacesFilterRequestDto {
   final double lng;
   final double radius;
   final List<String> typeFilter;
-  final String nameFilter;
+  final String? nameFilter;
 
   PlacesFilterRequestDto({
-    @required this.lat,
-    @required this.lng,
-    @required this.radius,
-    @required this.typeFilter,
+    required this.lat,
+    required this.lng,
+    required this.radius,
+    required this.typeFilter,
     this.nameFilter,
   });
 

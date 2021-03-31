@@ -25,7 +25,7 @@ class App extends StatelessWidget {
           return MaterialApp(
             debugShowCheckedModeBanner: false,
             title: 'Places',
-            theme: notifier.darkTheme ? _darkTheme : _lightTheme,
+            theme: notifier.darkTheme! ? _darkTheme : _lightTheme,
             initialRoute: AppRoutes.home,
             routes: {
               AppRoutes.home: (context) => SightListScreen(),

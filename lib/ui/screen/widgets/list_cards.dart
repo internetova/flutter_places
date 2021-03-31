@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:places/domain/sight.dart';
 import 'package:places/domain/card_type.dart';
+import 'package:places/domain/sight.dart';
 import 'package:places/ui/screen/widgets/sight_card.dart';
 
 /// для главной страницы
@@ -13,12 +13,10 @@ class ListCardsPortrait extends StatelessWidget {
   final CardType cardType;
 
   const ListCardsPortrait({
-    Key key,
-    @required this.data,
-    @required this.cardType,
-  })  : assert(data != null),
-        assert(cardType != null),
-        super(key: key);
+    Key? key,
+    required this.data,
+    required this.cardType,
+  })  : super(key: key);
 
   @override
   Widget build(BuildContext context) => SliverList(
@@ -46,12 +44,10 @@ class ListCardsLandscape extends StatelessWidget {
   final CardType cardType;
 
   const ListCardsLandscape({
-    Key key,
-    @required this.data,
-    @required this.cardType,
-  })  : assert(data != null),
-        assert(cardType != null),
-        super(key: key);
+    Key? key,
+    required this.data,
+    required this.cardType,
+  })  : super(key: key);
 
   @override
   Widget build(BuildContext context) => SliverGrid(

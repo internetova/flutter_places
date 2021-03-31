@@ -314,10 +314,10 @@ ThemeData setThemePicker(BuildContext context) {
 
 class ThemeNotifier extends ChangeNotifier {
   final String key = 'theme';
-  SharedPreferences _prefs;
-  bool _darkTheme;
+  SharedPreferences? _prefs;
+  bool? _darkTheme;
 
-  bool get darkTheme => _darkTheme;
+  bool? get darkTheme => _darkTheme;
 
   ThemeNotifier() {
     _darkTheme = true;
@@ -325,7 +325,7 @@ class ThemeNotifier extends ChangeNotifier {
   }
 
   toggleTheme() {
-    _darkTheme = !_darkTheme;
+    _darkTheme = !_darkTheme!;
     _saveToPrefs();
     notifyListeners();
   }
@@ -336,12 +336,12 @@ class ThemeNotifier extends ChangeNotifier {
 
   _loadFromPrefs() async {
     await _initPrefs();
-    _darkTheme = _prefs.getBool(key) ?? true;
+    _darkTheme = _prefs!.getBool(key) ?? true;
     notifyListeners();
   }
 
   _saveToPrefs() async {
     await _initPrefs();
-    _prefs.setBool(key, _darkTheme);
+    _prefs!.setBool(key, _darkTheme!);
   }
 }

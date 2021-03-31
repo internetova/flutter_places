@@ -90,6 +90,7 @@ class LocalStorage {
 
   /// добавить новое место на сервер
   static Place testAddNewPlace = Place(
+    id: 0, // это поле передавать на сервер не будем, скроем при трансформации
     lat: 55.993677,
     lng: 37.611009,
     name: 'Тест',

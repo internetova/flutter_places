@@ -1,11 +1,11 @@
+import 'package:places/domain/card_type.dart';
 import 'package:places/data/api/api_client.dart';
-import 'package:places/data/local_storage/local_storage.dart';
-import 'package:places/data/model/ui_place.dart';
 import 'package:places/data/model/place.dart';
+import 'package:places/data/model/ui_place.dart';
 import 'package:places/data/model/search_filter.dart';
+import 'package:places/data/local_storage/local_storage.dart';
 import 'package:places/data/repository/api_place_repository.dart';
 import 'package:places/data/repository/local_place_repository.dart';
-import 'package:places/domain/card_type.dart';
 
 /// бизнес-логика для работы с местами
 /// [apiRepository] данные из сети
@@ -17,13 +17,9 @@ class PlaceInteractor {
   final LocalPlaceRepository localRepository = LocalPlaceRepository();
 
   /// фильтрованный список интересных мест
-  /// если юзер не задал фильтр, то берём дефолтный
-  Future<List<UiPlace>> getPlaces({SearchFilter userFilter}) async {
-    SearchFilter filter =
-        userFilter == null ? LocalStorage.defaultSearchFilter : userFilter;
-
+  Future<List<UiPlace>> getPlaces({SearchFilter? userFilter}) async {
     /// получили данные из Api
-    final places = await apiRepository.getPlaces(filter: filter);
+    final places = await (apiRepository.getPlaces(userFilter: userFilter));
     print('Interactor getPlaces (${places.length} шт.): $places');
 
     /// трансформировали и записали в кэш
@@ -31,7 +27,7 @@ class PlaceInteractor {
 
     /// отсортировали по удаленности, дистанцию отдал сервер
     if (uiPlaces.length > 1) {
-      uiPlaces.sort((a, b) => a.distance.compareTo(b.distance));
+      uiPlaces.sort((a, b) => a.distance!.compareTo(b.distance!));
     }
 
     print('Interactor uiPlaces из кэша (${uiPlaces.length} шт.): $uiPlaces');
@@ -46,7 +42,7 @@ class PlaceInteractor {
   /// дальше в программе работаем с UiPlace
   Future<List<UiPlace>> _transformApiPlaces(List<Place> apiPlaces) async {
     final localPlaces = await localRepository.getPlaces();
-    List<UiPlace> uiPlaces;
+    List<UiPlace> uiPlaces = [];
 
     /// если в локальной базе карточек нет, то для дальнейшей работы
     /// просто переводим все карточки в UiPlace
@@ -54,15 +50,8 @@ class PlaceInteractor {
       uiPlaces = apiPlaces.map((place) => UiPlace.fromPlace(place)).toList();
     } else {
       /// если есть, то проставляем отметки Избранное / или нет
-      uiPlaces = apiPlaces.map((place) {
-        for (var i = 0; i < localPlaces.length; i++) {
-          if (localPlaces[i].id == place.id) {
-            return UiPlace.fromPlace(place, isFavorite: true);
-          } else {
-            return UiPlace.fromPlace(place);
-          }
-        }
-      }).toList();
+      uiPlaces =
+          apiPlaces.map((place) => _markFavorites(localPlaces, place)).toList();
     }
 
     /// если в кэше уже есть карточки, очищаем кэш для обновленных данных
@@ -77,6 +66,19 @@ class PlaceInteractor {
     return LocalStorage.cacheUIPlaces;
   }
 
+  /// ➡ вспомогательный метод:
+  /// при запросе данных с сервера проверяет в локальном списке избранных
+  /// есть ли там аналогичная карточка
+  UiPlace _markFavorites(List<UiPlace> listFavorites, Place place) {
+    for (var i = 0; i < listFavorites.length; i++) {
+      if (listFavorites[i].id == place.id) {
+        return UiPlace.fromPlace(place, isFavorite: true);
+      }
+    }
+
+    return UiPlace.fromPlace(place);
+  }
+
   /// детализация места
   Future<Place> getPlaceDetails(int id) async {
     final place = await apiRepository.getPlaceDetail(id);
@@ -89,8 +91,6 @@ class PlaceInteractor {
   Future<void> addNewPlace(Place place) async {
     final newPlace = await apiRepository.addNewPlace(place);
     print('Interactor addNewPlace: $newPlace');
-
-    return newPlace;
   }
 
   /// список избранных мест
@@ -99,7 +99,7 @@ class PlaceInteractor {
     List<UiPlace> places = await localRepository.getPlaces();
 
     if (places.length > 1) {
-      places.sort((a, b) => a.distance.compareTo(b.distance));
+      places.sort((a, b) => a.distance!.compareTo(b.distance!));
     }
 
     print('Interactor getFavoritesPlaces (${places.length} шт.): $places');
@@ -109,22 +109,22 @@ class PlaceInteractor {
 
   /// Избранное вкладка Хочу посетить
   Future<List<UiPlace>> getPlannedPlaces() async {
-    List<UiPlace> places = await localRepository.getPlaces();
-    List<UiPlace> planed =
-        places.where((place) => place.cardType == CardType.planned).toList();
-    print('Interactor getPlannedPlaces $planed');
+    List<UiPlace> places = await localRepository.getPlaces()
+      ..where((place) => place.cardType == CardType.planned).toList();
 
-    return planed;
+    print('Interactor getPlannedPlaces $places');
+
+    return places;
   }
 
   /// Избранное вкладка Посещённые места
   Future<List<UiPlace>> getVisitedPlaces() async {
-    List<UiPlace> places = await localRepository.getPlaces();
-    List<UiPlace> visited =
-        places.where((place) => place.cardType == CardType.visited).toList();
-    print('Interactor getVisitedPlaces $visited');
+    List<UiPlace> places = await localRepository.getPlaces()
+      ..where((place) => place.cardType == CardType.visited).toList();
 
-    return visited;
+    print('Interactor getVisitedPlaces $places');
+
+    return places;
   }
 
   /// детализация избранного места
@@ -167,31 +167,13 @@ class PlaceInteractor {
   /// переключатель кнопки Избранное
   /// true - в избранном
   Future<bool> toggleFavorites(UiPlace place) async {
-    final response = await localRepository.getPlaceDetail(place.id);
-
-    if (response != null) {
-      await removeFromFavorites(place.id);
-      print('Interactor toggleFavorites: удалено из избранного ${place.id}');
-
-      /// пока для теста в консоли
-      getFavoritesPlaces();
-
-      return false;
-    } else {
-      await addToFavorites(place);
-      print('Interactor toggleFavorites: добавлено в избранное ${place.id}');
-
-      /// пока для теста в консоли
-      getFavoritesPlaces();
-
-      return true;
-    }
+    return await localRepository.toggleFavorite(place);
   }
 
   /// показать посещенные места
   Future<List<UiPlace>> getVisitPlaces() async {
-    final places = await getFavoritesPlaces();
-    places.where((element) => element.cardType == CardType.visited);
+    final places = await getFavoritesPlaces()
+      ..where((element) => element.cardType == CardType.visited);
 
     return places;
   }

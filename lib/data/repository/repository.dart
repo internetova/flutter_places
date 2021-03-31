@@ -3,7 +3,7 @@ import 'package:places/data/model/search_filter.dart';
 /// Базовые функции для репозиториев
 abstract class Repository<T> {
   /// получить отфильтрованные места
-  Future<List<T>> getPlaces({SearchFilter filter});
+  Future<List<T>> getPlaces({SearchFilter? userFilter, String? keywords});
 
   /// получить место по id
   Future<T> getPlaceDetail(int id);
