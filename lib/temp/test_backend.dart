@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:places/data/api/api_client.dart';
-import 'package:places/data/model/place.dart';
+import 'package:places/data/dto/place_dto.dart';
 import 'package:places/data/model/search_filter.dart';
 import 'package:places/data/repository/api_place_repository.dart';
 import 'package:places/ui/screen/components/bottom_navigationbar.dart';
@@ -24,14 +24,14 @@ class _TestBackendState extends State<TestBackend> {
   /// фильтрация
   /// [radius] в метрах
   final SearchFilter _filter = SearchFilter(
-    radius: 10000.0,
+    radius: RangeValues(1000.0, 10000.0),
     typeFilter: ['cafe', 'park', 'other'],
   );
 
   final keyWords = 'натюрморт';
 
   /// тестирование Пост запроса
-  final Place _testAdd = Place(
+  final PlaceDto _testAdd = PlaceDto(
     id: 0,
     lat: 55.737064,
     lng: 37.520018,
@@ -44,7 +44,7 @@ class _TestBackendState extends State<TestBackend> {
         'Следует отметить, что повышение уровня гражданского сознания способствует подготовке и реализации приоритизации разума над эмоциями. Предварительные выводы неутешительны: разбавленное изрядной долей эмпатии, рациональное мышление прекрасно подходит для реализации соответствующих условий активизации.',
   );
 
-  final Place _testUpdate = Place(
+  final PlaceDto _testUpdate = PlaceDto(
     id: 139,
     lat: 55.737064,
     lng: 37.520018,
@@ -79,7 +79,7 @@ class _TestBackendState extends State<TestBackend> {
             TextButton(
               child: Text('Фильтр POST [/filtered_places]'),
               onPressed: () async {
-                final List<Place> response = await (_placeRepository.getPlaces(userFilter: _filter, keywords: keyWords));
+                final List<PlaceDto> response = await (_placeRepository.getPlaces(userFilter: _filter, keywords: keyWords));
                 print('UI Фильтрация мест (${response.length} шт.): $response');
               },
               style: TextButton.styleFrom(

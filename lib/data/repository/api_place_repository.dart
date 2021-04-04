@@ -5,26 +5,26 @@ import 'package:places/data/api/api_client.dart';
 import 'package:places/data/api/api_constants.dart';
 import 'package:places/data/api/api_error.dart';
 import 'package:places/data/local_storage/local_storage.dart';
-import 'package:places/data/model/place.dart';
-import 'package:places/data/model/places_filter_request_dto.dart';
+import 'package:places/data/dto/place_dto.dart';
+import 'package:places/data/dto/places_filter_request_dto.dart';
 import 'package:places/data/model/search_filter.dart';
-import 'package:places/data/repository/repository.dart';
+import 'package:places/data/repository/place_repository.dart';
 
 /// УДАЛЁННЫЙ РЕПОЗИТОРИЙ
 /// запрос данных с сервера
 /// преобразование в объекты программы
 /// возвращаем оъекты или ошибку
-class ApiPlaceRepository implements Repository<Place> {
+class ApiPlaceRepository implements PlaceRepository<PlaceDto> {
   final ApiClient _client;
 
   ApiPlaceRepository(this._client);
 
   /// все несортированные для теста
-  Future<List<Place>> getAllPlaces() async {
+  Future<List<PlaceDto>> getAllPlaces() async {
     try {
       final response = await _client.get(ApiConstants.placesUrl);
       final places =
-          (response.data as List).map((e) => Place.fromJson(e)).toList();
+          (response.data as List).map((e) => PlaceDto.fromJson(e)).toList();
       print('ApiRepository getAllPlaces (${places.length} шт.): $places');
 
       return places;
@@ -37,17 +37,17 @@ class ApiPlaceRepository implements Repository<Place> {
   /// [nameFilter] может быть null - текстовый поиск по полю name
   /// [keywords] - ключевые слова для поиска
   @override
-  Future<List<Place>> getPlaces(
+  Future<List<PlaceDto>> getPlaces(
       {SearchFilter? userFilter, String? keywords}) async {
     /// если юзер не задал фильтр, то берём дефолтный
     SearchFilter filter =
-        userFilter == null ? LocalStorage.defaultSearchFilter : userFilter;
+        userFilter == null ? LocalStorage.searchFilter : userFilter;
 
     try {
       final data = PlacesFilterRequestDto(
         lat: filter.userLocation.lat,
         lng: filter.userLocation.lng,
-        radius: filter.radius,
+        radius: filter.radius.end,
         typeFilter: filter.typeFilter,
         nameFilter: keywords != null ? keywords.trim() : null,
       ).toJson();
@@ -59,7 +59,7 @@ class ApiPlaceRepository implements Repository<Place> {
         data: jsonEncode(data),
       );
       final places =
-          (response.data as List).map((e) => Place.fromJson(e)).toList();
+          (response.data as List).map((e) => PlaceDto.fromJson(e)).toList();
 
       print(
           'ApiRepository ответ filtered places (${places.length} шт.): $places');
@@ -74,10 +74,10 @@ class ApiPlaceRepository implements Repository<Place> {
 
   /// получить место по id
   @override
-  Future<Place> getPlaceDetail(int id) async {
+  Future<PlaceDto> getPlaceDetail(int id) async {
     try {
       final response = await _client.get('${ApiConstants.placesUrl}/$id');
-      final place = Place.fromJson((response.data as Map<String, dynamic>));
+      final place = PlaceDto.fromJson((response.data as Map<String, dynamic>));
       print('ApiRepository place: $place');
 
       return place;
@@ -90,13 +90,13 @@ class ApiPlaceRepository implements Repository<Place> {
 
   /// добавить новое место
   @override
-  Future<Place> addNewPlace(Place place) async {
+  Future<PlaceDto> addNewPlace(PlaceDto place) async {
     try {
       final response = await _client.post(
         ApiConstants.placesUrl,
         data: jsonEncode(place.toJson()),
       );
-      final newPlace = Place.fromJson((response.data as Map<String, dynamic>));
+      final newPlace = PlaceDto.fromJson((response.data as Map<String, dynamic>));
 
       return newPlace;
     } on DioError catch (e) {
@@ -107,7 +107,8 @@ class ApiPlaceRepository implements Repository<Place> {
   }
 
   /// добавить список мест для теста с моковыми данными
-  Future<void> addPlacesList(List<Place> data) async {
+  /// todo это для теста, потом удалить
+  Future<void> addPlacesList(List<PlaceDto> data) async {
     data.forEach(addNewPlace);
   }
 
@@ -126,7 +127,7 @@ class ApiPlaceRepository implements Repository<Place> {
 
   /// обновить место
   @override
-  Future<void> updatePlace(Place place) async {
+  Future<void> updatePlace(PlaceDto place) async {
     try {
       final url = '${ApiConstants.placesUrl}/${place.id}';
 

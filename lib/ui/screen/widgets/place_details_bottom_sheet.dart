@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:places/domain/sight.dart';
+import 'package:places/data/model/place.dart';
 import 'package:places/ui/screen/components/icon_svg.dart';
 import 'package:places/ui/screen/res/sizes.dart';
 import 'package:places/ui/screen/res/strings.dart';
 import 'package:places/ui/screen/res/assets.dart';
-import 'package:places/ui/screen/widgets/sight_details_slider.dart';
+import 'package:places/ui/screen/widgets/place_details_slider.dart';
 
 /// боттомшит с подробным описанием карточки / достопримечательности
-class SightDetailsBottomSheet extends StatelessWidget {
-  final Sight card;
+class PlaceDetailsBottomSheet extends StatelessWidget {
+  final Place card;
 
-  const SightDetailsBottomSheet({Key? key, required this.card})
-      : super(key: key);
+  const PlaceDetailsBottomSheet({
+    Key? key,
+    required this.card,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -34,8 +36,8 @@ class SightDetailsBottomSheet extends StatelessWidget {
                     SliverAppBar(
                       automaticallyImplyLeading: false,
                       expandedHeight: 360,
-                      flexibleSpace: SightDetailsSlider(
-                        images: card.images,
+                      flexibleSpace: PlaceDetailsSlider(
+                        images: card.urls,
                         whereShowSlider: WhereShowSlider.bottomSheet,
                       ),
                     ),
@@ -57,7 +59,7 @@ class SightDetailsBottomSheet extends StatelessWidget {
                                 child: Row(
                                   children: [
                                     Text(
-                                      card.type.toLowerCase(),
+                                      card.getPlaceTypeName().toLowerCase(),
                                       style:
                                           Theme.of(context).textTheme.subtitle1,
                                     ),
@@ -72,7 +74,7 @@ class SightDetailsBottomSheet extends StatelessWidget {
                                 ),
                               ),
                               Text(
-                                card.details,
+                                card.description,
                                 style: Theme.of(context).textTheme.bodyText1,
                               ),
                               sizedBoxH24,

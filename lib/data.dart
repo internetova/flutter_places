@@ -1,10 +1,10 @@
 import '../../../domain/sight.dart';
-import '../../../domain/card_type.dart';
+import 'data/model/card_type.dart';
 
 /// сохраненные пользователем данные
 /// для раздела Избранное (хочу посетить / посетил)
-List<Sight> favoritesSight = [
-  Sight(
+List<UiPlace> favoritesSight = [
+  UiPlace(
     id: 2,
     name: 'Бункер-42 на Таганке',
     lat: 55.742583,
@@ -27,7 +27,7 @@ List<Sight> favoritesSight = [
     favorites: CardType.visited,
     date: '12 окт. 2020',
   ),
-  Sight(
+  UiPlace(
     id: 3,
     name: 'Нереальное место',
     lat: 55.762781,
@@ -50,7 +50,7 @@ List<Sight> favoritesSight = [
     favorites: CardType.planned,
     date: '12 янв. 2021',
   ),
-  Sight(
+  UiPlace(
     id: 4,
     name: 'Московский кремль',
     lat: 55.751549,
@@ -72,7 +72,7 @@ List<Sight> favoritesSight = [
     favorites: CardType.planned,
     date: '25 янв. 2021',
   ),
-  Sight(
+  UiPlace(
     id: 6,
     name: 'Государственная Третьяковская галерея',
     lat: 55.742251,
@@ -95,7 +95,7 @@ List<Sight> favoritesSight = [
     favorites: CardType.planned,
     date: '4 янв. 2021',
   ),
-  Sight(
+  UiPlace(
     id: 8,
     name: 'Часовня Смоленской иконы Божией Матери в Чиверево',
     lat: 55.988344,

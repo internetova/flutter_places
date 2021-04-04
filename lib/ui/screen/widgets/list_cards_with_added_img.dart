@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:places/ui/screen/add_sight_screen.dart';
+import 'package:places/ui/screen/add_place_screen/add_place_screen.dart';
 import 'package:places/ui/screen/components/button_card_add_img.dart';
 import 'package:places/ui/screen/components/card_square_img.dart';
 import 'package:places/ui/screen/components/dismiss_bg_img.dart';
@@ -78,6 +78,6 @@ class RemovableCardWithAddedImg extends StatelessWidget {
 
   void _deleteImage(BuildContext context) {
     userImages.remove(image);
-    AddSightScreen.of(context)!.updateState();
+    AddPlaceScreen.of(context)!.updateState();
   }
 }

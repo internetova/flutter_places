@@ -1,15 +1,15 @@
 import 'package:places/data/local_storage/local_storage.dart';
 import 'package:places/data/model/search_filter.dart';
-import 'package:places/data/model/ui_place.dart';
-import 'package:places/data/repository/repository.dart';
+import 'package:places/data/model/place.dart';
+import 'package:places/data/repository/place_repository.dart';
 import 'package:places/data/res/error_response_strings.dart';
 
-/// ЛОКАЛЬНЫЙ РЕПОЗИТОРИЙ
+/// ЛОКАЛЬНЫЙ РЕПОЗИТОРИЙ МЕСТ
 /// для имитации локального хранилища используется класс [LocalStorage]
-class LocalPlaceRepository implements Repository<UiPlace> {
+class LocalPlaceRepository implements PlaceRepository<Place> {
   /// показать избранные
   @override
-  Future<List<UiPlace>> getPlaces(
+  Future<List<Place>> getPlaces(
       {SearchFilter? userFilter, String? keywords}) async {
     final response = await Future.delayed(Duration(seconds: 1), () {
       final result = LocalStorage.favoritesPlaces;
@@ -24,9 +24,9 @@ class LocalPlaceRepository implements Repository<UiPlace> {
 
   /// получить избранное место по id
   @override
-  Future<UiPlace> getPlaceDetail(int id) async {
+  Future<Place> getPlaceDetail(int id) async {
     final response =
-        await Future<UiPlace>.delayed(Duration(seconds: 1), () async {
+        await Future<Place>.delayed(Duration(seconds: 1), () async {
       final indexPlaces = await _findIndexPlacesInList(id);
 
       if (indexPlaces != -1) {
@@ -44,13 +44,13 @@ class LocalPlaceRepository implements Repository<UiPlace> {
 
   /// добавить в избранное
   @override
-  Future<UiPlace> addNewPlace(UiPlace place) async {
+  Future<Place> addNewPlace(Place place) async {
     final response =
-        await Future<UiPlace>.delayed(Duration(seconds: 1), () async {
+        await Future<Place>.delayed(Duration(seconds: 1), () async {
       final indexPlaces = await _findIndexPlacesInList(place.id);
 
       if (indexPlaces == -1) {
-        final favoritePlace = UiPlace.addFavorites(place);
+        final favoritePlace = Place.addFavorites(place);
         LocalStorage.favoritesPlaces.add(favoritePlace);
 
         return LocalStorage.favoritesPlaces.last;
@@ -79,7 +79,7 @@ class LocalPlaceRepository implements Repository<UiPlace> {
   }
 
   /// переключатель кнопки Избранное
-  Future<bool> toggleFavorite(UiPlace place) async {
+  Future<bool> toggleFavorite(Place place) async {
     if (place.isFavorite) {
       await removePlace(place.id);
       return false;
@@ -92,7 +92,7 @@ class LocalPlaceRepository implements Repository<UiPlace> {
   /// обновить избранное (например, дату посещения перепланировать,
   /// перенести в посещённые)
   @override
-  Future<void> updatePlace(UiPlace place) async {
+  Future<void> updatePlace(Place place) async {
     await Future.delayed(Duration(seconds: 1), () async {
       final result = await _findIndexPlacesInList(place.id);
 

@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:places/domain/categories.dart';
+import 'package:places/data/model/place_type.dart';
 import 'package:places/ui/screen/components/button_save.dart';
 import 'package:places/ui/screen/components/icon_leading_appbar.dart';
 import 'package:places/ui/screen/components/icon_svg.dart';
-import 'package:places/mocks.dart';
 import 'package:places/ui/screen/res/assets.dart';
 import 'package:places/ui/screen/res/sizes.dart';
 import 'package:places/ui/screen/res/strings.dart';
@@ -25,7 +24,7 @@ class _SelectCategoryScreenState extends State<SelectCategoryScreen> {
   VoidCallback? _onPressed;
 
   /// категории
-  List<Categories> _categories = categories;
+  List<PlaceType> _categories = PlaceType.getList;
 
   /// название выбранной категории
   String? _selectedCategory;
@@ -99,7 +98,7 @@ class _SelectCategoryScreenState extends State<SelectCategoryScreen> {
 
   /// категория
   Widget _buildCategoryItem(
-      {required Categories categoryItem,
+      {required PlaceType categoryItem,
       required String? selectedCategoryName}) {
     final Widget title = Text(
       categoryItem.name,

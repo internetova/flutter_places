@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:places/data.dart';
 import 'package:places/data/interactor/place_interactor.dart';
-import 'package:places/domain/card_type.dart';
-import 'package:places/domain/sight.dart';
+import 'package:places/data/model/place.dart';
+import 'package:places/data/model/card_type.dart';
 import 'package:places/ui/screen/components/bottom_navigationbar.dart';
-
 import 'package:places/ui/screen/res/strings.dart';
 import 'package:places/ui/screen/widgets/empty_page.dart';
-import 'package:places/ui/screen/widgets/sight_card_visiting.dart';
+import 'package:places/ui/screen/widgets/place_card_visiting.dart';
 
 /// экран с избранными карточками - Хочу посетить / Посетил
 class VisitingScreen extends StatefulWidget {
@@ -20,20 +19,20 @@ class VisitingScreen extends StatefulWidget {
 }
 
 class _VisitingScreenState extends State<VisitingScreen> {
-  List<Sight> _userDataPlanned = [];
-  List<Sight> _userDataVisited = [];
+  List<Place> _userDataPlanned = [];
+  List<Place> _userDataVisited = [];
 
   @override
   void initState() {
-    _userDataPlanned = _getCurrentData(
-      data: favoritesSight,
-      typeCard: CardType.planned,
-    );
-
-    _userDataVisited = _getCurrentData(
-      data: favoritesSight,
-      typeCard: CardType.visited,
-    );
+    // _userDataPlanned = _getCurrentData(
+    //   data: favoritesSight,
+    //   typeCard: CardType.planned,
+    // );
+    //
+    // _userDataVisited = _getCurrentData(
+    //   data: favoritesSight,
+    //   typeCard: CardType.visited,
+    // );
 
     /// тест Interactor
     PlaceInteractor().getFavoritesPlaces();
@@ -47,15 +46,15 @@ class _VisitingScreenState extends State<VisitingScreen> {
   /// буду вызывать из дочернего виджета
   void updateState() {
     setState(() {
-      _userDataPlanned = _getCurrentData(
-        data: favoritesSight,
-        typeCard: CardType.planned,
-      );
-
-      _userDataVisited = _getCurrentData(
-        data: favoritesSight,
-        typeCard: CardType.visited,
-      );
+      // _userDataPlanned = _getCurrentData(
+      //   data: favoritesSight,
+      //   typeCard: CardType.planned,
+      // );
+      //
+      // _userDataVisited = _getCurrentData(
+      //   data: favoritesSight,
+      //   typeCard: CardType.visited,
+      // );
     });
   }
 
@@ -118,7 +117,7 @@ class _VisitingScreenState extends State<VisitingScreen> {
   /// строим карточки для Избранного
   /// в зависимости от типа избранного
   Widget _buildFavorites({
-    required List<Sight> data,
+    required List<Place> data,
     required CardType typeCard,
   }) {
     Widget favTabBarView;
@@ -137,7 +136,7 @@ class _VisitingScreenState extends State<VisitingScreen> {
     } else {
       favTabBarView = ReorderableListView(
         children: data
-            .map((card) => SightCardVisiting(
+            .map((card) => PlaceCardVisiting(
                   key: ValueKey(card),
                   card: card,
                   cardType: typeCard,
@@ -160,9 +159,9 @@ class _VisitingScreenState extends State<VisitingScreen> {
   }
 
   /// получить текущую базу соответствующей вкладки
-  List<Sight> _getCurrentData({
-    required List<Sight> data,
-    required CardType typeCard,
-  }) =>
-      data.where((item) => item.favorites == typeCard).toList();
+  // List<UiPlace> _getCurrentData({
+  //   required List<UiPlace> data,
+  //   required CardType typeCard,
+  // }) =>
+  //     data.where((item) => item.favorites == typeCard).toList();
 }

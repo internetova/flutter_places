@@ -7,24 +7,25 @@ import 'package:places/ui/screen/res/sizes.dart';
 enum WhereShowSlider { screen, bottomSheet }
 
 /// слайдер фотографий
-class SightDetailsSlider extends StatefulWidget {
+class PlaceDetailsSlider extends StatefulWidget {
   final List<String> images;
-  final WhereShowSlider? whereShowSlider;
+  final WhereShowSlider whereShowSlider;
 
-  const SightDetailsSlider({
+  const PlaceDetailsSlider({
     Key? key,
-    required this.images, this.whereShowSlider,
-  })  : super(key: key);
+    required this.images,
+    required this.whereShowSlider,
+  }) : super(key: key);
 
   /// для обновления индекса текущей фотографии из дочернего виджета
-  static _SightDetailsSliderState? of(BuildContext context) =>
-      context.findAncestorStateOfType<_SightDetailsSliderState>();
+  static _PlaceDetailsSliderState? of(BuildContext context) =>
+      context.findAncestorStateOfType<_PlaceDetailsSliderState>();
 
   @override
-  _SightDetailsSliderState createState() => _SightDetailsSliderState();
+  _PlaceDetailsSliderState createState() => _PlaceDetailsSliderState();
 }
 
-class _SightDetailsSliderState extends State<SightDetailsSlider> {
+class _PlaceDetailsSliderState extends State<PlaceDetailsSlider> {
   /// индикатор просмотренных фотографий
   late int _currentImage;
 
@@ -62,11 +63,12 @@ class _SightDetailsSliderState extends State<SightDetailsSlider> {
                 ),
               ),
             ),
-            if (widget.whereShowSlider == WhereShowSlider.screen) Positioned(
-              top: 36,
-              left: 16,
-              child: _ButtonBack(),
-            ),
+            if (widget.whereShowSlider == WhereShowSlider.screen)
+              Positioned(
+                top: 36,
+                left: 16,
+                child: _ButtonBack(),
+              ),
           ],
         );
       },
@@ -114,7 +116,7 @@ class _ProgressIndicatorImages extends StatelessWidget {
     Key? key,
     required this.data,
     required this.currentIndex,
-  })  : super(key: key);
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -146,7 +148,8 @@ class _ProgressIndicatorImages extends StatelessWidget {
   }
 
   /// цвет индикатора просмотренных фотографий
-  Color _getColor(BuildContext context, {required int index, required int currentIndex}) {
+  Color _getColor(BuildContext context,
+      {required int index, required int currentIndex}) {
     if (index < currentIndex || index == currentIndex) {
       return Theme.of(context).colorScheme.primary;
     } else {
@@ -159,8 +162,7 @@ class _ProgressIndicatorImages extends StatelessWidget {
 class _SliderItem extends StatelessWidget {
   final String url;
 
-  const _SliderItem({Key? key, required this.url})
-      : super(key: key);
+  const _SliderItem({Key? key, required this.url}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -187,14 +189,13 @@ class _ListSliderItems extends StatelessWidget {
   final List<String> images;
   final PageController _controller = PageController(initialPage: 0);
 
-  _ListSliderItems({Key? key, required this.images})
-      : super(key: key);
+  _ListSliderItems({Key? key, required this.images}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return PageView.builder(
       onPageChanged: (value) {
-        SightDetailsSlider.of(context)!._updateState(value);
+        PlaceDetailsSlider.of(context)!._updateState(value);
       },
       controller: _controller,
       itemCount: images.length,

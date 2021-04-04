@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:places/domain/card_type.dart';
-import 'package:places/domain/sight.dart';
-import 'package:places/ui/screen/widgets/sight_card.dart';
+import 'package:places/data/model/place.dart';
+import 'package:places/data/model/card_type.dart';
+import 'package:places/ui/screen/widgets/place_card.dart';
 
 /// для главной страницы
 /// строим часть экрана где выводятся карточки
@@ -9,7 +9,7 @@ import 'package:places/ui/screen/widgets/sight_card.dart';
 /// [cardType] тип карточки для отображения в соответствующем разделе с
 /// правильными кнопками действий на карточке и внутренним наполнением
 class ListCardsPortrait extends StatelessWidget {
-  final List<Sight> data;
+  final List<Place> data;
   final CardType cardType;
 
   const ListCardsPortrait({
@@ -24,7 +24,7 @@ class ListCardsPortrait extends StatelessWidget {
           (BuildContext context, int index) {
             return Padding(
               padding: EdgeInsets.only(bottom: 16.0),
-              child: SightCard(
+              child: PlaceCard(
                 card: data[index],
                 cardType: cardType,
               ),
@@ -40,7 +40,7 @@ class ListCardsPortrait extends StatelessWidget {
 /// [cardType] тип карточки для отображения в соответствующем разделе с
 /// правильными кнопками действий на карточке и внутренним наполнением
 class ListCardsLandscape extends StatelessWidget {
-  final List<Sight> data;
+  final List<Place> data;
   final CardType cardType;
 
   const ListCardsLandscape({
@@ -55,7 +55,7 @@ class ListCardsLandscape extends StatelessWidget {
           (BuildContext context, int index) {
             return Padding(
               padding: EdgeInsets.only(bottom: 16.0),
-              child: SightCard(
+              child: PlaceCard(
                 card: data[index],
                 cardType: cardType,
               ),

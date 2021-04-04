@@ -2,8 +2,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:places/data/interactor/place_interactor.dart';
-import 'package:places/domain/sight.dart';
-import 'package:places/mocks.dart';
+import 'package:places/data/model/search_filter.dart';
+import 'package:places/data/model/place.dart';
 import 'package:places/ui/screen/components/bottom_navigationbar.dart';
 import 'package:places/ui/screen/components/button_text.dart';
 import 'package:places/ui/screen/components/card_square_img.dart';
@@ -11,16 +11,18 @@ import 'package:places/ui/screen/res/assets.dart';
 import 'package:places/ui/screen/res/sizes.dart';
 import 'package:places/ui/screen/res/strings.dart';
 import 'package:places/ui/screen/res/themes.dart';
-import 'package:places/ui/screen/sight_details.dart';
-import 'package:places/ui/screen/utilities/filter_utility.dart';
+import 'package:places/ui/screen/place_details.dart';
 import 'package:places/ui/screen/widgets/empty_page.dart';
 import 'package:places/ui/screen/widgets/search_bar.dart';
 
 /// экран поиска
 class SightSearchScreen extends StatefulWidget {
-  final FilterSettings? filter;
+  final SearchFilter filter;
 
-  const SightSearchScreen({Key? key, this.filter}) : super(key: key);
+  const SightSearchScreen({
+    Key? key,
+    required this.filter,
+  }) : super(key: key);
 
   @override
   _SightSearchScreenState createState() => _SightSearchScreenState();
@@ -33,8 +35,8 @@ class _SightSearchScreenState extends State<SightSearchScreen> {
   late String _lastSearch;
 
   final TextEditingController _searchController = TextEditingController();
-  late StreamController<List<Sight>?> _streamController;
-  Stream<List<Sight>?>? _stream;
+  late StreamController<List<Place>?> _streamController;
+  Stream<List<Place>?>? _stream;
 
   /// для передачи / снятия фокуса по тапам и через клавиатуру
   final _searchFocus = FocusNode();
@@ -44,10 +46,10 @@ class _SightSearchScreenState extends State<SightSearchScreen> {
   bool _isWaiting = false;
 
   /// нефильтрованные данные
-  final List<Sight> _fullData = mocks;
+  // final List<UiPlace> _fullData = mocks;
 
   /// отфильтрованные результаты
-  List<Sight> _filteredData = [];
+  List<Place> _filteredData = [];
 
   @override
   void initState() {
@@ -59,11 +61,11 @@ class _SightSearchScreenState extends State<SightSearchScreen> {
     _currentFocus = _searchFocus;
 
     if (widget.filter != null) {
-      _filteredData = filterData(
-          data: _fullData,
-          categories: widget.filter!.categories,
-          centerPoint: widget.filter!.centerPoint,
-          distance: widget.filter!.distance);
+      // _filteredData = filterData(
+      //     data: _fullData,
+      //     categories: widget.filter!.categories,
+      //     centerPoint: widget.filter!.centerPoint,
+      //     distance: widget.filter!.distance);
     }
   }
 
@@ -91,7 +93,7 @@ class _SightSearchScreenState extends State<SightSearchScreen> {
             child: StreamBuilder(
                 stream: _stream,
                 builder: (BuildContext context,
-                    AsyncSnapshot<List<Sight>?> snapshot) {
+                    AsyncSnapshot<List<Place>?> snapshot) {
                   if (snapshot.hasError) {
                     return _buildSearchError();
                   }
@@ -157,7 +159,8 @@ class _SightSearchScreenState extends State<SightSearchScreen> {
       );
 
   /// записать поисковое выражение в базу
-  void _writeRequest({List<String>? data, required TextEditingController controller}) {
+  void _writeRequest(
+      {List<String>? data, required TextEditingController controller}) {
     if (controller.text.isNotEmpty && !data!.contains(controller.text)) {
       data.add(controller.text.trim());
     }
@@ -175,14 +178,14 @@ class _SightSearchScreenState extends State<SightSearchScreen> {
     /// на время поиска показываем лоадер
     _showLoader(true);
 
-    final result = await _searchData(
-      data: widget.filter != null ? _filteredData : _fullData,
-      query: _searchController.text,
-    );
+    // final result = await _searchData(
+    //   data: widget.filter != null ? _filteredData : _fullData,
+    //   query: _searchController.text,
+    // );
 
     _showLoader(false);
 
-    _streamController.add(result);
+    // _streamController.add(result);
     _lastSearch = _searchController.text;
   }
 
@@ -192,8 +195,9 @@ class _SightSearchScreenState extends State<SightSearchScreen> {
   }
 
   /// поиск в базе по запросу
-  Future<List<Sight>> _searchData({required List<Sight> data, String? query}) async {
-    List<Sight> result = [];
+  Future<List<Place>> _searchData(
+      {required List<Place> data, String? query}) async {
+    List<Place> result = [];
 
     for (var i = 0; i < data.length; i++) {
       if (data[i].name.toLowerCase().contains(query!.trim().toLowerCase())) {
@@ -260,12 +264,12 @@ class _SightSearchScreenState extends State<SightSearchScreen> {
   }
 
   /// карточка для результатов поиска
-  Widget _buildSearchItem(Sight card) {
+  Widget _buildSearchItem(Place card) {
     return ListTile(
       contentPadding: const EdgeInsets.symmetric(vertical: 8.0),
       leading: CardSquareImg(
         image: NetworkImage(
-          card.imgPreview,
+          card.urls[0],
         ),
       ),
       title: RichText(
@@ -277,7 +281,7 @@ class _SightSearchScreenState extends State<SightSearchScreen> {
         ),
       ),
       subtitle: Text(
-        card.type,
+        card.getPlaceTypeName(),
         style: Theme.of(context).textTheme.bodyText2,
       ),
       onTap: () {
@@ -291,7 +295,7 @@ class _SightSearchScreenState extends State<SightSearchScreen> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => SightDetails(card: card),
+            builder: (context) => PlaceDetails(card: card),
           ),
         );
       },
@@ -299,7 +303,8 @@ class _SightSearchScreenState extends State<SightSearchScreen> {
   }
 
   /// для карточки результатов: выделяем жирным найденный запрос
-  List<TextSpan> _buildRichText({required String string, required String search}) {
+  List<TextSpan> _buildRichText(
+      {required String string, required String search}) {
     List<TextSpan> result = [];
     int findIndex = string.toLowerCase().indexOf(search.toLowerCase());
 
@@ -365,7 +370,7 @@ class _SightSearchScreenState extends State<SightSearchScreen> {
   }
 
   /// список найденных результатов
-  Widget _buildSearchResult(List<Sight> data) {
+  Widget _buildSearchResult(List<Place> data) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
       child: ListView.separated(

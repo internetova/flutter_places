@@ -1,7 +1,7 @@
 import 'package:places/data/model/search_filter.dart';
 
 /// Базовые функции для репозиториев
-abstract class Repository<T> {
+abstract class PlaceRepository<T> {
   /// получить отфильтрованные места
   Future<List<T>> getPlaces({SearchFilter? userFilter, String? keywords});
 

@@ -7,13 +7,13 @@ import 'package:places/domain/sight.dart';
 /// вынесла в отдельный файл
 
 /// поиск карточек по фильтру
-List<Sight> filterData({
-  required List<Sight> data,
+List<UiPlace> filterData({
+  required List<UiPlace> data,
   required List<Map> categories,
   required CenterPoint centerPoint,
   required RangeValues? distance,
 }) {
-  List<Sight> result = [];
+  List<UiPlace> result = [];
 
   for (var i = 0; i < categories.length; i++) {
     for (var k = 0; k < data.length; k++) {

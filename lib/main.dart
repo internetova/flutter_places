@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:places/temp/test_backend.dart';
+import 'package:places/ui/screen/filters_screen.dart';
 import 'package:places/ui/screen/onboarding_screen.dart';
 import 'package:places/ui/screen/res/app_routes.dart';
 import 'package:places/ui/screen/res/themes.dart';
 import 'package:places/ui/screen/settings_screen.dart';
-import 'package:places/ui/screen/sight_list_screen.dart';
+import 'package:places/ui/screen/place_list_screen.dart';
 import 'package:places/ui/screen/visiting_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -28,11 +29,10 @@ class App extends StatelessWidget {
             theme: notifier.darkTheme! ? _darkTheme : _lightTheme,
             initialRoute: AppRoutes.home,
             routes: {
-              AppRoutes.home: (context) => SightListScreen(),
+              AppRoutes.home: (context) => PlaceListScreen(),
               AppRoutes.visiting: (context) => VisitingScreen(),
               AppRoutes.settings: (context) => SettingsScreen(),
               AppRoutes.onboarding: (context) => OnboardingScreen(),
-              AppRoutes.backendTest: (context) => TestBackend(), // временно
             },
           );
         },

@@ -26,3 +26,7 @@ const sizedBoxH40 = SizedBox(height: 40);
 
 /// SplashScreen
 const double splashLogo = 160;
+
+/// Дефолтные значения Range слайдера в фильтре поиска min-max в метрах
+const RangeValues rangeSliderFilterDefault = RangeValues(100.0, 10000.0);
+const RangeValues rangeSliderFilterAfterReset = RangeValues(100.0, 3000.0);

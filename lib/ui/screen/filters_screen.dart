@@ -1,21 +1,25 @@
 import 'package:flutter/material.dart';
-import 'package:places/domain/categories.dart';
-import 'package:places/domain/sight.dart';
-import 'package:places/mocks.dart';
+import 'package:places/data/model/search_filter.dart';
+import 'package:places/data/model/place_type.dart';
 import 'package:places/ui/screen/components/button_save.dart';
 import 'package:places/ui/screen/components/icon_leading_appbar.dart';
 import 'package:places/ui/screen/res/assets.dart';
 import 'package:places/ui/screen/res/sizes.dart';
 import 'package:places/ui/screen/res/strings.dart';
 import 'package:places/ui/screen/res/themes.dart';
-import 'package:places/ui/screen/utilities/filter_utility.dart';
 import 'package:places/ui/screen/widgets/filter_category_item.dart';
 
 /// экран фильтра для поиска
+/// выбираем типы мест и расстояние
+/// сервер принимает только одно расстояние - радиус, поэтому для фильтра
+/// беру максимальное из Range слайдера
 class FiltersScreen extends StatefulWidget {
-  final FilterSettings? filter;
+  final SearchFilter filter;
 
-  const FiltersScreen({Key? key, this.filter}) : super(key: key);
+  const FiltersScreen({
+    Key? key,
+    required this.filter,
+  }) : super(key: key);
 
   /// для доступа к методу обработки кликов по категориям из дочернего виджета
   static _FiltersScreenState? of(BuildContext context) =>
@@ -30,68 +34,51 @@ class _FiltersScreenState extends State<FiltersScreen> {
   bool _isButtonEnabled = false;
   VoidCallback? _onPressed;
 
-  /// для построения индикаторов выбранных категорий
-  List<Map>? _selectedCategories;
+  /// список всех типов мест - категорий
+  List<PlaceType> categories = PlaceType.getList;
 
-  /// только выбранные категории для функции поиска и передачи на другой экран
-  List<Map> _filteredCategories = [];
+  /// для теста удалить
+  List<String> _filteredData = [
+    // 'qqq',
+    // 'qqq',
+    // 'qqq',
+    // 'qqq',
+    // 'qqq',
+  ];
+
+  /// для построения индикаторов выбранных категорий
+  /// создаём карту со всеми категориями в которой будем отмечать текущий
+  /// статус категории: выбрано / не выбрано
+  List<Map<String, dynamic>> _selectedCategories = [];
+
+  /// только выбранные категории для передачи в фильтр поиска
+  List<String> _filteredCategories = [];
 
   /// данные слайдера
-  double _startValue = 100;
-  double _endValue = 10000;
-  RangeValues? _currentRangeValues;
-
-  /// стартовая точка поиска
-  /// красная площадь для теста
-  final _startSearchPoint = CenterPoint(
-    lat: 55.753564,
-    lon: 37.621085,
-    name: 'Москва, Красная площадь',
-  );
-
-  /// деревня для теста
-  // final _startSearchPoint = CenterPoint(
-  //   lat: 55.994511,
-  //   lon: 37.604592,
-  //   name: 'Чиверёво',
-  // );
-
-  /// нефильтрованные данные если юзер не настраивал фильтр
-  final List<Sight> _fullData = mocks;
-
-  /// отфильтрованные результаты
-  List<Sight> _filteredData = [];
+  double _startValue = rangeSliderFilterDefault.start;
+  double _endValue = rangeSliderFilterDefault.end;
+  late RangeValues _currentRangeValues;
 
   @override
   void initState() {
-    if (widget.filter != null) {
-      _filteredCategories = widget.filter!.categories;
-      _currentRangeValues = widget.filter!.distance;
-      _selectedCategories = _currentStatusCategories(
-          _startCategories(categories), widget.filter!.categories);
-      _filteredData = filterData(
-          data: _fullData,
-          categories: _filteredCategories,
-          centerPoint: _startSearchPoint,
-          distance: _currentRangeValues);
-    } else {
-      _selectedCategories = _startCategories(categories);
-      _currentRangeValues = _startDataSlider();
-    }
+    _filteredCategories = widget.filter.typeFilter;
+    _currentRangeValues = widget.filter.radius;
+    _selectedCategories = _currentStatusCategories(
+        _startCategories(categories), widget.filter.typeFilter);
     super.initState();
   }
 
   /// вызываем из дочернего виджета [FilterCategoryItem]
   /// выбор / отмена категорий для фильтра, фильтрация базы данных
-  void setCategories(Map selectedCat) {
+  void setCategories(Map<String, dynamic> selectedCat) {
     setState(() {
       selectedCat['isSelected'] = !selectedCat['isSelected'];
-      _filteredCategories = _filterCategories(_selectedCategories!);
-      _filteredData = filterData(
-          data: _fullData,
-          categories: _filteredCategories,
-          centerPoint: _startSearchPoint,
-          distance: _currentRangeValues);
+      _filteredCategories = _filterCategories(_selectedCategories);
+      // _filteredData = filterData(
+      //     data: _fullData,
+      //     categories: _filteredCategories,
+      //     centerPoint: _startSearchPoint,
+      //     distance: _currentRangeValues);
     });
   }
 
@@ -101,12 +88,12 @@ class _FiltersScreenState extends State<FiltersScreen> {
       _isButtonEnabled = true;
 
       _onPressed = () {
-        final _filterSettings = FilterSettings(
-            categories: _filteredCategories,
-            distance: _currentRangeValues,
-            centerPoint: _startSearchPoint);
+        final _newSearchFilter = SearchFilter(
+          radius: _currentRangeValues,
+          typeFilter: _filteredCategories,
+        );
 
-        Navigator.pop(context, _filterSettings);
+        Navigator.pop(context, _newSearchFilter);
       };
     } else {
       _isButtonEnabled = false;
@@ -226,7 +213,7 @@ class _FiltersScreenState extends State<FiltersScreen> {
   /// список карточек категорий для нормальных экранов
   /// показываем карточки гридами
   Widget _categoriesNormalSize(
-          List<Categories> catalog, List<Map>? selectedCat) =>
+          List<PlaceType> catalog, List<Map<String, dynamic>> selectedCat) =>
       SliverGrid(
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 3,
@@ -236,8 +223,8 @@ class _FiltersScreenState extends State<FiltersScreen> {
         delegate: SliverChildBuilderDelegate(
           (BuildContext context, int index) {
             return FilterCategoryItem(
-              catalog: catalog[index],
-              selectedCat: selectedCat![index],
+              placeType: catalog[index],
+              selectedCat: selectedCat[index],
             );
           },
           childCount: catalog.length,
@@ -247,7 +234,7 @@ class _FiltersScreenState extends State<FiltersScreen> {
   /// список карточек категорий для маленьких экранов 375 х 667 iphone 8
   /// показываем категории в одну прокручиваемую строку
   Widget _categoriesSmallSize(
-          List<Categories> catalog, List<Map>? selectedCat) =>
+          List<PlaceType> catalog, List<Map<String, dynamic>> selectedCat) =>
       SliverToBoxAdapter(
         child: Container(
           height: 100.0,
@@ -256,8 +243,8 @@ class _FiltersScreenState extends State<FiltersScreen> {
               itemCount: catalog.length,
               itemBuilder: (context, index) {
                 return FilterCategoryItem(
-                  catalog: catalog[index],
-                  selectedCat: selectedCat![index],
+                  placeType: catalog[index],
+                  selectedCat: selectedCat[index],
                 );
               }),
         ),
@@ -274,7 +261,7 @@ class _FiltersScreenState extends State<FiltersScreen> {
               style: Theme.of(context).primaryTextTheme.subtitle1,
             ),
             Text(
-              'от ${_convertMeterToKm(_currentRangeValues!.start)} до ${_convertMeterToKm(_currentRangeValues!.end)}',
+              'от ${_convertMeterToKm(_currentRangeValues.start)} до ${_convertMeterToKm(_currentRangeValues.end)}',
               style: Theme.of(context).primaryTextTheme.subtitle1!.copyWith(
                   color: Theme.of(context).colorScheme.secondaryVariant),
             ),
@@ -286,40 +273,44 @@ class _FiltersScreenState extends State<FiltersScreen> {
   Widget _buildSlider() => RangeSlider(
         min: _startValue,
         max: _endValue,
-        values: _currentRangeValues!,
+        values: _currentRangeValues,
         onChanged: (RangeValues values) {
           setState(() {
             _currentRangeValues = values;
-            _filteredData = filterData(
-                data: _fullData, // база карточек
-                categories: _filteredCategories, // выбранные категории
-                centerPoint: _startSearchPoint, // точка отсчёта расстояния
-                distance: _currentRangeValues);
+            //   _filteredData = filterData(
+            //       data: _fullData, // база карточек
+            //       categories: _filteredCategories, // выбранные категории
+            //       centerPoint: _startSearchPoint, // точка отсчёта расстояния
+            //       distance: _currentRangeValues);
           });
         },
       );
 
-  /// оставляем только выбранные категории и передаем их в поиск
-  List<Map> _filterCategories(List<Map> categories) {
-    return categories.where((cat) => cat['isSelected'] == true).toList();
+  /// оставляем только выбранные категории и передаем их в фильтр для поиска
+  List<String> _filterCategories(List<Map<String, dynamic>> categories) {
+    List<String> result = [];
+
+    categories.where((cat) => cat['isSelected'] == true).forEach((cat) {
+      result.add(cat['type']);
+    });
+
+    return result;
   }
 
-  /// создаем массив с id и метками выделенных категорий
+  /// создаём карту со всеми типами мест и метками текущего состояния категории
+  /// выбрано / не выбрано
   /// со старта все false если ничего не было выбрано ранее
-  /// ‼️❓пока на всякий случай добавила id и type категории
-  List<Map> _startCategories(List<Categories> categories) {
+  List<Map<String, dynamic>> _startCategories(List<PlaceType> categories) {
     return categories
-        .map((e) => {'id': e.id, 'type': e.name, 'isSelected': false})
+        .map((e) => {'type': e.code, 'isSelected': false})
         .toList();
   }
 
-  /// если пришли настройки фильтра с предыдущего экрана применяем выбранные категори
-  List<Map> _currentStatusCategories(
-      List<Map> categories, List<Map> filteredCategories) {
+  /// если пришли настройки фильтра с предыдущего экрана применяем выбранные категории
+  List<Map<String, dynamic>> _currentStatusCategories(
+      List<Map<String, dynamic>> categories, List<String> filteredCategories) {
     for (var cat in categories) {
-      for (var filteredCat in filteredCategories) {
-        if (cat['type'] == filteredCat['type']) cat['isSelected'] = true;
-      }
+      cat['isSelected'] = filteredCategories.contains(cat['type']);
     }
     return categories;
   }
@@ -329,18 +320,18 @@ class _FiltersScreenState extends State<FiltersScreen> {
     setState(() {
       _selectedCategories = _clearCategories(categories);
       _currentRangeValues = _startDataSlider();
-      _filteredData.clear();
+      // _filteredData.clear();
       _isButtonEnabled = false;
       _onPressed = null;
     });
   }
 
   /// очистка выбранных категорий
-  List<Map> _clearCategories(List<Categories> categories) {
+  List<Map<String, dynamic>> _clearCategories(List<PlaceType> categories) {
     _filteredCategories.clear();
 
     return categories
-        .map((e) => {'id': e.id, 'type': e.name, 'isSelected': false})
+        .map((e) => {'type': e.code, 'isSelected': false})
         .toList();
   }
 
@@ -360,4 +351,4 @@ String _convertMeterToKm(double value) {
 }
 
 /// стартовые данные для слайдера в метрах
-RangeValues _startDataSlider() => RangeValues(100, 3000);
+RangeValues _startDataSlider() => rangeSliderFilterAfterReset;
