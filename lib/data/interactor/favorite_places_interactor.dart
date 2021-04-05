@@ -16,23 +16,15 @@ class FavoritePlacesInteractor {
   final LocalPlaceRepository localRepository = LocalPlaceRepository();
 
   /// стрим контроллер для избранных мест
-   final StreamController<List<Place>> _streamController =
-     StreamController.broadcast();
-  final StreamController<List<Place>> _streamControllerPlaned =
-  StreamController.broadcast();
-  final StreamController<List<Place>> _streamControllerVisited =
-  StreamController.broadcast();
+  final StreamController<List<Place>> _streamController =
+      StreamController.broadcast();
 
   /// стрим для списка избранных мест
   Stream<List<Place>> get listFavorites => _streamController.stream;
-  Stream<List<Place>> get listPlaned => _streamControllerPlaned.stream;
-  Stream<List<Place>> get listVisited => _streamControllerVisited.stream;
 
   /// закрыть стрим
   void dispose() {
     _streamController.close();
-    _streamControllerPlaned.close();
-    _streamControllerVisited.close();
   }
 
   /// ИЗБРАННЫЕ МЕСТА
@@ -57,7 +49,6 @@ class FavoritePlacesInteractor {
 
     /// пушим в стрим
     _streamController.sink.add(places);
-    // _streamControllerPlaned.sink.add(places);
 
     return places;
   }
@@ -69,7 +60,6 @@ class FavoritePlacesInteractor {
     print('Interactor getVisitedPlaces $places');
 
     /// пушим в стрим
-    // _streamControllerVisited.sink.add(places);
     _streamController.sink.add(places);
 
     return places;
