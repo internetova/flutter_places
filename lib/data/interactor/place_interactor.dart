@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:places/data/model/card_type.dart';
 import 'package:places/data/api/api_client.dart';
 import 'package:places/data/dto/place_dto.dart';
@@ -16,30 +18,56 @@ class PlaceInteractor {
   final ApiPlaceRepository apiRepository = ApiPlaceRepository(ApiClient());
   final LocalPlaceRepository localRepository = LocalPlaceRepository();
 
-  /// фильтрованный список интересных мест
-  Future<List<Place>> getPlaces({SearchFilter? userFilter}) async {
+  /// стрим контроллер для отфильтрованных мест
+  final StreamController<List<Place>> _streamController =
+  StreamController.broadcast();
+
+  /// стрим для списка отфильтрованных мест
+  /// добавим сюда данные после обработки "чистого" результата [getFilteredPlace]
+  /// вызовем на главной странице
+  Stream<List<Place>> get listPlaces => _streamController.stream;
+
+  /// фильтрованный список интересных мест в формате Dto
+  /// на странице фильтра на кнопке надо выводить только количество найденных мест
+  /// без какой-либо обработки, поэтому используем "чистый" результат
+  Future<List<PlaceDto>> getPlaces({required SearchFilter filter}) async {
     /// получили данные из Api
-    final places = await (apiRepository.getPlaces(userFilter: userFilter));
-    print('Interactor getPlaces (${places.length} шт.): $places');
+    final placesDto = await (apiRepository.getPlaces(filter: filter));
+    print('Interactor getPlaces (${placesDto.length} шт.): $placesDto');
+
+    return placesDto;
+  }
+
+  /// производим обработку "чистого" результата: переводим данные из Dto в
+  /// данные программы, сравниваем наличие мест в списке избранных и проставляем
+  /// метки, всё это сохраняем в память типа кэш (база данных ❓) и отображаем
+  /// на главной странице
+  Future<List<Place>> getFilteredPlace({required SearchFilter filter, String? keywords}) async {
+    /// получили данные из Api
+    final placesDto = await (apiRepository.getPlaces(filter: filter, keywords: keywords));
+    print('Interactor getPlaces (${placesDto.length} шт.): $placesDto');
 
     /// трансформировали и записали в кэш
-    List<Place> uiPlaces = await _transformApiPlaces(places);
+    List<Place> places = await _transformApiPlaces(placesDto);
 
     /// отсортировали по удаленности, дистанцию отдал сервер
-    if (uiPlaces.length > 1) {
-      uiPlaces.sort((a, b) => a.distance!.compareTo(b.distance!));
+    if (places.length > 1) {
+      places.sort((a, b) => a.distance!.compareTo(b.distance!));
     }
 
-    print('Interactor uiPlaces из кэша (${uiPlaces.length} шт.): $uiPlaces');
+    print('Interactor places из кэша (${places.length} шт.): $places');
 
-    return uiPlaces;
+    /// пушим в стрим
+    _streamController.sink.add(places);
+
+    return places;
   }
 
   /// ➡ вспомогательный метод
   /// отмечаем избранные карточки в общем списке
   /// сравниваем с локальной базой: если в ней есть, то ставим отметку
   /// записываем данные типа в кэш
-  /// дальше в программе работаем с UiPlace
+  /// дальше в программе работаем с Place
   Future<List<Place>> _transformApiPlaces(List<PlaceDto> apiPlaces) async {
     final localPlaces = await localRepository.getPlaces();
     List<Place> uiPlaces = [];
@@ -55,15 +83,15 @@ class PlaceInteractor {
     }
 
     /// если в кэше уже есть карточки, очищаем кэш для обновленных данных
-    if (LocalStorage.cacheUIPlaces.length > 0) {
-      LocalStorage.cacheUIPlaces.clear();
+    if (LocalStorage.cachePlaces.length > 0) {
+      LocalStorage.cachePlaces.clear();
     }
 
     /// сохраняем данные с сервера в локальную память типа кэш
-    LocalStorage.cacheUIPlaces.addAll(uiPlaces);
+    LocalStorage.cachePlaces.addAll(uiPlaces);
 
     /// вернём данные из кэша для дальнейшей работы
-    return LocalStorage.cacheUIPlaces;
+    return LocalStorage.cachePlaces;
   }
 
   /// ➡ вспомогательный метод:
@@ -93,7 +121,13 @@ class PlaceInteractor {
     print('Interactor addNewPlace: $newPlace');
   }
 
-  /// список избранных мест
+  /// закрыть стрим
+  void dispose() {
+    _streamController.close();
+  }
+
+  /// ИЗБРАННЫЕ МЕСТА
+  /// (❓‼️ не надо ли разнести в разные файлы?)
   /// сортировка по удалённости, данные с сервера
   Future<List<Place>> getFavoritesPlaces() async {
     List<Place> places = await localRepository.getPlaces();
@@ -137,8 +171,7 @@ class PlaceInteractor {
     final apiPlace = await apiRepository.getPlaceDetail(id);
 
     /// обновим данные на новые
-    Place updatedPlace =
-        Place.updateFromApi(place: place, apiPlace: apiPlace);
+    Place updatedPlace = Place.updateFromApi(place: place, apiPlace: apiPlace);
 
     /// запишем в базу данных
     await localRepository.updatePlace(updatedPlace);

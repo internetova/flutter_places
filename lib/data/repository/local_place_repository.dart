@@ -1,5 +1,4 @@
 import 'package:places/data/local_storage/local_storage.dart';
-import 'package:places/data/model/search_filter.dart';
 import 'package:places/data/model/place.dart';
 import 'package:places/data/repository/place_repository.dart';
 import 'package:places/data/res/error_response_strings.dart';
@@ -7,10 +6,8 @@ import 'package:places/data/res/error_response_strings.dart';
 /// ЛОКАЛЬНЫЙ РЕПОЗИТОРИЙ МЕСТ
 /// для имитации локального хранилища используется класс [LocalStorage]
 class LocalPlaceRepository implements PlaceRepository<Place> {
-  /// показать избранные
-  @override
-  Future<List<Place>> getPlaces(
-      {SearchFilter? userFilter, String? keywords}) async {
+  /// получить все избранные (хочу посетить / посетил)
+  Future<List<Place>> getPlaces() async {
     final response = await Future.delayed(Duration(seconds: 1), () {
       final result = LocalStorage.favoritesPlaces;
 
@@ -72,6 +69,7 @@ class LocalPlaceRepository implements PlaceRepository<Place> {
 
       if (result != -1) {
         LocalStorage.favoritesPlaces.removeAt(result);
+        print('LocalRepository removePlaceИзбранное ID: $id');
       } else {
         print('LocalRepository removePlace: Такой элемент не найден!');
       }
@@ -81,10 +79,10 @@ class LocalPlaceRepository implements PlaceRepository<Place> {
   /// переключатель кнопки Избранное
   Future<bool> toggleFavorite(Place place) async {
     if (place.isFavorite) {
-      await removePlace(place.id);
+      await addNewPlace(place);
       return false;
     } else {
-      await addNewPlace(place);
+      await removePlace(place.id);
       return true;
     }
   }

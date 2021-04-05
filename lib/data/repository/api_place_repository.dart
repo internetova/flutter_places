@@ -4,7 +4,6 @@ import 'package:dio/dio.dart';
 import 'package:places/data/api/api_client.dart';
 import 'package:places/data/api/api_constants.dart';
 import 'package:places/data/api/api_error.dart';
-import 'package:places/data/local_storage/local_storage.dart';
 import 'package:places/data/dto/place_dto.dart';
 import 'package:places/data/dto/places_filter_request_dto.dart';
 import 'package:places/data/model/search_filter.dart';
@@ -12,37 +11,16 @@ import 'package:places/data/repository/place_repository.dart';
 
 /// УДАЛЁННЫЙ РЕПОЗИТОРИЙ
 /// запрос данных с сервера
-/// преобразование в объекты программы
-/// возвращаем оъекты или ошибку
 class ApiPlaceRepository implements PlaceRepository<PlaceDto> {
   final ApiClient _client;
 
   ApiPlaceRepository(this._client);
 
-  /// все несортированные для теста
-  Future<List<PlaceDto>> getAllPlaces() async {
-    try {
-      final response = await _client.get(ApiConstants.placesUrl);
-      final places =
-          (response.data as List).map((e) => PlaceDto.fromJson(e)).toList();
-      print('ApiRepository getAllPlaces (${places.length} шт.): $places');
-
-      return places;
-    } on DioError catch (e) {
-      throw Exception(ApiError.printError(e));
-    }
-  }
-
   /// запрашивает данные согласно фильтру юзера
   /// [nameFilter] может быть null - текстовый поиск по полю name
   /// [keywords] - ключевые слова для поиска
-  @override
   Future<List<PlaceDto>> getPlaces(
-      {SearchFilter? userFilter, String? keywords}) async {
-    /// если юзер не задал фильтр, то берём дефолтный
-    SearchFilter filter =
-        userFilter == null ? LocalStorage.searchFilter : userFilter;
-
+      {required SearchFilter filter, String? keywords}) async {
     try {
       final data = PlacesFilterRequestDto(
         lat: filter.userLocation.lat,

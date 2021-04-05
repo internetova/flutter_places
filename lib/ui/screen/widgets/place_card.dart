@@ -4,8 +4,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:places/data.dart';
-import 'package:places/data/interactor/place_interactor.dart';
-import 'package:places/data/local_storage/local_storage.dart';
 import 'package:places/data/model/place.dart';
 import 'package:places/data/model/card_type.dart';
 import 'package:places/ui/screen/components/icon_action_button.dart';
@@ -17,6 +15,8 @@ import 'package:places/ui/screen/place_details.dart';
 import 'package:places/ui/screen/visiting_screen.dart';
 import 'package:places/ui/screen/widgets/reminder_time_ios.dart';
 import 'package:places/ui/screen/widgets/place_details_bottom_sheet.dart';
+
+import 'favorites_button_stream.dart';
 
 /// карточка интересного места
 /// в зависимости от места показа карточки - Список поиска, в Избранном
@@ -49,7 +49,7 @@ class PlaceCard extends StatelessWidget {
               children: [
                 Stack(
                   children: [
-                    CardImagePreview(imgUrl: card.urls[0]),
+                    CardImagePreview(imgUrl: card.urls.first),
                     Positioned(
                       top: 8,
                       left: 16,
@@ -192,16 +192,8 @@ class CardActions extends StatelessWidget {
 
   /// кнопки действий для карточки главного экрана
   List _buildActionsSearch(BuildContext context) => <Widget>[
-        IconActionButton(
-          onPressed: () {
-            print('onPressed Избранное');
-
-            ///todo: кнопка избранное переключение
-            /// для теста PlaceInteractor пока передам то, что есть в памяти
-            /// потом модифицирую, судя по всему в следующем задании про стримы
-            PlaceInteractor().toggleFavorites(LocalStorage.testToggleFavorites);
-          },
-          icon: icFavorites,
+        FavoritesButtonStream(
+          place: card,
         ),
       ];
 

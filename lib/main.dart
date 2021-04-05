@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:places/temp/test_backend.dart';
-import 'package:places/ui/screen/filters_screen.dart';
+import 'package:places/data/interactor/place_interactor.dart';
 import 'package:places/ui/screen/onboarding_screen.dart';
 import 'package:places/ui/screen/res/app_routes.dart';
 import 'package:places/ui/screen/res/themes.dart';
@@ -8,6 +7,8 @@ import 'package:places/ui/screen/settings_screen.dart';
 import 'package:places/ui/screen/place_list_screen.dart';
 import 'package:places/ui/screen/visiting_screen.dart';
 import 'package:provider/provider.dart';
+
+PlaceInteractor placeInteractor = PlaceInteractor();
 
 void main() {
   runApp(App());

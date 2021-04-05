@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:places/data/interactor/place_interactor.dart';
 import 'package:places/data/interactor/settings_interactor.dart';
 import 'package:places/data/model/search_filter.dart';
 import 'package:places/data/model/place.dart';
 import 'package:places/data/model/card_type.dart';
+import 'package:places/main.dart';
 import 'package:places/ui/screen/components/bottom_navigationbar.dart';
 import 'package:places/ui/screen/components/button_gradient.dart';
 import 'package:places/ui/screen/filters_screen.dart';
@@ -30,19 +30,16 @@ class _PlaceListScreenState extends State<PlaceListScreen> {
   /// при изменении перезаписывается на пользовательский
   late SearchFilter _searchFilter;
 
-  /// список мест
-  late Future<List<Place>> _listPlaces;
-
   /// фильтр - получаем из раздела настроек локальной базы данных
-  /// список мест - получем из сети
-  void _getData() async {
+  void _getStartData() async {
     _searchFilter = await SettingsInteractor.getSearchFilter();
-    _listPlaces = PlaceInteractor().getPlaces(userFilter: _searchFilter);
+    placeInteractor.getFilteredPlace(filter: _searchFilter);
   }
 
   @override
   void initState() {
-    _getData();
+    _getStartData();
+
     super.initState();
   }
 
@@ -60,8 +57,8 @@ class _PlaceListScreenState extends State<PlaceListScreen> {
                     horizontal:
                         orientation == Orientation.portrait ? 16.0 : 34.0,
                   ),
-                  sliver: FutureBuilder<List<Place>>(
-                    future: _listPlaces,
+                  sliver: StreamBuilder<List<Place>>(
+                    stream: placeInteractor.listPlaces,
                     builder: (BuildContext context, AsyncSnapshot snapshot) {
                       if (!snapshot.hasData) {
                         return SliverToBoxAdapter(

@@ -36,7 +36,7 @@ class LocalStorage {
 
   /// 3. Сохранённые данные с сервера и обрабатанные в соответствии
   /// со списком избранных мест для отображения на Главной странице
-  static List<Place> cacheUIPlaces = [];
+  static List<Place> cachePlaces = [];
 
   /// 4. Список избранных мест
   static List<Place> favoritesPlaces = [
@@ -98,8 +98,8 @@ class LocalStorage {
 
   /// добавить новое место на сервер
   static PlaceDto testAddNewPlace = PlaceDto(
-    id: 0,
     // это поле передавать на сервер не будем, скроем при трансформации
+    id: 0,
     lat: 55.993677,
     lng: 37.611009,
     name: 'Тест',

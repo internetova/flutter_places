@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:places/data.dart';
 import 'package:places/data/interactor/place_interactor.dart';
 import 'package:places/data/model/place.dart';
 import 'package:places/data/model/card_type.dart';

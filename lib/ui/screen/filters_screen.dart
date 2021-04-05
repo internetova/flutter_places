@@ -309,7 +309,7 @@ class _FiltersScreenState extends State<FiltersScreen> {
   /// если пришли настройки фильтра с предыдущего экрана применяем выбранные категории
   List<Map<String, dynamic>> _currentStatusCategories(
       List<Map<String, dynamic>> categories, List<String> filteredCategories) {
-    for (var cat in categories) {
+    for (final cat in categories) {
       cat['isSelected'] = filteredCategories.contains(cat['type']);
     }
     return categories;

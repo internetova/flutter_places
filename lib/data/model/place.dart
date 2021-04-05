@@ -92,12 +92,21 @@ class Place {
     );
   }
 
-  @override
-  String toString() {
-    String result = 'id: $id, isFavorite: $isFavorite, name: $name';
-    if (distance != null) result += ' distance: $distance м';
-
-    return result;
+  /// переключаем статус места - избранное / не избранное
+  static Place switchFavoriteStatus({required Place place, required bool isFav}) {
+    return Place(
+      id: place.id,
+      lat: place.lat,
+      lng: place.lng,
+      name: place.name,
+      urls: place.urls,
+      placeType: place.placeType,
+      description: place.description,
+      distance: place.distance,
+      isFavorite: isFav,
+      cardType: place.cardType,
+      date: place.date,
+    );
   }
 
   /// получить название типа места по коду
@@ -115,5 +124,13 @@ class Place {
     }
 
     return name;
+  }
+
+  @override
+  String toString() {
+    String result = 'id: $id, isFavorite: $isFavorite, name: $name';
+    if (distance != null) result += ' distance: $distance м';
+
+    return result;
   }
 }

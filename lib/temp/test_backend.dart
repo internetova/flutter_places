@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:places/data/api/api_client.dart';
 import 'package:places/data/dto/place_dto.dart';
+import 'package:places/data/interactor/place_interactor.dart';
+import 'package:places/data/model/place.dart';
 import 'package:places/data/model/search_filter.dart';
-import 'package:places/data/repository/api_place_repository.dart';
 import 'package:places/ui/screen/components/bottom_navigationbar.dart';
 import 'package:places/ui/screen/res/sizes.dart';
 
@@ -16,7 +16,7 @@ class TestBackend extends StatefulWidget {
 }
 
 class _TestBackendState extends State<TestBackend> {
-  late ApiPlaceRepository _placeRepository;
+  late PlaceInteractor _placeInteractor;
 
   /// для тестирования запросов
   final _testId = 157;
@@ -59,7 +59,7 @@ class _TestBackendState extends State<TestBackend> {
 
   @override
   void initState() {
-    _placeRepository = ApiPlaceRepository(ApiClient());
+    _placeInteractor = PlaceInteractor();
 
     super.initState();
   }
@@ -79,7 +79,7 @@ class _TestBackendState extends State<TestBackend> {
             TextButton(
               child: Text('Фильтр POST [/filtered_places]'),
               onPressed: () async {
-                final List<PlaceDto> response = await (_placeRepository.getPlaces(userFilter: _filter, keywords: keyWords));
+                final List<Place> response = await (_placeInteractor.getFilteredPlace(filter: _filter, keywords: keyWords));
                 print('UI Фильтрация мест (${response.length} шт.): $response');
               },
               style: TextButton.styleFrom(
@@ -92,7 +92,7 @@ class _TestBackendState extends State<TestBackend> {
             TextButton(
               child: Text('addNewPlace: POST [/place]'),
               onPressed: () async {
-                await _placeRepository.addNewPlace(_testAdd);
+                await _placeInteractor.addNewPlace(_testAdd);
               },
               style: TextButton.styleFrom(
                 primary: Colors.white,
@@ -113,52 +113,28 @@ class _TestBackendState extends State<TestBackend> {
             //   ),
             // ),
             // sizedBoxH24,
-            TextButton(
-              child: Text('Все места GET [/place]'),
-              onPressed: () async {
-                final response = await (_placeRepository.getAllPlaces());
-                print('UI Список мест (${response.length} шт.): $response');
-              },
-              style: TextButton.styleFrom(
-                primary: Colors.white,
-                backgroundColor: Color(0xff60AFFE),
-                minimumSize: Size(300, 48),
-              ),
-            ),
+            // TextButton(
+            //   child: Text('Все места GET [/place]'),
+            //   onPressed: () async {
+            //     final response = await (_placeRepository.getAllPlaces());
+            //     print('UI Список мест (${response.length} шт.): $response');
+            //   },
+            //   style: TextButton.styleFrom(
+            //     primary: Colors.white,
+            //     backgroundColor: Color(0xff60AFFE),
+            //     minimumSize: Size(300, 48),
+            //   ),
+            // ),
             sizedBoxH8,
             TextButton(
               child: Text('Место по ID GET [/place/{$_testId}]'),
               onPressed: () async {
-                final response = await _placeRepository.getPlaceDetail(_testId);
+                final response = await _placeInteractor.getPlaceDetails(_testId);
                 print('UI Место: $response');
               },
               style: TextButton.styleFrom(
                 primary: Colors.white,
                 backgroundColor: Color(0xff60AFFE),
-                minimumSize: Size(300, 48),
-              ),
-            ),
-            sizedBoxH24,
-            TextButton(
-              child: Text('DELETE [/place/{$_testId}]'),
-              onPressed: () async {
-                await _placeRepository.removePlace(_testId);
-              },
-              style: TextButton.styleFrom(
-                primary: Colors.white,
-                backgroundColor: Color(0xffF93E3F),
-                minimumSize: Size(300, 48),
-              ),
-            ),
-            sizedBoxH8,
-            TextButton(
-              child: Text('Обновить PUT [/place/{$_testId}]'),
-              onPressed: () async {
-                await _placeRepository.updatePlace(_testUpdate);
-              },
-              style: TextButton.styleFrom(
-                primary: Colors.white,
-                backgroundColor: Color(0xffFCA131),
                 minimumSize: Size(300, 48),
               ),
             ),
