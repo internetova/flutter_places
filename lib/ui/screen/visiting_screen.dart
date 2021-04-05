@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:places/data/interactor/place_interactor.dart';
 import 'package:places/data/model/place.dart';
 import 'package:places/data/model/card_type.dart';
+import 'package:places/main.dart';
 import 'package:places/ui/screen/components/bottom_navigationbar.dart';
 import 'package:places/ui/screen/res/strings.dart';
 import 'package:places/ui/screen/widgets/empty_page.dart';
@@ -17,30 +17,33 @@ class VisitingScreen extends StatefulWidget {
   _VisitingScreenState createState() => _VisitingScreenState();
 }
 
-class _VisitingScreenState extends State<VisitingScreen> {
-  List<Place> _userDataPlanned = [];
-  List<Place> _userDataVisited = [];
+class _VisitingScreenState extends State<VisitingScreen>
+    with SingleTickerProviderStateMixin {
+  late TabController _tabController;
 
   @override
   void initState() {
-    // _userDataPlanned = _getCurrentData(
-    //   data: favoritesSight,
-    //   typeCard: CardType.planned,
-    // );
-    //
-    // _userDataVisited = _getCurrentData(
-    //   data: favoritesSight,
-    //   typeCard: CardType.visited,
-    // );
+    _tabController = TabController(length: 2, vsync: this);
 
-    /// тест Interactor
-    PlaceInteractor().getFavoritesPlaces();
-    PlaceInteractor().getPlannedPlaces();
-    PlaceInteractor().getVisitedPlaces();
+    /// обновляем данные при переходе на соответствующую вкладку
+    _tabController.addListener(() {
+      setState(() {});
+
+      if (_tabController.index == 0) {
+        favoritePlacesInteractor.getPlannedPlaces();
+        print('_tabController0 ${_tabController.index}');
+      } else {
+        favoritePlacesInteractor.getVisitedPlaces();
+        print('_tabController1 ${_tabController.index}');
+      }
+    });
+
+    favoritePlacesInteractor.getPlannedPlaces();
 
     super.initState();
   }
 
+  /// todo удаление карточек через интерактор
   /// обновить базу данных после удаления карточки
   /// буду вызывать из дочернего виджета
   void updateState() {
@@ -59,70 +62,88 @@ class _VisitingScreenState extends State<VisitingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: 2,
-      initialIndex: 0,
-      child: Scaffold(
-        appBar: AppBar(
-          title: titleScreenFavorites,
-          backgroundColor: Colors.transparent,
-          toolbarHeight: 156,
-          bottom: PreferredSize(
-            preferredSize: Size.fromHeight(60),
-            child: Container(
-              margin: const EdgeInsets.only(
-                left: 16.0,
-                bottom: 30.0,
-                right: 16.0,
-              ),
-              height: 40,
-              decoration: BoxDecoration(
-                color: Theme.of(context).primaryColorDark,
-                borderRadius: BorderRadius.circular(40),
-              ),
-              child: TabBar(
-                tabs: [
-                  Tab(
-                    text: tabPlanned,
-                  ),
-                  Tab(
-                    text: tabVisited,
-                  ),
-                ],
-              ),
+    return Scaffold(
+      appBar: AppBar(
+        title: titleScreenFavorites,
+        backgroundColor: Colors.transparent,
+        toolbarHeight: 156,
+        bottom: PreferredSize(
+          preferredSize: Size.fromHeight(60),
+          child: Container(
+            margin: const EdgeInsets.only(
+              left: 16.0,
+              bottom: 30.0,
+              right: 16.0,
+            ),
+            height: 40,
+            decoration: BoxDecoration(
+              color: Theme.of(context).primaryColorDark,
+              borderRadius: BorderRadius.circular(40),
+            ),
+            child: TabBar(
+              controller: _tabController,
+              tabs: [
+                Tab(
+                  text: tabPlanned,
+                ),
+                Tab(
+                  text: tabVisited,
+                ),
+              ],
             ),
           ),
-          centerTitle: true,
-          elevation: 0,
-          automaticallyImplyLeading: false,
         ),
-        body: TabBarView(
-          children: [
-            _buildFavorites(
-              data: _userDataPlanned,
-              typeCard: CardType.planned,
-            ),
-            _buildFavorites(
-              data: _userDataVisited,
-              typeCard: CardType.visited,
-            ),
-          ],
-        ),
-        bottomNavigationBar: const MainBottomNavigationBar(current: 2),
+        centerTitle: true,
+        elevation: 0,
+        automaticallyImplyLeading: false,
       ),
+      body: TabBarView(
+        controller: _tabController,
+        children: [
+          StreamBuilder<List<Place>>(
+              stream: favoritePlacesInteractor.listFavorites,
+              builder: (context, snapshot) {
+                if (!snapshot.hasData) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+
+                return _buildFavorites(
+                  data: snapshot.data,
+                  typeCard: CardType.planned,
+                );
+              }),
+          StreamBuilder<List<Place>>(
+              stream: favoritePlacesInteractor.listFavorites,
+              builder: (context, snapshot) {
+                if (!snapshot.hasData) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+
+                return _buildFavorites(
+                  data: snapshot.data,
+                  typeCard: CardType.visited,
+                );
+              }),
+        ],
+      ),
+      bottomNavigationBar: const MainBottomNavigationBar(current: 2),
     );
   }
 
   /// строим карточки для Избранного
   /// в зависимости от типа избранного
   Widget _buildFavorites({
-    required List<Place> data,
+    required List<Place>? data,
     required CardType typeCard,
   }) {
     Widget favTabBarView;
 
     /// если нет таких, то показываем заглушку
-    if (data.isEmpty) {
+    if (data!.isEmpty) {
       final screenContent = favoritesEmptyScreen
           .where((item) => item['typeCard'] == typeCard)
           .toList();
@@ -156,11 +177,4 @@ class _VisitingScreenState extends State<VisitingScreen> {
 
     return favTabBarView;
   }
-
-  /// получить текущую базу соответствующей вкладки
-  // List<UiPlace> _getCurrentData({
-  //   required List<UiPlace> data,
-  //   required CardType typeCard,
-  // }) =>
-  //     data.where((item) => item.favorites == typeCard).toList();
 }

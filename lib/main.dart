@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:places/data/interactor/favorite_places_interactor.dart';
 import 'package:places/data/interactor/place_interactor.dart';
 import 'package:places/ui/screen/onboarding_screen.dart';
 import 'package:places/ui/screen/res/app_routes.dart';
@@ -9,6 +10,7 @@ import 'package:places/ui/screen/visiting_screen.dart';
 import 'package:provider/provider.dart';
 
 PlaceInteractor placeInteractor = PlaceInteractor();
+FavoritePlacesInteractor favoritePlacesInteractor = FavoritePlacesInteractor();
 
 void main() {
   runApp(App());

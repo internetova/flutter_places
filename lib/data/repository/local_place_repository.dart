@@ -1,4 +1,5 @@
 import 'package:places/data/local_storage/local_storage.dart';
+import 'package:places/data/model/card_type.dart';
 import 'package:places/data/model/place.dart';
 import 'package:places/data/repository/place_repository.dart';
 import 'package:places/data/res/error_response_strings.dart';
@@ -15,6 +16,38 @@ class LocalPlaceRepository implements PlaceRepository<Place> {
     });
     print(
         'LocalRepository Список Избранных (${response.length} шт.): $response');
+
+    return response;
+  }
+
+  /// получить запланированные места
+  Future<List<Place>> getPlannedPlaces() async {
+    final response = await Future.delayed(Duration(seconds: 1), () {
+      final result = LocalStorage.favoritesPlaces
+          .where(
+              (place) => place.isFavorite == true && place.cardType == CardType.planned)
+          .toList();
+
+      return result;
+    });
+    print(
+        'LocalRepository getPlannedPlaces (${response.length} шт.): $response');
+
+    return response;
+  }
+
+  /// получить посещенные места
+  Future<List<Place>> getVisitedPlaces() async {
+    final response = await Future.delayed(Duration(seconds: 1), () {
+      final result = LocalStorage.favoritesPlaces
+          .where(
+              (place) => place.isFavorite == true && place.cardType == CardType.visited)
+          .toList();
+
+      return result;
+    });
+    print(
+        'LocalRepository getVisitedPlaces (${response.length} шт.): $response');
 
     return response;
   }

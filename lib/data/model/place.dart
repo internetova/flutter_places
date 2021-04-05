@@ -104,7 +104,7 @@ class Place {
       description: place.description,
       distance: place.distance,
       isFavorite: isFav,
-      cardType: place.cardType,
+      cardType: CardType.planned,
       date: place.date,
     );
   }

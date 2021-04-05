@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:places/data/model/card_type.dart';
 import 'package:places/data/api/api_client.dart';
 import 'package:places/data/dto/place_dto.dart';
 import 'package:places/data/model/place.dart';
@@ -9,7 +8,8 @@ import 'package:places/data/local_storage/local_storage.dart';
 import 'package:places/data/repository/api_place_repository.dart';
 import 'package:places/data/repository/local_place_repository.dart';
 
-/// бизнес-логика для работы с местами
+/// интерактор для работы с местами
+/// ГЛАВНАЯ СТРАНИЦА
 /// [apiRepository] данные из сети
 /// [localRepository] локальные данные
 class PlaceInteractor {
@@ -26,6 +26,11 @@ class PlaceInteractor {
   /// добавим сюда данные после обработки "чистого" результата [getFilteredPlace]
   /// вызовем на главной странице
   Stream<List<Place>> get listPlaces => _streamController.stream;
+
+  /// закрыть стрим
+  void dispose() {
+    _streamController.close();
+  }
 
   /// фильтрованный список интересных мест в формате Dto
   /// на странице фильтра на кнопке надо выводить только количество найденных мест
@@ -121,65 +126,6 @@ class PlaceInteractor {
     print('Interactor addNewPlace: $newPlace');
   }
 
-  /// закрыть стрим
-  void dispose() {
-    _streamController.close();
-  }
-
-  /// ИЗБРАННЫЕ МЕСТА
-  /// (❓‼️ не надо ли разнести в разные файлы?)
-  /// сортировка по удалённости, данные с сервера
-  Future<List<Place>> getFavoritesPlaces() async {
-    List<Place> places = await localRepository.getPlaces();
-
-    if (places.length > 1) {
-      places.sort((a, b) => a.distance!.compareTo(b.distance!));
-    }
-
-    print('Interactor getFavoritesPlaces (${places.length} шт.): $places');
-
-    return places;
-  }
-
-  /// Избранное вкладка Хочу посетить
-  Future<List<Place>> getPlannedPlaces() async {
-    List<Place> places = await localRepository.getPlaces()
-      ..where((place) => place.cardType == CardType.planned).toList();
-
-    print('Interactor getPlannedPlaces $places');
-
-    return places;
-  }
-
-  /// Избранное вкладка Посещённые места
-  Future<List<Place>> getVisitedPlaces() async {
-    List<Place> places = await localRepository.getPlaces()
-      ..where((place) => place.cardType == CardType.visited).toList();
-
-    print('Interactor getVisitedPlaces $places');
-
-    return places;
-  }
-
-  /// детализация избранного места
-  /// отличается от обычного места дополнительными полями
-  /// и хранится в памяти пользователя
-  /// ‼️❓❓ наверное надо обновить данные затянув новые с сервера?
-  /// ❓❓ вдруг там что-то изменилось
-  Future<Place> getFavoritePlaceDetails(int id) async {
-    final place = await localRepository.getPlaceDetail(id);
-    final apiPlace = await apiRepository.getPlaceDetail(id);
-
-    /// обновим данные на новые
-    Place updatedPlace = Place.updateFromApi(place: place, apiPlace: apiPlace);
-
-    /// запишем в базу данных
-    await localRepository.updatePlace(updatedPlace);
-
-    print('Interactor getFavoritePlaceDetails: $updatedPlace');
-
-    return updatedPlace;
-  }
 
   /// добавить место в список избранного
   /// ❓ а может void? дальше посмотрю
@@ -201,43 +147,6 @@ class PlaceInteractor {
   /// true - в избранном
   Future<bool> toggleFavorites(Place place) async {
     return await localRepository.toggleFavorite(place);
-  }
-
-  /// показать посещенные места
-  Future<List<Place>> getVisitPlaces() async {
-    final places = await getFavoritesPlaces()
-      ..where((element) => element.cardType == CardType.visited);
-
-    return places;
-  }
-
-  /// добавить в посещенные
-  Future<void> addToVisitingPlaces(Place place) async {
-    final visitingPlace = Place(
-      id: place.id,
-      lat: place.lat,
-      lng: place.lng,
-      name: place.name,
-      urls: place.urls,
-      placeType: place.placeType,
-      description: place.description,
-      distance: place.distance,
-      cardType: CardType.visited,
-      date: DateTime.now(),
-    );
-
-    await localRepository.updatePlace(visitingPlace);
-
-    print('Interactor addToVisitingPlaces: $visitingPlace');
-  }
-
-  /// ➡ вспомогательный метод
-  /// получить текущую дистанцию до места
-  /// когда надо получить детальную информацию или обновить избранное,
-  /// т.к. с сервера дистанция рассчитывается только при полностью
-  /// заполненном фильтре сразу для списка мест
-  double getDistance() {
-    return 100.0; //todo сделать метод расчета
   }
 
   /// ПОИСК

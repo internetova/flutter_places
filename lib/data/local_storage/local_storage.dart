@@ -61,6 +61,27 @@ class LocalStorage {
       isFavorite: true,
       cardType: CardType.planned,
     ),
+    Place(
+      id: 136,
+      lat: 55.993677,
+      lng: 37.611009,
+      name: 'Кафе Натюрморт',
+      urls: [
+        'https://img2.fonwall.ru/o/ht/cake-dessert-food-sweet.jpeg',
+        'https://picsum.photos/1000/600?random=1',
+        'https://picsum.photos/1000/600?random=2',
+        'https://picsum.photos/1000/600?random=3',
+        'https://picsum.photos/1000/600?random=4',
+        'https://picsum.photos/1000/600?random=5',
+        'https://picsum.photos/1000/600?random=6'
+      ],
+      placeType: 'cafe',
+      description:
+          'Банальные, но неопровержимые выводы, а также предприниматели в сети интернет являются только методом политического участия и смешаны с не уникальными данными до степени совершенной неузнаваемости, из-за чего возрастает их статус бесполезности. Интерактивные прототипы призваны к ответу.',
+      distance: 295.8190911475786,
+      isFavorite: true,
+      cardType: CardType.visited,
+    )
   ];
 
   /// 5. История поиска

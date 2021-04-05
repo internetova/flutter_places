@@ -6,7 +6,7 @@ import 'package:places/main.dart';
 import 'package:places/ui/screen/components/icon_action_button.dart';
 import 'package:places/ui/screen/res/assets.dart';
 
-/// кнопка Избранное
+/// кнопка Избранное для карточки (маленькая)
 /// переключает текущий статус места, вносит измения в базе данных
 class FavoritesButtonStream extends StatefulWidget {
   final Place place;
