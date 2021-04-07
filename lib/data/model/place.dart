@@ -70,9 +70,7 @@ class Place {
   }
 
   /// для обновления мест в избранном на случай изменений данных на сервере
-  /// ❓❓ надо ли обновлять расстояние до места если оно может
-  /// постоянно меняться? 👀 пока оставлю старое
-  /// todo: вопрос с дистанцией
+  /// дистанцию оставляю старую с сервера, возможно потом будет пересчёт
   static Place updateFromApi({
     required Place place,
     required PlaceDto apiPlace,
@@ -104,7 +102,7 @@ class Place {
       description: place.description,
       distance: place.distance,
       isFavorite: isFav,
-      cardType: CardType.planned,
+      cardType: isFav ? CardType.planned : CardType.search,
       date: place.date,
     );
   }

@@ -11,16 +11,14 @@ class SettingsInteractor {
       LocalSettingsRepository();
 
   /// 1. тема: переключение текущей темы приложения
-  static Future<void> toggleTheme() async =>
-      await _settingsRepository.toggleTheme();
+  static Future<void> toggleTheme() => _settingsRepository.toggleTheme();
 
   /// 2.   фильтр
   /// 2.1. получить фильтр для поиска
-  static Future<SearchFilter> getSearchFilter() async =>
-      await _settingsRepository.getFilter();
+  static Future<SearchFilter> getSearchFilter() =>
+      _settingsRepository.getFilter();
 
   /// 2.2. обновить фильтр
-  static Future<void> updateSearchFilter(
-          {required SearchFilter newFilter}) async =>
-      await _settingsRepository.updateFilter(newFilter: newFilter);
+  static Future<void> updateSearchFilter({required SearchFilter newFilter}) =>
+      _settingsRepository.updateFilter(newFilter: newFilter);
 }
