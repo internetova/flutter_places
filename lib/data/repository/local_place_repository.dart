@@ -24,8 +24,8 @@ class LocalPlaceRepository implements PlaceRepository<Place> {
   Future<List<Place>> getPlannedPlaces() async {
     final response = await Future.delayed(Duration(seconds: 1), () {
       final result = LocalStorage.favoritesPlaces
-          .where(
-              (place) => place.isFavorite == true && place.cardType == CardType.planned)
+          .where((place) =>
+              place.isFavorite == true && place.cardType == CardType.planned)
           .toList();
 
       return result;
@@ -40,8 +40,8 @@ class LocalPlaceRepository implements PlaceRepository<Place> {
   Future<List<Place>> getVisitedPlaces() async {
     final response = await Future.delayed(Duration(seconds: 1), () {
       final result = LocalStorage.favoritesPlaces
-          .where(
-              (place) => place.isFavorite == true && place.cardType == CardType.visited)
+          .where((place) =>
+              place.isFavorite == true && place.cardType == CardType.visited)
           .toList();
 
       return result;

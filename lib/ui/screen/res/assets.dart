@@ -30,10 +30,11 @@ const icDelete = '$_baseResPath/delete.svg';
 const icClear = '$_baseResPath/clear.svg';
 const icBucket = '$_baseResPath/bucket.svg';
 
-/// пустые страницы
+/// пустые страницы (результат не найден) и ошибки
 const icEmptyPlanned = '$_baseResPath/empty_pages/card.svg';
 const icEmptyVisited = '$_baseResPath/empty_pages/go.svg';
 const icEmptySearch = '$_baseResPath/empty_pages/search.svg';
+const icNetworkException = '$_baseResPath/empty_pages/delete.svg';
 
 /// категории фильтра поиска
 const icCafe = '$_baseResPath/catalog/cafe.svg';

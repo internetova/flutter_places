@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:places/data/api/api_client.dart';
 import 'package:places/data/api/api_constants.dart';
-import 'package:places/data/api/api_error.dart';
 import 'package:places/data/dto/place_dto.dart';
 import 'package:places/data/dto/places_filter_request_dto.dart';
 import 'package:places/data/model/search_filter.dart';
@@ -21,67 +20,49 @@ class ApiPlaceRepository implements PlaceRepository<PlaceDto> {
   /// [keywords] - ключевые слова для поиска
   Future<List<PlaceDto>> getPlaces(
       {required SearchFilter filter, String? keywords}) async {
-    try {
-      final data = PlacesFilterRequestDto(
-        lat: filter.userLocation.lat,
-        lng: filter.userLocation.lng,
-        radius: filter.radius.end,
-        typeFilter: filter.typeFilter,
-        nameFilter: keywords != null ? keywords.trim() : null,
-      ).toJson();
+    final data = PlacesFilterRequestDto(
+      lat: filter.userLocation.lat,
+      lng: filter.userLocation.lng,
+      radius: filter.radius.end,
+      typeFilter: filter.typeFilter,
+      nameFilter: keywords != null ? keywords.trim() : null,
+    ).toJson();
 
-      print('ApiRepository запрос: PlacesFilterRequestDto $data');
+    print('ApiRepository запрос: PlacesFilterRequestDto $data');
 
-      final response = await _client.post(
-        ApiConstants.filteredPlacesUrl,
-        data: jsonEncode(data),
-      );
-      final places =
-          (response.data as List).map((e) => PlaceDto.fromJson(e)).toList();
+    final response = await _client.post(
+      ApiConstants.filteredPlacesUrl,
+      data: jsonEncode(data),
+    );
+    final places =
+        (response.data as List).map((e) => PlaceDto.fromJson(e)).toList();
 
-      print(
-          'ApiRepository ответ filtered places (${places.length} шт.): $places');
+    print(
+        'ApiRepository ответ filtered places (${places.length} шт.): $places');
 
-      return places;
-    } on DioError catch (e) {
-      ApiError.printError(e);
-
-      throw Exception(e.message);
-    }
+    return places;
   }
 
   /// получить место по id
   @override
   Future<PlaceDto> getPlaceDetail(int id) async {
-    try {
-      final response = await _client.get('${ApiConstants.placesUrl}/$id');
-      final place = PlaceDto.fromJson((response.data as Map<String, dynamic>));
-      print('ApiRepository place: $place');
+    final response = await _client.get('${ApiConstants.placesUrl}/$id');
+    final place = PlaceDto.fromJson((response.data as Map<String, dynamic>));
+    print('ApiRepository place: $place');
 
-      return place;
-    } on DioError catch (e) {
-      ApiError.printError(e);
-
-      throw Exception(e.message);
-    }
+    return place;
   }
 
   /// добавить новое место
   @override
   Future<PlaceDto> addNewPlace(PlaceDto place) async {
-    try {
-      final response = await _client.post(
-        ApiConstants.placesUrl,
-        data: jsonEncode(place.toJson()),
-      );
-      final newPlace = PlaceDto.fromJson((response.data as Map<String, dynamic>));
+    final response = await _client.post(
+      ApiConstants.placesUrl,
+      data: jsonEncode(place.toJson()),
+    );
+    final newPlace = PlaceDto.fromJson((response.data as Map<String, dynamic>));
 
-      return newPlace;
-    } on DioError catch (e) {
-      ApiError.printError(e);
-
-      throw Exception(e.message);
-    }
+    return newPlace;
   }
 
   /// добавить список мест для теста с моковыми данными
@@ -94,29 +75,30 @@ class ApiPlaceRepository implements PlaceRepository<PlaceDto> {
   /// удалить место
   @override
   Future<void> removePlace(int id) async {
-    try {
-      await _client.delete('${ApiConstants.placesUrl}/$id');
+    await _client.delete('${ApiConstants.placesUrl}/$id');
 
-      print('ApiRepository: Удалено!');
-    } on DioError catch (e) {
-      throw Exception(ApiError.printError(e));
-    }
+    print('ApiRepository: Удалено!');
   }
 
   /// обновить место
   @override
   Future<void> updatePlace(PlaceDto place) async {
-    try {
-      final url = '${ApiConstants.placesUrl}/${place.id}';
+    final url = '${ApiConstants.placesUrl}/${place.id}';
 
-      await _client.put(
-        url,
-        data: jsonEncode(place.toJson()),
-      );
+    await _client.put(
+      url,
+      data: jsonEncode(place.toJson()),
+    );
 
-      print('ApiRepository: Обновлено!');
-    } on DioError catch (e) {
-      ApiError.printError(e);
-    }
+    print('ApiRepository: Обновлено!');
+  }
+
+  /// проверим есть ли доступ в сеть 🤓
+  Future<Response> testNetwork() async {
+    final queryParameters = {
+      'count': 1
+    };
+
+    return _client.get('${ApiConstants.placesUrl}', queryParameters: queryParameters);
   }
 }

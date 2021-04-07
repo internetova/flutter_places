@@ -103,6 +103,10 @@ class _VisitingScreenState extends State<VisitingScreen>
           StreamBuilder<List<Place>>(
               stream: favoritePlacesInteractor.listFavorites,
               builder: (context, snapshot) {
+                if (snapshot.hasError) {
+                  return _buildExceptionInfo();
+                }
+
                 if (!snapshot.hasData) {
                   return const Center(
                     child: CircularProgressIndicator(),
@@ -117,6 +121,10 @@ class _VisitingScreenState extends State<VisitingScreen>
           StreamBuilder<List<Place>>(
               stream: favoritePlacesInteractor.listFavorites,
               builder: (context, snapshot) {
+                if (snapshot.hasError) {
+                  return _buildExceptionInfo();
+                }
+
                 if (!snapshot.hasData) {
                   return const Center(
                     child: CircularProgressIndicator(),
@@ -133,6 +141,14 @@ class _VisitingScreenState extends State<VisitingScreen>
       bottomNavigationBar: const MainBottomNavigationBar(current: 2),
     );
   }
+
+  /// если есть ошибка
+  Widget _buildExceptionInfo() => Center(
+        child: EmptyPage(
+            icon: appNetworkException['emptyScreenIcon'],
+            header: appNetworkException['emptyScreenHeader'],
+            text: appNetworkException['emptyScreenText']),
+      );
 
   /// строим карточки для Избранного
   /// в зависимости от типа избранного

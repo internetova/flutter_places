@@ -10,6 +10,7 @@ import 'package:places/ui/screen/filters_screen.dart';
 import 'package:places/ui/screen/add_place_screen/add_place_screen.dart';
 import 'package:places/ui/screen/res/sizes.dart';
 import 'package:places/ui/screen/res/strings.dart';
+import 'package:places/ui/screen/widgets/empty_page.dart';
 import 'package:places/ui/screen/widgets/list_cards.dart';
 import 'package:places/ui/screen/components/search_bar_static.dart';
 import 'package:places/ui/screen/sight_search_screen.dart';
@@ -60,6 +61,15 @@ class _PlaceListScreenState extends State<PlaceListScreen> {
                   sliver: StreamBuilder<List<Place>>(
                     stream: placeInteractor.listPlaces,
                     builder: (BuildContext context, AsyncSnapshot snapshot) {
+                      if (snapshot.hasError) {
+                        return SliverFillRemaining(
+                          child: EmptyPage(
+                              icon: appNetworkException['emptyScreenIcon'],
+                              header: appNetworkException['emptyScreenHeader'],
+                              text: appNetworkException['emptyScreenText']),
+                        );
+                      }
+
                       if (!snapshot.hasData) {
                         return SliverToBoxAdapter(
                           child: Padding(
@@ -103,8 +113,7 @@ class _PlaceListScreenState extends State<PlaceListScreen> {
   }
 
   /// отображение списка карточек в зависимости от ориентации экрана
-  Widget _buildListCard(Orientation orientation,
-      {required List<Place> data}) {
+  Widget _buildListCard(Orientation orientation, {required List<Place> data}) {
     if (orientation == Orientation.portrait) {
       return ListCardsPortrait(
         data: data,

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:places/data/api/api_client.dart';
 import 'package:places/data/dto/place_dto.dart';
+import 'package:places/data/exceptions/app_exceptions.dart';
 import 'package:places/data/model/place.dart';
 import 'package:places/data/model/search_filter.dart';
 import 'package:places/data/local_storage/local_storage.dart';
@@ -48,24 +49,30 @@ class PlaceInteractor {
   /// метки, всё это сохраняем в память типа кэш (база данных ❓) и отображаем
   /// на главной странице
   Future<List<Place>> getFilteredPlace({required SearchFilter filter, String? keywords}) async {
-    /// получили данные из Api
-    final placesDto = await (apiRepository.getPlaces(filter: filter, keywords: keywords));
-    print('Interactor getPlaces (${placesDto.length} шт.): $placesDto');
+    try {
+      /// получили данные из Api
+      final placesDto =
+          await (apiRepository.getPlaces(filter: filter, keywords: keywords));
+      print('Interactor getPlaces (${placesDto.length} шт.): $placesDto');
 
-    /// трансформировали и записали в кэш
-    List<Place> places = await _transformApiPlaces(placesDto);
+      /// трансформировали и записали в кэш
+      List<Place> places = await _transformApiPlaces(placesDto);
 
-    /// отсортировали по удаленности, дистанцию отдал сервер
-    if (places.length > 1) {
-      places.sort((a, b) => a.distance!.compareTo(b.distance!));
+      /// отсортировали по удаленности, дистанцию отдал сервер
+      if (places.length > 1) {
+        places.sort((a, b) => a.distance!.compareTo(b.distance!));
+      }
+
+      print('Interactor places из кэша (${places.length} шт.): $places');
+
+      /// пушим в стрим
+      _streamController.sink.add(places);
+
+      return places;
+    } catch (e) {
+      _streamController.sink.addError(AppExceptions.getExceptions(e));
+      throw AppExceptions.getExceptions(e);
     }
-
-    print('Interactor places из кэша (${places.length} шт.): $places');
-
-    /// пушим в стрим
-    _streamController.sink.add(places);
-
-    return places;
   }
 
   /// ➡ вспомогательный метод
