@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
 import 'package:places/data/api/api_constants.dart';
 
 class ApiClient {
@@ -22,14 +21,17 @@ class ApiClient {
     return dio
       ..interceptors.add(
         InterceptorsWrapper(
-          onError: (DioError e) async {
-            return e.response.data;
+          onRequest:(options, handler){
+            print('Interceptors Отправлен запрос: ${options.baseUrl}${options.path}');
+            return handler.next(options);
           },
-          onRequest: (options) {
-            print('Отправлен запрос: ${options.baseUrl}${options.path}');
+          onResponse:(response,handler) {
+            print('Interceptors Получен ответ: $response');
+            return handler.next(response);
           },
-          onResponse: (response) {
-            print('Получен ответ: $response');
+          onError: (DioError e, handler) {
+            print('DioError: $e');
+            return  handler.next(e);//continue
           },
         ),
       );
@@ -49,7 +51,7 @@ class ApiClient {
       await _client.post(url, data: data);
 
   /// обновить существующую позицию
-  Future<Response> put(String url, {@required dynamic data}) async =>
+  Future<Response> put(String url, {required dynamic data}) async =>
       await _client.put(url, data: data);
 
   /// удалить

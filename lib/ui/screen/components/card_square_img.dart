@@ -10,11 +10,10 @@ class CardSquareImg extends StatelessWidget {
   final ImageProvider image;
 
   const CardSquareImg({
-    Key key,
-    @required this.image,
+    Key? key,
+    required this.image,
     this.size = 56.0,
-  })  : assert(image != null),
-        super(key: key);
+  })  : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -37,12 +36,11 @@ class CardSquareImgWithDeleteIcon extends StatelessWidget {
   final String icon;
 
   const CardSquareImgWithDeleteIcon({
-    Key key,
+    Key? key,
     this.size = cardSizeSquareImgBig,
-    @required this.image,
+    required this.image,
     this.icon = icClear,
-  })  : assert(image != null),
-        super(key: key);
+  })  : super(key: key);
 
   @override
   Widget build(BuildContext context) {

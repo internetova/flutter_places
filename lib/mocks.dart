@@ -1,10 +1,8 @@
-import 'package:places/domain/categories.dart';
-import 'package:places/ui/screen/res/assets.dart';
 
 import 'domain/sight.dart';
 
-final List<Sight> mocks = [
-  Sight(
+final List<UiPlace> mocks = [
+  UiPlace(
     id: 1,
     name: 'Триумфальная арка',
     lat: 55.737064,
@@ -27,7 +25,7 @@ final List<Sight> mocks = [
       'https://picsum.photos/1000/600?random=6',
     ],
   ),
-  Sight(
+  UiPlace(
     id: 2,
     name: 'Бункер-42 на Таганке',
     lat: 55.742583,
@@ -48,7 +46,7 @@ final List<Sight> mocks = [
       'https://picsum.photos/1000/600?random=6',
     ],
   ),
-  Sight(
+  UiPlace(
     id: 3,
     name: 'Нереальное место',
     lat: 55.762781,
@@ -69,7 +67,7 @@ final List<Sight> mocks = [
       'https://picsum.photos/1000/600?random=6',
     ],
   ),
-  Sight(
+  UiPlace(
     id: 4,
     name: 'Московский кремль',
     lat: 55.751549,
@@ -89,7 +87,7 @@ final List<Sight> mocks = [
       'https://picsum.photos/1000/600?random=6',
     ],
   ),
-  Sight(
+  UiPlace(
     id: 5,
     name: 'Выставка достижений народного хозяйства',
     lat: 55.826690,
@@ -109,7 +107,7 @@ final List<Sight> mocks = [
       'https://picsum.photos/1000/600?random=6',
     ],
   ),
-  Sight(
+  UiPlace(
     id: 6,
     name: 'Государственная Третьяковская галерея',
     lat: 55.742251,
@@ -130,7 +128,7 @@ final List<Sight> mocks = [
       'https://picsum.photos/1000/600?random=6',
     ],
   ),
-  Sight(
+  UiPlace(
     id: 7,
     name: 'Государственный академический Большой театр России',
     lat: 55.760245,
@@ -151,7 +149,7 @@ final List<Sight> mocks = [
       'https://picsum.photos/1000/600?random=6',
     ],
   ),
-  Sight(
+  UiPlace(
     id: 8,
     name: 'Часовня Смоленской иконы Божией Матери в Чиверево',
     lat: 55.988344,
@@ -171,7 +169,7 @@ final List<Sight> mocks = [
       'https://picsum.photos/1000/600?random=6',
     ],
   ),
-  Sight(
+  UiPlace(
     id: 9,
     name: 'Ресторан Дружба',
     lat: 55.760245,
@@ -191,7 +189,7 @@ final List<Sight> mocks = [
       'https://picsum.photos/1000/600?random=6',
     ],
   ),
-  Sight(
+  UiPlace(
     id: 10,
     name: 'Кафе Привет',
     lat: 55.760245,
@@ -212,7 +210,7 @@ final List<Sight> mocks = [
       'https://picsum.photos/1000/600?random=6',
     ],
   ),
-  Sight(
+  UiPlace(
     id: 11,
     name: 'Кафе Натюрморт',
     lat: 55.760245,
@@ -232,7 +230,7 @@ final List<Sight> mocks = [
       'https://picsum.photos/1000/600?random=6',
     ],
   ),
-  Sight(
+  UiPlace(
     id: 11,
     name: 'Клязьминское водохранилище',
     lat: 55.989198,
@@ -254,12 +252,12 @@ imgPreview:  'https://i.ytimg.com/vi/xzGdmpsmNW4/maxresdefault.jpg',
   ),
 ];
 
-/// категории для фильтра поиска
-final List<Categories> categories = [
-  Categories(id: 1, name: 'Отель', icon: icHotel),
-  Categories(id: 2, name: 'Ресторан', icon: icRestaurant),
-  Categories(id: 3, name: 'Особое место', icon: icParticular),
-  Categories(id: 4, name: 'Парк', icon: icPark),
-  Categories(id: 5, name: 'Музей', icon: icMuseum),
-  Categories(id: 6, name: 'Кафе', icon: icCafe),
-];
+// /// категории для фильтра поиска
+// final List<PlaceType> categories = [
+//   PlaceType(id: 1, name: 'Отель', icon: icHotel),
+//   PlaceType(id: 2, name: 'Ресторан', icon: icRestaurant),
+//   PlaceType(id: 3, name: 'Особое место', icon: icParticular),
+//   PlaceType(id: 4, name: 'Парк', icon: icPark),
+//   PlaceType(id: 5, name: 'Музей', icon: icMuseum),
+//   PlaceType(id: 6, name: 'Кафе', icon: icCafe),
+// ];

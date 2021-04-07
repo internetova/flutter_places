@@ -1,24 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:places/data.dart';
-import 'package:places/domain/sight.dart';
-import 'package:places/domain/card_type.dart';
+import 'package:places/data/model/place.dart';
+import 'package:places/data/model/card_type.dart';
 import 'package:places/ui/screen/components/icon_svg.dart';
 import 'package:places/ui/screen/res/assets.dart';
 import 'package:places/ui/screen/res/sizes.dart';
 import 'package:places/ui/screen/res/strings.dart';
 import 'package:places/ui/screen/visiting_screen.dart';
-import 'package:places/ui/screen/widgets/sight_card.dart';
+import 'package:places/ui/screen/widgets/place_card.dart';
 import 'package:places/ui/screen/res/themes.dart';
 
 /// карточка для избранного
-class SightCardVisiting extends StatelessWidget {
-  final Sight card;
+class PlaceCardVisiting extends StatelessWidget {
+  final Place card;
   final CardType cardType;
 
-  const SightCardVisiting({
-    Key key,
-    @required this.card,
-    @required this.cardType,
+  const PlaceCardVisiting({
+    Key? key,
+    required this.card,
+    required this.cardType,
   }) : super(key: key);
 
   @override
@@ -32,10 +32,10 @@ class SightCardVisiting extends StatelessWidget {
             key: UniqueKey(),
             onDismissed: (_) {
               favoritesSight.remove(card);
-              VisitingScreen.of(context).updateState();
+              VisitingScreen.of(context)!.updateState();
             },
             direction: DismissDirection.endToStart,
-            child: SightCard(
+            child: PlaceCard(
               card: card,
               cardType: cardType,
             ),

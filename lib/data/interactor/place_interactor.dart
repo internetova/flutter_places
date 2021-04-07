@@ -1,13 +1,15 @@
+import 'dart:async';
+
 import 'package:places/data/api/api_client.dart';
-import 'package:places/data/local_storage/local_storage.dart';
-import 'package:places/data/model/ui_place.dart';
+import 'package:places/data/dto/place_dto.dart';
 import 'package:places/data/model/place.dart';
 import 'package:places/data/model/search_filter.dart';
+import 'package:places/data/local_storage/local_storage.dart';
 import 'package:places/data/repository/api_place_repository.dart';
 import 'package:places/data/repository/local_place_repository.dart';
-import 'package:places/domain/card_type.dart';
 
-/// бизнес-логика для работы с местами
+/// интерактор для работы с местами
+/// ГЛАВНАЯ СТРАНИЦА
 /// [apiRepository] данные из сети
 /// [localRepository] локальные данные
 class PlaceInteractor {
@@ -16,69 +18,102 @@ class PlaceInteractor {
   final ApiPlaceRepository apiRepository = ApiPlaceRepository(ApiClient());
   final LocalPlaceRepository localRepository = LocalPlaceRepository();
 
-  /// фильтрованный список интересных мест
-  /// если юзер не задал фильтр, то берём дефолтный
-  Future<List<UiPlace>> getPlaces({SearchFilter userFilter}) async {
-    SearchFilter filter =
-        userFilter == null ? LocalStorage.defaultSearchFilter : userFilter;
+  /// стрим контроллер для отфильтрованных мест
+  final StreamController<List<Place>> _streamController =
+  StreamController.broadcast();
 
+  /// стрим для списка отфильтрованных мест
+  /// добавим сюда данные после обработки "чистого" результата [getFilteredPlace]
+  /// вызовем на главной странице
+  Stream<List<Place>> get listPlaces => _streamController.stream;
+
+  /// закрыть стрим
+  void dispose() {
+    _streamController.close();
+  }
+
+  /// фильтрованный список интересных мест в формате Dto
+  /// на странице фильтра на кнопке надо выводить только количество найденных мест
+  /// без какой-либо обработки, поэтому используем "чистый" результат
+  Future<List<PlaceDto>> getPlaces({required SearchFilter filter}) async {
     /// получили данные из Api
-    final places = await apiRepository.getPlaces(filter: filter);
-    print('Interactor getPlaces (${places.length} шт.): $places');
+    final placesDto = await (apiRepository.getPlaces(filter: filter));
+    print('Interactor getPlaces (${placesDto.length} шт.): $placesDto');
+
+    return placesDto;
+  }
+
+  /// производим обработку "чистого" результата: переводим данные из Dto в
+  /// данные программы, сравниваем наличие мест в списке избранных и проставляем
+  /// метки, всё это сохраняем в память типа кэш (база данных ❓) и отображаем
+  /// на главной странице
+  Future<List<Place>> getFilteredPlace({required SearchFilter filter, String? keywords}) async {
+    /// получили данные из Api
+    final placesDto = await (apiRepository.getPlaces(filter: filter, keywords: keywords));
+    print('Interactor getPlaces (${placesDto.length} шт.): $placesDto');
 
     /// трансформировали и записали в кэш
-    List<UiPlace> uiPlaces = await _transformApiPlaces(places);
+    List<Place> places = await _transformApiPlaces(placesDto);
 
     /// отсортировали по удаленности, дистанцию отдал сервер
-    if (uiPlaces.length > 1) {
-      uiPlaces.sort((a, b) => a.distance.compareTo(b.distance));
+    if (places.length > 1) {
+      places.sort((a, b) => a.distance!.compareTo(b.distance!));
     }
 
-    print('Interactor uiPlaces из кэша (${uiPlaces.length} шт.): $uiPlaces');
+    print('Interactor places из кэша (${places.length} шт.): $places');
 
-    return uiPlaces;
+    /// пушим в стрим
+    _streamController.sink.add(places);
+
+    return places;
   }
 
   /// ➡ вспомогательный метод
   /// отмечаем избранные карточки в общем списке
   /// сравниваем с локальной базой: если в ней есть, то ставим отметку
   /// записываем данные типа в кэш
-  /// дальше в программе работаем с UiPlace
-  Future<List<UiPlace>> _transformApiPlaces(List<Place> apiPlaces) async {
+  /// дальше в программе работаем с Place
+  Future<List<Place>> _transformApiPlaces(List<PlaceDto> apiPlaces) async {
     final localPlaces = await localRepository.getPlaces();
-    List<UiPlace> uiPlaces;
+    List<Place> uiPlaces = [];
 
     /// если в локальной базе карточек нет, то для дальнейшей работы
     /// просто переводим все карточки в UiPlace
     if (localPlaces.length == 0) {
-      uiPlaces = apiPlaces.map((place) => UiPlace.fromPlace(place)).toList();
+      uiPlaces = apiPlaces.map((place) => Place.fromApi(place)).toList();
     } else {
       /// если есть, то проставляем отметки Избранное / или нет
-      uiPlaces = apiPlaces.map((place) {
-        for (var i = 0; i < localPlaces.length; i++) {
-          if (localPlaces[i].id == place.id) {
-            return UiPlace.fromPlace(place, isFavorite: true);
-          } else {
-            return UiPlace.fromPlace(place);
-          }
-        }
-      }).toList();
+      uiPlaces =
+          apiPlaces.map((place) => _markFavorites(localPlaces, place)).toList();
     }
 
     /// если в кэше уже есть карточки, очищаем кэш для обновленных данных
-    if (LocalStorage.cacheUIPlaces.length > 0) {
-      LocalStorage.cacheUIPlaces.clear();
+    if (LocalStorage.cachePlaces.length > 0) {
+      LocalStorage.cachePlaces.clear();
     }
 
     /// сохраняем данные с сервера в локальную память типа кэш
-    LocalStorage.cacheUIPlaces.addAll(uiPlaces);
+    LocalStorage.cachePlaces.addAll(uiPlaces);
 
     /// вернём данные из кэша для дальнейшей работы
-    return LocalStorage.cacheUIPlaces;
+    return LocalStorage.cachePlaces;
+  }
+
+  /// ➡ вспомогательный метод:
+  /// при запросе данных с сервера проверяет в локальном списке избранных
+  /// есть ли там аналогичная карточка
+  Place _markFavorites(List<Place> listFavorites, PlaceDto place) {
+    for (var i = 0; i < listFavorites.length; i++) {
+      if (listFavorites[i].id == place.id) {
+        return Place.fromApi(place, isFavorite: true);
+      }
+    }
+
+    return Place.fromApi(place);
   }
 
   /// детализация места
-  Future<Place> getPlaceDetails(int id) async {
+  Future<PlaceDto> getPlaceDetails(int id) async {
     final place = await apiRepository.getPlaceDetail(id);
     print('Interactor getPlaceDetails: $place');
 
@@ -86,71 +121,15 @@ class PlaceInteractor {
   }
 
   /// добавить новое место на сервер
-  Future<void> addNewPlace(Place place) async {
+  Future<void> addNewPlace(PlaceDto place) async {
     final newPlace = await apiRepository.addNewPlace(place);
     print('Interactor addNewPlace: $newPlace');
-
-    return newPlace;
   }
 
-  /// список избранных мест
-  /// сортировка по удалённости, данные с сервера
-  Future<List<UiPlace>> getFavoritesPlaces() async {
-    List<UiPlace> places = await localRepository.getPlaces();
-
-    if (places.length > 1) {
-      places.sort((a, b) => a.distance.compareTo(b.distance));
-    }
-
-    print('Interactor getFavoritesPlaces (${places.length} шт.): $places');
-
-    return places;
-  }
-
-  /// Избранное вкладка Хочу посетить
-  Future<List<UiPlace>> getPlannedPlaces() async {
-    List<UiPlace> places = await localRepository.getPlaces();
-    List<UiPlace> planed =
-        places.where((place) => place.cardType == CardType.planned).toList();
-    print('Interactor getPlannedPlaces $planed');
-
-    return planed;
-  }
-
-  /// Избранное вкладка Посещённые места
-  Future<List<UiPlace>> getVisitedPlaces() async {
-    List<UiPlace> places = await localRepository.getPlaces();
-    List<UiPlace> visited =
-        places.where((place) => place.cardType == CardType.visited).toList();
-    print('Interactor getVisitedPlaces $visited');
-
-    return visited;
-  }
-
-  /// детализация избранного места
-  /// отличается от обычного места дополнительными полями
-  /// и хранится в памяти пользователя
-  /// ‼️❓❓ наверное надо обновить данные затянув новые с сервера?
-  /// ❓❓ вдруг там что-то изменилось
-  Future<UiPlace> getFavoritePlaceDetails(int id) async {
-    final place = await localRepository.getPlaceDetail(id);
-    final apiPlace = await apiRepository.getPlaceDetail(id);
-
-    /// обновим данные на новые
-    UiPlace updatedPlace =
-        UiPlace.updateFromApi(localPlace: place, apiPlace: apiPlace);
-
-    /// запишем в базу данных
-    await localRepository.updatePlace(updatedPlace);
-
-    print('Interactor getFavoritePlaceDetails: $updatedPlace');
-
-    return updatedPlace;
-  }
 
   /// добавить место в список избранного
   /// ❓ а может void? дальше посмотрю
-  Future<UiPlace> addToFavorites(UiPlace place) async {
+  Future<Place> addToFavorites(Place place) async {
     final newPlace = await localRepository.addNewPlace(place);
     print('Interactor addToFavorites: $newPlace');
 
@@ -166,63 +145,8 @@ class PlaceInteractor {
 
   /// переключатель кнопки Избранное
   /// true - в избранном
-  Future<bool> toggleFavorites(UiPlace place) async {
-    final response = await localRepository.getPlaceDetail(place.id);
-
-    if (response != null) {
-      await removeFromFavorites(place.id);
-      print('Interactor toggleFavorites: удалено из избранного ${place.id}');
-
-      /// пока для теста в консоли
-      getFavoritesPlaces();
-
-      return false;
-    } else {
-      await addToFavorites(place);
-      print('Interactor toggleFavorites: добавлено в избранное ${place.id}');
-
-      /// пока для теста в консоли
-      getFavoritesPlaces();
-
-      return true;
-    }
-  }
-
-  /// показать посещенные места
-  Future<List<UiPlace>> getVisitPlaces() async {
-    final places = await getFavoritesPlaces();
-    places.where((element) => element.cardType == CardType.visited);
-
-    return places;
-  }
-
-  /// добавить в посещенные
-  Future<void> addToVisitingPlaces(UiPlace place) async {
-    final visitingPlace = UiPlace(
-      id: place.id,
-      lat: place.lat,
-      lng: place.lng,
-      name: place.name,
-      urls: place.urls,
-      placeType: place.placeType,
-      description: place.description,
-      distance: place.distance,
-      cardType: CardType.visited,
-      date: DateTime.now(),
-    );
-
-    await localRepository.updatePlace(visitingPlace);
-
-    print('Interactor addToVisitingPlaces: $visitingPlace');
-  }
-
-  /// ➡ вспомогательный метод
-  /// получить текущую дистанцию до места
-  /// когда надо получить детальную информацию или обновить избранное,
-  /// т.к. с сервера дистанция рассчитывается только при полностью
-  /// заполненном фильтре сразу для списка мест
-  double getDistance() {
-    return 100.0; //todo сделать метод расчета
+  Future<bool> toggleFavorites(Place place) async {
+    return await localRepository.toggleFavorite(place);
   }
 
   /// ПОИСК

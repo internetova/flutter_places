@@ -1,19 +1,24 @@
-import 'package:places/data/local_storage/local_storage.dart';
-import 'package:places/data/repository/local_place_repository.dart';
+import 'package:places/data/model/search_filter.dart';
+import 'package:places/data/repository/local_settings_repository.dart';
 
 /// логика для работы с настройками пользователя
-/// сохранение текущей темы приложения
+/// 1. тема
+/// 2. фильтр
 class SettingsInteractor {
   SettingsInteractor._();
 
-  /// доступ к локальной базе данных где сохраняются настройки
-  /// сейчас это имитация - класс [LocalStorage]
-  final LocalPlaceRepository localRepository = LocalPlaceRepository();
+  static final LocalSettingsRepository _settingsRepository =
+      LocalSettingsRepository();
 
-  static Future<void> toggleTheme() async {
-    bool currentTheme = await LocalStorage.userSetting['isDarkTheme'];
-    LocalStorage.userSetting['isDarkTheme'] = !currentTheme;
+  /// 1. тема: переключение текущей темы приложения
+  static Future<void> toggleTheme() => _settingsRepository.toggleTheme();
 
-    print('isDarkTheme: ${LocalStorage.userSetting['isDarkTheme']}');
-  }
+  /// 2.   фильтр
+  /// 2.1. получить фильтр для поиска
+  static Future<SearchFilter> getSearchFilter() =>
+      _settingsRepository.getFilter();
+
+  /// 2.2. обновить фильтр
+  static Future<void> updateSearchFilter({required SearchFilter newFilter}) =>
+      _settingsRepository.updateFilter(newFilter: newFilter);
 }

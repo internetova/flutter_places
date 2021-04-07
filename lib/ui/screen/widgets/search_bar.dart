@@ -9,15 +9,15 @@ import 'package:places/ui/screen/res/themes.dart';
 
 /// виджет поисковой строки для экрана поиска
 class SearchBar extends StatelessWidget {
-  final TextEditingController controller;
-  final FocusNode focus;
-  final Function onChanged;
-  final VoidCallback onEditingComplete;
-  final VoidCallback onTap;
-  final List<String> data;
+  final TextEditingController? controller;
+  final FocusNode? focus;
+  final Function? onChanged;
+  final VoidCallback? onEditingComplete;
+  final VoidCallback? onTap;
+  final List<String>? data;
 
   const SearchBar({
-    Key key,
+    Key? key,
     this.controller,
     this.data,
     this.onChanged,
@@ -41,7 +41,7 @@ class SearchBar extends StatelessWidget {
                   const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
               hintStyle: Theme.of(context)
                   .primaryTextTheme
-                  .subtitle1
+                  .subtitle1!
                   .copyWith(color: Theme.of(context).colorScheme.inactiveBlack),
             ),
           ),
@@ -65,9 +65,9 @@ class SearchBar extends StatelessWidget {
                   color: Theme.of(context).colorScheme.inactiveBlack,
                 ),
               ),
-              suffixIcon: controller.text.isNotEmpty
+              suffixIcon: controller!.text.isNotEmpty
                   ? ButtonClear(
-                      controller: controller,
+                      controller: controller!,
                     )
                   : const SizedBox(width: 0),
             ),
@@ -76,7 +76,7 @@ class SearchBar extends StatelessWidget {
               FilteringTextInputFormatter(RegExp(r'^[a-zа-яA-ZА-Я0-9 ]+$'),
                   allow: true)
             ],
-            onChanged: onChanged,
+            onChanged: onChanged as void Function(String)?,
             onEditingComplete: onEditingComplete,
             onTap: onTap,
           ),

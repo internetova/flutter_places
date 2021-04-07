@@ -8,9 +8,8 @@ import 'package:places/ui/screen/res/strings.dart';
 class MainBottomNavigationBar extends StatelessWidget {
   final int current;
 
-  const MainBottomNavigationBar({Key key, @required this.current})
-      : assert(current != null),
-        super(key: key);
+  const MainBottomNavigationBar({Key? key, required this.current})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -23,8 +22,6 @@ class MainBottomNavigationBar extends StatelessWidget {
             break;
           case 1:
             print('onTaped Карта');
-            Navigator.of(context).pushReplacementNamed(
-                AppRoutes.backendTest); // временно для тестирования
             break;
           case 2:
             Navigator.of(context).pushReplacementNamed(AppRoutes.visiting);
@@ -68,7 +65,7 @@ class MainBottomNavigationBar extends StatelessWidget {
   }
 
   /// берём цвет айтема из темы
-  Color _itemColor(BuildContext context, bool current) {
+  Color? _itemColor(BuildContext context, bool current) {
     return current
         ? Theme.of(context).bottomNavigationBarTheme.selectedItemColor
         : Theme.of(context).bottomNavigationBarTheme.unselectedItemColor;

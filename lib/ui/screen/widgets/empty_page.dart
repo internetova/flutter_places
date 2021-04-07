@@ -10,14 +10,11 @@ class EmptyPage extends StatelessWidget {
   final String text;
 
   const EmptyPage({
-    Key key,
-    @required this.icon,
-    @required this.header,
-    @required this.text,
-  })  : assert(icon != null),
-        assert(header != null),
-        assert(text != null),
-        super(key: key);
+    Key? key,
+    required this.icon,
+    required this.header,
+    required this.text,
+  })  : super(key: key);
 
   @override
   Widget build(BuildContext context) {

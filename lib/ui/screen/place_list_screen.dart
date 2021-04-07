@@ -1,41 +1,45 @@
 import 'package:flutter/material.dart';
-import 'package:places/data/interactor/place_interactor.dart';
-import 'package:places/domain/sight.dart';
-import 'package:places/domain/card_type.dart';
-import 'package:places/mocks.dart';
+import 'package:places/data/interactor/settings_interactor.dart';
+import 'package:places/data/model/search_filter.dart';
+import 'package:places/data/model/place.dart';
+import 'package:places/data/model/card_type.dart';
+import 'package:places/main.dart';
+import 'package:places/ui/screen/components/bottom_navigationbar.dart';
 import 'package:places/ui/screen/components/button_gradient.dart';
 import 'package:places/ui/screen/filters_screen.dart';
-import 'package:places/ui/screen/add_sight_screen.dart';
+import 'package:places/ui/screen/add_place_screen/add_place_screen.dart';
 import 'package:places/ui/screen/res/sizes.dart';
 import 'package:places/ui/screen/res/strings.dart';
 import 'package:places/ui/screen/widgets/list_cards.dart';
 import 'package:places/ui/screen/components/search_bar_static.dart';
-import 'package:places/ui/screen/components/bottom_navigationbar.dart';
 import 'package:places/ui/screen/sight_search_screen.dart';
-import 'package:places/ui/screen/utilities/filter_utility.dart';
 
 /// список интересных мест
-class SightListScreen extends StatefulWidget {
-  static _SightListScreenState of(BuildContext context) =>
-      context.findAncestorStateOfType<_SightListScreenState>();
+/// главная страница
+class PlaceListScreen extends StatefulWidget {
+  static _PlaceListScreenState? of(BuildContext context) =>
+      context.findAncestorStateOfType<_PlaceListScreenState>();
 
   @override
-  _SightListScreenState createState() => _SightListScreenState();
+  _PlaceListScreenState createState() => _PlaceListScreenState();
 }
 
-class _SightListScreenState extends State<SightListScreen> {
-  /// нефильтрованные данные если юзер не настраивал фильтр
-  final List<Sight> _fullData = mocks;
+class _PlaceListScreenState extends State<PlaceListScreen> {
+  /// фильтр для поиска
+  /// при первом запуске берётся дефолтный из настроек программы
+  /// при изменении перезаписывается на пользовательский
+  late SearchFilter _searchFilter;
 
-  /// текущие настройки фильтра, получаем их из экрана фильтрации
-  FilterSettings _currentFilter;
-
-  /// отфильтрованные данные
-  List<Sight> _filteredData = [];
+  /// фильтр - получаем из раздела настроек локальной базы данных
+  void _getStartData() async {
+    _searchFilter = await SettingsInteractor.getSearchFilter();
+    placeInteractor.getFilteredPlace(filter: _searchFilter);
+  }
 
   @override
   void initState() {
-    PlaceInteractor().getPlaces();
+    _getStartData();
+
     super.initState();
   }
 
@@ -53,9 +57,23 @@ class _SightListScreenState extends State<SightListScreen> {
                     horizontal:
                         orientation == Orientation.portrait ? 16.0 : 34.0,
                   ),
-                  sliver: _buildListCard(orientation,
-                      data:
-                          _filteredData.isNotEmpty ? _filteredData : _fullData),
+                  sliver: StreamBuilder<List<Place>>(
+                    stream: placeInteractor.listPlaces,
+                    builder: (BuildContext context, AsyncSnapshot snapshot) {
+                      if (!snapshot.hasData) {
+                        return SliverToBoxAdapter(
+                          child: Padding(
+                            padding: const EdgeInsets.only(top: 40.0),
+                            child: const Center(
+                              child: CircularProgressIndicator(),
+                            ),
+                          ),
+                        );
+                      }
+
+                      return _buildListCard(orientation, data: snapshot.data);
+                    },
+                  ),
                 ),
               ],
             ),
@@ -85,7 +103,8 @@ class _SightListScreenState extends State<SightListScreen> {
   }
 
   /// отображение списка карточек в зависимости от ориентации экрана
-  Widget _buildListCard(Orientation orientation, {List<Sight> data}) {
+  Widget _buildListCard(Orientation orientation,
+      {required List<Place> data}) {
     if (orientation == Orientation.portrait) {
       return ListCardsPortrait(
         data: data,
@@ -104,45 +123,36 @@ class _SightListScreenState extends State<SightListScreen> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => AddSightScreen(),
+        builder: (context) => AddPlaceScreen(),
       ),
     );
   }
 
-  /// передаем фильтр на экран поиска
+  /// передаем текущий фильтр на экран поиска
   void _onTapSearch() async {
-    final FilterSettings _filter = await Navigator.push(
+    final SearchFilter _newFilter = await Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => SightSearchScreen(filter: _currentFilter),
+        builder: (context) => SightSearchScreen(filter: _searchFilter),
       ),
     );
     setState(() {
-      _currentFilter = _filter;
-      _filteredData = filterData(
-          data: _fullData,
-          categories: _currentFilter.categories,
-          centerPoint: _currentFilter.centerPoint,
-          distance: _currentFilter.distance);
+      /// при возврате заменяем на новый
+      _searchFilter = _newFilter;
     });
   }
 
   /// переход на экран фильтра
   /// настройки фильтра возвращаем сюда и фильтруем данные
   _onPressedFilter() async {
-    final FilterSettings _filter = await Navigator.push(
+    final SearchFilter _newFilter = await Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => FiltersScreen(filter: _currentFilter),
+        builder: (context) => FiltersScreen(filter: _searchFilter),
       ),
     );
     setState(() {
-      _currentFilter = _filter;
-      _filteredData = filterData(
-          data: _fullData,
-          categories: _currentFilter.categories,
-          centerPoint: _currentFilter.centerPoint,
-          distance: _currentFilter.distance);
+      _searchFilter = _newFilter;
     });
   }
 }
@@ -153,9 +163,9 @@ class _SliverAppBarPortrait extends StatelessWidget {
   final VoidCallback onPressedFilter;
 
   const _SliverAppBarPortrait({
-    Key key,
-    this.onTapSearch,
-    this.onPressedFilter,
+    Key? key,
+    required this.onTapSearch,
+    required this.onPressedFilter,
   }) : super(key: key);
 
   @override
@@ -176,7 +186,7 @@ class _SliverAppBarPortrait extends StatelessWidget {
             opacity: top == 56.0 ? 1.0 : 0.0,
             child: Text(
               searchAppBarTitle,
-              style: Theme.of(context).textTheme.headline6.copyWith(
+              style: Theme.of(context).textTheme.headline6!.copyWith(
                     color: Theme.of(context).colorScheme.primary,
                   ),
               textAlign: TextAlign.center,
@@ -191,7 +201,7 @@ class _SliverAppBarPortrait extends StatelessWidget {
                   bottom: 104,
                   child: Text(
                     appBarTitle,
-                    style: Theme.of(context).textTheme.headline3.copyWith(
+                    style: Theme.of(context).textTheme.headline3!.copyWith(
                           color: Theme.of(context).colorScheme.primary,
                         ),
                   ),
@@ -223,9 +233,9 @@ class _SliverAppBarLandscape extends StatelessWidget {
   final VoidCallback onPressedFilter;
 
   const _SliverAppBarLandscape({
-    Key key,
-    this.onTapSearch,
-    this.onPressedFilter,
+    Key? key,
+    required this.onTapSearch,
+    required this.onPressedFilter,
   }) : super(key: key);
 
   @override
@@ -239,7 +249,7 @@ class _SliverAppBarLandscape extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
         child: Text(
           searchAppBarTitle,
-          style: Theme.of(context).textTheme.headline6.copyWith(
+          style: Theme.of(context).textTheme.headline6!.copyWith(
                 color: Theme.of(context).colorScheme.primary,
               ),
         ),

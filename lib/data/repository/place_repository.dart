@@ -1,10 +1,5 @@
-import 'package:places/data/model/search_filter.dart';
-
 /// Базовые функции для репозиториев
-abstract class Repository<T> {
-  /// получить отфильтрованные места
-  Future<List<T>> getPlaces({SearchFilter filter});
-
+abstract class PlaceRepository<T> {
   /// получить место по id
   Future<T> getPlaceDetail(int id);
 

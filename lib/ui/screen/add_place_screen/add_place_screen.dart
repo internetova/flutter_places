@@ -1,20 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:places/data/dto/place_dto.dart';
 import 'package:places/data/interactor/place_interactor.dart';
-import 'package:places/data/local_storage/local_storage.dart';
+import 'package:places/data/model/place_type.dart';
 import 'package:places/ui/screen/components/button_clear.dart';
 import 'package:places/ui/screen/components/button_save.dart';
 import 'package:places/ui/screen/components/button_text.dart';
 import 'package:places/ui/screen/components/icon_svg.dart';
 import 'package:places/ui/screen/components/title_leading_appbar.dart';
-import 'package:places/domain/sight.dart';
-import 'package:places/mocks.dart';
 import 'package:places/ui/screen/res/assets.dart';
 import 'package:places/ui/screen/res/sizes.dart';
 import 'package:places/ui/screen/res/strings.dart';
 import 'package:places/ui/screen/res/themes.dart';
-import 'package:places/ui/screen/select_category_screen.dart';
-import 'package:places/ui/screen/sight_list_screen.dart';
+import 'package:places/ui/screen/add_place_screen/select_category_screen.dart';
+import 'package:places/ui/screen/place_list_screen.dart';
 import 'package:places/ui/screen/utilities/test_images_data.dart';
 import 'package:places/ui/screen/widgets/choice_of_loading_images.dart';
 import 'package:places/ui/screen/widgets/list_cards_with_added_img.dart';
@@ -24,28 +23,28 @@ final _namePattern = RegExp(r'^[a-zа-яA-ZА-Я0-9 ]+$');
 final _coordinatesPattern = RegExp(r'^-?[0-9]{1,3}(?:\.[0-9]{1,10})?$');
 
 /// экран добавление нового места
-class AddSightScreen extends StatefulWidget {
+class AddPlaceScreen extends StatefulWidget {
   /// для обновления стэйта после удаления карточки с фото из дочерних виджетов
-  static _AddSightScreenState of(BuildContext context) =>
-      context.findAncestorStateOfType<_AddSightScreenState>();
+  static _AddPlaceScreenState? of(BuildContext context) =>
+      context.findAncestorStateOfType<_AddPlaceScreenState>();
 
   @override
-  _AddSightScreenState createState() => _AddSightScreenState();
+  _AddPlaceScreenState createState() => _AddPlaceScreenState();
 }
 
-class _AddSightScreenState extends State<AddSightScreen> {
+class _AddPlaceScreenState extends State<AddPlaceScreen> {
   final _formKey = GlobalKey<FormState>();
 
   /// кнопка сохранения при старте отключена
   bool _isButtonEnabled = false;
-  VoidCallback _submitForm;
+  VoidCallback? _submitForm;
 
   /// сюда сохраним данные из формы
-  String _selectedCategory;
-  String _name;
-  double _lat;
-  double _lon;
-  String _details;
+  late String _selectedCategory;
+  late String _name;
+  late double _lat;
+  late double _lng;
+  late String _description;
 
   /// сюда сохраним тестовые фотографии для загрузки
   List<TestImage> _userImages = [];
@@ -53,17 +52,17 @@ class _AddSightScreenState extends State<AddSightScreen> {
   final _categoryController = TextEditingController();
   final _nameController = TextEditingController();
   final _latController = TextEditingController();
-  final _lonController = TextEditingController();
-  final _detailsController = TextEditingController();
+  final _lngController = TextEditingController();
+  final _descriptionController = TextEditingController();
 
   final _categoryFocus = FocusNode();
   final _nameFocus = FocusNode();
   final _latFocus = FocusNode();
-  final _lonFocus = FocusNode();
-  final _detailsFocus = FocusNode();
+  final _lngFocus = FocusNode();
+  final _descriptionFocus = FocusNode();
 
   /// для передачи фокуса по тапам по полям и через клавиатуру
-  FocusNode _currentFocus;
+  FocusNode? _currentFocus;
 
   @override
   void initState() {
@@ -72,9 +71,11 @@ class _AddSightScreenState extends State<AddSightScreen> {
     _categoryController.addListener(() => setState(() {}));
     _nameController.addListener(() => setState(() {}));
     _latController.addListener(() => setState(() {}));
-    _lonController.addListener(() => setState(() {}));
-    _detailsController.addListener(() => setState(() {}));
+    _lngController.addListener(() => setState(() {}));
+    _descriptionController.addListener(() => setState(() {}));
     _userImages = userImages;
+    _selectedCategory = emptyCategory;
+    _categoryController.text = _selectedCategory;
   }
 
   @override
@@ -82,14 +83,14 @@ class _AddSightScreenState extends State<AddSightScreen> {
     _categoryController.dispose();
     _nameController.dispose();
     _latController.dispose();
-    _lonController.dispose();
-    _detailsController.dispose();
+    _lngController.dispose();
+    _descriptionController.dispose();
 
     _categoryFocus.dispose();
     _nameFocus.dispose();
     _latFocus.dispose();
-    _lonFocus.dispose();
-    _detailsFocus.dispose();
+    _lngFocus.dispose();
+    _descriptionFocus.dispose();
 
     super.dispose();
   }
@@ -104,7 +105,7 @@ class _AddSightScreenState extends State<AddSightScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if (_selectedCategory == null) {
+    if (_selectedCategory == emptyCategory) {
       _categoryController.text = emptyCategory;
     } else {
       _categoryController.text = _selectedCategory;
@@ -112,57 +113,54 @@ class _AddSightScreenState extends State<AddSightScreen> {
       /// если все поля что-то содержат, то кнопка активна
       if (_nameController.text.isNotEmpty &&
           _latController.text.isNotEmpty &&
-          _lonController.text.isNotEmpty &&
-          _detailsController.text.isNotEmpty) {
+          _lngController.text.isNotEmpty &&
+          _descriptionController.text.isNotEmpty) {
         _isButtonEnabled = true;
       }
     }
 
     if (_isButtonEnabled) {
       _submitForm = () {
-        final isValid = _formKey.currentState.validate();
+        final isValid = _formKey.currentState!.validate();
 
         if (isValid) {
-          _formKey.currentState.save();
+          _formKey.currentState!.save();
 
-          /// получаем id последнего элемента в массиве
-          final int _newId = mocks.last.id + 1;
-
+          /// TODO: загрузка фото
           /// временно
-          const _imgPreview =
-              'https://img1.fonwall.ru/o/dg/coast-beach-sand-ocean.jpeg';
+          const _images = [
+            'https://picsum.photos/1000/600?random=1',
+            'https://picsum.photos/1000/600?random=2',
+          ];
 
-          /// сюда сохраним данные полей
-          Sight newSight = Sight(
-            id: _newId,
-            type: _selectedCategory,
+          /// сюда сохраним данные полей формы
+          PlaceDto newPlace = PlaceDto(
+            placeType: PlaceType.getCode(_selectedCategory),
             name: _name,
             lat: _lat,
-            lon: _lon,
-            details: _details,
-            imgPreview: _imgPreview,
+            lng: _lng,
+            description: _description,
+            urls: _images,
           );
 
-          /// и потом добавим в общий список
-          mocks.add(newSight);
-
+          /// и потом отправим на сервер
           /// test Interactor
-          PlaceInteractor().addNewPlace(LocalStorage.testAddNewPlace);
+          PlaceInteractor().addNewPlace(newPlace);
 
           /// подтверждаем сохранение данных
           _showDialog(
             category: _selectedCategory,
             name: _name,
             lat: _lat,
-            lon: _lon,
-            details: _details,
+            lng: _lng,
+            description: _description,
           );
         }
       };
     }
 
     return Scaffold(
-      appBar: _buildAddSightAppBar(),
+      appBar: _buildAddSightAppBar() as PreferredSizeWidget?,
       body: CustomScrollView(
         slivers: <Widget>[
           SliverToBoxAdapter(
@@ -171,7 +169,7 @@ class _AddSightScreenState extends State<AddSightScreen> {
               child: GestureDetector(
                 onTap: () {
                   if (_currentFocus != null) {
-                    _currentFocus.unfocus();
+                    _currentFocus!.unfocus();
                     _currentFocus = null;
                   }
                 },
@@ -243,7 +241,7 @@ class _AddSightScreenState extends State<AddSightScreen> {
         addNewSightLabelSelectedCategory,
         style: Theme.of(context)
             .textTheme
-            .caption
+            .caption!
             .copyWith(color: Theme.of(context).colorScheme.inactiveBlack),
       ),
       sizedBoxH12,
@@ -296,10 +294,10 @@ class _AddSightScreenState extends State<AddSightScreen> {
             controller: _categoryController,
             showCursor: false,
             maxLines: 1,
-            style: _selectedCategory == null
+            style: _selectedCategory == emptyCategory
                 ? Theme.of(context)
                     .primaryTextTheme
-                    .subtitle1
+                    .subtitle1!
                     .copyWith(color: Theme.of(context).colorScheme.secondary2)
                 : Theme.of(context).primaryTextTheme.subtitle1,
             readOnly: true,
@@ -313,7 +311,7 @@ class _AddSightScreenState extends State<AddSightScreen> {
               ),
             ),
             validator: _validateCategory,
-            onSaved: (value) => setState(() => _selectedCategory = value),
+            onSaved: (value) => setState(() => _selectedCategory = value as String),
             onTap: () {
               _returnCategoryFromSelectCategoryScreen();
             },
@@ -375,7 +373,7 @@ class _AddSightScreenState extends State<AddSightScreen> {
             LengthLimitingTextInputFormatter(100),
           ],
           validator: _validateName,
-          onSaved: (value) => setState(() => _name = value),
+          onSaved: (value) => setState(() => _name = value as String),
         ),
       ),
     ];
@@ -395,7 +393,7 @@ class _AddSightScreenState extends State<AddSightScreen> {
               focusNode: _latFocus,
               autofocus: true,
               onFieldSubmitted: (_) {
-                _fieldFocusChange(context, _latFocus, _lonFocus);
+                _fieldFocusChange(context, _latFocus, _lngFocus);
               },
               onTap: () {
                 setState(() {
@@ -419,7 +417,8 @@ class _AddSightScreenState extends State<AddSightScreen> {
                 enabledBorder: _buildBorderColor(_latController),
               ),
               validator: _validateCoordinates,
-              onSaved: (value) => setState(() => _lat = double.tryParse(value)),
+              onSaved: (value) =>
+                  setState(() => _lat = double.tryParse(value!) as double),
             ),
           ),
         ],
@@ -438,17 +437,17 @@ class _AddSightScreenState extends State<AddSightScreen> {
           SizedBox(
             height: heightInput,
             child: TextFormField(
-              focusNode: _lonFocus,
+              focusNode: _lngFocus,
               autofocus: true,
               onFieldSubmitted: (_) {
-                _fieldFocusChange(context, _lonFocus, _detailsFocus);
+                _fieldFocusChange(context, _lngFocus, _descriptionFocus);
               },
               onTap: () {
                 setState(() {
-                  _currentFocus = _lonFocus;
+                  _currentFocus = _lngFocus;
                 });
               },
-              controller: _lonController,
+              controller: _lngController,
               cursorHeight: 24,
               cursorWidth: 1,
               maxLength: 50,
@@ -460,12 +459,13 @@ class _AddSightScreenState extends State<AddSightScreen> {
                 counterText: '',
                 suffixIcon: _clearField(
                     context: context,
-                    currentFocus: _lonFocus,
-                    controller: _lonController),
-                enabledBorder: _buildBorderColor(_lonController),
+                    currentFocus: _lngFocus,
+                    controller: _lngController),
+                enabledBorder: _buildBorderColor(_lngController),
               ),
               validator: _validateCoordinates,
-              onSaved: (value) => setState(() => _lon = double.tryParse(value)),
+              onSaved: (value) =>
+                  setState(() => _lng = double.tryParse(value!) as double),
             ),
           ),
         ],
@@ -487,18 +487,18 @@ class _AddSightScreenState extends State<AddSightScreen> {
       const Text(addNewSightLabelDetails),
       sizedBoxH12,
       TextFormField(
-        focusNode: _detailsFocus,
+        focusNode: _descriptionFocus,
         autofocus: true,
         onEditingComplete: () {
-          _detailsFocus.unfocus();
+          _descriptionFocus.unfocus();
           _currentFocus = null;
         },
         onTap: () {
           setState(() {
-            _currentFocus = _detailsFocus;
+            _currentFocus = _descriptionFocus;
           });
         },
-        controller: _detailsController,
+        controller: _descriptionController,
         cursorHeight: 24,
         cursorWidth: 1,
         maxLength: 300,
@@ -510,49 +510,49 @@ class _AddSightScreenState extends State<AddSightScreen> {
           hintText: addNewSightHintTextDetails,
           hintStyle: Theme.of(context)
               .primaryTextTheme
-              .subtitle1
+              .subtitle1!
               .copyWith(color: Theme.of(context).colorScheme.inactiveBlack),
           suffixIcon: _clearField(
               context: context,
-              currentFocus: _detailsFocus,
-              controller: _detailsController),
-          enabledBorder: _buildBorderColor(_detailsController),
+              currentFocus: _descriptionFocus,
+              controller: _descriptionController),
+          enabledBorder: _buildBorderColor(_descriptionController),
         ),
         inputFormatters: [
           LengthLimitingTextInputFormatter(300),
         ],
         validator: _validateDetails,
-        onSaved: (value) => setState(() => _details = value),
+        onSaved: (value) => setState(() => _description = value as String),
       ),
     ];
   }
 
   /// валидация полей
-  String _validateCategory(String value) {
-    if (value.isEmpty || value == emptyCategory) return errorEmptyCategory;
+  String? _validateCategory(String? value) {
+    if (value!.isEmpty || value == emptyCategory) return errorEmptyCategory;
 
     return null;
   }
 
-  String _validateName(String value) {
+  String? _validateName(String? value) {
     final _nameExp = _namePattern;
-    if (value.isEmpty) return errorEmptyName;
+    if (value!.isEmpty) return errorEmptyName;
     if (value.length < 5) return errorShortName;
     if (!_nameExp.hasMatch(value)) return errorIncorrectName;
 
     return null;
   }
 
-  String _validateCoordinates(String value) {
+  String? _validateCoordinates(String? value) {
     final _coordinatesExp = _coordinatesPattern;
-    if (value.isEmpty) return errorEmptyCoordinates;
+    if (value!.isEmpty) return errorEmptyCoordinates;
     if (!_coordinatesExp.hasMatch(value)) return errorIncorrectCoordinates;
 
     return null;
   }
 
-  String _validateDetails(String value) {
-    if (value.isEmpty) return errorEmptyDetails;
+  String? _validateDetails(String? value) {
+    if (value!.isEmpty) return errorEmptyDetails;
     if (value.length < 100) return errorShortDetails;
 
     return null;
@@ -572,9 +572,9 @@ class _AddSightScreenState extends State<AddSightScreen> {
 
   /// очистка поля по кнопке
   Widget _clearField(
-      {@required BuildContext context,
-      @required FocusNode currentFocus,
-      @required TextEditingController controller}) {
+      {required BuildContext context,
+      required FocusNode currentFocus,
+      required TextEditingController controller}) {
     if (currentFocus == _currentFocus && controller.text.isNotEmpty) {
       return ButtonClear(controller: controller);
     }
@@ -584,7 +584,7 @@ class _AddSightScreenState extends State<AddSightScreen> {
 
   /// цвет границы у уже правильно заполненного поля
   InputBorder _buildBorderColor(TextEditingController controller) =>
-      Theme.of(context).inputDecorationTheme.enabledBorder.copyWith(
+      Theme.of(context).inputDecorationTheme.enabledBorder!.copyWith(
             borderSide: BorderSide(
               color: controller.text.isNotEmpty
                   ? Theme.of(context).accentColor.withOpacity(0.4)
@@ -596,11 +596,11 @@ class _AddSightScreenState extends State<AddSightScreen> {
 
   /// показываем окно если форма валидна
   void _showDialog({
-    String category,
-    String name,
-    double lat,
-    double lon,
-    String details,
+    String? category,
+    String? name,
+    double? lat,
+    double? lng,
+    String? description,
   }) {
     showDialog(
         context: context,
@@ -613,7 +613,7 @@ class _AddSightScreenState extends State<AddSightScreen> {
               addNewSightAlertDialogHeader,
               style: Theme.of(context)
                   .textTheme
-                  .headline6
+                  .headline6!
                   .copyWith(color: Theme.of(context).accentColor),
             ),
             content: Column(
@@ -621,16 +621,16 @@ class _AddSightScreenState extends State<AddSightScreen> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Text(
-                  category,
+                  category!,
                   style: Theme.of(context).primaryTextTheme.subtitle1,
                 ),
                 sizedBoxH12,
                 Text(
-                  name,
+                  name!,
                   style: Theme.of(context).primaryTextTheme.subtitle1,
                 ),
                 Text(
-                  '${details.substring(0, 100)} ...',
+                  '${description!.substring(0, 100)} ...',
                   style: Theme.of(context).primaryTextTheme.subtitle1,
                 ),
                 sizedBoxH12,
@@ -639,7 +639,7 @@ class _AddSightScreenState extends State<AddSightScreen> {
                   style: Theme.of(context).primaryTextTheme.bodyText2,
                 ),
                 Text(
-                  '$addNewSightAlertDialogLon$lon',
+                  '$addNewSightAlertDialogLon$lng',
                   style: Theme.of(context).primaryTextTheme.bodyText2,
                 ),
               ],
@@ -650,7 +650,7 @@ class _AddSightScreenState extends State<AddSightScreen> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => SightListScreen(),
+                      builder: (context) => PlaceListScreen(),
                     ),
                   );
                 },
@@ -658,7 +658,7 @@ class _AddSightScreenState extends State<AddSightScreen> {
                   addNewSightAlertDialogSubmit,
                   style: Theme.of(context)
                       .textTheme
-                      .headline6
+                      .headline6!
                       .copyWith(color: Theme.of(context).accentColor),
                 ),
               ),

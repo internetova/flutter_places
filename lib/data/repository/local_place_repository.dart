@@ -1,14 +1,14 @@
 import 'package:places/data/local_storage/local_storage.dart';
-import 'package:places/data/model/ui_place.dart';
-import 'package:places/data/model/search_filter.dart';
-import 'package:places/data/repository/repository.dart';
+import 'package:places/data/model/card_type.dart';
+import 'package:places/data/model/place.dart';
+import 'package:places/data/repository/place_repository.dart';
+import 'package:places/data/res/error_response_strings.dart';
 
-/// ЛОКАЛЬНЫЙ РЕПОЗИТОРИЙ
+/// ЛОКАЛЬНЫЙ РЕПОЗИТОРИЙ МЕСТ
 /// для имитации локального хранилища используется класс [LocalStorage]
-class LocalPlaceRepository implements Repository<UiPlace> {
-  /// показать избранные
-  @override
-  Future<List<UiPlace>> getPlaces({SearchFilter filter}) async {
+class LocalPlaceRepository implements PlaceRepository<Place> {
+  /// получить все избранные (хочу посетить / посетил)
+  Future<List<Place>> getPlaces() async {
     final response = await Future.delayed(Duration(seconds: 1), () {
       final result = LocalStorage.favoritesPlaces;
 
@@ -20,18 +20,51 @@ class LocalPlaceRepository implements Repository<UiPlace> {
     return response;
   }
 
+  /// получить запланированные места
+  Future<List<Place>> getPlannedPlaces() async {
+    final response = await Future.delayed(Duration(seconds: 1), () {
+      final result = LocalStorage.favoritesPlaces
+          .where(
+              (place) => place.isFavorite == true && place.cardType == CardType.planned)
+          .toList();
+
+      return result;
+    });
+    print(
+        'LocalRepository getPlannedPlaces (${response.length} шт.): $response');
+
+    return response;
+  }
+
+  /// получить посещенные места
+  Future<List<Place>> getVisitedPlaces() async {
+    final response = await Future.delayed(Duration(seconds: 1), () {
+      final result = LocalStorage.favoritesPlaces
+          .where(
+              (place) => place.isFavorite == true && place.cardType == CardType.visited)
+          .toList();
+
+      return result;
+    });
+    print(
+        'LocalRepository getVisitedPlaces (${response.length} шт.): $response');
+
+    return response;
+  }
+
   /// получить избранное место по id
   @override
-  Future<UiPlace> getPlaceDetail(int id) async {
+  Future<Place> getPlaceDetail(int id) async {
     final response =
-        await Future<UiPlace>.delayed(Duration(seconds: 1), () async {
+        await Future<Place>.delayed(Duration(seconds: 1), () async {
       final indexPlaces = await _findIndexPlacesInList(id);
 
       if (indexPlaces != -1) {
         return LocalStorage.favoritesPlaces[indexPlaces];
       } else {
-        print('LocalRepository в Избранном: такого объекта нет');
-        return null;
+        print(ErrorResponseStrings.e404);
+
+        throw Exception(ErrorResponseStrings.e404);
       }
     });
     print('LocalRepository Детали места: $response');
@@ -41,22 +74,22 @@ class LocalPlaceRepository implements Repository<UiPlace> {
 
   /// добавить в избранное
   @override
-  Future<UiPlace> addNewPlace(UiPlace place) async {
+  Future<Place> addNewPlace(Place place) async {
     final response =
-        await Future<UiPlace>.delayed(Duration(seconds: 1), () async {
+        await Future<Place>.delayed(Duration(seconds: 1), () async {
       final indexPlaces = await _findIndexPlacesInList(place.id);
 
       if (indexPlaces == -1) {
-        final favoritePlace = UiPlace.addFavorites(place);
+        final favoritePlace = Place.addFavorites(place);
         LocalStorage.favoritesPlaces.add(favoritePlace);
 
         return LocalStorage.favoritesPlaces.last;
       } else {
-        print('LocalRepository Добавлено в Избранное: такой объект уже есть');
-        return null;
+        print('LocalRepository addNewPlace в Избранное: такой объект уже есть');
+        throw Exception(ErrorResponseStrings.e409);
       }
     });
-    print('LocalRepository Добавлено в Избранное: $response');
+    print('LocalRepository addNewPlace в Избранное: $response');
 
     return response;
   }
@@ -69,19 +102,20 @@ class LocalPlaceRepository implements Repository<UiPlace> {
 
       if (result != -1) {
         LocalStorage.favoritesPlaces.removeAt(result);
+        print('LocalRepository removePlaceИзбранное ID: $id');
       } else {
-        print('LocalRepository: Такой элемент не найден!');
+        print('LocalRepository removePlace: Такой элемент не найден!');
       }
     });
   }
 
   /// переключатель кнопки Избранное
-  Future<bool> toggleFavoritesButton(UiPlace place) async {
+  Future<bool> toggleFavorite(Place place) async {
     if (place.isFavorite) {
-      await removePlace(place.id);
+      await addNewPlace(place);
       return false;
     } else {
-      await addNewPlace(place);
+      await removePlace(place.id);
       return true;
     }
   }
@@ -89,14 +123,14 @@ class LocalPlaceRepository implements Repository<UiPlace> {
   /// обновить избранное (например, дату посещения перепланировать,
   /// перенести в посещённые)
   @override
-  Future<void> updatePlace(UiPlace place) async {
+  Future<void> updatePlace(Place place) async {
     await Future.delayed(Duration(seconds: 1), () async {
       final result = await _findIndexPlacesInList(place.id);
 
       if (result != -1) {
         LocalStorage.favoritesPlaces[result] = place;
       } else {
-        print('LocalRepository: Такой элемент не найден!');
+        print('LocalRepository updatePlace: Такой элемент не найден!');
       }
     });
   }

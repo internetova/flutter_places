@@ -9,11 +9,11 @@ import 'package:places/ui/screen/res/themes.dart';
 /// декоративный - выполняет роль перехода на другие экраны:
 /// поиск и настройка фильтра
 class SearchBarStatic extends StatelessWidget {
-  final VoidCallback onTapSearch;
-  final VoidCallback onPressedFilter;
+  final VoidCallback? onTapSearch;
+  final VoidCallback? onPressedFilter;
 
   const SearchBarStatic({
-    Key key,
+    Key? key,
     this.onTapSearch,
     this.onPressedFilter,
   }) : super(key: key);
@@ -42,7 +42,7 @@ class SearchBarStatic extends StatelessWidget {
                 sizedBoxW12,
                 Text(
                   searchHintText,
-                  style: Theme.of(context).primaryTextTheme.subtitle1.copyWith(
+                  style: Theme.of(context).primaryTextTheme.subtitle1!.copyWith(
                       color: Theme.of(context).colorScheme.inactiveBlack),
                 ),
               ],

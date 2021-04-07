@@ -1,25 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:places/domain/categories.dart';
+import 'package:places/data/model/place_type.dart';
 import 'package:places/ui/screen/filters_screen.dart';
 import 'package:places/ui/screen/res/assets.dart';
 
 /// айтем категории фильтра
-/// [catalog] название категории
+/// [placeType] название места (категория)
 /// [selectedCat] соотвтетствующая категории метка в отдельном
 /// параллельном категориям списке (выбрано / не выбрано)
 /// нажатие на категорию обрабатывается в главном родительском экране [FiltersScreen]
 class FilterCategoryItem extends StatelessWidget {
-  final Categories catalog;
-  final Map selectedCat;
+  final PlaceType placeType;
+  final Map<String, dynamic> selectedCat;
 
   const FilterCategoryItem({
-    Key key,
-    @required this.catalog,
-    @required this.selectedCat,
-  })  : assert(catalog != null),
-        assert(selectedCat != null),
-        super(key: key);
+    Key? key,
+    required this.placeType,
+    required this.selectedCat,
+  })  : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -44,11 +42,11 @@ class FilterCategoryItem extends StatelessWidget {
                 ),
                 child: IconButton(
                   icon: SvgPicture.asset(
-                    catalog.icon,
+                    placeType.icon,
                     color: Theme.of(context).accentColor,
                   ),
                   onPressed: () {
-                    FiltersScreen.of(context).setCategories(selectedCat);
+                    FiltersScreen.of(context)!.setCategories(selectedCat);
                   },
                   splashColor: Theme.of(context).accentColor.withOpacity(0.5),
                 ),
@@ -60,7 +58,7 @@ class FilterCategoryItem extends StatelessWidget {
             left: 0,
             right: 0,
             child: Text(
-              catalog.name,
+              placeType.name,
               style: Theme.of(context).textTheme.caption,
               textAlign: TextAlign.center,
             ),

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:places/domain/card_type.dart';
+import 'package:places/data/model/card_type.dart';
 import 'package:places/ui/screen/res/assets.dart';
 
 /// Текстовые контстанты
@@ -115,3 +115,21 @@ const imageUploadFail = 'Файл';
 
 /// cupertino пикер
 const cupertinoPickerSelect = 'Выбрать';
+
+/// названия категорий / типы мест в фильтре и в карточке
+const placeTypeCodeHotel = 'hotel';
+const placeTypeNameHotel = 'Отель';
+const placeTypeCodeRestaurant = 'restaurant';
+const placeTypeNameRestaurant = 'Ресторан';
+const placeTypeCodeOther = 'other';
+const placeTypeNameOther = 'Особое место';
+const placeTypeCodePark = 'park';
+const placeTypeNamePark = 'Парк';
+const placeTypeCodeMuseum = 'museum';
+const placeTypeNameMuseum = 'Музей';
+const placeTypeCodeCafe = 'cafe';
+const placeTypeNameCafe = 'Кафе';
+const placeTypeCodeTemple = 'temple'; // TODO: нет иконки
+const placeTypeNameTemple = 'Храм';
+const placeTypeCodeMonument = 'monument';// TODO: нет иконки
+const placeTypeNameMonument = 'Памятник';

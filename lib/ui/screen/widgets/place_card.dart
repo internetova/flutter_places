@@ -4,39 +4,36 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:places/data.dart';
-import 'package:places/data/interactor/place_interactor.dart';
-import 'package:places/data/local_storage/local_storage.dart';
-import 'package:places/domain/card_type.dart';
+import 'package:places/data/model/place.dart';
+import 'package:places/data/model/card_type.dart';
 import 'package:places/ui/screen/components/icon_action_button.dart';
-
-import 'package:places/domain/sight.dart';
 import 'package:places/ui/screen/res/sizes.dart';
 import 'package:places/ui/screen/res/strings.dart';
 import 'package:places/ui/screen/res/assets.dart';
 import 'package:places/ui/screen/res/themes.dart';
-import 'package:places/ui/screen/sight_details.dart';
+import 'package:places/ui/screen/place_details.dart';
 import 'package:places/ui/screen/visiting_screen.dart';
 import 'package:places/ui/screen/widgets/reminder_time_ios.dart';
-import 'package:places/ui/screen/widgets/sight_details_bottom_sheet.dart';
+import 'package:places/ui/screen/widgets/place_details_bottom_sheet.dart';
 
-/// карточка достопримечательности
+import 'favorites_button_stream.dart';
+
+/// карточка интересного места
 /// в зависимости от места показа карточки - Список поиска, в Избранном
 /// (запланировано, посещено) показываем разную информацию на карточке
 /// т.к. иконки и надписи отличаются
 /// [card] карточка одна на все сценарии использования, разделяем с помощью [cardType]
 /// [cardType] тип карточки для отображения в соответствующем разделе с
 /// правильными кнопками действий на карточке и внутренним наполнением
-class SightCard extends StatelessWidget {
-  final Sight card;
+class PlaceCard extends StatelessWidget {
+  final Place card;
   final CardType cardType;
 
-  SightCard({
-    Key key,
-    @required this.card,
-    @required this.cardType,
-  })  : assert(card != null),
-        assert(cardType != null),
-        super(key: key);
+  PlaceCard({
+    Key? key,
+    required this.card,
+    required this.cardType,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -52,12 +49,12 @@ class SightCard extends StatelessWidget {
               children: [
                 Stack(
                   children: [
-                    CardImagePreview(imgUrl: card.imgPreview),
+                    CardImagePreview(imgUrl: card.urls.first),
                     Positioned(
                       top: 8,
                       left: 16,
                       right: 12,
-                      child: CardContentType(type: card.type),
+                      child: CardContentType(type: card.getPlaceTypeName()),
                     ),
                   ],
                 ),
@@ -92,7 +89,7 @@ class SightCard extends StatelessWidget {
     showModalBottomSheet(
       context: context,
       builder: (_) {
-        return SightDetailsBottomSheet(card: card);
+        return PlaceDetailsBottomSheet(card: card);
       },
       isScrollControlled: true,
       isDismissible: true,
@@ -104,19 +101,21 @@ class SightCard extends StatelessWidget {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => SightDetails(card: card),
+        builder: (context) => PlaceDetails(card: card),
       ),
     );
   }
 }
 
 /// загружает картинку-превью карточки
+/// берёт первую из списка картинок
 class CardImagePreview extends StatelessWidget {
-  const CardImagePreview({
-    Key key,
-    @required this.imgUrl,
-  }) : super(key: key);
   final String imgUrl;
+
+  const CardImagePreview({
+    Key? key,
+    required this.imgUrl,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -127,13 +126,13 @@ class CardImagePreview extends StatelessWidget {
         imgUrl,
         fit: BoxFit.cover,
         loadingBuilder: (BuildContext context, Widget child,
-            ImageChunkEvent loadingProgress) {
+            ImageChunkEvent? loadingProgress) {
           if (loadingProgress == null) return child;
           return Center(
             child: CircularProgressIndicator(
               value: loadingProgress.expectedTotalBytes != null
                   ? loadingProgress.cumulativeBytesLoaded /
-                      loadingProgress.expectedTotalBytes
+                      loadingProgress.expectedTotalBytes!
                   : null,
             ),
           );
@@ -145,8 +144,12 @@ class CardImagePreview extends StatelessWidget {
 
 /// на картинке отображает тип карточки (музей, достопримечательность и т.п.)
 class CardContentType extends StatelessWidget {
-  const CardContentType({Key key, @required this.type}) : super(key: key);
   final String type;
+
+  const CardContentType({
+    Key? key,
+    required this.type,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -161,13 +164,13 @@ class CardContentType extends StatelessWidget {
 /// отображается на одной линии с типом карточки
 /// в зависимости от [cardType] места показа карточки кнопки меняются
 class CardActions extends StatelessWidget {
-  final Sight card;
+  final Place card;
   final CardType cardType;
 
   CardActions({
-    Key key,
-    @required this.cardType,
-    this.card,
+    Key? key,
+    required this.card,
+    required this.cardType,
   }) : super(key: key);
 
   @override
@@ -176,9 +179,12 @@ class CardActions extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          if (cardType == CardType.search) ..._buildActionsSearch(context),
-          if (cardType == CardType.planned) ..._buildActionsPlanned(context),
-          if (cardType == CardType.visited) ..._buildActionsVisited(context),
+          if (cardType == CardType.search)
+            ..._buildActionsSearch(context) as Iterable<Widget>,
+          if (cardType == CardType.planned)
+            ..._buildActionsPlanned(context) as Iterable<Widget>,
+          if (cardType == CardType.visited)
+            ..._buildActionsVisited(context) as Iterable<Widget>,
         ],
       ),
     );
@@ -186,15 +192,8 @@ class CardActions extends StatelessWidget {
 
   /// кнопки действий для карточки главного экрана
   List _buildActionsSearch(BuildContext context) => <Widget>[
-        IconActionButton(
-          onPressed: () {
-            print('onPressed Избранное');
-
-            /// для теста PlaceInteractor пока передам то, что есть в памяти
-            /// потом модифицирую, судя по всему в следующем задании про стримы
-            PlaceInteractor().toggleFavorites(LocalStorage.testToggleFavorites);
-          },
-          icon: icFavorites,
+        FavoritesButtonStream(
+          place: card,
         ),
       ];
 
@@ -249,18 +248,18 @@ class CardActions extends StatelessWidget {
   /// удалить карточку
   void _deleteCard(BuildContext context) {
     favoritesSight.removeWhere((element) => element.id == card.id);
-    VisitingScreen.of(context).updateState();
+    VisitingScreen.of(context)!.updateState();
   }
 
   /// установить напоминание Часы о запланированном посещении места Android
-  Future<TimeOfDay> _setReminderTimeAndroid(BuildContext context) =>
+  Future<TimeOfDay?> _setReminderTimeAndroid(BuildContext context) =>
       showTimePicker(
           context: context,
           initialTime: TimeOfDay.now(),
-          builder: (BuildContext context, Widget child) {
+          builder: (BuildContext context, Widget? child) {
             return Theme(
               data: setThemePicker(context),
-              child: child,
+              child: child!,
             );
           });
 }
@@ -268,13 +267,13 @@ class CardActions extends StatelessWidget {
 /// контент карточки - название и детали
 /// зависит от места показа карточки
 class CardContent extends StatelessWidget {
-  final Sight card;
+  final Place card;
   final CardType cardType;
 
   const CardContent({
-    Key key,
-    @required this.card,
-    @required this.cardType,
+    Key? key,
+    required this.card,
+    required this.cardType,
   }) : super(key: key);
 
   @override
@@ -296,7 +295,7 @@ class CardContent extends StatelessWidget {
           ),
           if (cardType == CardType.search) ...[
             Text(
-              card.details,
+              card.description,
               style: Theme.of(context).textTheme.bodyText2,
               overflow: TextOverflow.ellipsis,
               maxLines: 1,

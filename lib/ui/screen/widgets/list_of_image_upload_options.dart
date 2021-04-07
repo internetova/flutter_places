@@ -10,8 +10,8 @@ class ImageUploadItem {
   final String name;
 
   const ImageUploadItem({
-    this.icon,
-    this.name,
+    required this.icon,
+    required this.name,
   });
 }
 
@@ -27,7 +27,7 @@ class ListOfImageUploadOptions extends StatelessWidget {
   final List<ImageUploadItem> data;
 
   const ListOfImageUploadOptions({
-    Key key,
+    Key? key,
     this.data = _dataImageUploadItems,
   }) : super(key: key);
 
@@ -55,16 +55,14 @@ class ListOfImageUploadOptions extends StatelessWidget {
 class _ImageUploadItemWidget extends StatelessWidget {
   final String icon;
   final String name;
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
 
   const _ImageUploadItemWidget({
-    Key key,
-    @required this.icon,
-    @required this.name,
+    Key? key,
+    required this.icon,
+    required this.name,
     this.onTap,
-  })  : assert(icon != null),
-        assert(name != null),
-        super(key: key);
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -77,7 +75,7 @@ class _ImageUploadItemWidget extends StatelessWidget {
       ),
       title: Text(
         name,
-        style: Theme.of(context).primaryTextTheme.subtitle1.copyWith(
+        style: Theme.of(context).primaryTextTheme.subtitle1!.copyWith(
               color: _setColor(context),
             ),
       ),

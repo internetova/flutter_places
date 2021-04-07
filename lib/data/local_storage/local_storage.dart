@@ -1,8 +1,9 @@
+import 'package:flutter/material.dart';
 import 'package:places/data/model/coordinates.dart';
-import 'package:places/data/model/place.dart';
+import 'package:places/data/dto/place_dto.dart';
 import 'package:places/data/model/search_filter.dart';
-import 'package:places/data/model/ui_place.dart';
-import 'package:places/domain/card_type.dart';
+import 'package:places/data/model/place.dart';
+import 'package:places/data/model/card_type.dart';
 
 /// ‼️ временно
 /// имитация локального хранилища
@@ -12,8 +13,8 @@ import 'package:places/domain/card_type.dart';
 /// 3. кэшированные и обработанные данные(isFavorite)
 /// 4. список избранных мест
 /// 5. историю поиска пользователя
-/// 6. настройки пользователя
-/// 7. Блок для тестирования, позже удалить
+/// 6. настройки пользователя тема
+/// todo 7. Блок для тестирования, позже удалить
 class LocalStorage {
   LocalStorage._();
 
@@ -21,18 +22,25 @@ class LocalStorage {
   static Coordinates userLocation = Coordinates(lat: 55.994909, lng: 37.606793);
 
   /// 2. Фильтр для поиска по умолчанию
-  static SearchFilter defaultSearchFilter = SearchFilter(
-    radius: 10000.0,
-    typeFilter: ['park', 'cafe', 'other'],
+  /// при изменении пересохраняется в момент отправки нового запроса
+  static SearchFilter searchFilter = SearchFilter(
+    radius: RangeValues(100.0, 10000.0), //  в метрах
+    typeFilter: [
+      'park',
+      'cafe',
+      'other',
+      'museum',
+      'restaurant',
+    ],
   );
 
   /// 3. Сохранённые данные с сервера и обрабатанные в соответствии
   /// со списком избранных мест для отображения на Главной странице
-  static List<UiPlace> cacheUIPlaces = [];
+  static List<Place> cachePlaces = [];
 
   /// 4. Список избранных мест
-  static List<UiPlace> favoritesPlaces = [
-    UiPlace(
+  static List<Place> favoritesPlaces = [
+    Place(
       id: 134,
       lat: 55.988344,
       lng: 37.608042,
@@ -53,6 +61,27 @@ class LocalStorage {
       isFavorite: true,
       cardType: CardType.planned,
     ),
+    Place(
+      id: 136,
+      lat: 55.993677,
+      lng: 37.611009,
+      name: 'Кафе Натюрморт',
+      urls: [
+        'https://img2.fonwall.ru/o/ht/cake-dessert-food-sweet.jpeg',
+        'https://picsum.photos/1000/600?random=1',
+        'https://picsum.photos/1000/600?random=2',
+        'https://picsum.photos/1000/600?random=3',
+        'https://picsum.photos/1000/600?random=4',
+        'https://picsum.photos/1000/600?random=5',
+        'https://picsum.photos/1000/600?random=6'
+      ],
+      placeType: 'cafe',
+      description:
+          'Банальные, но неопровержимые выводы, а также предприниматели в сети интернет являются только методом политического участия и смешаны с не уникальными данными до степени совершенной неузнаваемости, из-за чего возрастает их статус бесполезности. Интерактивные прототипы призваны к ответу.',
+      distance: 295.8190911475786,
+      isFavorite: true,
+      cardType: CardType.visited,
+    )
   ];
 
   /// 5. История поиска
@@ -66,7 +95,7 @@ class LocalStorage {
   /// 7. Блок для тестирования, позже удалить
   /// карточке для добавления удаления в избранное пока не подключена работа с
   /// данными из сети
-  static UiPlace testToggleFavorites = UiPlace(
+  static Place testToggleFavorites = Place(
     id: 136,
     lat: 55.993677,
     lng: 37.611009,
@@ -89,7 +118,9 @@ class LocalStorage {
   );
 
   /// добавить новое место на сервер
-  static Place testAddNewPlace = Place(
+  static PlaceDto testAddNewPlace = PlaceDto(
+    // это поле передавать на сервер не будем, скроем при трансформации
+    id: 0,
     lat: 55.993677,
     lng: 37.611009,
     name: 'Тест',

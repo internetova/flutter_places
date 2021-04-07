@@ -5,10 +5,9 @@ class ButtonClear extends StatelessWidget {
   final TextEditingController controller;
 
   const ButtonClear({
-    Key key,
-    @required this.controller,
-  })  : assert(controller != null),
-        super(key: key);
+    Key? key,
+    required this.controller,
+  })  : super(key: key);
 
   @override
   Widget build(BuildContext context) {

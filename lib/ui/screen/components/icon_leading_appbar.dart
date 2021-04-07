@@ -6,14 +6,13 @@ import 'package:flutter_svg/flutter_svg.dart';
 /// leadingWidth: 64
 class SmallLeadingIcon extends StatelessWidget {
   final String icon;
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
 
   const SmallLeadingIcon({
-    Key key,
-    @required this.icon,
+    Key? key,
+    required this.icon,
     this.onPressed,
-  })  : assert(icon != null),
-        super(key: key);
+  })  : super(key: key);
 
   @override
   Widget build(BuildContext context) {

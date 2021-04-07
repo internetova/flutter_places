@@ -7,13 +7,13 @@ import 'package:places/domain/sight.dart';
 /// вынесла в отдельный файл
 
 /// поиск карточек по фильтру
-List<Sight> filterData({
-  @required List<Sight> data,
-  @required List<Map> categories,
-  @required CenterPoint centerPoint,
-  @required RangeValues distance,
+List<UiPlace> filterData({
+  required List<UiPlace> data,
+  required List<Map> categories,
+  required CenterPoint centerPoint,
+  required RangeValues? distance,
 }) {
-  List<Sight> result = [];
+  List<UiPlace> result = [];
 
   for (var i = 0; i < categories.length; i++) {
     for (var k = 0; k < data.length; k++) {
@@ -22,7 +22,7 @@ List<Sight> filterData({
               checkPointLat: data[k].lat,
               checkPointLon: data[k].lon,
               centerPoint: centerPoint,
-              distance: distance)) {
+              distance: distance!)) {
         result.add(data[k]);
       }
     }
@@ -35,10 +35,10 @@ List<Sight> filterData({
 /// https://stackoverflow.com/questions/24680247/check-if-a-latitude-and-longitude-is-within-a-circle-google-maps
 /// distance в метрах, переводим в км
 bool _arePointsNear({
-  @required double checkPointLat,
-  @required double checkPointLon,
-  @required CenterPoint centerPoint,
-  @required RangeValues distance,
+  required double checkPointLat,
+  required double checkPointLon,
+  required CenterPoint centerPoint,
+  required RangeValues distance,
 }) {
   const ky = 40000 / 360;
   final kx = cos(pi * centerPoint.lat / 180.0) * ky;
@@ -53,7 +53,7 @@ bool _arePointsNear({
 
 /// стартовая точка поиска с названием и координатами
 class CenterPoint {
-  CenterPoint({@required this.lat, @required this.lon, @required this.name});
+  CenterPoint({required this.lat, required this.lon, required this.name});
 
   final double lat;
   final double lon;
@@ -67,12 +67,12 @@ class CenterPoint {
 /// [centerPoint] стартовая точка поиска
 class FilterSettings {
   final List<Map> categories;
-  final RangeValues distance;
+  final RangeValues? distance;
   final CenterPoint centerPoint; //‼️❓ на всякий случай, а там решим
 
   FilterSettings({
-    @required this.categories,
-    @required this.distance,
-    @required this.centerPoint,
+    required this.categories,
+    required this.distance,
+    required this.centerPoint,
   });
 }

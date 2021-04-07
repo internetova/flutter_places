@@ -13,7 +13,7 @@ class ReminderTimeIOSBottomSheet extends StatefulWidget {
 
 class _ReminderTimeIOSBottomSheetState
     extends State<ReminderTimeIOSBottomSheet> {
-  Duration _selected;
+  Duration? _selected;
 
   @override
   Widget build(BuildContext context) {
