@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
@@ -5,6 +6,7 @@ import 'package:places/data/api/api_client.dart';
 import 'package:places/data/api/api_constants.dart';
 import 'package:places/data/dto/place_dto.dart';
 import 'package:places/data/dto/places_filter_request_dto.dart';
+import 'package:places/data/exceptions/network_exception.dart';
 import 'package:places/data/model/search_filter.dart';
 import 'package:places/data/repository/place_repository.dart';
 
@@ -95,10 +97,15 @@ class ApiPlaceRepository implements PlaceRepository<PlaceDto> {
 
   /// проверим есть ли доступ в сеть 🤓
   Future<Response> testNetwork() async {
-    final queryParameters = {
-      'count': 1
-    };
+    final queryParameters = {'count': 1};
 
-    return _client.get('${ApiConstants.placesUrl}', queryParameters: queryParameters);
+    return _client.get('${ApiConstants.placesUrl}',
+        queryParameters: queryParameters);
+  }
+
+  /// обработка ошибок
+  NetworkException getNetworkException(
+      DioError error, {StreamController? streamController}) {
+    return _client.getNetworkException(error, streamController: streamController);
   }
 }

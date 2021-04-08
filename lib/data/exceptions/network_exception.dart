@@ -13,11 +13,10 @@ class NetworkException implements Exception {
 
   @override
   String toString() {
-    String msg =
-        request != null ? 'В запросе $request  возникла ' : 'Возникла ';
-    msg += errorCode != null
-        ? 'ошибка: $errorCode $errorText'
-        : 'ошибка: $errorText';
+    String msg = request != null
+        ? 'В запросе $request возникла ошибка:'
+        : 'Возникла ошибка:';
+    msg += errorCode != null ? ' $errorCode $errorText' : ' $errorText';
     return msg;
   }
 }

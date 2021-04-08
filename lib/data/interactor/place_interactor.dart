@@ -1,8 +1,8 @@
 import 'dart:async';
 
+import 'package:dio/dio.dart';
 import 'package:places/data/api/api_client.dart';
 import 'package:places/data/dto/place_dto.dart';
-import 'package:places/data/exceptions/app_exceptions.dart';
 import 'package:places/data/model/place.dart';
 import 'package:places/data/model/search_filter.dart';
 import 'package:places/data/local_storage/local_storage.dart';
@@ -21,7 +21,7 @@ class PlaceInteractor {
 
   /// стрим контроллер для отфильтрованных мест
   final StreamController<List<Place>> _streamController =
-  StreamController.broadcast();
+      StreamController.broadcast();
 
   /// стрим для списка отфильтрованных мест
   /// добавим сюда данные после обработки "чистого" результата [getFilteredPlace]
@@ -48,7 +48,8 @@ class PlaceInteractor {
   /// данные программы, сравниваем наличие мест в списке избранных и проставляем
   /// метки, всё это сохраняем в память типа кэш (база данных ❓) и отображаем
   /// на главной странице
-  Future<List<Place>> getFilteredPlace({required SearchFilter filter, String? keywords}) async {
+  Future<List<Place>> getFilteredPlace(
+      {required SearchFilter filter, String? keywords}) async {
     try {
       /// получили данные из Api
       final placesDto =
@@ -69,9 +70,9 @@ class PlaceInteractor {
       _streamController.sink.add(places);
 
       return places;
-    } catch (e) {
-      _streamController.sink.addError(AppExceptions.getExceptions(e));
-      throw AppExceptions.getExceptions(e);
+    } on DioError catch (e) {
+      throw apiRepository.getNetworkException(e,
+          streamController: _streamController);
     }
   }
 
@@ -132,7 +133,6 @@ class PlaceInteractor {
     final newPlace = await apiRepository.addNewPlace(place);
     print('Interactor addNewPlace: $newPlace');
   }
-
 
   /// добавить место в список избранного
   /// ❓ а может void? дальше посмотрю

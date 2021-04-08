@@ -1,7 +1,7 @@
 import 'dart:async';
 
+import 'package:dio/dio.dart';
 import 'package:places/data/api/api_client.dart';
-import 'package:places/data/exceptions/app_exceptions.dart';
 import 'package:places/data/model/card_type.dart';
 import 'package:places/data/model/place.dart';
 import 'package:places/data/repository/api_place_repository.dart';
@@ -55,9 +55,8 @@ class FavoritePlacesInteractor {
       _streamController.sink.add(places);
 
       return places;
-    } catch (e) {
-      _streamController.sink.addError(AppExceptions.getExceptions(e));
-      throw AppExceptions.getExceptions(e);
+    } on DioError catch (e) {
+      throw apiRepository.getNetworkException(e, streamController: _streamController);
     }
   }
 
@@ -74,9 +73,8 @@ class FavoritePlacesInteractor {
       _streamController.sink.add(places);
 
       return places;
-    } catch (e) {
-      _streamController.sink.addError(AppExceptions.getExceptions(e));
-      throw AppExceptions.getExceptions(e);
+    } on DioError catch (e) {
+      throw apiRepository.getNetworkException(e, streamController: _streamController);
     }
   }
 

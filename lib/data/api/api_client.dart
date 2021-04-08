@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:dio/dio.dart';
 import 'package:places/data/api/api_constants.dart';
+import 'package:places/data/exceptions/network_exception.dart';
 
 class ApiClient {
   /// базовые настройки клиента
@@ -59,4 +62,18 @@ class ApiClient {
 
   /// удалить
   Future<Response> delete(String url) async => await _client.delete(url);
+
+  /// обработка ошибок
+  NetworkException getNetworkException(DioError error,
+      {StreamController? streamController}) {
+    final exception = NetworkException(
+      request: '${error.requestOptions.baseUrl}${error.requestOptions.path}',
+      errorCode: error.response?.statusCode,
+      errorText: error.message,
+    );
+
+    streamController?.sink.addError(exception);
+
+    return exception;
+  }
 }
