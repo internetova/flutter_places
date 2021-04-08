@@ -45,10 +45,10 @@ const List<Map<String, dynamic>> favoritesEmptyScreen = const [
   },
 ];
 
-const Map<String, dynamic> appNetworkException = {
+const Map<String, String> appNetworkException = {
   'emptyScreenIcon': icNetworkException,
   'emptyScreenHeader': 'Ошибка',
-  'emptyScreenText': 'Что то пошло не так\nПопробуйте позже.',
+  'emptyScreenText': 'Что-то пошло не так.\nПопробуйте позже.',
 };
 
 /// Ошибки и исключения

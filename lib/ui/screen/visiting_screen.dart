@@ -145,9 +145,9 @@ class _VisitingScreenState extends State<VisitingScreen>
   /// если есть ошибка
   Widget _buildExceptionInfo() => Center(
         child: EmptyPage(
-            icon: appNetworkException['emptyScreenIcon'],
-            header: appNetworkException['emptyScreenHeader'],
-            text: appNetworkException['emptyScreenText']),
+            icon: appNetworkException['emptyScreenIcon']!,
+            header: appNetworkException['emptyScreenHeader']!,
+            text: appNetworkException['emptyScreenText']!),
       );
 
   /// строим карточки для Избранного

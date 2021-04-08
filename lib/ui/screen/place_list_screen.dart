@@ -64,9 +64,9 @@ class _PlaceListScreenState extends State<PlaceListScreen> {
                       if (snapshot.hasError) {
                         return SliverFillRemaining(
                           child: EmptyPage(
-                              icon: appNetworkException['emptyScreenIcon'],
-                              header: appNetworkException['emptyScreenHeader'],
-                              text: appNetworkException['emptyScreenText']),
+                              icon: appNetworkException['emptyScreenIcon']!,
+                              header: appNetworkException['emptyScreenHeader']!,
+                              text: appNetworkException['emptyScreenText']!),
                         );
                       }
 
