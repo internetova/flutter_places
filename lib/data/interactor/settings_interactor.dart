@@ -5,20 +5,17 @@ import 'package:places/data/repository/local_settings_repository.dart';
 /// 1. тема
 /// 2. фильтр
 class SettingsInteractor {
-  SettingsInteractor._();
-
   static final LocalSettingsRepository _settingsRepository =
       LocalSettingsRepository();
 
   /// 1. тема: переключение текущей темы приложения
-  static Future<void> toggleTheme() => _settingsRepository.toggleTheme();
+  Future<void> toggleTheme() => _settingsRepository.toggleTheme();
 
   /// 2.   фильтр
   /// 2.1. получить фильтр для поиска
-  static Future<SearchFilter> getSearchFilter() =>
-      _settingsRepository.getFilter();
+  Future<SearchFilter> getSearchFilter() => _settingsRepository.getFilter();
 
   /// 2.2. обновить фильтр
-  static Future<void> updateSearchFilter({required SearchFilter newFilter}) =>
+  Future<void> updateSearchFilter({required SearchFilter newFilter}) =>
       _settingsRepository.updateFilter(newFilter: newFilter);
 }

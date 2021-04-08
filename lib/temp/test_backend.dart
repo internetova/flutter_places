@@ -80,8 +80,8 @@ class _TestBackendState extends State<TestBackend> {
             TextButton(
               child: Text('Фильтр POST [/filtered_places]'),
               onPressed: () async {
-                final List<Place> response = await (placeInteractor.getFilteredPlace(filter: _filter, keywords: keyWords));
-                print('UI Фильтрация мест (${response.length} шт.): $response');
+                // final List<Place> response = await (placeInteractor.getFilteredPlace(filter: _filter, keywords: keyWords));
+                // print('UI Фильтрация мест (${response.length} шт.): $response');
               },
               style: TextButton.styleFrom(
                 primary: Colors.white,

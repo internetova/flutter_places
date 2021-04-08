@@ -16,6 +16,15 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
+  late SettingsInteractor _settingsInteractor;
+
+  @override
+  void initState() {
+    _settingsInteractor = context.read<SettingsInteractor>();
+
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -56,7 +65,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             value: notifier.darkTheme!,
             onChanged: (currentValue) {
               notifier.toggleTheme();
-              SettingsInteractor.toggleTheme();
+              _settingsInteractor.toggleTheme();
             }),
       ),
     );
