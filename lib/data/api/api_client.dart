@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:dio/dio.dart';
 import 'package:places/data/api/api_constants.dart';
+import 'package:places/data/exceptions/network_exception.dart';
 
 class ApiClient {
   /// базовые настройки клиента
@@ -21,17 +24,18 @@ class ApiClient {
     return dio
       ..interceptors.add(
         InterceptorsWrapper(
-          onRequest:(options, handler){
-            print('Interceptors Отправлен запрос: ${options.baseUrl}${options.path}');
+          onRequest: (options, handler) {
+            print(
+                'Interceptors Отправлен запрос: ${options.baseUrl}${options.path}');
             return handler.next(options);
           },
-          onResponse:(response,handler) {
+          onResponse: (response, handler) {
             print('Interceptors Получен ответ: $response');
             return handler.next(response);
           },
           onError: (DioError e, handler) {
             print('DioError: $e');
-            return  handler.next(e);//continue
+            return handler.next(e); //continue
           },
         ),
       );
@@ -44,7 +48,9 @@ class ApiClient {
   static final _client = addInterceptors(_dio);
 
   /// получить с сервера
-  Future<Response> get(String url) async => await _client.get(url);
+  Future<Response> get(String url,
+          {Map<String, dynamic>? queryParameters}) async =>
+      await _client.get(url);
 
   /// отправить на сервер
   Future<Response> post(String url, {dynamic data}) async =>
@@ -56,4 +62,18 @@ class ApiClient {
 
   /// удалить
   Future<Response> delete(String url) async => await _client.delete(url);
+
+  /// обработка ошибок
+  NetworkException getNetworkException(DioError error,
+      {StreamController? streamController}) {
+    final exception = NetworkException(
+      request: '${error.requestOptions.baseUrl}${error.requestOptions.path}',
+      errorCode: error.response?.statusCode,
+      errorText: error.message,
+    );
+
+    streamController?.sink.addError(exception);
+
+    return exception;
+  }
 }

@@ -30,7 +30,7 @@ const dateVisited = 'Цель достигнута';
 
 /// данные для вывода на странице Избранное
 /// когда нет карточек в нужной категории
-const List<Map> favoritesEmptyScreen = const [
+const List<Map<String, dynamic>> favoritesEmptyScreen = const [
   {
     'typeCard': CardType.planned,
     'emptyScreenIcon': icEmptyPlanned,
@@ -44,6 +44,16 @@ const List<Map> favoritesEmptyScreen = const [
     'emptyScreenText': 'Завершите маршрут,\nчтобы место попало сюда.',
   },
 ];
+
+const Map<String, String> appNetworkException = {
+  'emptyScreenIcon': icNetworkException,
+  'emptyScreenHeader': 'Ошибка',
+  'emptyScreenText': 'Что-то пошло не так.\nПопробуйте позже.',
+};
+
+/// Ошибки и исключения
+const appExceptionNoInternetConnection = 'Нет интернет соединения';
+const appExceptionUnknownError = 'Неизвестная ошибка';
 
 /// экран фильтров
 const filterClearFilters = 'Очистить';

@@ -4,6 +4,7 @@ import 'package:places/data/dto/place_dto.dart';
 import 'package:places/data/interactor/place_interactor.dart';
 import 'package:places/data/model/place.dart';
 import 'package:places/data/model/search_filter.dart';
+import 'package:places/main.dart';
 import 'package:places/ui/screen/components/bottom_navigationbar.dart';
 import 'package:places/ui/screen/res/sizes.dart';
 
@@ -79,7 +80,7 @@ class _TestBackendState extends State<TestBackend> {
             TextButton(
               child: Text('Фильтр POST [/filtered_places]'),
               onPressed: () async {
-                final List<Place> response = await (_placeInteractor.getFilteredPlace(filter: _filter, keywords: keyWords));
+                final List<Place> response = await (placeInteractor.getFilteredPlace(filter: _filter, keywords: keyWords));
                 print('UI Фильтрация мест (${response.length} шт.): $response');
               },
               style: TextButton.styleFrom(
@@ -129,8 +130,9 @@ class _TestBackendState extends State<TestBackend> {
             TextButton(
               child: Text('Место по ID GET [/place/{$_testId}]'),
               onPressed: () async {
-                final response = await _placeInteractor.getPlaceDetails(_testId);
-                print('UI Место: $response');
+                  final response = await _placeInteractor.getPlaceDetails(
+                      _testId);
+                  print('UI Место: $response');
               },
               style: TextButton.styleFrom(
                 primary: Colors.white,

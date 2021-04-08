@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:dio/dio.dart';
 import 'package:places/data/api/api_client.dart';
 import 'package:places/data/model/card_type.dart';
 import 'package:places/data/model/place.dart';
@@ -43,26 +44,38 @@ class FavoritePlacesInteractor {
 
   /// Избранное вкладка Хочу посетить
   Future<List<Place>> getPlannedPlaces() async {
-    List<Place> places = await localRepository.getPlannedPlaces();
+    try {
+      List<Place> places = await localRepository.getPlannedPlaces();
 
-    print('Interactor getPlannedPlaces $places');
+      await apiRepository.testNetwork();
 
-    /// пушим в стрим
-    _streamController.sink.add(places);
+      print('Interactor getPlannedPlaces $places');
 
-    return places;
+      /// пушим в стрим
+      _streamController.sink.add(places);
+
+      return places;
+    } on DioError catch (e) {
+      throw apiRepository.getNetworkException(e, streamController: _streamController);
+    }
   }
 
   /// Избранное вкладка Посещённые места
   Future<List<Place>> getVisitedPlaces() async {
-    List<Place> places = await localRepository.getVisitedPlaces();
+    try {
+      List<Place> places = await localRepository.getVisitedPlaces();
 
-    print('Interactor getVisitedPlaces $places');
+      await apiRepository.testNetwork();
 
-    /// пушим в стрим
-    _streamController.sink.add(places);
+      print('Interactor getVisitedPlaces $places');
 
-    return places;
+      /// пушим в стрим
+      _streamController.sink.add(places);
+
+      return places;
+    } on DioError catch (e) {
+      throw apiRepository.getNetworkException(e, streamController: _streamController);
+    }
   }
 
   /// детализация избранного места

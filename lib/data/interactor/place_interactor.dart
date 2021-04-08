@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:dio/dio.dart';
 import 'package:places/data/api/api_client.dart';
 import 'package:places/data/dto/place_dto.dart';
 import 'package:places/data/model/place.dart';
@@ -20,7 +21,7 @@ class PlaceInteractor {
 
   /// стрим контроллер для отфильтрованных мест
   final StreamController<List<Place>> _streamController =
-  StreamController.broadcast();
+      StreamController.broadcast();
 
   /// стрим для списка отфильтрованных мест
   /// добавим сюда данные после обработки "чистого" результата [getFilteredPlace]
@@ -47,25 +48,32 @@ class PlaceInteractor {
   /// данные программы, сравниваем наличие мест в списке избранных и проставляем
   /// метки, всё это сохраняем в память типа кэш (база данных ❓) и отображаем
   /// на главной странице
-  Future<List<Place>> getFilteredPlace({required SearchFilter filter, String? keywords}) async {
-    /// получили данные из Api
-    final placesDto = await (apiRepository.getPlaces(filter: filter, keywords: keywords));
-    print('Interactor getPlaces (${placesDto.length} шт.): $placesDto');
+  Future<List<Place>> getFilteredPlace(
+      {required SearchFilter filter, String? keywords}) async {
+    try {
+      /// получили данные из Api
+      final placesDto =
+          await (apiRepository.getPlaces(filter: filter, keywords: keywords));
+      print('Interactor getPlaces (${placesDto.length} шт.): $placesDto');
 
-    /// трансформировали и записали в кэш
-    List<Place> places = await _transformApiPlaces(placesDto);
+      /// трансформировали и записали в кэш
+      List<Place> places = await _transformApiPlaces(placesDto);
 
-    /// отсортировали по удаленности, дистанцию отдал сервер
-    if (places.length > 1) {
-      places.sort((a, b) => a.distance!.compareTo(b.distance!));
+      /// отсортировали по удаленности, дистанцию отдал сервер
+      if (places.length > 1) {
+        places.sort((a, b) => a.distance!.compareTo(b.distance!));
+      }
+
+      print('Interactor places из кэша (${places.length} шт.): $places');
+
+      /// пушим в стрим
+      _streamController.sink.add(places);
+
+      return places;
+    } on DioError catch (e) {
+      throw apiRepository.getNetworkException(e,
+          streamController: _streamController);
     }
-
-    print('Interactor places из кэша (${places.length} шт.): $places');
-
-    /// пушим в стрим
-    _streamController.sink.add(places);
-
-    return places;
   }
 
   /// ➡ вспомогательный метод
@@ -125,7 +133,6 @@ class PlaceInteractor {
     final newPlace = await apiRepository.addNewPlace(place);
     print('Interactor addNewPlace: $newPlace');
   }
-
 
   /// добавить место в список избранного
   /// ❓ а может void? дальше посмотрю
