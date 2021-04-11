@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:places/data/interactor/favorite_places_interactor.dart';
 import 'package:places/data/model/place.dart';
 import 'package:places/data/model/card_type.dart';
-import 'package:places/main.dart';
 import 'package:places/ui/screen/components/bottom_navigationbar.dart';
 import 'package:places/ui/screen/res/strings.dart';
 import 'package:places/ui/screen/widgets/empty_page.dart';
 import 'package:places/ui/screen/widgets/place_card_visiting.dart';
+import 'package:provider/provider.dart';
 
 /// экран с избранными карточками - Хочу посетить / Посетил
 class VisitingScreen extends StatefulWidget {
@@ -20,25 +21,25 @@ class VisitingScreen extends StatefulWidget {
 class _VisitingScreenState extends State<VisitingScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
+  late FavoritePlacesInteractor _favoritePlacesInteractor;
 
   @override
   void initState() {
     _tabController = TabController(length: 2, vsync: this);
+    _favoritePlacesInteractor = context.read<FavoritePlacesInteractor>();
 
     /// обновляем данные при переходе на соответствующую вкладку
     _tabController.addListener(() {
       setState(() {});
 
       if (_tabController.index == 0) {
-        favoritePlacesInteractor.getPlannedPlaces();
-        print('_tabController0 ${_tabController.index}');
+        _favoritePlacesInteractor.getPlannedPlaces();
       } else {
-        favoritePlacesInteractor.getVisitedPlaces();
-        print('_tabController1 ${_tabController.index}');
+        _favoritePlacesInteractor.getVisitedPlaces();
       }
     });
 
-    favoritePlacesInteractor.getPlannedPlaces();
+    _favoritePlacesInteractor.getPlannedPlaces();
 
     super.initState();
   }
@@ -101,7 +102,7 @@ class _VisitingScreenState extends State<VisitingScreen>
         controller: _tabController,
         children: [
           StreamBuilder<List<Place>>(
-              stream: favoritePlacesInteractor.listFavorites,
+              stream: _favoritePlacesInteractor.listFavorites,
               builder: (context, snapshot) {
                 if (snapshot.hasError) {
                   return _buildExceptionInfo();
@@ -119,7 +120,7 @@ class _VisitingScreenState extends State<VisitingScreen>
                 );
               }),
           StreamBuilder<List<Place>>(
-              stream: favoritePlacesInteractor.listFavorites,
+              stream: _favoritePlacesInteractor.listFavorites,
               builder: (context, snapshot) {
                 if (snapshot.hasError) {
                   return _buildExceptionInfo();

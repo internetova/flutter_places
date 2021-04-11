@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:places/data/interactor/place_interactor.dart';
 import 'package:places/data/interactor/settings_interactor.dart';
 import 'package:places/data/model/search_filter.dart';
 import 'package:places/data/model/place.dart';
 import 'package:places/data/model/card_type.dart';
-import 'package:places/main.dart';
 import 'package:places/ui/screen/components/bottom_navigationbar.dart';
 import 'package:places/ui/screen/components/button_gradient.dart';
 import 'package:places/ui/screen/filters_screen.dart';
@@ -14,6 +14,7 @@ import 'package:places/ui/screen/widgets/empty_page.dart';
 import 'package:places/ui/screen/widgets/list_cards.dart';
 import 'package:places/ui/screen/components/search_bar_static.dart';
 import 'package:places/ui/screen/sight_search_screen.dart';
+import 'package:provider/provider.dart';
 
 /// список интересных мест
 /// главная страница
@@ -30,15 +31,19 @@ class _PlaceListScreenState extends State<PlaceListScreen> {
   /// при первом запуске берётся дефолтный из настроек программы
   /// при изменении перезаписывается на пользовательский
   late SearchFilter _searchFilter;
+  late SettingsInteractor _settingsInteractor;
+  late PlaceInteractor _placeInteractor;
 
   /// фильтр - получаем из раздела настроек локальной базы данных
   void _getStartData() async {
-    _searchFilter = await SettingsInteractor.getSearchFilter();
-    placeInteractor.getFilteredPlace(filter: _searchFilter);
+    _searchFilter = await _settingsInteractor.getSearchFilter();
+    _placeInteractor.getFilteredPlace(filter: _searchFilter);
   }
 
   @override
   void initState() {
+    _settingsInteractor = context.read<SettingsInteractor>();
+    _placeInteractor = context.read<PlaceInteractor>();
     _getStartData();
 
     super.initState();
@@ -59,7 +64,7 @@ class _PlaceListScreenState extends State<PlaceListScreen> {
                         orientation == Orientation.portrait ? 16.0 : 34.0,
                   ),
                   sliver: StreamBuilder<List<Place>>(
-                    stream: placeInteractor.listPlaces,
+                    stream: _placeInteractor.listPlaces,
                     builder: (BuildContext context, AsyncSnapshot snapshot) {
                       if (snapshot.hasError) {
                         return SliverFillRemaining(

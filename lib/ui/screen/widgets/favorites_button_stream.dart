@@ -1,10 +1,11 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:places/data/interactor/place_interactor.dart';
 import 'package:places/data/model/place.dart';
-import 'package:places/main.dart';
 import 'package:places/ui/screen/components/icon_action_button.dart';
 import 'package:places/ui/screen/res/assets.dart';
+import 'package:provider/provider.dart';
 
 /// кнопка Избранное для карточки (маленькая)
 /// переключает текущий статус места, вносит измения в базе данных
@@ -25,10 +26,12 @@ class _FavoritesButtonStreamState extends State<FavoritesButtonStream> {
 
   /// текущий статус места
   late bool currentStatusPlaces;
+  late PlaceInteractor _placeInteractor;
 
   @override
   void initState() {
     currentStatusPlaces = widget.place.isFavorite;
+    _placeInteractor = context.read<PlaceInteractor>();
     super.initState();
   }
 
@@ -55,7 +58,7 @@ class _FavoritesButtonStreamState extends State<FavoritesButtonStream> {
                 print('onPressed Избранное $currentStatusPlaces');
 
                 /// вносит изменения в базах данных
-                placeInteractor.toggleFavorites(Place.switchFavoriteStatus(
+                _placeInteractor.toggleFavorites(Place.switchFavoriteStatus(
                     place: widget.place, isFav: currentStatusPlaces));
               },
               icon: isFav ? icFavoritesFull : icFavorites,

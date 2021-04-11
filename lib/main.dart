@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:places/data/interactor/favorite_places_interactor.dart';
 import 'package:places/data/interactor/place_interactor.dart';
+import 'package:places/data/interactor/settings_interactor.dart';
 import 'package:places/ui/screen/onboarding_screen.dart';
 import 'package:places/ui/screen/res/app_routes.dart';
 import 'package:places/ui/screen/res/themes.dart';
@@ -8,9 +9,6 @@ import 'package:places/ui/screen/settings_screen.dart';
 import 'package:places/ui/screen/place_list_screen.dart';
 import 'package:places/ui/screen/visiting_screen.dart';
 import 'package:provider/provider.dart';
-
-PlaceInteractor placeInteractor = PlaceInteractor();
-FavoritePlacesInteractor favoritePlacesInteractor = FavoritePlacesInteractor();
 
 void main() {
   runApp(App());
@@ -22,8 +20,27 @@ final ThemeData _darkTheme = AppTheme.buildThemeDark();
 class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => ThemeNotifier(),
+    return MultiProvider(
+      providers: [
+        Provider<PlaceInteractor>(
+          create: (context) => PlaceInteractor(),
+          dispose: (context, interactor) {
+            interactor.dispose();
+          },
+        ),
+        Provider<FavoritePlacesInteractor>(
+          create: (context) => FavoritePlacesInteractor(),
+          dispose: (context, interactor) {
+            interactor.dispose();
+          },
+        ),
+        Provider<SettingsInteractor>(
+          create: (context) => SettingsInteractor(),
+        ),
+        ChangeNotifierProvider<ThemeNotifier>(
+          create: (_) => ThemeNotifier(),
+        ),
+      ],
       child: Consumer<ThemeNotifier>(
         builder: (context, ThemeNotifier notifier, child) {
           return MaterialApp(
