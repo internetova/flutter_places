@@ -97,10 +97,8 @@ class ApiPlaceRepository implements PlaceRepository<PlaceDto> {
 
   /// проверим есть ли доступ в сеть 🤓
   Future<Response> testNetwork() async {
-    final queryParameters = {'count': 1};
 
-    return _client.get('${ApiConstants.placesUrl}',
-        queryParameters: queryParameters);
+    return _client.get('${ApiConstants.placesUrl}?count=1');
   }
 
   /// обработка ошибок

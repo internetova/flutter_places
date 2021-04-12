@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:places/data.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:places/blocs/visiting_screen/planned/planned_places_bloc.dart';
 import 'package:places/data/model/place.dart';
 import 'package:places/data/model/card_type.dart';
 import 'package:places/ui/screen/components/icon_svg.dart';
 import 'package:places/ui/screen/res/assets.dart';
 import 'package:places/ui/screen/res/sizes.dart';
 import 'package:places/ui/screen/res/strings.dart';
-import 'package:places/ui/screen/visiting_screen.dart';
 import 'package:places/ui/screen/widgets/place_card.dart';
 import 'package:places/ui/screen/res/themes.dart';
 
@@ -31,8 +31,8 @@ class PlaceCardVisiting extends StatelessWidget {
           Dismissible(
             key: UniqueKey(),
             onDismissed: (_) {
-              favoritesSight.remove(card);
-              VisitingScreen.of(context)!.updateState();
+              BlocProvider.of<PlannedPlacesBloc>(context)
+                  .add(PlannedPlacesRemovePlace(card));
             },
             direction: DismissDirection.endToStart,
             child: PlaceCard(

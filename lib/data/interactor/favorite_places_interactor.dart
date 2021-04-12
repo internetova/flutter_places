@@ -47,7 +47,8 @@ class FavoritePlacesInteractor {
     try {
       List<Place> places = await localRepository.getPlannedPlaces();
 
-      await apiRepository.testNetwork();
+      /// временно, удалю
+      // await apiRepository.testNetwork();
 
       print('Interactor getPlannedPlaces $places');
 
@@ -65,7 +66,8 @@ class FavoritePlacesInteractor {
     try {
       List<Place> places = await localRepository.getVisitedPlaces();
 
-      await apiRepository.testNetwork();
+      /// временно, удалю
+      // await apiRepository.testNetwork();
 
       print('Interactor getVisitedPlaces $places');
 
@@ -118,6 +120,9 @@ class FavoritePlacesInteractor {
 
     print('Interactor addToVisitingPlaces: $visitingPlace');
   }
+
+  /// удалить из избранного
+  Future<void> removePlace(int id) => localRepository.removePlace(id);
 
   /// ➡ вспомогательный метод
   /// получить текущую дистанцию до места
