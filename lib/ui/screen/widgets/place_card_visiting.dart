@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:places/blocs/visiting_screen/planned/planned_places_bloc.dart';
+import 'package:places/blocs/visiting_screen/visited/visited_places_bloc.dart';
 import 'package:places/data/model/place.dart';
 import 'package:places/data/model/card_type.dart';
 import 'package:places/ui/screen/components/icon_svg.dart';
@@ -31,8 +32,13 @@ class PlaceCardVisiting extends StatelessWidget {
           Dismissible(
             key: UniqueKey(),
             onDismissed: (_) {
-              BlocProvider.of<PlannedPlacesBloc>(context)
-                  .add(PlannedPlacesRemovePlace(card));
+              if (card.cardType == CardType.planned) {
+                BlocProvider.of<PlannedPlacesBloc>(context)
+                    .add(PlannedPlacesRemovePlace(card));
+              } else if (card.cardType == CardType.visited) {
+                BlocProvider.of<VisitedPlacesBloc>(context)
+                    .add(VisitedPlacesRemovePlace(card));
+              }
             },
             direction: DismissDirection.endToStart,
             child: PlaceCard(
@@ -46,7 +52,7 @@ class PlaceCardVisiting extends StatelessWidget {
   }
 }
 
-/// фон при смахивании картинки на экране добавления нового места
+/// фон при смахивании карточки на экране Избранное
 class DismissBackgroundCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {

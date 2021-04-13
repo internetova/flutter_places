@@ -29,8 +29,6 @@ class _VisitingScreenState extends State<VisitingScreen>
 
     /// обновляем данные при переходе на соответствующую вкладку
     _tabController.addListener(() {
-      setState(() {});
-
       if (_tabController.index == 0) {
         _plannedPlacesBloc.add(PlannedPlacesLoad());
       } else {
