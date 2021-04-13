@@ -1,19 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:places/data/interactor/favorite_places_interactor.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:places/blocs/visiting_screen/planned/planned_places_bloc.dart';
+import 'package:places/blocs/visiting_screen/visited/visited_places_bloc.dart';
 import 'package:places/data/model/place.dart';
 import 'package:places/data/model/card_type.dart';
 import 'package:places/ui/screen/components/bottom_navigationbar.dart';
 import 'package:places/ui/screen/res/strings.dart';
 import 'package:places/ui/screen/widgets/empty_page.dart';
 import 'package:places/ui/screen/widgets/place_card_visiting.dart';
-import 'package:provider/provider.dart';
 
 /// экран с избранными карточками - Хочу посетить / Посетил
 class VisitingScreen extends StatefulWidget {
-  /// для обновления стэйта после удаления карточки из дочерних виджетов
-  static _VisitingScreenState? of(BuildContext context) =>
-      context.findAncestorStateOfType<_VisitingScreenState>();
-
   @override
   _VisitingScreenState createState() => _VisitingScreenState();
 }
@@ -21,44 +18,25 @@ class VisitingScreen extends StatefulWidget {
 class _VisitingScreenState extends State<VisitingScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
-  late FavoritePlacesInteractor _favoritePlacesInteractor;
+  late PlannedPlacesBloc _plannedPlacesBloc;
+  late VisitedPlacesBloc _visitedPlacesBloc;
 
   @override
   void initState() {
     _tabController = TabController(length: 2, vsync: this);
-    _favoritePlacesInteractor = context.read<FavoritePlacesInteractor>();
+    _plannedPlacesBloc = BlocProvider.of<PlannedPlacesBloc>(context);
+    _visitedPlacesBloc = BlocProvider.of<VisitedPlacesBloc>(context);
 
     /// обновляем данные при переходе на соответствующую вкладку
     _tabController.addListener(() {
-      setState(() {});
-
       if (_tabController.index == 0) {
-        _favoritePlacesInteractor.getPlannedPlaces();
+        _plannedPlacesBloc.add(PlannedPlacesLoad());
       } else {
-        _favoritePlacesInteractor.getVisitedPlaces();
+        _visitedPlacesBloc.add(VisitedPlacesLoad());
       }
     });
 
-    _favoritePlacesInteractor.getPlannedPlaces();
-
     super.initState();
-  }
-
-  /// todo удаление карточек через интерактор
-  /// обновить базу данных после удаления карточки
-  /// буду вызывать из дочернего виджета
-  void updateState() {
-    setState(() {
-      // _userDataPlanned = _getCurrentData(
-      //   data: favoritesSight,
-      //   typeCard: CardType.planned,
-      // );
-      //
-      // _userDataVisited = _getCurrentData(
-      //   data: favoritesSight,
-      //   typeCard: CardType.visited,
-      // );
-    });
   }
 
   @override
@@ -101,42 +79,53 @@ class _VisitingScreenState extends State<VisitingScreen>
       body: TabBarView(
         controller: _tabController,
         children: [
-          StreamBuilder<List<Place>>(
-              stream: _favoritePlacesInteractor.listFavorites,
-              builder: (context, snapshot) {
-                if (snapshot.hasError) {
-                  return _buildExceptionInfo();
-                }
+          BlocBuilder<PlannedPlacesBloc, PlannedPlacesState>(
+            builder: (_, state) {
+              if (state is PlannedPlacesLoadInProgress) {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
 
-                if (!snapshot.hasData) {
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
-                }
-
+              if (state is PlannedPlacesLoadSuccess) {
                 return _buildFavorites(
-                  data: snapshot.data,
+                  data: state.placesList,
                   typeCard: CardType.planned,
                 );
-              }),
-          StreamBuilder<List<Place>>(
-              stream: _favoritePlacesInteractor.listFavorites,
-              builder: (context, snapshot) {
-                if (snapshot.hasError) {
-                  return _buildExceptionInfo();
-                }
+              }
 
-                if (!snapshot.hasData) {
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
-                }
+              if (state is PlannedPlacesLoadFailure) {
+                return _buildExceptionInfo();
+              }
 
-                return _buildFavorites(
-                  data: snapshot.data,
-                  typeCard: CardType.visited,
-                );
-              }),
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            },
+          ),
+          BlocBuilder<VisitedPlacesBloc, VisitedPlacesState>(
+              builder: (_, state) {
+            if (state is VisitedPlacesLoadInProgress) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+
+            if (state is VisitedPlacesLoadSuccess) {
+              return _buildFavorites(
+                data: state.placesList,
+                typeCard: CardType.visited,
+              );
+            }
+
+            if (state is VisitedPlacesLoadFailure) {
+              return _buildExceptionInfo();
+            }
+
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }),
         ],
       ),
       bottomNavigationBar: const MainBottomNavigationBar(current: 2),

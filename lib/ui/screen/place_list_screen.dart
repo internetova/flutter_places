@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:mobx/mobx.dart';
 import 'package:places/data/interactor/place_interactor.dart';
 import 'package:places/data/interactor/settings_interactor.dart';
 import 'package:places/data/model/search_filter.dart';
 import 'package:places/data/model/place.dart';
 import 'package:places/data/model/card_type.dart';
+import 'package:places/store/place_list/place_list_store.dart';
 import 'package:places/ui/screen/components/bottom_navigationbar.dart';
 import 'package:places/ui/screen/components/button_gradient.dart';
 import 'package:places/ui/screen/filters_screen.dart';
@@ -32,18 +35,20 @@ class _PlaceListScreenState extends State<PlaceListScreen> {
   /// при изменении перезаписывается на пользовательский
   late SearchFilter _searchFilter;
   late SettingsInteractor _settingsInteractor;
-  late PlaceInteractor _placeInteractor;
+
+  /// стор списка мест
+  late PlaceListStore _store;
 
   /// фильтр - получаем из раздела настроек локальной базы данных
   void _getStartData() async {
     _searchFilter = await _settingsInteractor.getSearchFilter();
-    _placeInteractor.getFilteredPlace(filter: _searchFilter);
+    _store.getFilteredPlace(filter: _searchFilter);
   }
 
   @override
   void initState() {
     _settingsInteractor = context.read<SettingsInteractor>();
-    _placeInteractor = context.read<PlaceInteractor>();
+    _store = PlaceListStore(context.read<PlaceInteractor>());
     _getStartData();
 
     super.initState();
@@ -63,19 +68,11 @@ class _PlaceListScreenState extends State<PlaceListScreen> {
                     horizontal:
                         orientation == Orientation.portrait ? 16.0 : 34.0,
                   ),
-                  sliver: StreamBuilder<List<Place>>(
-                    stream: _placeInteractor.listPlaces,
-                    builder: (BuildContext context, AsyncSnapshot snapshot) {
-                      if (snapshot.hasError) {
-                        return SliverFillRemaining(
-                          child: EmptyPage(
-                              icon: appNetworkException['emptyScreenIcon']!,
-                              header: appNetworkException['emptyScreenHeader']!,
-                              text: appNetworkException['emptyScreenText']!),
-                        );
-                      }
+                  sliver: Observer(
+                    builder: (BuildContext context) {
+                      final future = _store.listPlacesFuture;
 
-                      if (!snapshot.hasData) {
+                      if (future == null) {
                         return SliverToBoxAdapter(
                           child: Padding(
                             padding: const EdgeInsets.only(top: 40.0),
@@ -86,7 +83,30 @@ class _PlaceListScreenState extends State<PlaceListScreen> {
                         );
                       }
 
-                      return _buildListCard(orientation, data: snapshot.data);
+                      switch (future.status) {
+                        case FutureStatus.pending:
+                          return SliverToBoxAdapter(
+                            child: Padding(
+                              padding: const EdgeInsets.only(top: 40.0),
+                              child: const Center(
+                                child: CircularProgressIndicator(),
+                              ),
+                            ),
+                          );
+
+                        case FutureStatus.rejected:
+                          return SliverFillRemaining(
+                            child: EmptyPage(
+                                icon: appNetworkException['emptyScreenIcon']!,
+                                header:
+                                    appNetworkException['emptyScreenHeader']!,
+                                text: appNetworkException['emptyScreenText']!),
+                          );
+
+                        case FutureStatus.fulfilled:
+                          return _buildListCard(orientation,
+                              data: future.result);
+                      }
                     },
                   ),
                 ),

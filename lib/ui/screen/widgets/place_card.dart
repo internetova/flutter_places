@@ -3,7 +3,9 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:places/data.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:places/blocs/visiting_screen/planned/planned_places_bloc.dart';
+import 'package:places/blocs/visiting_screen/visited/visited_places_bloc.dart';
 import 'package:places/data/model/place.dart';
 import 'package:places/data/model/card_type.dart';
 import 'package:places/ui/screen/components/icon_action_button.dart';
@@ -12,10 +14,8 @@ import 'package:places/ui/screen/res/strings.dart';
 import 'package:places/ui/screen/res/assets.dart';
 import 'package:places/ui/screen/res/themes.dart';
 import 'package:places/ui/screen/place_details.dart';
-import 'package:places/ui/screen/visiting_screen.dart';
 import 'package:places/ui/screen/widgets/reminder_time_ios.dart';
 import 'package:places/ui/screen/widgets/place_details_bottom_sheet.dart';
-
 import 'favorites_button_stream.dart';
 
 /// карточка интересного места
@@ -223,7 +223,7 @@ class CardActions extends StatelessWidget {
         ),
         IconActionButton(
           onPressed: () {
-            _deleteCard(context);
+            _deleteCard(context, card.cardType);
           },
           icon: icClose,
         ),
@@ -239,16 +239,21 @@ class CardActions extends StatelessWidget {
         ),
         IconActionButton(
           onPressed: () {
-            _deleteCard(context);
+            _deleteCard(context, card.cardType);
           },
           icon: icClose,
         ),
       ];
 
-  /// удалить карточку
-  void _deleteCard(BuildContext context) {
-    favoritesSight.removeWhere((element) => element.id == card.id);
-    VisitingScreen.of(context)!.updateState();
+  /// удалить карточку через Bloc
+  void _deleteCard(BuildContext context, CardType cardType) {
+    if (cardType == CardType.planned) {
+      BlocProvider.of<PlannedPlacesBloc>(context)
+          .add(PlannedPlacesRemovePlace(card));
+    } else if (cardType == CardType.visited) {
+      BlocProvider.of<VisitedPlacesBloc>(context)
+          .add(VisitedPlacesRemovePlace(card));
+    }
   }
 
   /// установить напоминание Часы о запланированном посещении места Android
