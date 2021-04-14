@@ -49,7 +49,6 @@ class SearchBar extends StatelessWidget {
             controller: controller,
             focusNode: focus,
             autofocus: true,
-            cursorHeight: 24,
             cursorWidth: 1,
             textInputAction: TextInputAction.search,
             style: Theme.of(context).primaryTextTheme.subtitle1,

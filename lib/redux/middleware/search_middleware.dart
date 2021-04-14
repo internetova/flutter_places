@@ -15,7 +15,7 @@ class SearchMiddleware implements MiddlewareClass<AppState> {
       _searchInteractor
           .getSearchResult(filter: action.filter, keywords: action.keywords)
           .then((result) => store.dispatch(LoadedSearchResultAction(result)))
-          .catchError((Object e) => store.dispatch(SearchErrorAction()));
+          .onError((e, stackTrace) => store.dispatch(SearchErrorAction()));
     } else if (action is GetSearchHistoryAction) {
       _searchInteractor
           .getSearchHistory()
