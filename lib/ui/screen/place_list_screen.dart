@@ -16,7 +16,7 @@ import 'package:places/ui/screen/res/strings.dart';
 import 'package:places/ui/screen/widgets/empty_page.dart';
 import 'package:places/ui/screen/widgets/list_cards.dart';
 import 'package:places/ui/screen/components/search_bar_static.dart';
-import 'package:places/ui/screen/sight_search_screen.dart';
+import 'package:places/ui/screen/search_screen.dart';
 import 'package:provider/provider.dart';
 
 /// список интересных мест
@@ -167,7 +167,7 @@ class _PlaceListScreenState extends State<PlaceListScreen> {
     final SearchFilter _newFilter = await Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => SightSearchScreen(filter: _searchFilter),
+        builder: (context) => SearchScreen(filter: _searchFilter),
       ),
     );
     setState(() {

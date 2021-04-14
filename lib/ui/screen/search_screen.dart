@@ -1,9 +1,10 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:places/data/interactor/place_interactor.dart';
 import 'package:places/data/model/search_filter.dart';
 import 'package:places/data/model/place.dart';
+import 'package:places/redux/action/search_action.dart';
+import 'package:places/redux/state/app_state.dart';
+import 'package:places/redux/state/search_state.dart';
 import 'package:places/ui/screen/components/bottom_navigationbar.dart';
 import 'package:places/ui/screen/components/button_text.dart';
 import 'package:places/ui/screen/components/card_square_img.dart';
@@ -14,59 +15,31 @@ import 'package:places/ui/screen/res/themes.dart';
 import 'package:places/ui/screen/place_details.dart';
 import 'package:places/ui/screen/widgets/empty_page.dart';
 import 'package:places/ui/screen/widgets/search_bar.dart';
+import 'package:flutter_redux/flutter_redux.dart';
 
 /// экран поиска
-class SightSearchScreen extends StatefulWidget {
+class SearchScreen extends StatefulWidget {
   final SearchFilter filter;
 
-  const SightSearchScreen({
+  const SearchScreen({
     Key? key,
     required this.filter,
   }) : super(key: key);
 
   @override
-  _SightSearchScreenState createState() => _SightSearchScreenState();
+  _SearchScreenState createState() => _SearchScreenState();
 }
 
-class _SightSearchScreenState extends State<SightSearchScreen> {
-  /// запишем результаты по отмене фокуса или отправке запроса кнопкой клавиатуры
-  /// или если был тап по результату автопоиска по таймеру
-  List<String> _dataResults = [];
+class _SearchScreenState extends State<SearchScreen> {
+  /// последний отправленный запрос
   late String _lastSearch;
-
-  final TextEditingController _searchController = TextEditingController();
-  late StreamController<List<Place>?> _streamController;
-  Stream<List<Place>?>? _stream;
-
-  /// для передачи / снятия фокуса по тапам и через клавиатуру
-  final _searchFocus = FocusNode();
-  FocusNode? _currentFocus;
-
-  /// для показа лоадера
-  bool _isWaiting = false;
-
-  /// нефильтрованные данные
-  // final List<UiPlace> _fullData = mocks;
-
-  /// отфильтрованные результаты
-  List<Place> _filteredData = [];
+  TextEditingController _searchController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
 
     _searchController.addListener(() => setState(() {}));
-    _streamController = StreamController();
-    _stream = _streamController.stream;
-    _currentFocus = _searchFocus;
-
-    if (widget.filter != null) {
-      // _filteredData = filterData(
-      //     data: _fullData,
-      //     categories: widget.filter!.categories,
-      //     centerPoint: widget.filter!.centerPoint,
-      //     distance: widget.filter!.distance);
-    }
   }
 
   @override
@@ -74,55 +47,41 @@ class _SightSearchScreenState extends State<SightSearchScreen> {
     super.dispose();
 
     _searchController.dispose();
-    _searchFocus.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    if (_searchController.text.isEmpty || _searchController.text.length == 0) {
-      _streamController.add(null);
-    }
-
     return Scaffold(
       appBar: _buildAppBar() as PreferredSizeWidget?,
-      body: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          if (_isWaiting) _buildLoaderWaiting(),
-          Expanded(
-            child: StreamBuilder(
-                stream: _stream,
-                builder: (BuildContext context,
-                    AsyncSnapshot<List<Place>?> snapshot) {
-                  if (snapshot.hasError) {
-                    return _buildSearchError();
-                  }
+      body: StoreConnector<AppState, SearchState>(
+        onInit: (store) => store.dispatch(GetSearchHistoryAction()),
+        converter: (store) => store.state.searchState,
+        builder: (BuildContext context, state) {
+          if (state is SearchLoadingState) {
+            print('Загружаем результаты Поиска или Историю $state');
 
-                  if (snapshot.hasData && !snapshot.hasError) {
-                    if (snapshot.data!.isEmpty) {
-                      return _buildSearchResultEmpty();
-                    } else {
-                      return _buildSearchResult(snapshot.data!);
-                    }
-                  }
+            return _buildLoader();
+          } else if (state is SearchResultHistoryState) {
+            print('История запросов ${state.result}');
 
-                  return _buildTempStreamBuilderResult();
-                }),
-          ),
-        ],
+            return _buildSearchHistory(state.result);
+          } else if (state is SearchResultState) {
+            print('Результаты поиска ${state.result}');
+
+            if (state.result.isEmpty) {
+              return _buildSearchResultEmpty();
+            } else {
+              return _buildSearchResult(state.result);
+            }
+          } else if (state is SearchErrorState) {
+            return _buildSearchError();
+          }
+
+          return _buildLoader();
+        },
       ),
       bottomNavigationBar: const MainBottomNavigationBar(current: 0),
     );
-  }
-
-  /// для отображения истории поиска чтобы скрывать историю во время
-  /// процесса поиска
-  Widget _buildTempStreamBuilderResult() {
-    if (_isWaiting) {
-      return SizedBox(width: 0);
-    } else {
-      return _buildSearchHistory(_dataResults);
-    }
   }
 
   /// appBar
@@ -146,10 +105,8 @@ class _SightSearchScreenState extends State<SightSearchScreen> {
                   sizedBoxH24,
                   SearchBar(
                     controller: _searchController,
-                    focus: _searchFocus,
+                    onStartNewSearch: _onStartNewSearch,
                     onEditingComplete: _searchOnEditingComplete,
-                    onTap: _searchOnTap,
-                    data: _dataResults,
                   ),
                 ],
               ),
@@ -158,85 +115,25 @@ class _SightSearchScreenState extends State<SightSearchScreen> {
         ),
       );
 
-  /// записать поисковое выражение в базу
-  void _writeRequest(
-      {List<String>? data, required TextEditingController controller}) {
-    if (controller.text.isNotEmpty && !data!.contains(controller.text)) {
-      data.add(controller.text.trim());
-    }
-  }
-
-  /// поиск
-  Future<void> _search() async {
-    if (_searchController.text.isEmpty ||
-        _searchController.text.trim().length == 0) {
-      _streamController.add(null);
-
-      return;
-    }
-
-    /// на время поиска показываем лоадер
-    _showLoader(true);
-
-    // final result = await _searchData(
-    //   data: widget.filter != null ? _filteredData : _fullData,
-    //   query: _searchController.text,
-    // );
-
-    _showLoader(false);
-
-    // _streamController.add(result);
-    _lastSearch = _searchController.text;
-  }
-
-  /// управление отображением лоадера
-  void _showLoader(bool isWaiting) {
-    setState(() => _isWaiting = isWaiting);
-  }
-
-  /// поиск в базе по запросу
-  Future<List<Place>> _searchData(
-      {required List<Place> data, String? query}) async {
-    List<Place> result = [];
-
-    for (var i = 0; i < data.length; i++) {
-      if (data[i].name.toLowerCase().contains(query!.trim().toLowerCase())) {
-        result.add(data[i]);
-      }
-    }
-
-    /// типа ждём ответ от сервера - временно
-    await Future.delayed(Duration(seconds: 2));
-
-    return result;
-  }
-
   /// клик по кнопке клавиатуры - отправить запрос на поиск
   _searchOnEditingComplete() {
-    _search();
-    _searchFocus.unfocus();
-    _currentFocus = null;
+    _lastSearch = _searchController.text;
 
-    _writeRequest(
-      data: _dataResults,
-      controller: _searchController,
-    );
-
-    PlaceInteractor().saveKeywords(_searchController.text);
+    StoreProvider.of<AppState>(context).dispatch(
+        GetSearchResultAction(filter: widget.filter, keywords: _lastSearch));
   }
 
-  /// клик по полю поиска
-  _searchOnTap() {
-    FocusScope.of(context).requestFocus(_searchFocus);
-    setState(() {
-      _currentFocus = _searchFocus;
-    });
+  /// меняет состояние экрана на стартовое для нового поиска
+  _onStartNewSearch() {
+    StoreProvider.of<AppState>(context).dispatch(GetSearchHistoryAction());
   }
 
-  /// ошибка поиска
+  /// сетевая ошибка
   Widget _buildSearchError() {
-    return Center(
-      child: Text(searchError),
+    return EmptyPage(
+      icon: appNetworkException['emptyScreenIcon']!,
+      header: appNetworkException['emptyScreenHeader']!,
+      text: appNetworkException['emptyScreenText']!,
     );
   }
 
@@ -250,7 +147,7 @@ class _SightSearchScreenState extends State<SightSearchScreen> {
   }
 
   /// лоадер при ожидании
-  Widget _buildLoaderWaiting() {
+  Widget _buildLoader() {
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -285,13 +182,6 @@ class _SightSearchScreenState extends State<SightSearchScreen> {
         style: Theme.of(context).textTheme.bodyText2,
       ),
       onTap: () {
-        _writeRequest(
-          data: _dataResults,
-          controller: _searchController,
-        );
-
-        PlaceInteractor().saveKeywords(_searchController.text);
-
         Navigator.push(
           context,
           MaterialPageRoute(
@@ -418,9 +308,8 @@ class _SightSearchScreenState extends State<SightSearchScreen> {
                 ),
                 trailing: IconButton(
                   onPressed: () {
-                    setState(() {
-                      data.removeAt(i);
-                    });
+                    StoreProvider.of<AppState>(context)
+                        .dispatch(RemoveRequestFromHistoryAction(i));
                   },
                   icon: SvgPicture.asset(
                     icDelete,
@@ -430,7 +319,10 @@ class _SightSearchScreenState extends State<SightSearchScreen> {
                 ),
                 onTap: () {
                   _searchController.text = data[i];
-                  _search();
+                  StoreProvider.of<AppState>(context).dispatch(
+                      GetSearchResultAction(
+                          filter: widget.filter, keywords: data[i]));
+                  // _search();
                 },
               ),
               Divider(),
@@ -438,11 +330,8 @@ class _SightSearchScreenState extends State<SightSearchScreen> {
             ButtonText(
               title: 'Очистить историю',
               onPressed: () {
-                setState(() {
-                  data.clear();
-                });
-
-                PlaceInteractor().clearSearchHistory();
+                StoreProvider.of<AppState>(context)
+                    .dispatch(ClearHistorySearchAction());
               },
             ),
           ],
