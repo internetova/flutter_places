@@ -116,7 +116,7 @@ class _SearchScreenState extends State<SearchScreen> {
       );
 
   /// клик по кнопке клавиатуры - отправить запрос на поиск
-  _searchOnEditingComplete() {
+  void _searchOnEditingComplete() {
     _lastSearch = _searchController.text;
 
     StoreProvider.of<AppState>(context).dispatch(
@@ -124,7 +124,7 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   /// меняет состояние экрана на стартовое для нового поиска
-  _onStartNewSearch() {
+  void _onStartNewSearch() {
     StoreProvider.of<AppState>(context).dispatch(GetSearchHistoryAction());
   }
 
