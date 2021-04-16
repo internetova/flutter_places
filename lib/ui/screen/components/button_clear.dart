@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 
 /// кнопка очистки поля
+/// [onStartNewSearch] меняет состояние экрана на стартовое для нового поиска
+/// запускает [GetSearchHistoryAction] в search_reducer
 class ButtonClear extends StatelessWidget {
   final TextEditingController controller;
+  final VoidCallback? onStartNewSearch;
 
-  const ButtonClear({
+  ButtonClear({
     Key? key,
-    required this.controller,
+    required this.controller, this.onStartNewSearch,
   })  : super(key: key);
 
   @override
@@ -30,6 +33,9 @@ class ButtonClear extends StatelessWidget {
             ),
             onPressed: () {
               controller.clear();
+              if (onStartNewSearch != null) {
+                onStartNewSearch!();
+              }
             },
           ),
         ),

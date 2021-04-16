@@ -4,6 +4,7 @@ import 'package:places/blocs/visiting_screen/planned/planned_places_bloc.dart';
 import 'package:places/blocs/visiting_screen/visited/visited_places_bloc.dart';
 import 'package:places/data/interactor/favorite_places_interactor.dart';
 import 'package:places/data/interactor/place_interactor.dart';
+import 'package:places/data/interactor/search_interactor.dart';
 import 'package:places/data/interactor/settings_interactor.dart';
 import 'package:places/ui/screen/onboarding_screen.dart';
 import 'package:places/ui/screen/res/app_routes.dart';
@@ -12,15 +13,32 @@ import 'package:places/ui/screen/settings_screen.dart';
 import 'package:places/ui/screen/place_list_screen.dart';
 import 'package:places/ui/screen/visiting_screen.dart';
 import 'package:provider/provider.dart';
+import 'package:redux/redux.dart';
+import 'package:flutter_redux/flutter_redux.dart';
+import 'package:places/redux/middleware/search_middleware.dart';
+import 'package:places/redux/reducer/reducer.dart';
+import 'package:places/redux/state/app_state.dart';
 
 void main() {
-  runApp(App());
+  final store = Store<AppState>(
+    reducer,
+    initialState: AppState(),
+    middleware: [
+      SearchMiddleware(SearchInteractor()),
+    ],
+  );
+
+  runApp(App(store: store));
 }
 
 final ThemeData _lightTheme = AppTheme.buildTheme();
 final ThemeData _darkTheme = AppTheme.buildThemeDark();
 
 class App extends StatelessWidget {
+  final Store<AppState> store;
+
+  const App({Key? key, required this.store}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -46,34 +64,34 @@ class App extends StatelessWidget {
       ],
       child: Consumer<ThemeNotifier>(
         builder: (context, ThemeNotifier notifier, child) {
-          return MaterialApp(
-            debugShowCheckedModeBanner: false,
-            title: 'Places',
-            theme: notifier.darkTheme! ? _darkTheme : _lightTheme,
-            initialRoute: AppRoutes.home,
-            routes: {
-              AppRoutes.home: (context) => PlaceListScreen(),
-              AppRoutes.visiting: (context) =>
-                  MultiBlocProvider(
-                    providers: [
-                      BlocProvider<PlannedPlacesBloc>(
-                        create: (context) =>
-                        PlannedPlacesBloc(
-                            context.read<FavoritePlacesInteractor>())
-                          ..add(PlannedPlacesLoad()),
-                      ),
-                      BlocProvider<VisitedPlacesBloc>(
-                        create: (context) =>
-                        VisitedPlacesBloc(
-                            context.read<FavoritePlacesInteractor>())
-                          ..add(VisitedPlacesLoad()),
-                      )
-                    ],
-                    child: VisitingScreen(),
+          return StoreProvider<AppState>(
+            store: store,
+            child: MaterialApp(
+              debugShowCheckedModeBanner: false,
+              title: 'Places',
+              theme: notifier.darkTheme! ? _darkTheme : _lightTheme,
+              initialRoute: AppRoutes.home,
+              routes: {
+                AppRoutes.home: (context) => PlaceListScreen(),
+                AppRoutes.visiting: (context) => MultiBlocProvider(
+                      providers: [
+                        BlocProvider<PlannedPlacesBloc>(
+                          create: (context) => PlannedPlacesBloc(
+                              context.read<FavoritePlacesInteractor>())
+                            ..add(PlannedPlacesLoad()),
+                        ),
+                        BlocProvider<VisitedPlacesBloc>(
+                          create: (context) => VisitedPlacesBloc(
+                              context.read<FavoritePlacesInteractor>())
+                            ..add(VisitedPlacesLoad()),
+                        )
+                      ],
+                      child: VisitingScreen(),
                     ),
-              AppRoutes.settings: (context) => SettingsScreen(),
-              AppRoutes.onboarding: (context) => OnboardingScreen(),
-            },
+                AppRoutes.settings: (context) => SettingsScreen(),
+                AppRoutes.onboarding: (context) => OnboardingScreen(),
+              },
+            ),
           );
         },
       ),
