@@ -80,7 +80,7 @@ class _SelectCategoryScreenState extends State<SelectCategoryScreen> {
       );
 
   /// категории
-  _buildCategories() => SingleChildScrollView(
+  Widget _buildCategories() => SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
           child: Column(
