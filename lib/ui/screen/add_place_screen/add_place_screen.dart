@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:places/data/dto/place_dto.dart';
-import 'package:places/data/interactor/place_interactor.dart';
-import 'package:places/data/model/place_type.dart';
+import 'package:mwwm/mwwm.dart';
+import 'package:places/ui/screen/add_place_screen/add_place_wm.dart';
 import 'package:places/ui/screen/components/button_clear.dart';
 import 'package:places/ui/screen/components/button_save.dart';
 import 'package:places/ui/screen/components/button_text.dart';
@@ -12,153 +11,26 @@ import 'package:places/ui/screen/res/assets.dart';
 import 'package:places/ui/screen/res/sizes.dart';
 import 'package:places/ui/screen/res/strings.dart';
 import 'package:places/ui/screen/res/themes.dart';
-import 'package:places/ui/screen/add_place_screen/select_category_screen.dart';
 import 'package:places/ui/screen/place_list_screen.dart';
 import 'package:places/ui/screen/utilities/test_images_data.dart';
 import 'package:places/ui/screen/widgets/choice_of_loading_images.dart';
 import 'package:places/ui/screen/widgets/list_cards_with_added_img.dart';
-
-/// регулярные выражения
-final _namePattern = RegExp(r'^[a-zа-яA-ZА-Я0-9 ]+$');
-final _coordinatesPattern = RegExp(r'^-?[0-9]{1,3}(?:\.[0-9]{1,10})?$');
+import 'package:relation/relation.dart';
 
 /// экран добавление нового места
-class AddPlaceScreen extends StatefulWidget {
-  /// для обновления стэйта после удаления карточки с фото из дочерних виджетов
-  static _AddPlaceScreenState? of(BuildContext context) =>
-      context.findAncestorStateOfType<_AddPlaceScreenState>();
+class AddPlaceScreen extends CoreMwwmWidget {
+  AddPlaceScreen({required WidgetModelBuilder widgetModelBuilder})
+      : super(widgetModelBuilder: widgetModelBuilder);
 
   @override
   _AddPlaceScreenState createState() => _AddPlaceScreenState();
 }
 
-class _AddPlaceScreenState extends State<AddPlaceScreen> {
+class _AddPlaceScreenState extends WidgetState<AddPlaceWidgetModel> {
   final _formKey = GlobalKey<FormState>();
-
-  /// кнопка сохранения при старте отключена
-  bool _isButtonEnabled = false;
-  VoidCallback? _submitForm;
-
-  /// сюда сохраним данные из формы
-  late String _selectedCategory;
-  late String _name;
-  late double _lat;
-  late double _lng;
-  late String _description;
-
-  /// сюда сохраним тестовые фотографии для загрузки
-  List<TestImage> _userImages = [];
-
-  final _categoryController = TextEditingController();
-  final _nameController = TextEditingController();
-  final _latController = TextEditingController();
-  final _lngController = TextEditingController();
-  final _descriptionController = TextEditingController();
-
-  final _categoryFocus = FocusNode();
-  final _nameFocus = FocusNode();
-  final _latFocus = FocusNode();
-  final _lngFocus = FocusNode();
-  final _descriptionFocus = FocusNode();
-
-  /// для передачи фокуса по тапам по полям и через клавиатуру
-  FocusNode? _currentFocus;
-
-  @override
-  void initState() {
-    super.initState();
-
-    _categoryController.addListener(() => setState(() {}));
-    _nameController.addListener(() => setState(() {}));
-    _latController.addListener(() => setState(() {}));
-    _lngController.addListener(() => setState(() {}));
-    _descriptionController.addListener(() => setState(() {}));
-    _userImages = userImages;
-    _selectedCategory = emptyCategory;
-    _categoryController.text = _selectedCategory;
-  }
-
-  @override
-  void dispose() {
-    _categoryController.dispose();
-    _nameController.dispose();
-    _latController.dispose();
-    _lngController.dispose();
-    _descriptionController.dispose();
-
-    _categoryFocus.dispose();
-    _nameFocus.dispose();
-    _latFocus.dispose();
-    _lngFocus.dispose();
-    _descriptionFocus.dispose();
-
-    super.dispose();
-  }
-
-  /// обновить базу данных после удаления карточки
-  /// буду вызывать из дочернего виджета
-  void updateState() {
-    setState(() {
-      _userImages = userImages;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
-    if (_selectedCategory == emptyCategory) {
-      _categoryController.text = emptyCategory;
-    } else {
-      _categoryController.text = _selectedCategory;
-
-      /// если все поля что-то содержат, то кнопка активна
-      if (_nameController.text.isNotEmpty &&
-          _latController.text.isNotEmpty &&
-          _lngController.text.isNotEmpty &&
-          _descriptionController.text.isNotEmpty) {
-        _isButtonEnabled = true;
-      }
-    }
-
-    if (_isButtonEnabled) {
-      _submitForm = () {
-        final isValid = _formKey.currentState!.validate();
-
-        if (isValid) {
-          _formKey.currentState!.save();
-
-          /// TODO: загрузка фото
-          /// временно
-          const _images = [
-            'https://picsum.photos/1000/600?random=1',
-            'https://picsum.photos/1000/600?random=2',
-          ];
-
-          /// сюда сохраним данные полей формы
-          PlaceDto newPlace = PlaceDto(
-            placeType: PlaceType.getCode(_selectedCategory),
-            name: _name,
-            lat: _lat,
-            lng: _lng,
-            description: _description,
-            urls: _images,
-          );
-
-          /// и потом отправим на сервер
-          /// test Interactor
-          PlaceInteractor().addNewPlace(newPlace);
-
-          /// подтверждаем сохранение данных
-          _showDialog(
-            category: _selectedCategory,
-            name: _name,
-            lat: _lat,
-            lng: _lng,
-            description: _description,
-          );
-        }
-      };
-    }
-
     return Scaffold(
       appBar: _buildAddSightAppBar() as PreferredSizeWidget?,
       body: CustomScrollView(
@@ -166,40 +38,40 @@ class _AddPlaceScreenState extends State<AddPlaceScreen> {
           SliverToBoxAdapter(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
-              child: GestureDetector(
-                onTap: () {
-                  if (_currentFocus != null) {
-                    _currentFocus!.unfocus();
-                    _currentFocus = null;
-                  }
-                },
-                child: Form(
-                  key: _formKey,
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      ListCardsWithAddedImg(
-                        data: _userImages,
-                        addImage: _addImg,
-                      ),
-                      sizedBoxH24,
-                      ..._buildCategory(),
-                      sizedBoxH24,
-                      ..._buildName(),
-                      sizedBoxH24,
-                      Row(
-                        children: [
-                          _buildLat(),
-                          sizedBoxW16,
-                          _buildLon(),
-                        ],
-                      ),
-                      _buildButtonShowOnMap(),
-                      sizedBoxH12,
-                      ..._buildDetails(),
-                    ],
-                  ),
+              child: Form(
+                key: _formKey,
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    StreamedStateBuilder<List<TestImage>>(
+                        streamedState: wm.userListImgState,
+                        builder: (context, userListImg) {
+                          return ListCardsWithAddedImg(
+                            data: userListImg!,
+                            onAddImage: () {
+                              wm.addImg();
+                              _showImageLoadingWindow();
+                            },
+                            onRemoveImage: (int index) => wm.removeImg(index),
+                          );
+                        }),
+                    sizedBoxH24,
+                    ..._buildCategory(),
+                    sizedBoxH24,
+                    ..._buildName(),
+                    sizedBoxH24,
+                    Row(
+                      children: [
+                        _buildLat(),
+                        sizedBoxW16,
+                        _buildLon(),
+                      ],
+                    ),
+                    _buildButtonShowOnMap(),
+                    sizedBoxH12,
+                    ..._buildDetails(),
+                  ],
                 ),
               ),
             ),
@@ -208,11 +80,15 @@ class _AddPlaceScreenState extends State<AddPlaceScreen> {
             hasScrollBody: false,
             child: Align(
               alignment: Alignment.bottomCenter,
-              child: ButtonSave(
-                title: titleButtonSaveAddSightScreen,
-                isButtonEnabled: _isButtonEnabled,
-                onPressed: _submitForm,
-              ),
+              child: StreamedStateBuilder<bool>(
+                  streamedState: wm.isButtonEnabledState,
+                  builder: (context, isButtonEnabled) {
+                    return ButtonSave(
+                      title: titleButtonSaveAddSightScreen,
+                      isButtonEnabled: isButtonEnabled!,
+                      onPressed: isButtonEnabled ? _submitForm : null,
+                    );
+                  }),
             ),
           ),
         ],
@@ -253,7 +129,7 @@ class _AddPlaceScreenState extends State<AddPlaceScreen> {
               errorStyle: TextStyle(fontSize: 0),
               enabledBorder: UnderlineInputBorder(
                 borderSide: BorderSide(
-                  color: _categoryController.text != emptyCategory
+                  color: wm.fieldCategory.controller.text != emptyCategory
                       ? Theme.of(context).accentColor.withOpacity(0.4)
                       : Theme.of(context)
                           .colorScheme
@@ -289,12 +165,12 @@ class _AddPlaceScreenState extends State<AddPlaceScreen> {
             ),
           ),
           child: TextFormField(
-            focusNode: _categoryFocus,
+            focusNode: wm.fieldCategoryFocus,
             autofocus: true,
-            controller: _categoryController,
+            controller: wm.fieldCategory.controller,
             showCursor: false,
             maxLines: 1,
-            style: _selectedCategory == emptyCategory
+            style: wm.fieldCategory.controller.text == emptyCategory
                 ? Theme.of(context)
                     .primaryTextTheme
                     .subtitle1!
@@ -310,30 +186,13 @@ class _AddPlaceScreenState extends State<AddPlaceScreen> {
                 ),
               ),
             ),
-            validator: _validateCategory,
-            onSaved: (value) => setState(() => _selectedCategory = value as String),
-            onTap: () {
-              _returnCategoryFromSelectCategoryScreen();
-            },
+            validator: wm.validateCategory,
+            onSaved: (value) => wm.selectedCategory = value as String,
+            onTap: wm.selectCategory,
           ),
         ),
       ),
     ];
-  }
-
-  /// получаем выбранную категорию из экрана с категориями
-  void _returnCategoryFromSelectCategoryScreen() async {
-    final result = await Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) =>
-            SelectCategoryScreen(selectedCategory: _selectedCategory),
-      ),
-    );
-    setState(() {
-      _selectedCategory = result;
-      _fieldFocusChange(context, _categoryFocus, _nameFocus);
-    });
   }
 
   /// поле Название
@@ -344,17 +203,15 @@ class _AddPlaceScreenState extends State<AddPlaceScreen> {
       SizedBox(
         height: heightInput,
         child: TextFormField(
-          focusNode: _nameFocus,
+          focusNode: wm.fieldNameFocus,
           autofocus: true,
           onFieldSubmitted: (_) {
-            _fieldFocusChange(context, _nameFocus, _latFocus);
+            wm.fieldFocusChange(context, wm.fieldNameFocus, wm.fieldLatFocus);
           },
           onTap: () {
-            setState(() {
-              _currentFocus = _nameFocus;
-            });
+            wm.setFocus(wm.fieldNameFocus);
           },
-          controller: _nameController,
+          controller: wm.fieldName.controller,
           cursorHeight: 24,
           cursorWidth: 1,
           maxLength: 100,
@@ -364,16 +221,16 @@ class _AddPlaceScreenState extends State<AddPlaceScreen> {
           decoration: InputDecoration(
             counterText: '',
             suffixIcon: _clearField(
-                context: context,
-                currentFocus: _nameFocus,
-                controller: _nameController),
-            enabledBorder: _buildBorderColor(_nameController),
+              currentFocus: wm.fieldNameFocus,
+              controller: wm.fieldName.controller,
+            ),
+            enabledBorder: _buildBorderColor(wm.fieldName.controller),
           ),
           inputFormatters: [
             LengthLimitingTextInputFormatter(100),
           ],
-          validator: _validateName,
-          onSaved: (value) => setState(() => _name = value as String),
+          validator: wm.validateName,
+          onSaved: (value) => wm.name = value as String,
         ),
       ),
     ];
@@ -390,17 +247,16 @@ class _AddPlaceScreenState extends State<AddPlaceScreen> {
           SizedBox(
             height: heightInput,
             child: TextFormField(
-              focusNode: _latFocus,
+              focusNode: wm.fieldLatFocus,
               autofocus: true,
               onFieldSubmitted: (_) {
-                _fieldFocusChange(context, _latFocus, _lngFocus);
+                wm.fieldFocusChange(
+                    context, wm.fieldLatFocus, wm.fieldLngFocus);
               },
               onTap: () {
-                setState(() {
-                  _currentFocus = _latFocus;
-                });
+                wm.setFocus(wm.fieldLatFocus);
               },
-              controller: _latController,
+              controller: wm.fieldLat.controller,
               cursorHeight: 24,
               cursorWidth: 1,
               maxLength: 50,
@@ -411,14 +267,12 @@ class _AddPlaceScreenState extends State<AddPlaceScreen> {
               decoration: InputDecoration(
                 counterText: '',
                 suffixIcon: _clearField(
-                    context: context,
-                    currentFocus: _latFocus,
-                    controller: _latController),
-                enabledBorder: _buildBorderColor(_latController),
+                    currentFocus: wm.fieldLatFocus,
+                    controller: wm.fieldLat.controller),
+                enabledBorder: _buildBorderColor(wm.fieldLat.controller),
               ),
-              validator: _validateCoordinates,
-              onSaved: (value) =>
-                  setState(() => _lat = double.tryParse(value!) as double),
+              validator: wm.validateCoordinates,
+              onSaved: (value) => wm.lat = double.tryParse(value!) as double,
             ),
           ),
         ],
@@ -437,17 +291,16 @@ class _AddPlaceScreenState extends State<AddPlaceScreen> {
           SizedBox(
             height: heightInput,
             child: TextFormField(
-              focusNode: _lngFocus,
+              focusNode: wm.fieldLngFocus,
               autofocus: true,
               onFieldSubmitted: (_) {
-                _fieldFocusChange(context, _lngFocus, _descriptionFocus);
+                wm.fieldFocusChange(
+                    context, wm.fieldNameFocus, wm.fieldDescriptionFocus);
               },
               onTap: () {
-                setState(() {
-                  _currentFocus = _lngFocus;
-                });
+                wm.setFocus(wm.fieldLngFocus);
               },
-              controller: _lngController,
+              controller: wm.fieldLng.controller,
               cursorHeight: 24,
               cursorWidth: 1,
               maxLength: 50,
@@ -458,14 +311,12 @@ class _AddPlaceScreenState extends State<AddPlaceScreen> {
               decoration: InputDecoration(
                 counterText: '',
                 suffixIcon: _clearField(
-                    context: context,
-                    currentFocus: _lngFocus,
-                    controller: _lngController),
-                enabledBorder: _buildBorderColor(_lngController),
+                    currentFocus: wm.fieldLngFocus,
+                    controller: wm.fieldLng.controller),
+                enabledBorder: _buildBorderColor(wm.fieldLng.controller),
               ),
-              validator: _validateCoordinates,
-              onSaved: (value) =>
-                  setState(() => _lng = double.tryParse(value!) as double),
+              validator: wm.validateCoordinates,
+              onSaved: (value) => wm.lng = double.tryParse(value!) as double,
             ),
           ),
         ],
@@ -487,18 +338,15 @@ class _AddPlaceScreenState extends State<AddPlaceScreen> {
       const Text(addNewSightLabelDetails),
       sizedBoxH12,
       TextFormField(
-        focusNode: _descriptionFocus,
+        focusNode: wm.fieldDescriptionFocus,
         autofocus: true,
         onEditingComplete: () {
-          _descriptionFocus.unfocus();
-          _currentFocus = null;
+          wm.clearFocus(wm.fieldDescriptionFocus);
         },
         onTap: () {
-          setState(() {
-            _currentFocus = _descriptionFocus;
-          });
+          wm.setFocus(wm.fieldDescriptionFocus);
         },
-        controller: _descriptionController,
+        controller: wm.fieldDescription.controller,
         cursorHeight: 24,
         cursorWidth: 1,
         maxLength: 300,
@@ -513,73 +361,34 @@ class _AddPlaceScreenState extends State<AddPlaceScreen> {
               .subtitle1!
               .copyWith(color: Theme.of(context).colorScheme.inactiveBlack),
           suffixIcon: _clearField(
-              context: context,
-              currentFocus: _descriptionFocus,
-              controller: _descriptionController),
-          enabledBorder: _buildBorderColor(_descriptionController),
+            currentFocus: wm.fieldDescriptionFocus,
+            controller: wm.fieldDescription.controller,
+          ),
+          enabledBorder: _buildBorderColor(wm.fieldDescription.controller),
         ),
         inputFormatters: [
           LengthLimitingTextInputFormatter(300),
         ],
-        validator: _validateDetails,
-        onSaved: (value) => setState(() => _description = value as String),
+        validator: wm.validateDetails,
+        onSaved: (value) => wm.description = value as String,
       ),
     ];
   }
 
-  /// валидация полей
-  String? _validateCategory(String? value) {
-    if (value!.isEmpty || value == emptyCategory) return errorEmptyCategory;
-
-    return null;
-  }
-
-  String? _validateName(String? value) {
-    final _nameExp = _namePattern;
-    if (value!.isEmpty) return errorEmptyName;
-    if (value.length < 5) return errorShortName;
-    if (!_nameExp.hasMatch(value)) return errorIncorrectName;
-
-    return null;
-  }
-
-  String? _validateCoordinates(String? value) {
-    final _coordinatesExp = _coordinatesPattern;
-    if (value!.isEmpty) return errorEmptyCoordinates;
-    if (!_coordinatesExp.hasMatch(value)) return errorIncorrectCoordinates;
-
-    return null;
-  }
-
-  String? _validateDetails(String? value) {
-    if (value!.isEmpty) return errorEmptyDetails;
-    if (value.length < 100) return errorShortDetails;
-
-    return null;
-  }
-
-  /// конец валидации
-
-  /// переключение фокуса в полях формы
-  void _fieldFocusChange(
-      BuildContext context, FocusNode currentFocus, FocusNode nextFocus) {
-    currentFocus.unfocus();
-    FocusScope.of(context).requestFocus(nextFocus);
-    setState(() {
-      _currentFocus = nextFocus;
-    });
-  }
-
   /// очистка поля по кнопке
-  Widget _clearField(
-      {required BuildContext context,
-      required FocusNode currentFocus,
-      required TextEditingController controller}) {
-    if (currentFocus == _currentFocus && controller.text.isNotEmpty) {
-      return ButtonClear(controller: controller);
-    }
-
-    return const SizedBox(width: 0);
+  Widget _clearField({
+    required FocusNode currentFocus,
+    required TextEditingController controller,
+  }) {
+    return StreamedStateBuilder<FocusNode>(
+        streamedState: wm.currentFocusState,
+        builder: (context, focus) {
+          if (focus == currentFocus) {
+            return ButtonClear(controller: controller);
+          } else {
+            return SizedBox.shrink();
+          }
+        });
   }
 
   /// цвет границы у уже правильно заполненного поля
@@ -593,6 +402,26 @@ class _AddPlaceScreenState extends State<AddPlaceScreen> {
               width: 1,
             ),
           );
+
+  /// клик по кнопке Создать
+  void _submitForm() {
+    final isValid = _formKey.currentState!.validate();
+
+    if (isValid) {
+      _formKey.currentState!.save();
+
+      wm.addPlace();
+
+      /// подтверждаем сохранение данных
+      _showDialog(
+        category: wm.selectedCategory,
+        name: wm.name,
+        lat: wm.lat,
+        lng: wm.lng,
+        description: wm.description,
+      );
+    }
+  }
 
   /// показываем окно если форма валидна
   void _showDialog({
@@ -665,14 +494,6 @@ class _AddPlaceScreenState extends State<AddPlaceScreen> {
             ],
           );
         });
-  }
-
-  /// клик по кнопке добавления фотографии - заполняем тестовыми данными
-  void _addImg() {
-    setState(() {
-      _userImages.add(TestImagesData.getRandomItem());
-    });
-    _showImageLoadingWindow();
   }
 
   /// окно для выбора загрузки фотографий

@@ -26,6 +26,9 @@ dependencies:
   flutter_bloc: ^7.0.0
   equatable: ^2.0.0
 
+  mwwm: ^1.0.2
+  relation: ^1.0.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

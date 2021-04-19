@@ -7,10 +7,10 @@ import 'package:places/data/model/search_filter.dart';
 import 'package:places/data/model/place.dart';
 import 'package:places/data/model/card_type.dart';
 import 'package:places/store/place_list/place_list_store.dart';
+import 'package:places/ui/screen/add_place_screen/add_place_route.dart';
 import 'package:places/ui/screen/components/bottom_navigationbar.dart';
 import 'package:places/ui/screen/components/button_gradient.dart';
 import 'package:places/ui/screen/filters_screen.dart';
-import 'package:places/ui/screen/add_place_screen/add_place_screen.dart';
 import 'package:places/ui/screen/res/sizes.dart';
 import 'package:places/ui/screen/res/strings.dart';
 import 'package:places/ui/screen/widgets/empty_page.dart';
@@ -154,11 +154,8 @@ class _PlaceListScreenState extends State<PlaceListScreen> {
 
   /// нажатие на градиентную кнопку - переходим на экран добавления
   void _onPressedAddNewCard() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => AddPlaceScreen(),
-      ),
+    Navigator.of(context).push(
+      AddPlaceScreenRoute(),
     );
   }
 
