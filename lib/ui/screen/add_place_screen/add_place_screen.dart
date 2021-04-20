@@ -11,7 +11,6 @@ import 'package:places/ui/screen/res/assets.dart';
 import 'package:places/ui/screen/res/sizes.dart';
 import 'package:places/ui/screen/res/strings.dart';
 import 'package:places/ui/screen/res/themes.dart';
-import 'package:places/ui/screen/place_list_screen.dart';
 import 'package:places/ui/screen/utilities/test_images_data.dart';
 import 'package:places/ui/screen/widgets/choice_of_loading_images.dart';
 import 'package:places/ui/screen/widgets/list_cards_with_added_img.dart';
@@ -27,8 +26,6 @@ class AddPlaceScreen extends CoreMwwmWidget {
 }
 
 class _AddPlaceScreenState extends WidgetState<AddPlaceWidgetModel> {
-  final _formKey = GlobalKey<FormState>();
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -39,7 +36,7 @@ class _AddPlaceScreenState extends WidgetState<AddPlaceWidgetModel> {
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
               child: Form(
-                key: _formKey,
+                key: wm.formKey,
                 autovalidateMode: AutovalidateMode.onUserInteraction,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -86,7 +83,8 @@ class _AddPlaceScreenState extends WidgetState<AddPlaceWidgetModel> {
                     return ButtonSave(
                       title: titleButtonSaveAddSightScreen,
                       isButtonEnabled: isButtonEnabled!,
-                      onPressed: isButtonEnabled ? _submitForm : null,
+                      onPressed: () =>
+                          isButtonEnabled ? wm.submitForm(context) : null,
                     );
                   }),
             ),
@@ -403,104 +401,10 @@ class _AddPlaceScreenState extends WidgetState<AddPlaceWidgetModel> {
             ),
           );
 
-  /// клик по кнопке Создать
-  void _submitForm() {
-    final isValid = _formKey.currentState!.validate();
-
-    if (isValid) {
-      _formKey.currentState!.save();
-
-      wm.addPlace();
-
-      /// подтверждаем сохранение данных
-      _showDialog(
-        category: wm.selectedCategory,
-        name: wm.name,
-        lat: wm.lat,
-        lng: wm.lng,
-        description: wm.description,
-      );
-    }
-  }
-
-  /// показываем окно если форма валидна
-  void _showDialog({
-    String? category,
-    String? name,
-    double? lat,
-    double? lng,
-    String? description,
-  }) {
-    showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(radiusCard),
-            ),
-            title: Text(
-              addNewSightAlertDialogHeader,
-              style: Theme.of(context)
-                  .textTheme
-                  .headline6!
-                  .copyWith(color: Theme.of(context).accentColor),
-            ),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Text(
-                  category!,
-                  style: Theme.of(context).primaryTextTheme.subtitle1,
-                ),
-                sizedBoxH12,
-                Text(
-                  name!,
-                  style: Theme.of(context).primaryTextTheme.subtitle1,
-                ),
-                Text(
-                  '${description!.substring(0, 100)} ...',
-                  style: Theme.of(context).primaryTextTheme.subtitle1,
-                ),
-                sizedBoxH12,
-                Text(
-                  '$addNewSightAlertDialogLat$lat',
-                  style: Theme.of(context).primaryTextTheme.bodyText2,
-                ),
-                Text(
-                  '$addNewSightAlertDialogLon$lng',
-                  style: Theme.of(context).primaryTextTheme.bodyText2,
-                ),
-              ],
-            ),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => PlaceListScreen(),
-                    ),
-                  );
-                },
-                child: Text(
-                  addNewSightAlertDialogSubmit,
-                  style: Theme.of(context)
-                      .textTheme
-                      .headline6!
-                      .copyWith(color: Theme.of(context).accentColor),
-                ),
-              ),
-            ],
-          );
-        });
-  }
-
   /// окно для выбора загрузки фотографий
   Future<void> _showImageLoadingWindow() async {
     return showDialog(
         context: context,
-        // barrierDismissible: true,
         builder: (_) {
           return ChoiceOfLoadingImages();
         });

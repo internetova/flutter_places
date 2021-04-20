@@ -4,6 +4,7 @@ import 'package:places/data/dto/place_dto.dart';
 import 'package:places/data/interactor/place_interactor.dart';
 import 'package:places/data/model/place_type.dart';
 import 'package:places/ui/screen/add_place_screen/select_category_screen.dart';
+import 'package:places/ui/screen/add_place_screen/widgets/inform_dialog_widget.dart';
 import 'package:places/ui/screen/res/strings.dart';
 import 'package:places/ui/screen/utilities/test_images_data.dart';
 import 'package:relation/relation.dart';
@@ -24,6 +25,9 @@ class AddPlaceWidgetModel extends WidgetModel {
     required this.navigator,
   }) : super(baseDependencies);
 
+  /// ключ для формы
+  late GlobalKey<FormState> formKey;
+
   /// Изменяемые состояния элементов экрана
   ///
   /// кнопка создания нового места при старте отключена
@@ -42,7 +46,7 @@ class AddPlaceWidgetModel extends WidgetModel {
   Action selectCategory = Action<void>();
 
   /// отправка заполненных данных формы
-  Action addPlace = Action<void>();
+  Action submitForm = Action<void>();
 
   /// добавить фотографию
   Action addImg = Action<void>();
@@ -89,6 +93,9 @@ class AddPlaceWidgetModel extends WidgetModel {
   void onLoad() {
     super.onLoad();
 
+    /// ключ для формы
+    formKey = GlobalKey<FormState>();
+
     /// при старте в категории 'Не выбрано'
     fieldCategory.controller.text = emptyCategory;
     currentFocusState.accept(fieldCategoryFocus);
@@ -98,9 +105,10 @@ class AddPlaceWidgetModel extends WidgetModel {
   void onBind() {
     super.onBind();
     subscribe(selectCategory.stream, _onSelectCategory);
-    subscribe(addPlace.stream, _addPlace);
-    subscribe(addImg.stream, _onAddImg);
-    subscribe(removeImg.stream, (index) => _onRemoveImg(index as int));
+    subscribe(submitForm.stream,
+        (context) => _submitForm(context as BuildContext) as dynamic);
+    subscribe(addImg.stream, _addImg);
+    subscribe(removeImg.stream, (index) => _removeImg(index as int));
   }
 
   /// выбрать категорию (onTap)
@@ -186,7 +194,44 @@ class AddPlaceWidgetModel extends WidgetModel {
     isButtonEnabledState.accept(isFieldsFilled);
   }
 
-  Future<void> _addPlace(_) async {
+  /// клик по кнопке Создать
+  Future<void> _submitForm(BuildContext context) async {
+    final isValid = formKey.currentState!.validate();
+
+    if (isValid) {
+      formKey.currentState!.save();
+
+      _savePlace();
+
+      /// проверка в консоль TODO удалить позже
+      print('''
+        category: $selectedCategory,
+        name: $name,
+        lat: $lat,
+        lng: $lng,
+        description: $description
+        ''');
+
+      /// подтверждаем сохранение данных
+      return showDialog(
+          context: context,
+          builder: (_) {
+            return InformDialogWidget(
+              category: selectedCategory,
+              name: name,
+              lat: lat,
+              lng: lng,
+              description: description,
+            );
+          });
+
+      ///
+
+    }
+  }
+
+  /// сохраняем на сервер
+  Future<void> _savePlace() async {
     /// TODO: загрузка фото
     /// временно
     const _images = [
@@ -210,13 +255,13 @@ class AddPlaceWidgetModel extends WidgetModel {
   }
 
   /// onTap по кнопке Добавить фото (+)
-  void _onAddImg(_) {
+  void _addImg(_) {
     _userImages.add(TestImagesData.getRandomItem());
     userListImgState.accept(_userImages);
   }
 
-  /// onTap или смахивание вверх по карточке с фото (+)
-  void _onRemoveImg(int index) {
+  /// onTap или смахивание вверх по карточке с фото
+  void _removeImg(int index) {
     _userImages.removeAt(index);
     userListImgState.accept(_userImages);
   }
