@@ -2,12 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mwwm/mwwm.dart';
 import 'package:places/ui/screen/add_place_screen/add_place_wm.dart';
-import 'package:places/ui/screen/components/button_clear.dart';
+import 'package:places/ui/screen/add_place_screen/widgets/custom_text_field_widget.dart';
 import 'package:places/ui/screen/components/button_save.dart';
 import 'package:places/ui/screen/components/button_text.dart';
-import 'package:places/ui/screen/components/icon_svg.dart';
 import 'package:places/ui/screen/components/title_leading_appbar.dart';
-import 'package:places/ui/screen/res/assets.dart';
 import 'package:places/ui/screen/res/sizes.dart';
 import 'package:places/ui/screen/res/strings.dart';
 import 'package:places/ui/screen/res/themes.dart';
@@ -48,9 +46,10 @@ class _AddPlaceScreenState extends WidgetState<AddPlaceWidgetModel> {
                             data: userListImg!,
                             onAddImage: () {
                               wm.addImg();
-                              _showImageLoadingWindow();
+                              // todo пока закоментировала до реализации загрузки фото
+                              // _showImageLoadingWindow();
                             },
-                            onRemoveImage: (int index) => wm.removeImg(index),
+                            onRemoveImage: wm.removeImg,
                           );
                         }),
                     sizedBoxH24,
@@ -121,75 +120,14 @@ class _AddPlaceScreenState extends WidgetState<AddPlaceWidgetModel> {
       sizedBoxH12,
       SizedBox(
         height: 48,
-        child: Theme(
-          data: ThemeData(
-            inputDecorationTheme: InputDecorationTheme(
-              errorStyle: TextStyle(fontSize: 0),
-              enabledBorder: UnderlineInputBorder(
-                borderSide: BorderSide(
-                  color: wm.fieldCategory.controller.text != emptyCategory
-                      ? Theme.of(context).accentColor.withOpacity(0.4)
-                      : Theme.of(context)
-                          .colorScheme
-                          .inactiveBlack
-                          .withOpacity(0.24),
-                  width: 1,
-                ),
-              ),
-              focusedBorder: UnderlineInputBorder(
-                borderSide: BorderSide(
-                  color: Theme.of(context)
-                      .colorScheme
-                      .inactiveBlack
-                      .withOpacity(0.24),
-                  style: BorderStyle.solid,
-                  width: 1,
-                ),
-              ),
-              errorBorder: UnderlineInputBorder(
-                borderSide: BorderSide(
-                  color: Theme.of(context).errorColor.withOpacity(0.4),
-                  style: BorderStyle.solid,
-                  width: 1,
-                ),
-              ),
-              focusedErrorBorder: UnderlineInputBorder(
-                borderSide: BorderSide(
-                  color: Theme.of(context).errorColor.withOpacity(0.4),
-                  style: BorderStyle.solid,
-                  width: 2,
-                ),
-              ),
-            ),
-          ),
-          child: TextFormField(
+          child: CustomTextFieldUnderlineWidget(
             focusNode: wm.fieldCategoryFocus,
-            autofocus: true,
             controller: wm.fieldCategory.controller,
-            showCursor: false,
-            maxLines: 1,
-            style: wm.fieldCategory.controller.text == emptyCategory
-                ? Theme.of(context)
-                    .primaryTextTheme
-                    .subtitle1!
-                    .copyWith(color: Theme.of(context).colorScheme.secondary2)
-                : Theme.of(context).primaryTextTheme.subtitle1,
-            readOnly: true,
-            decoration: InputDecoration(
-              suffixIcon: Padding(
-                padding: const EdgeInsets.all(12.0),
-                child: IconSvg(
-                  icon: icView,
-                  color: Theme.of(context).colorScheme.primary,
-                ),
-              ),
-            ),
-            validator: wm.validateCategory,
-            onSaved: (value) => wm.selectedCategory = value as String,
             onTap: wm.selectCategory,
+            validator: wm.validateCategory,
+            onSaved: wm.saveSelectedCategory,
           ),
         ),
-      ),
     ];
   }
 
@@ -200,35 +138,15 @@ class _AddPlaceScreenState extends WidgetState<AddPlaceWidgetModel> {
       sizedBoxH12,
       SizedBox(
         height: heightInput,
-        child: TextFormField(
+        child: CustomTextFieldWidget(
           focusNode: wm.fieldNameFocus,
-          autofocus: true,
-          onFieldSubmitted: (_) {
-            wm.fieldFocusChange(context, wm.fieldNameFocus, wm.fieldLatFocus);
-          },
-          onTap: () {
-            wm.setFocus(wm.fieldNameFocus);
-          },
           controller: wm.fieldName.controller,
-          cursorHeight: 24,
-          cursorWidth: 1,
-          maxLength: 100,
-          maxLines: 1,
-          textInputAction: TextInputAction.next,
-          style: Theme.of(context).primaryTextTheme.subtitle1,
-          decoration: InputDecoration(
-            counterText: '',
-            suffixIcon: _clearField(
-              currentFocus: wm.fieldNameFocus,
-              controller: wm.fieldName.controller,
-            ),
-            enabledBorder: _buildBorderColor(wm.fieldName.controller),
-          ),
-          inputFormatters: [
-            LengthLimitingTextInputFormatter(100),
-          ],
+          onFieldSubmitted: (_) {
+            wm.fieldFocusChange(wm.fieldLatFocus);
+          },
           validator: wm.validateName,
-          onSaved: (value) => wm.name = value as String,
+          onSaved: wm.saveName,
+          maxLength: 100,
         ),
       ),
     ];
@@ -244,33 +162,16 @@ class _AddPlaceScreenState extends WidgetState<AddPlaceWidgetModel> {
           sizedBoxH12,
           SizedBox(
             height: heightInput,
-            child: TextFormField(
+            child: CustomTextFieldWidget(
               focusNode: wm.fieldLatFocus,
-              autofocus: true,
-              onFieldSubmitted: (_) {
-                wm.fieldFocusChange(
-                    context, wm.fieldLatFocus, wm.fieldLngFocus);
-              },
-              onTap: () {
-                wm.setFocus(wm.fieldLatFocus);
-              },
               controller: wm.fieldLat.controller,
-              cursorHeight: 24,
-              cursorWidth: 1,
-              maxLength: 50,
-              maxLines: 1,
-              keyboardType: TextInputType.number,
-              textInputAction: TextInputAction.next,
-              style: Theme.of(context).primaryTextTheme.subtitle1,
-              decoration: InputDecoration(
-                counterText: '',
-                suffixIcon: _clearField(
-                    currentFocus: wm.fieldLatFocus,
-                    controller: wm.fieldLat.controller),
-                enabledBorder: _buildBorderColor(wm.fieldLat.controller),
-              ),
+              onFieldSubmitted: (_) {
+                wm.fieldFocusChange( wm.fieldLngFocus);
+              },
               validator: wm.validateCoordinates,
-              onSaved: (value) => wm.lat = double.tryParse(value!) as double,
+              onSaved: wm.saveLat,
+              keyboardType: TextInputType.number,
+              maxLength: 50,
             ),
           ),
         ],
@@ -288,33 +189,16 @@ class _AddPlaceScreenState extends WidgetState<AddPlaceWidgetModel> {
           sizedBoxH12,
           SizedBox(
             height: heightInput,
-            child: TextFormField(
+            child: CustomTextFieldWidget(
               focusNode: wm.fieldLngFocus,
-              autofocus: true,
-              onFieldSubmitted: (_) {
-                wm.fieldFocusChange(
-                    context, wm.fieldNameFocus, wm.fieldDescriptionFocus);
-              },
-              onTap: () {
-                wm.setFocus(wm.fieldLngFocus);
-              },
               controller: wm.fieldLng.controller,
-              cursorHeight: 24,
-              cursorWidth: 1,
-              maxLength: 50,
-              maxLines: 1,
-              keyboardType: TextInputType.number,
-              textInputAction: TextInputAction.next,
-              style: Theme.of(context).primaryTextTheme.subtitle1,
-              decoration: InputDecoration(
-                counterText: '',
-                suffixIcon: _clearField(
-                    currentFocus: wm.fieldLngFocus,
-                    controller: wm.fieldLng.controller),
-                enabledBorder: _buildBorderColor(wm.fieldLng.controller),
-              ),
+              onFieldSubmitted: (_) {
+                wm.fieldFocusChange( wm.fieldDescriptionFocus);
+              },
               validator: wm.validateCoordinates,
-              onSaved: (value) => wm.lng = double.tryParse(value!) as double,
+              onSaved: wm.saveLng,
+              keyboardType: TextInputType.number,
+              maxLength: 50,
             ),
           ),
         ],
@@ -335,72 +219,22 @@ class _AddPlaceScreenState extends WidgetState<AddPlaceWidgetModel> {
     return [
       const Text(addNewSightLabelDetails),
       sizedBoxH12,
-      TextFormField(
+      CustomTextFieldWidget(
         focusNode: wm.fieldDescriptionFocus,
-        autofocus: true,
+        controller: wm.fieldDescription.controller,
         onEditingComplete: () {
           wm.clearFocus(wm.fieldDescriptionFocus);
         },
-        onTap: () {
-          wm.setFocus(wm.fieldDescriptionFocus);
-        },
-        controller: wm.fieldDescription.controller,
-        cursorHeight: 24,
-        cursorWidth: 1,
-        maxLength: 300,
-        maxLines: 3,
-        textInputAction: TextInputAction.done,
-        style: Theme.of(context).primaryTextTheme.subtitle1,
-        decoration: InputDecoration(
-          counterText: '',
-          hintText: addNewSightHintTextDetails,
-          hintStyle: Theme.of(context)
-              .primaryTextTheme
-              .subtitle1!
-              .copyWith(color: Theme.of(context).colorScheme.inactiveBlack),
-          suffixIcon: _clearField(
-            currentFocus: wm.fieldDescriptionFocus,
-            controller: wm.fieldDescription.controller,
-          ),
-          enabledBorder: _buildBorderColor(wm.fieldDescription.controller),
-        ),
-        inputFormatters: [
-          LengthLimitingTextInputFormatter(300),
-        ],
         validator: wm.validateDetails,
-        onSaved: (value) => wm.description = value as String,
+        onSaved: wm.saveDescription,
+        textInputAction: TextInputAction.done,
+        maxLength: 300,
+        maxLines: 4,
       ),
     ];
   }
 
-  /// очистка поля по кнопке
-  Widget _clearField({
-    required FocusNode currentFocus,
-    required TextEditingController controller,
-  }) {
-    return StreamedStateBuilder<FocusNode>(
-        streamedState: wm.currentFocusState,
-        builder: (context, focus) {
-          if (focus == currentFocus) {
-            return ButtonClear(controller: controller);
-          } else {
-            return SizedBox.shrink();
-          }
-        });
-  }
-
-  /// цвет границы у уже правильно заполненного поля
-  InputBorder _buildBorderColor(TextEditingController controller) =>
-      Theme.of(context).inputDecorationTheme.enabledBorder!.copyWith(
-            borderSide: BorderSide(
-              color: controller.text.isNotEmpty
-                  ? Theme.of(context).accentColor.withOpacity(0.4)
-                  : Theme.of(context).colorScheme.inactiveBlack,
-              style: BorderStyle.solid,
-              width: 1,
-            ),
-          );
-
+  /// todo скрыла до реализации загрузки фотографий
   /// окно для выбора загрузки фотографий
   Future<void> _showImageLoadingWindow() async {
     return showDialog(

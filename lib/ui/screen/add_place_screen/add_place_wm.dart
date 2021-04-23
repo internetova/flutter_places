@@ -26,33 +26,30 @@ class AddPlaceWidgetModel extends WidgetModel {
   }) : super(baseDependencies);
 
   /// ключ для формы
-  late GlobalKey<FormState> formKey;
+  final formKey = GlobalKey<FormState>();
 
   /// Изменяемые состояния элементов экрана
   ///
   /// кнопка создания нового места при старте отключена
   /// делается доступной когда все поля заполнены
-  StreamedState<bool> isButtonEnabledState = StreamedState(false);
-
-  /// текущий фокус
-  StreamedState<FocusNode> currentFocusState = StreamedState();
+  final isButtonEnabledState = StreamedState<bool>(false);
 
   /// список добавленных фото для загрузки
-  StreamedState<List<TestImage>> userListImgState = StreamedState([]);
+  final userListImgState = StreamedState<List<TestImage>>([]);
 
   /// Действия на экране
   ///
   /// выбрать категорию
-  Action selectCategory = Action<void>();
-
-  /// отправка заполненных данных формы
-  Action submitForm = Action<void>();
+  final Action selectCategory = Action<void>();
 
   /// добавить фотографию
-  Action addImg = Action<void>();
+  final Action addImg = Action<void>();
 
   /// удалить фотографию
-  Action removeImg = Action<void>();
+  final Action removeImg = Action<void>();
+
+  /// отправка заполненных данных формы
+  final Action submitForm = Action<void>();
 
   /// сюда сохраним данные из формы
   late String selectedCategory;
@@ -93,12 +90,9 @@ class AddPlaceWidgetModel extends WidgetModel {
   void onLoad() {
     super.onLoad();
 
-    /// ключ для формы
-    formKey = GlobalKey<FormState>();
-
     /// при старте в категории 'Не выбрано'
     fieldCategory.controller.text = emptyCategory;
-    currentFocusState.accept(fieldCategoryFocus);
+    _setFocus(fieldCategoryFocus);
   }
 
   @override
@@ -107,6 +101,8 @@ class AddPlaceWidgetModel extends WidgetModel {
     subscribe(selectCategory.stream, _onSelectCategory);
     subscribe(submitForm.stream,
         (context) => _submitForm(context as BuildContext) as dynamic);
+
+    /// работа с фото добавить / удалить
     subscribe(addImg.stream, _addImg);
     subscribe(removeImg.stream, (index) => _removeImg(index as int));
   }
@@ -121,29 +117,23 @@ class AddPlaceWidgetModel extends WidgetModel {
     ) as String;
 
     fieldCategory.controller.text = result;
-    setFocus(fieldNameFocus);
+    _setFocus(fieldNameFocus);
   }
 
-  /// переключение фокуса в полях формы для поля Категория
-  /// установка текущего фокуса кликом (onTap) по полю
-  void setFocus(FocusNode focus) {
+  /// установка текущего фокуса
+  void _setFocus(FocusNode focus) {
     focus.requestFocus();
-    currentFocusState.accept(focus);
   }
 
   /// перевод фокуса по клавиатуре на следующее поле
-  void fieldFocusChange(
-      BuildContext context, FocusNode currentFocus, FocusNode nextFocus) {
-    currentFocus.unfocus();
-    FocusScope.of(context).requestFocus(nextFocus);
-
-    this.currentFocusState.accept(nextFocus);
+  void fieldFocusChange(FocusNode nextFocus) {
+    nextFocus.requestFocus(nextFocus);
   }
 
   /// очистить фокус
   void clearFocus(FocusNode currentFocus) {
     currentFocus.unfocus();
-    this.currentFocusState.accept(null);
+    // currentFocusState.accept(null);
   }
 
   /// валидация полей
@@ -159,6 +149,7 @@ class AddPlaceWidgetModel extends WidgetModel {
     final _nameExp = _namePattern;
     if (value!.isEmpty) return errorEmptyName;
     if (value.length < 5) return errorShortName;
+    if (value.length > 80) return errorLongName;
     if (!_nameExp.hasMatch(value)) return errorIncorrectName;
 
     return null;
@@ -177,6 +168,7 @@ class AddPlaceWidgetModel extends WidgetModel {
     _checkFieldsFilled();
     if (value!.isEmpty) return errorEmptyDetails;
     if (value.length < 100) return errorShortDetails;
+    if (value.length > 300) return errorLongDetails;
 
     return null;
   }
@@ -185,13 +177,32 @@ class AddPlaceWidgetModel extends WidgetModel {
 
   /// если поля заполнены активируем кнопку
   void _checkFieldsFilled() {
-    final bool isFieldsFilled = (fieldCategory.controller.text.isNotEmpty &&
+    isButtonEnabledState.accept(fieldCategory.controller.text.isNotEmpty &&
         fieldName.controller.text.isNotEmpty &&
         fieldLat.controller.text.isNotEmpty &&
         fieldLng.controller.text.isNotEmpty &&
         fieldDescription.controller.text.isNotEmpty);
+  }
 
-    isButtonEnabledState.accept(isFieldsFilled);
+  /// сохраненение данных из полей если форма валидна
+  void saveSelectedCategory(String? value) {
+    selectedCategory = value!;
+  }
+
+  void saveName(String? value) {
+    name = value!;
+  }
+
+  void saveLat(String? value) {
+    lat = double.tryParse(value!) as double;
+  }
+
+  void saveLng(String? value) {
+    lng = double.tryParse(value!) as double;
+  }
+
+  void saveDescription(String? value) {
+    description = value!;
   }
 
   /// клик по кнопке Создать
@@ -205,7 +216,7 @@ class AddPlaceWidgetModel extends WidgetModel {
 
       /// проверка в консоль TODO удалить позже
       print('''
-        category: $selectedCategory,
+        category: $selectedCategory ${PlaceType.getCode(selectedCategory)},
         name: $name,
         lat: $lat,
         lng: $lng,
@@ -224,9 +235,6 @@ class AddPlaceWidgetModel extends WidgetModel {
               description: description,
             );
           });
-
-      ///
-
     }
   }
 
