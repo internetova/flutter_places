@@ -31,6 +31,7 @@ class ButtonClear extends StatelessWidget {
               color: Theme.of(context).primaryColor,
               size: 16,
             ),
+            splashRadius: 18,
             onPressed: () {
               controller.clear();
               if (onStartNewSearch != null) {

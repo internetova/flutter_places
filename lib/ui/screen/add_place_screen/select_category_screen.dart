@@ -37,10 +37,10 @@ class _SelectCategoryScreenState extends State<SelectCategoryScreen> {
   @override
   Widget build(BuildContext context) {
     /// widget.selectedCategory передаём в конструктор из формы предыдущего экрана
-    /// по логике там либо null либо выбранная категория из этого экрана
+    /// по логике там либо 'Не выбрано' либо выбранная категория из этого экрана
     /// если категория уже выбрана то кнопка для сохранения сразу активна
     /// _counterSelection == 0 - ещё не выбирали другую категорию
-    if (widget.selectedCategory != null && _counterSelection == 0) {
+    if (widget.selectedCategory != emptyCategory && _counterSelection == 0) {
       _isButtonEnabled = true;
       _selectedCategory = widget.selectedCategory;
     }
@@ -80,7 +80,7 @@ class _SelectCategoryScreenState extends State<SelectCategoryScreen> {
       );
 
   /// категории
-  _buildCategories() => SingleChildScrollView(
+  Widget _buildCategories() => SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
           child: Column(

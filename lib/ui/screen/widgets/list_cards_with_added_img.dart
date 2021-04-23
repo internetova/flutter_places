@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:places/ui/screen/add_place_screen/add_place_screen.dart';
 import 'package:places/ui/screen/components/button_card_add_img.dart';
 import 'package:places/ui/screen/components/card_square_img.dart';
 import 'package:places/ui/screen/components/dismiss_bg_img.dart';
@@ -9,33 +8,37 @@ import 'package:places/ui/screen/utilities/test_images_data.dart';
 /// список добавленных фото на странице добавления нового места
 class ListCardsWithAddedImg extends StatelessWidget {
   final List<TestImage> data;
-  final Function? addImage;
+  final VoidCallback? onAddImage;
+  final ValueChanged<int> onRemoveImage;
 
   const ListCardsWithAddedImg({
     Key? key,
     required this.data,
-    this.addImage,
-  })  : super(key: key);
+    this.onAddImage,
+    required this.onRemoveImage,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) => SizedBox(
-    height: cardSizeSquareImgBig,
-    child: ListView.builder(
-      scrollDirection: Axis.horizontal,
-      itemCount: data.length + 1,
-      itemBuilder: _buildCardItem,
-    ),
-  );
+        height: cardSizeSquareImgBig,
+        child: ListView.builder(
+          scrollDirection: Axis.horizontal,
+          itemCount: data.length + 1,
+          itemBuilder: _buildCardItem,
+        ),
+      );
 
   Widget _buildCardItem(BuildContext context, int index) {
     if (index == 0) {
       return ButtonCardAddImg(
-        onPressed: addImage as void Function(),
+        onPressed: onAddImage as void Function(),
       );
     }
 
+    final imgIndex = index - 1;
     return RemovableCardWithAddedImg(
-      image: data[index - 1],
+      image: data[imgIndex],
+      onRemoveImage: () => onRemoveImage(imgIndex),
     );
   }
 }
@@ -43,22 +46,24 @@ class ListCardsWithAddedImg extends StatelessWidget {
 /// карточка с фото которую можно удалить нажатием и смахиванием вверх
 class RemovableCardWithAddedImg extends StatelessWidget {
   final TestImage image;
+  final VoidCallback onRemoveImage;
 
   const RemovableCardWithAddedImg({
     Key? key,
     required this.image,
-  })  : super(key: key);
+    required this.onRemoveImage,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        _deleteImage(context);
+        onRemoveImage();
       },
       child: Dismissible(
         key: UniqueKey(),
         onDismissed: (_) {
-          _deleteImage(context);
+          onRemoveImage();
         },
         direction: DismissDirection.up,
         background: DismissBackgroundImg(),
@@ -74,10 +79,5 @@ class RemovableCardWithAddedImg extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  void _deleteImage(BuildContext context) {
-    userImages.remove(image);
-    AddPlaceScreen.of(context)!.updateState();
   }
 }

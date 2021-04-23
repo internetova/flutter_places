@@ -22,13 +22,14 @@ class LocalStorage {
   /// 2. Фильтр для поиска по умолчанию
   /// при изменении пересохраняется в момент отправки нового запроса
   static SearchFilter searchFilter = SearchFilter(
-    radius: RangeValues(100.0, 100000.0), //  в метрах
+    radius: RangeValues(100.0, 10000.0), //  в метрах
     typeFilter: [
       'park',
       'cafe',
       'other',
       'museum',
       'restaurant',
+      'hotel',
     ],
   );
 
@@ -44,13 +45,9 @@ class LocalStorage {
       lng: 37.608042,
       name: 'Часовня Смоленской иконы Божией Матери в Чиверево',
       urls: [
-        'https://sobory.ru/pic/09160/09168_20081121_230953.jpg',
-        'https://picsum.photos/1000/600?random=1',
-        'https://picsum.photos/1000/600?random=2',
-        'https://picsum.photos/1000/600?random=3',
-        'https://picsum.photos/1000/600?random=4',
-        'https://picsum.photos/1000/600?random=5',
-        'https://picsum.photos/1000/600?random=6'
+        'https://avatars.mds.yandex.net/get-altay/788991/2a0000016287a63a89a1347acfd675732266/XXXL',
+        'https://avatars.mds.yandex.net/get-altay/961502/2a0000016287a63f56d5a2178a1b30783308/XXXL',
+        'https://avatars.mds.yandex.net/get-altay/905403/2a0000016287a63ea32b14c510cb356d0e90/XXXL'
       ],
       placeType: 'other',
       description:
@@ -60,23 +57,18 @@ class LocalStorage {
       cardType: CardType.planned,
     ),
     Place(
-      id: 136,
-      lat: 55.993677,
-      lng: 37.611009,
-      name: 'Кафе Натюрморт',
+      id: 217,
+      lat: 56.001115,
+      lng: 37.649036,
+      name: 'Супермаркет «Магнит»',
       urls: [
-        'https://img2.fonwall.ru/o/ht/cake-dessert-food-sweet.jpeg',
-        'https://picsum.photos/1000/600?random=1',
-        'https://picsum.photos/1000/600?random=2',
-        'https://picsum.photos/1000/600?random=3',
-        'https://picsum.photos/1000/600?random=4',
-        'https://picsum.photos/1000/600?random=5',
-        'https://picsum.photos/1000/600?random=6'
+        "https://avatars.mds.yandex.net/get-altay/2051686/2a0000016fc3597e332dde12d891c06b8a9a/XXXL",
+        'https://avatars.mds.yandex.net/get-altay/4079181/2a000001775a3af85fcdeaf5bff44d03cf94/XXXL',
       ],
-      placeType: 'cafe',
+      placeType: 'other',
       description:
-          'Банальные, но неопровержимые выводы, а также предприниматели в сети интернет являются только методом политического участия и смешаны с не уникальными данными до степени совершенной неузнаваемости, из-за чего возрастает их статус бесполезности. Интерактивные прототипы призваны к ответу.',
-      distance: 295.8190911475786,
+          'Самый крупный магазин на три деревни Чиверёво, Осташково, Жостово. Так как там большая проходимость нарваться на несвежие продукты шансов мало.',
+      distance: 3233.583792759015,
       isFavorite: true,
       cardType: CardType.visited,
     )
