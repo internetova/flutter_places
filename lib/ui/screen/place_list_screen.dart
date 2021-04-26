@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:places/blocs/place_list_screen/new_place_button_cubit.dart';
+import 'package:places/blocs/buttons/new_place_button_cubit.dart';
 import 'package:places/blocs/place_list_screen/place_list/place_list_bloc.dart';
 import 'package:places/data/interactor/settings_interactor.dart';
 import 'package:places/data/model/search_filter.dart';

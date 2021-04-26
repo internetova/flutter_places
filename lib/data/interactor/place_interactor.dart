@@ -157,25 +157,4 @@ class PlaceInteractor {
   Future<bool> toggleFavorites(Place place) async {
     return await localRepository.toggleFavorite(place);
   }
-
-  /// ПОИСК
-  /// сохранить поисковое выражение в историю запросов
-  Future<void> saveKeywords(String keywords) async {
-    localRepository.saveKeywords(keywords);
-  }
-
-  /// удалить запрос
-  Future<void> removeKeywords(int i) async {
-    localRepository.removeKeywords(i);
-  }
-
-  /// очистить историю
-  Future<void> clearSearchHistory() async {
-    localRepository.clearSearchHistory();
-  }
-
-  /// получить историю запросов
-  Future<List<String>> getSearchHistory() async {
-    return localRepository.getSearchHistory();
-  }
 }

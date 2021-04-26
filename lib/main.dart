@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mwwm/mwwm.dart';
-import 'package:places/blocs/place_list_screen/new_place_button_cubit.dart';
+import 'package:places/blocs/buttons/new_place_button_cubit.dart';
 import 'package:places/blocs/place_list_screen/place_list/place_list_bloc.dart';
 import 'package:places/blocs/visiting_screen/planned/planned_places_bloc.dart';
 import 'package:places/blocs/visiting_screen/visited/visited_places_bloc.dart';
