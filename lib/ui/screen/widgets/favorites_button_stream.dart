@@ -26,7 +26,7 @@ class _FavoritesButtonStreamState extends State<FavoritesButtonStream> {
 
   /// текущий статус места
   late bool currentStatusPlaces;
-  late PlaceInteractor _placeInteractor;
+  late final PlaceInteractor _placeInteractor;
 
   @override
   void initState() {

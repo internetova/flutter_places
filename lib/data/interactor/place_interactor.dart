@@ -48,12 +48,14 @@ class PlaceInteractor {
   /// данные программы, сравниваем наличие мест в списке избранных и проставляем
   /// метки, всё это сохраняем в память типа кэш (база данных ❓) и отображаем
   /// на главной странице
+  /// запрос только по фильтру
+  /// (поиск по ключевым словам перенесен в [SearchInteractor])
   Future<List<Place>> getFilteredPlace(
-      {required SearchFilter filter, String? keywords}) async {
+      {required SearchFilter filter}) async {
     try {
       /// получили данные из Api
       final placesDto =
-          await (apiRepository.getPlaces(filter: filter, keywords: keywords));
+          await (apiRepository.getPlaces(filter: filter));
       print('Interactor getPlaces (${placesDto.length} шт.): $placesDto');
 
       /// трансформировали и записали в кэш

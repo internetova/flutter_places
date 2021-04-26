@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:mobx/mobx.dart';
-import 'package:places/data/interactor/place_interactor.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:places/blocs/place_list_screen/new_place_button_cubit.dart';
+import 'package:places/blocs/place_list_screen/place_list/place_list_bloc.dart';
 import 'package:places/data/interactor/settings_interactor.dart';
 import 'package:places/data/model/search_filter.dart';
 import 'package:places/data/model/place.dart';
 import 'package:places/data/model/card_type.dart';
-import 'package:places/store/place_list/place_list_store.dart';
 import 'package:places/ui/screen/add_place_screen/add_place_route.dart';
 import 'package:places/ui/screen/components/bottom_navigationbar.dart';
 import 'package:places/ui/screen/components/button_gradient.dart';
@@ -22,9 +21,6 @@ import 'package:provider/provider.dart';
 /// список интересных мест
 /// главная страница
 class PlaceListScreen extends StatefulWidget {
-  static _PlaceListScreenState? of(BuildContext context) =>
-      context.findAncestorStateOfType<_PlaceListScreenState>();
-
   @override
   _PlaceListScreenState createState() => _PlaceListScreenState();
 }
@@ -34,21 +30,20 @@ class _PlaceListScreenState extends State<PlaceListScreen> {
   /// при первом запуске берётся дефолтный из настроек программы
   /// при изменении перезаписывается на пользовательский
   late SearchFilter _searchFilter;
-  late SettingsInteractor _settingsInteractor;
-
-  /// стор списка мест
-  late PlaceListStore _store;
+  late final SettingsInteractor _settingsInteractor;
+  late final PlaceListBloc _placeListBloc;
 
   /// фильтр - получаем из раздела настроек локальной базы данных
+  /// отправляем запрос с фильтром
   void _getStartData() async {
     _searchFilter = await _settingsInteractor.getSearchFilter();
-    _store.getFilteredPlace(filter: _searchFilter);
+    _placeListBloc.add(PlaceListRequested(filter: _searchFilter));
   }
 
   @override
   void initState() {
     _settingsInteractor = context.read<SettingsInteractor>();
-    _store = PlaceListStore(context.read<PlaceInteractor>());
+    _placeListBloc = context.read<PlaceListBloc>();
     _getStartData();
 
     super.initState();
@@ -68,52 +63,43 @@ class _PlaceListScreenState extends State<PlaceListScreen> {
                     horizontal:
                         orientation == Orientation.portrait ? 16.0 : 34.0,
                   ),
-                  sliver: Observer(
-                    builder: (BuildContext context) {
-                      final future = _store.listPlacesFuture;
+                  sliver: BlocBuilder<PlaceListBloc, PlaceListState>(
+                    builder: (BuildContext context, PlaceListState state) {
+                      if (state is PlaceListLoadSuccess) {
+                        context.read<NewPlaceButtonCubit>().show();
+                        return _buildListCard(orientation,
+                            data: state.placesList);
+                      }
 
-                      if (future == null) {
-                        return SliverToBoxAdapter(
-                          child: Padding(
-                            padding: const EdgeInsets.only(top: 40.0),
-                            child: const Center(
-                              child: CircularProgressIndicator(),
-                            ),
-                          ),
+                      if (state is PlaceListLoadFailure) {
+                        context.read<NewPlaceButtonCubit>().hide();
+                        return SliverFillRemaining(
+                          child: EmptyPage(
+                              icon: appNetworkException['emptyScreenIcon']!,
+                              header: appNetworkException['emptyScreenHeader']!,
+                              text: appNetworkException['emptyScreenText']!),
                         );
                       }
 
-                      switch (future.status) {
-                        case FutureStatus.pending:
-                          return SliverToBoxAdapter(
-                            child: Padding(
-                              padding: const EdgeInsets.only(top: 40.0),
-                              child: const Center(
-                                child: CircularProgressIndicator(),
-                              ),
-                            ),
-                          );
-
-                        case FutureStatus.rejected:
-                          return SliverFillRemaining(
-                            child: EmptyPage(
-                                icon: appNetworkException['emptyScreenIcon']!,
-                                header:
-                                    appNetworkException['emptyScreenHeader']!,
-                                text: appNetworkException['emptyScreenText']!),
-                          );
-
-                        case FutureStatus.fulfilled:
-                          return _buildListCard(orientation,
-                              data: future.result);
-                      }
+                      return const SliverToBoxAdapter(
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 40.0),
+                          child: const Center(
+                            child: CircularProgressIndicator(),
+                          ),
+                        ),
+                      );
                     },
                   ),
                 ),
               ],
             ),
           ),
-          floatingActionButton: ButtonGradient(onPressed: _onPressedAddNewCard),
+          floatingActionButton: BlocBuilder<NewPlaceButtonCubit, bool>(
+              builder: (context, state) => ButtonGradient(
+                    onPressed: _onPressedAddNewCard,
+                    isEnabled: state,
+                  )),
           floatingActionButtonLocation:
               FloatingActionButtonLocation.centerFloat,
           bottomNavigationBar: const MainBottomNavigationBar(current: 0),
