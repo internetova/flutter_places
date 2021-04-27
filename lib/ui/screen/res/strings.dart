@@ -10,6 +10,7 @@ const titleButtonAddNewCard = 'НОВОЕ МЕСТО';
 /// sight_details - экран с подробностями
 const buttonTitleToSchedule = 'Запланировать';
 const buttonTitleAddToFavourites = 'В Избранное';
+const buttonTitleIsFavourites = 'В Избранном';
 const buttonTitleBuildRoute = 'ПОСТРОИТЬ МАРШРУТ';
 
 /// visiting_screen - Избранное

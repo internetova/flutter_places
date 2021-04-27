@@ -49,15 +49,9 @@ class App extends StatelessWidget {
       providers: [
         Provider<PlaceInteractor>(
           create: (context) => PlaceInteractor(),
-          dispose: (context, interactor) {
-            interactor.dispose();
-          },
         ),
         Provider<FavoritePlacesInteractor>(
           create: (context) => FavoritePlacesInteractor(),
-          dispose: (context, interactor) {
-            interactor.dispose();
-          },
         ),
         Provider<SettingsInteractor>(
           create: (context) => SettingsInteractor(),

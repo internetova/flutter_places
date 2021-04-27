@@ -19,30 +19,11 @@ class PlaceInteractor {
   final ApiPlaceRepository apiRepository = ApiPlaceRepository(ApiClient());
   final LocalPlaceRepository localRepository = LocalPlaceRepository();
 
-  /// стрим контроллер для отфильтрованных мест
-  final StreamController<List<Place>> _streamController =
-      StreamController.broadcast();
-
-  /// стрим для списка отфильтрованных мест
-  /// добавим сюда данные после обработки "чистого" результата [getFilteredPlace]
-  /// вызовем на главной странице
-  Stream<List<Place>> get listPlaces => _streamController.stream;
-
-  /// закрыть стрим
-  void dispose() {
-    _streamController.close();
-  }
-
   /// фильтрованный список интересных мест в формате Dto
   /// на странице фильтра на кнопке надо выводить только количество найденных мест
   /// без какой-либо обработки, поэтому используем "чистый" результат
-  Future<List<PlaceDto>> getPlaces({required SearchFilter filter}) async {
-    /// получили данные из Api
-    final placesDto = await (apiRepository.getPlaces(filter: filter));
-    print('Interactor getPlaces (${placesDto.length} шт.): $placesDto');
-
-    return placesDto;
-  }
+  Future<List<PlaceDto>> getPlaces({required SearchFilter filter}) =>
+      apiRepository.getPlaces(filter: filter);
 
   /// производим обработку "чистого" результата: переводим данные из Dto в
   /// данные программы, сравниваем наличие мест в списке избранных и проставляем
@@ -50,13 +31,10 @@ class PlaceInteractor {
   /// на главной странице
   /// запрос только по фильтру
   /// (поиск по ключевым словам перенесен в [SearchInteractor])
-  Future<List<Place>> getFilteredPlace(
-      {required SearchFilter filter}) async {
+  Future<List<Place>> getFilteredPlace({required SearchFilter filter}) async {
     try {
       /// получили данные из Api
-      final placesDto =
-          await (apiRepository.getPlaces(filter: filter));
-      print('Interactor getPlaces (${placesDto.length} шт.): $placesDto');
+      final placesDto = await apiRepository.getPlaces(filter: filter);
 
       /// трансформировали и записали в кэш
       List<Place> places = await _transformApiPlaces(placesDto);
@@ -66,15 +44,9 @@ class PlaceInteractor {
         places.sort((a, b) => a.distance!.compareTo(b.distance!));
       }
 
-      print('Interactor places из кэша (${places.length} шт.): $places');
-
-      /// пушим в стрим
-      _streamController.sink.add(places);
-
       return places;
     } on DioError catch (e) {
-      throw apiRepository.getNetworkException(e,
-          streamController: _streamController);
+      throw apiRepository.getNetworkException(e);
     }
   }
 
@@ -123,38 +95,20 @@ class PlaceInteractor {
   }
 
   /// детализация места
-  Future<PlaceDto> getPlaceDetails(int id) async {
-    final place = await apiRepository.getPlaceDetail(id);
-    print('Interactor getPlaceDetails: $place');
-
-    return place;
-  }
+  Future<PlaceDto> getPlaceDetails(int id) => apiRepository.getPlaceDetail(id);
 
   /// добавить новое место на сервер
-  Future<void> addNewPlace(PlaceDto place) async {
-    final newPlace = await apiRepository.addNewPlace(place);
-    print('Interactor addNewPlace: $newPlace');
-  }
+  Future<void> addNewPlace(PlaceDto place) => apiRepository.addNewPlace(place);
 
   /// добавить место в список избранного
-  /// ❓ а может void? дальше посмотрю
-  Future<Place> addToFavorites(Place place) async {
-    final newPlace = await localRepository.addNewPlace(place);
-    print('Interactor addToFavorites: $newPlace');
-
-    return newPlace;
-  }
+  Future<void> addToFavorites(Place place) =>
+      localRepository.addNewPlace(place);
 
   /// удалить место из списка избранного
-  Future<void> removeFromFavorites(int id) async {
-    await localRepository.removePlace(id);
-
-    print('Interactor removeFromFavorites: $id');
-  }
+  Future<void> removeFromFavorites(int id) => localRepository.removePlace(id);
 
   /// переключатель кнопки Избранное
   /// true - в избранном
-  Future<bool> toggleFavorites(Place place) async {
-    return await localRepository.toggleFavorite(place);
-  }
+  Future<bool> toggleFavorites(Place place) =>
+      localRepository.toggleFavorite(place);
 }

@@ -202,7 +202,7 @@ class CardActions extends StatelessWidget {
         BlocBuilder<FavoritesButtonCubit, bool>(builder: (context, state) {
           return IconActionButton(
             onPressed: () {
-              context.read<FavoritesButtonCubit>().pressButton();
+              context.read<FavoritesButtonCubit>().pressButton(state);
             },
             icon: state ? icFavoritesFull : icFavorites,
           );
