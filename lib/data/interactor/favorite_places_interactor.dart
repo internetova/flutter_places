@@ -34,7 +34,7 @@ class FavoritePlacesInteractor {
       List<Place> places = await localRepository.getPlannedPlaces();
 
       /// todo временно для тестирования, удалю
-      // await apiRepository.testNetwork();
+      await apiRepository.testNetwork();
 
       return places;
     } on DioError catch (e) {
@@ -48,7 +48,7 @@ class FavoritePlacesInteractor {
       List<Place> places = await localRepository.getVisitedPlaces();
 
       /// todo временно для тестирования, удалю
-      // await apiRepository.testNetwork();
+      await apiRepository.testNetwork();
 
       return places;
     } on DioError catch (e) {

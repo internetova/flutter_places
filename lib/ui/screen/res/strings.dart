@@ -3,9 +3,10 @@ import 'package:places/data/model/card_type.dart';
 import 'package:places/ui/screen/res/assets.dart';
 
 /// Текстовые контстанты
-/// sight_list_screen
+/// place_list_screen
 const appBarTitle = 'Список\nинтересных мест';
 const titleButtonAddNewCard = 'НОВОЕ МЕСТО';
+const appTitle = 'Places';
 
 /// sight_details - экран с подробностями
 const buttonTitleToSchedule = 'Запланировать';
@@ -109,7 +110,9 @@ const searchAppBarTitle = 'Список интересных мест';
 const searchEmptyHeader = 'Ничего не найдено.';
 const searchEmptyText = 'Попробуйте изменить параметры\nпоиска';
 const searchError = 'Ошибка';
-const searchHeaderHistory = 'ВЫ ИСКАЛИ';
+const searchHeaderHistory = 'Вы искали и нашли ';
+const searchIsShot = 'Запрос меньше 3х символов!';
+const searchClear = 'Очистить историю';
 
 /// Туториал скрин
 const tutorialButtonAppBarTitle = 'Пропустить';

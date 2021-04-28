@@ -7,26 +7,12 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:places/data/interactor/search_interactor.dart';
-
 import 'package:places/main.dart';
-import 'package:places/redux/middleware/search_middleware.dart';
-import 'package:places/redux/reducer/reducer.dart';
-import 'package:places/redux/state/app_state.dart';
-import 'package:redux/redux.dart';
 
 void main() {
-  final store = Store<AppState>(
-    reducer,
-    initialState: AppState(),
-    middleware: [
-      SearchMiddleware(SearchInteractor()),
-    ],
-  );
-
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
     // Build our app and trigger a frame.
-    await tester.pumpWidget(App(store: store,));
+    await tester.pumpWidget(App());
 
     // Verify that our counter starts at 0.
     expect(find.text('0'), findsOneWidget);

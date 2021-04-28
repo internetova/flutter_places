@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:places/blocs/buttons/new_place_button_cubit.dart';
 import 'package:places/blocs/place_list_screen/place_list/place_list_bloc.dart';
+import 'package:places/blocs/search_screen/search_bloc.dart';
+import 'package:places/data/interactor/search_interactor.dart';
 import 'package:places/data/interactor/settings_interactor.dart';
 import 'package:places/data/model/search_filter.dart';
 import 'package:places/data/model/place.dart';
@@ -140,23 +142,21 @@ class _PlaceListScreenState extends State<PlaceListScreen> {
 
   /// нажатие на градиентную кнопку - переходим на экран добавления
   void _onPressedAddNewCard() {
-    Navigator.of(context).push(
-      AddPlaceScreenRoute(),
-    );
+    Navigator.of(context).push(AddPlaceScreenRoute());
   }
 
   /// передаем текущий фильтр на экран поиска
-  void _onTapSearch() async {
-    final SearchFilter _newFilter = await Navigator.push(
+  void _onTapSearch() {
+    Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => SearchScreen(filter: _searchFilter),
+        builder: (context) => BlocProvider(
+          create: (_) => SearchBloc(context.read<SearchInteractor>())
+            ..add(GetSearchHistory()),
+          child: SearchScreen(filter: _searchFilter),
+        ),
       ),
     );
-    setState(() {
-      /// при возврате заменяем на новый
-      _searchFilter = _newFilter;
-    });
   }
 
   /// переход на экран фильтра

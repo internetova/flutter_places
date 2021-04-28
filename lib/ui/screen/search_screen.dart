@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:places/blocs/search_screen/search_bloc.dart';
 import 'package:places/data/model/search_filter.dart';
 import 'package:places/data/model/place.dart';
-import 'package:places/redux/action/search_action.dart';
-import 'package:places/redux/state/app_state.dart';
-import 'package:places/redux/state/search_state.dart';
 import 'package:places/ui/screen/components/bottom_navigationbar.dart';
 import 'package:places/ui/screen/components/button_text.dart';
 import 'package:places/ui/screen/components/card_square_img.dart';
@@ -15,7 +14,6 @@ import 'package:places/ui/screen/res/themes.dart';
 import 'package:places/ui/screen/place_details.dart';
 import 'package:places/ui/screen/widgets/empty_page.dart';
 import 'package:places/ui/screen/widgets/search_bar.dart';
-import 'package:flutter_redux/flutter_redux.dart';
 
 /// экран поиска
 class SearchScreen extends StatefulWidget {
@@ -38,14 +36,12 @@ class _SearchScreenState extends State<SearchScreen> {
   @override
   void initState() {
     super.initState();
-
     _searchController.addListener(() => setState(() {}));
   }
 
   @override
   void dispose() {
     super.dispose();
-
     _searchController.dispose();
   }
 
@@ -53,27 +49,19 @@ class _SearchScreenState extends State<SearchScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: _buildAppBar() as PreferredSizeWidget?,
-      body: StoreConnector<AppState, SearchState>(
-        onInit: (store) => store.dispatch(GetSearchHistoryAction()),
-        converter: (store) => store.state.searchState,
-        builder: (BuildContext context, state) {
-          if (state is SearchLoadingState) {
-            print('Загружаем результаты Поиска или Историю $state');
-
+      body: BlocBuilder<SearchBloc, SearchState>(
+        builder: (_, state) {
+          if (state is LoadingSearchState) {
             return _buildLoader();
-          } else if (state is SearchResultHistoryState) {
-            print('История запросов ${state.result}');
-
+          } else if (state is LoadedSearchHistoryState) {
             return _buildSearchHistory(state.result);
-          } else if (state is SearchResultState) {
-            print('Результаты поиска ${state.result}');
-
+          } else if (state is LoadedSearchState) {
             if (state.result.isEmpty) {
               return _buildSearchResultEmpty();
             } else {
               return _buildSearchResult(state.result);
             }
-          } else if (state is SearchErrorState) {
+          } else if (state is FailureSearchState) {
             return _buildSearchError();
           }
 
@@ -117,15 +105,24 @@ class _SearchScreenState extends State<SearchScreen> {
 
   /// клик по кнопке клавиатуры - отправить запрос на поиск
   void _searchOnEditingComplete() {
-    _lastSearch = _searchController.text;
-
-    StoreProvider.of<AppState>(context).dispatch(
-        GetSearchResultAction(filter: widget.filter, keywords: _lastSearch));
+    if (_searchController.text.isNotEmpty &&
+        _searchController.text.trim().length > 2) {
+      _lastSearch = _searchController.text;
+      context
+          .read<SearchBloc>()
+          .add(GetSearchResult(filter: widget.filter, keywords: _lastSearch));
+    } else {
+      final snackBar = SnackBar(
+        content: Text(searchIsShot),
+        backgroundColor: Theme.of(context).errorColor,
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    }
   }
 
   /// меняет состояние экрана на стартовое для нового поиска
   void _onStartNewSearch() {
-    StoreProvider.of<AppState>(context).dispatch(GetSearchHistoryAction());
+    context.read<SearchBloc>().add(GetSearchHistory());
   }
 
   /// сетевая ошибка
@@ -166,7 +163,7 @@ class _SearchScreenState extends State<SearchScreen> {
       contentPadding: const EdgeInsets.symmetric(vertical: 8.0),
       leading: CardSquareImg(
         image: NetworkImage(
-          card.urls[0],
+          card.urls.first,
         ),
       ),
       title: RichText(
@@ -291,7 +288,7 @@ class _SearchScreenState extends State<SearchScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              searchHeaderHistory,
+              searchHeaderHistory.toUpperCase(),
               style: Theme.of(context)
                   .textTheme
                   .caption!
@@ -308,30 +305,29 @@ class _SearchScreenState extends State<SearchScreen> {
                 ),
                 trailing: IconButton(
                   onPressed: () {
-                    StoreProvider.of<AppState>(context)
-                        .dispatch(RemoveRequestFromHistoryAction(i));
+                    /// удаляем позицию из истории запросов
+                    context.read<SearchBloc>().add(RemoveRequestFromHistory(i));
                   },
                   icon: SvgPicture.asset(
                     icDelete,
                     color: Theme.of(context).colorScheme.inactiveBlack,
                   ),
-                  splashRadius: 24,
+                  splashRadius: splashRadiusSmall,
                 ),
                 onTap: () {
+                  /// выполняем поиск по тапу по пункту в истории запросов
                   _searchController.text = data[i];
-                  StoreProvider.of<AppState>(context).dispatch(
-                      GetSearchResultAction(
-                          filter: widget.filter, keywords: data[i]));
-                  // _search();
+                  _lastSearch = data[i];
+                  context.read<SearchBloc>().add(GetSearchResult(
+                      filter: widget.filter, keywords: _searchController.text));
                 },
               ),
               Divider(),
             ],
             ButtonText(
-              title: 'Очистить историю',
+              title: searchClear,
               onPressed: () {
-                StoreProvider.of<AppState>(context)
-                    .dispatch(ClearHistorySearchAction());
+                context.read<SearchBloc>().add(ClearSearchHistory());
               },
             ),
           ],

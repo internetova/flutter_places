@@ -89,7 +89,6 @@ class ApiPlaceRepository implements PlaceRepository<PlaceDto> {
       _client.get('${ApiConstants.placesUrl}?count=1');
 
   /// обработка ошибок
-  NetworkException getNetworkException(DioError error,
-          {StreamController? streamController}) =>
+  NetworkException getNetworkException(DioError error) =>
       _client.getNetworkException(error);
 }

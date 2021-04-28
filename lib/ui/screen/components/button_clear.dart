@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:places/ui/screen/res/sizes.dart';
 
 /// кнопка очистки поля
 /// [onStartNewSearch] меняет состояние экрана на стартовое для нового поиска
@@ -31,7 +32,7 @@ class ButtonClear extends StatelessWidget {
               color: Theme.of(context).primaryColor,
               size: 16,
             ),
-            splashRadius: 18,
+            splashRadius: splashRadiusSmall,
             onPressed: () {
               controller.clear();
               if (onStartNewSearch != null) {

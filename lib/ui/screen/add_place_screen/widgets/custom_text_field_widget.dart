@@ -63,7 +63,6 @@ class _CustomTextFieldWidgetState extends State<CustomTextFieldWidget> {
       onEditingComplete: widget.onEditingComplete,
       onFieldSubmitted: widget.onFieldSubmitted,
       controller: _controller,
-      cursorHeight: 24,
       cursorWidth: 1,
       maxLength: widget.maxLength,
       maxLines: widget.maxLines,

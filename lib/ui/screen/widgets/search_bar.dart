@@ -14,12 +14,12 @@ class SearchBar extends StatelessWidget {
   final Function? onChanged;
   final VoidCallback? onEditingComplete;
   final VoidCallback? onTap;
-  final VoidCallback onStartNewSearch;
+  final VoidCallback? onStartNewSearch;
 
   const SearchBar({
     Key? key,
     required this.controller,
-    required this.onStartNewSearch,
+    this.onStartNewSearch,
     this.onChanged,
     this.onEditingComplete,
     this.onTap,
@@ -53,6 +53,7 @@ class SearchBar extends StatelessWidget {
             textInputAction: TextInputAction.search,
             style: Theme.of(context).primaryTextTheme.subtitle1,
             decoration: InputDecoration(
+              contentPadding: const EdgeInsets.symmetric(vertical: 8),
               border: InputBorder.none,
               hintText: searchHintText,
               counterText: '',

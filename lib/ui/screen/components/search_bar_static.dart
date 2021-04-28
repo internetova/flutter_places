@@ -67,7 +67,7 @@ class SearchBarStatic extends StatelessWidget {
                 color: Theme.of(context).accentColor,
               ),
               onPressed: onPressedFilter,
-              splashRadius: 20,
+              splashRadius: splashRadiusSmall,
               splashColor: Theme.of(context).accentColor.withOpacity(0.25),
             ),
           ),

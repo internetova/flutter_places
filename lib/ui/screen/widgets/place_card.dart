@@ -257,7 +257,7 @@ class CardActions extends StatelessWidget {
         ),
       ];
 
-  /// удалить карточку через
+  /// удалить карточку
   void _deleteCard(BuildContext context, CardType cardType) {
     if (cardType == CardType.planned) {
       BlocProvider.of<PlannedPlacesBloc>(context)

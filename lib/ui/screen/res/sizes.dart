@@ -12,6 +12,7 @@ const double toolbarHeightStandard = 80;
 const double widthButtonAddNewCard = 177;
 const double radiusButtonAddNewCard = 24;
 const double cardSizeSquareImgBig = 72;
+const double splashRadiusSmall = 18;
 
 /// частые отступы
 const sizedBoxW8 = SizedBox(width: 8);
