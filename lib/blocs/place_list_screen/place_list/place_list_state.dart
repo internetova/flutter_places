@@ -3,13 +3,13 @@ part of 'place_list_bloc.dart';
 /// состояния для [PlaceListScreen]
 abstract class PlaceListState extends Equatable {
   const PlaceListState();
-
-  @override
-  List<Object> get props => [];
 }
 
 /// показываем индикатор загрузки данных
-class PlaceListInitial extends PlaceListState {}
+class PlaceListLoading extends PlaceListState {
+  @override
+  List<Object?> get props => [];
+}
 
 /// данные загружены
 class PlaceListLoadSuccess extends PlaceListState {
@@ -25,4 +25,7 @@ class PlaceListLoadSuccess extends PlaceListState {
 }
 
 /// состояние ошибки
-class PlaceListLoadFailure extends PlaceListState {}
+class PlaceListLoadFailure extends PlaceListState {
+  @override
+  List<Object?> get props => [];
+}

@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:places/data/model/place_type.dart';
@@ -12,12 +13,14 @@ import 'package:places/ui/screen/res/assets.dart';
 class FilterCategoryItem extends StatelessWidget {
   final PlaceType placeType;
   final Map<String, dynamic> selectedCat;
+  final VoidCallback? onPressed;
 
   const FilterCategoryItem({
     Key? key,
     required this.placeType,
     required this.selectedCat,
-  })  : super(key: key);
+    this.onPressed,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -45,9 +48,7 @@ class FilterCategoryItem extends StatelessWidget {
                     placeType.icon,
                     color: Theme.of(context).accentColor,
                   ),
-                  onPressed: () {
-                    FiltersScreen.of(context)!.setCategories(selectedCat);
-                  },
+                  onPressed: onPressed,
                   splashColor: Theme.of(context).accentColor.withOpacity(0.5),
                 ),
               ),

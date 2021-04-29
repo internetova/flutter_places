@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:places/blocs/buttons/new_place_button_cubit.dart';
+import 'package:places/blocs/filters_screen/button/filter_button_cubit.dart';
+import 'package:places/blocs/filters_screen/filter/filter_cubit.dart';
 import 'package:places/blocs/place_list_screen/place_list/place_list_bloc.dart';
 import 'package:places/blocs/search_screen/search_bloc.dart';
 import 'package:places/data/interactor/search_interactor.dart';
@@ -165,12 +167,25 @@ class _PlaceListScreenState extends State<PlaceListScreen> {
     final SearchFilter _newFilter = await Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => FiltersScreen(filter: _searchFilter),
+        builder: (context) => MultiBlocProvider(
+          providers: [
+            BlocProvider<FilterCubit>(
+              create: (_) => FilterCubit()..start(_searchFilter),
+            ),
+            BlocProvider<FilterButtonCubit>(
+              create: (_) => FilterButtonCubit()
+                ..startSearch(_searchFilter.typeFilter, _searchFilter.radius),
+            ),
+          ],
+          child: FiltersScreen(filter: _searchFilter),
+        ),
       ),
     );
-    setState(() {
-      _searchFilter = _newFilter;
-    });
+
+    _searchFilter = _newFilter;
+    _placeListBloc.add(PlaceListRequested(filter: _searchFilter));
+
+    _settingsInteractor.updateSearchFilter(newFilter: _newFilter);
   }
 }
 

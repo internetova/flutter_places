@@ -3,9 +3,6 @@ part of 'place_list_bloc.dart';
 /// события для [PlaceListScreen]
 abstract class PlaceListEvent extends Equatable {
   const PlaceListEvent();
-
-  @override
-  List<Object?> get props => [];
 }
 
 /// запрошены данные

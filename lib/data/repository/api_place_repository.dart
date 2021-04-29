@@ -25,7 +25,7 @@ class ApiPlaceRepository implements PlaceRepository<PlaceDto> {
     final data = PlacesFilterRequestDto(
       lat: filter.userLocation.lat,
       lng: filter.userLocation.lng,
-      radius: filter.radius.end,
+      radius: filter.radius,
       typeFilter: filter.typeFilter,
       nameFilter: keywords != null ? keywords.trim() : null,
     ).toJson();

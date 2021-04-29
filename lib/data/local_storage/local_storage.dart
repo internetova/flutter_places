@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:places/data/model/coordinates.dart';
 import 'package:places/data/model/search_filter.dart';
 import 'package:places/data/model/place.dart';
@@ -22,7 +21,7 @@ class LocalStorage {
   /// 2. Фильтр для поиска по умолчанию
   /// при изменении пересохраняется в момент отправки нового запроса
   static SearchFilter searchFilter = SearchFilter(
-    radius: RangeValues(100.0, 10000.0), //  в метрах
+    radius: 10000.0, //  в метрах
     typeFilter: [
       'park',
       'cafe',

@@ -34,19 +34,19 @@ class App extends StatelessWidget {
     return MultiProvider(
       providers: [
         Provider<PlaceInteractor>(
-          create: (context) => PlaceInteractor(),
+          create: (_) => PlaceInteractor(),
         ),
         Provider<FavoritePlacesInteractor>(
-          create: (context) => FavoritePlacesInteractor(),
+          create: (_) => FavoritePlacesInteractor(),
         ),
         Provider<SettingsInteractor>(
-          create: (context) => SettingsInteractor(),
+          create: (_) => SettingsInteractor(),
         ),
         Provider<SearchInteractor>(
-          create: (context) => SearchInteractor(),
+          create: (_) => SearchInteractor(),
         ),
         Provider<WidgetModelDependencies>(
-          create: (context) => WidgetModelDependencies(
+          create: (_) => WidgetModelDependencies(
             errorHandler: StandardErrorHandler(),
           ),
         ),
@@ -65,23 +65,23 @@ class App extends StatelessWidget {
               AppRoutes.home: (context) => MultiBlocProvider(
                     providers: [
                       BlocProvider<PlaceListBloc>(
-                        create: (context) =>
+                        create: (_) =>
                             PlaceListBloc(context.read<PlaceInteractor>()),
                       ),
                       BlocProvider<NewPlaceButtonCubit>(
-                          create: (context) => NewPlaceButtonCubit()),
+                          create: (_) => NewPlaceButtonCubit()),
                     ],
                     child: PlaceListScreen(),
                   ),
               AppRoutes.visiting: (context) => MultiBlocProvider(
                     providers: [
                       BlocProvider<PlannedPlacesBloc>(
-                        create: (context) => PlannedPlacesBloc(
+                        create: (_) => PlannedPlacesBloc(
                             context.read<FavoritePlacesInteractor>())
                           ..add(PlannedPlacesLoad()),
                       ),
                       BlocProvider<VisitedPlacesBloc>(
-                        create: (context) => VisitedPlacesBloc(
+                        create: (_) => VisitedPlacesBloc(
                             context.read<FavoritePlacesInteractor>())
                           ..add(VisitedPlacesLoad()),
                       )

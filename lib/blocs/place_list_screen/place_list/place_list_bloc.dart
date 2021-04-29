@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-
 import 'package:places/data/interactor/place_interactor.dart';
 import 'package:places/data/model/place.dart';
 import 'package:places/data/model/search_filter.dart';
@@ -14,7 +13,7 @@ part 'place_list_state.dart';
 class PlaceListBloc extends Bloc<PlaceListEvent, PlaceListState> {
   final PlaceInteractor _interactor;
 
-  PlaceListBloc(this._interactor) : super(PlaceListInitial());
+  PlaceListBloc(this._interactor) : super(PlaceListLoading());
 
   @override
   Stream<PlaceListState> mapEventToState(PlaceListEvent event) async* {
@@ -26,6 +25,8 @@ class PlaceListBloc extends Bloc<PlaceListEvent, PlaceListState> {
   /// обрабатываем запрос данных
   Stream<PlaceListState> _mapPlaceListRequestedToState(
       PlaceListRequested event) async* {
+    yield PlaceListLoading();
+
     try {
       final placesList =
           await _interactor.getFilteredPlace(filter: event.filter);

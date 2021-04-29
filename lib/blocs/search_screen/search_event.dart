@@ -3,9 +3,6 @@ part of 'search_bloc.dart';
 /// события для экрана поиска
 abstract class SearchEvent extends Equatable {
   const SearchEvent();
-
-  @override
-  List<Object?> get props => [];
 }
 
 /// запрошены данные у сервера
@@ -23,7 +20,10 @@ class GetSearchResult extends SearchEvent {
 }
 
 /// получить историю поисковых запросов
-class GetSearchHistory extends SearchEvent {}
+class GetSearchHistory extends SearchEvent {
+  @override
+  List<Object?> get props => [];
+}
 
 /// удалить запрос из истории поиска
 class RemoveRequestFromHistory extends SearchEvent {
@@ -36,4 +36,7 @@ class RemoveRequestFromHistory extends SearchEvent {
 }
 
 /// очистить историю
-class ClearSearchHistory extends SearchEvent {}
+class ClearSearchHistory extends SearchEvent {
+  @override
+  List<Object?> get props => [];
+}
