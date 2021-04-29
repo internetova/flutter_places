@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:places/blocs/add_place_screen/select_category/select_category_cubit.dart';
 import 'package:places/data/model/place_type.dart';
 import 'package:places/ui/screen/components/button_save.dart';
 import 'package:places/ui/screen/components/icon_leading_appbar.dart';
@@ -19,50 +21,31 @@ class SelectCategoryScreen extends StatefulWidget {
 }
 
 class _SelectCategoryScreenState extends State<SelectCategoryScreen> {
-  /// кнопка сохранения при старте отключена
-  bool _isButtonEnabled = false;
-  VoidCallback? _onPressed;
-
   /// категории
   List<PlaceType> _categories = PlaceType.getList;
 
-  /// название выбранной категории
-  String? _selectedCategory;
-
-  /// счётчик выбора категорий
-  /// если он 0, то категория передаётся с предыдущего экрана
-  /// иначе берем выбранную категорию на этом экране
-  int _counterSelection = 0;
-
   @override
   Widget build(BuildContext context) {
-    /// widget.selectedCategory передаём в конструктор из формы предыдущего экрана
-    /// по логике там либо 'Не выбрано' либо выбранная категория из этого экрана
-    /// если категория уже выбрана то кнопка для сохранения сразу активна
-    /// _counterSelection == 0 - ещё не выбирали другую категорию
-    if (widget.selectedCategory != emptyCategory && _counterSelection == 0) {
-      _isButtonEnabled = true;
-      _selectedCategory = widget.selectedCategory;
-    }
-
-    if (_isButtonEnabled) {
-      /// сохраняем выбранную категорию и передаём ее на предыдущий экран
-      _onPressed = () {
-        Navigator.pop(context, _selectedCategory);
-      };
-    }
-
-    return Scaffold(
-      appBar: _buildSelectCategoryAppBar() as PreferredSizeWidget?,
-      body: _buildCategories(),
-      floatingActionButton: ButtonSave(
-        title: titleButtonSaveSelectCategoryScreen,
-        isButtonEnabled: _isButtonEnabled,
-        onPressed: _onPressed,
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      resizeToAvoidBottomInset: false,
+    return BlocBuilder<SelectCategoryCubit, SelectCategoryState>(
+      builder: (context, state) {
+        return Scaffold(
+          appBar: _buildSelectCategoryAppBar() as PreferredSizeWidget?,
+          body: _buildCategories(),
+          floatingActionButton: ButtonSave(
+            title: titleButtonSaveSelectCategoryScreen,
+            isButtonEnabled: state.isButtonEnabled,
+            onPressed: state.isButtonEnabled ? _onPressedSave : null,
+          ),
+          floatingActionButtonLocation:
+              FloatingActionButtonLocation.centerDocked,
+          resizeToAvoidBottomInset: false,
+        );
+      },
     );
+  }
+
+  void _onPressedSave () {
+      Navigator.pop(context, context.read<SelectCategoryCubit>().state.selectedCategory);
   }
 
   /// AppBar
@@ -87,8 +70,12 @@ class _SelectCategoryScreenState extends State<SelectCategoryScreen> {
             children: [
               for (var i = 0; i < _categories.length; i++) ...[
                 _buildCategoryItem(
-                    categoryItem: _categories[i],
-                    selectedCategoryName: _selectedCategory),
+                  categoryItem: _categories[i],
+                  selectedCategoryName: context
+                      .read<SelectCategoryCubit>()
+                      .state
+                      .selectedCategory,
+                ),
                 Divider(),
               ],
             ],
@@ -107,16 +94,9 @@ class _SelectCategoryScreenState extends State<SelectCategoryScreen> {
 
     const padding = EdgeInsets.zero;
 
-    /// сохраняем выбранную категорию
-    /// делаем активной кнопку
-    /// увеличиваем счетчик кликов по категориям (т.к. по нему опредеяем был
-    /// ли выбор категории на этом экране)
-    void myOnTap() {
-      setState(() {
-        _selectedCategory = categoryItem.name;
-        _isButtonEnabled = true;
-        _counterSelection++;
-      });
+    /// выбор новой категории
+    void _onSelect() {
+      context.read<SelectCategoryCubit>().onTap(categoryItem.name);
     }
 
     if (categoryItem.name == selectedCategoryName) {
@@ -127,13 +107,13 @@ class _SelectCategoryScreenState extends State<SelectCategoryScreen> {
           color: Theme.of(context).accentColor,
         ),
         contentPadding: padding,
-        onTap: myOnTap,
+        onTap: _onSelect,
       );
     } else {
       return ListTile(
         title: title,
         contentPadding: padding,
-        onTap: myOnTap,
+        onTap: _onSelect,
       );
     }
   }

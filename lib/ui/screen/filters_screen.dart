@@ -25,10 +25,10 @@ class FiltersScreen extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _FiltersScreenState2 createState() => _FiltersScreenState2();
+  _FiltersScreenState createState() => _FiltersScreenState();
 }
 
-class _FiltersScreenState2 extends State<FiltersScreen> {
+class _FiltersScreenState extends State<FiltersScreen> {
   /// список всех типов мест - категорий
   final List<PlaceType> categories = PlaceType.getList;
 

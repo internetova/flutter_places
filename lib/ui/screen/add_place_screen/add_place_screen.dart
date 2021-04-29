@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mwwm/mwwm.dart';
+import 'package:places/blocs/add_place_screen/select_category/select_category_cubit.dart';
 import 'package:places/ui/screen/add_place_screen/add_place_wm.dart';
+import 'package:places/ui/screen/add_place_screen/select_category_screen.dart';
 import 'package:places/ui/screen/add_place_screen/widgets/custom_text_field_widget.dart';
 import 'package:places/ui/screen/components/button_save.dart';
 import 'package:places/ui/screen/components/button_text.dart';
@@ -24,6 +27,17 @@ class AddPlaceScreen extends CoreMwwmWidget {
 }
 
 class _AddPlaceScreenState extends WidgetState<AddPlaceWidgetModel> {
+  /// todo временно для теста выбора категорий
+  /// сохраняю выбор категорий и сразу удаляю
+  /// делаю рефакторинг на bloc
+  final fieldCategory = TextEditingController();
+
+  @override
+  void initState() {
+    fieldCategory.text = emptyCategory;
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -120,15 +134,34 @@ class _AddPlaceScreenState extends WidgetState<AddPlaceWidgetModel> {
       sizedBoxH12,
       SizedBox(
         height: 48,
-          child: CustomTextFieldUnderlineWidget(
-            focusNode: wm.fieldCategoryFocus,
-            controller: wm.fieldCategory.controller,
-            onTap: wm.selectCategory,
-            validator: wm.validateCategory,
-            onSaved: wm.saveSelectedCategory,
-          ),
+        child: CustomTextFieldUnderlineWidget(
+          focusNode: wm.fieldCategoryFocus,
+          controller: fieldCategory,
+          // controller: wm.fieldCategory.controller,
+          onTap: _onSelectCategory,
+          // onTap: wm.selectCategory,
+          validator: wm.validateCategory,
+          onSaved: wm.saveSelectedCategory,
         ),
+      ),
     ];
+  }
+
+  /// выбрать категорию (onTap)
+  Future<void> _onSelectCategory() async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => BlocProvider<SelectCategoryCubit>(
+          create: (context) => SelectCategoryCubit()
+            ..onTap(fieldCategory.text),
+          child: SelectCategoryScreen(selectedCategory: fieldCategory.text),
+        ),
+      ),
+    );
+
+    /// todo временно для теста выбора категорий
+    fieldCategory.text = result;
   }
 
   /// поле Название
@@ -166,7 +199,7 @@ class _AddPlaceScreenState extends WidgetState<AddPlaceWidgetModel> {
               focusNode: wm.fieldLatFocus,
               controller: wm.fieldLat.controller,
               onFieldSubmitted: (_) {
-                wm.fieldFocusChange( wm.fieldLngFocus);
+                wm.fieldFocusChange(wm.fieldLngFocus);
               },
               validator: wm.validateCoordinates,
               onSaved: wm.saveLat,
@@ -193,7 +226,7 @@ class _AddPlaceScreenState extends WidgetState<AddPlaceWidgetModel> {
               focusNode: wm.fieldLngFocus,
               controller: wm.fieldLng.controller,
               onFieldSubmitted: (_) {
-                wm.fieldFocusChange( wm.fieldDescriptionFocus);
+                wm.fieldFocusChange(wm.fieldDescriptionFocus);
               },
               validator: wm.validateCoordinates,
               onSaved: wm.saveLng,
