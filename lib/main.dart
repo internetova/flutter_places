@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mwwm/mwwm.dart';
 import 'package:places/blocs/buttons/new_place_button_cubit.dart';
 import 'package:places/blocs/place_list_screen/place_list/place_list_bloc.dart';
 import 'package:places/blocs/visiting_screen/planned/planned_places_bloc.dart';
 import 'package:places/blocs/visiting_screen/visited/visited_places_bloc.dart';
-import 'package:places/common/error/standard_error_handler.dart';
 import 'package:places/data/interactor/favorite_places_interactor.dart';
 import 'package:places/data/interactor/place_interactor.dart';
 import 'package:places/data/interactor/search_interactor.dart';
@@ -44,11 +42,6 @@ class App extends StatelessWidget {
         ),
         Provider<SearchInteractor>(
           create: (_) => SearchInteractor(),
-        ),
-        Provider<WidgetModelDependencies>(
-          create: (_) => WidgetModelDependencies(
-            errorHandler: StandardErrorHandler(),
-          ),
         ),
         ChangeNotifierProvider<ThemeNotifier>(
           create: (_) => ThemeNotifier(),

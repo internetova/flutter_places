@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mwwm/mwwm.dart';
+import 'package:places/blocs/add_place_screen/add_place/add_place_bloc.dart';
 import 'package:places/blocs/add_place_screen/select_category/select_category_cubit.dart';
-import 'package:places/ui/screen/add_place_screen/add_place_wm.dart';
+import 'package:places/data/interactor/place_interactor.dart';
 import 'package:places/ui/screen/add_place_screen/select_category_screen.dart';
 import 'package:places/ui/screen/add_place_screen/widgets/custom_text_field_widget.dart';
 import 'package:places/ui/screen/components/button_save.dart';
@@ -15,28 +15,15 @@ import 'package:places/ui/screen/res/themes.dart';
 import 'package:places/ui/screen/utilities/test_images_data.dart';
 import 'package:places/ui/screen/widgets/choice_of_loading_images.dart';
 import 'package:places/ui/screen/widgets/list_cards_with_added_img.dart';
-import 'package:relation/relation.dart';
 
 /// экран добавление нового места
-class AddPlaceScreen extends CoreMwwmWidget {
-  AddPlaceScreen({required WidgetModelBuilder widgetModelBuilder})
-      : super(widgetModelBuilder: widgetModelBuilder);
-
+class AddPlaceScreen extends StatefulWidget {
   @override
   _AddPlaceScreenState createState() => _AddPlaceScreenState();
 }
 
-class _AddPlaceScreenState extends WidgetState<AddPlaceWidgetModel> {
-  /// todo временно для теста выбора категорий
-  /// сохраняю выбор категорий и сразу удаляю
-  /// делаю рефакторинг на bloc
-  final fieldCategory = TextEditingController();
-
-  @override
-  void initState() {
-    fieldCategory.text = emptyCategory;
-    super.initState();
-  }
+class _AddPlaceScreenState extends State<AddPlaceScreen> {
+  final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -48,24 +35,26 @@ class _AddPlaceScreenState extends WidgetState<AddPlaceWidgetModel> {
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
               child: Form(
-                key: wm.formKey,
+                key: _formKey,
                 autovalidateMode: AutovalidateMode.onUserInteraction,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    StreamedStateBuilder<List<TestImage>>(
-                        streamedState: wm.userListImgState,
-                        builder: (context, userListImg) {
-                          return ListCardsWithAddedImg(
-                            data: userListImg!,
-                            onAddImage: () {
-                              wm.addImg();
-                              // todo пока закоментировала до реализации загрузки фото
-                              // _showImageLoadingWindow();
-                            },
-                            onRemoveImage: wm.removeImg,
-                          );
-                        }),
+                    // todo прошу проверить пока так!
+                    //  боюсь не успеть на проверку перед праздниками
+                    // StreamedStateBuilder<List<TestImage>>(
+                    //     streamedState: wm.userListImgState,
+                    //     builder: (context, userListImg) {
+                    //       return ListCardsWithAddedImg(
+                    //         data: userListImg!,
+                    //         onAddImage: () {
+                    //           wm.addImg();
+                    //           // todo пока закоментировала до реализации загрузки фото
+                    //           // _showImageLoadingWindow();
+                    //         },
+                    //         onRemoveImage: wm.removeImg,
+                    //       );
+                    //     }),
                     sizedBoxH24,
                     ..._buildCategory(),
                     sizedBoxH24,
@@ -90,16 +79,18 @@ class _AddPlaceScreenState extends WidgetState<AddPlaceWidgetModel> {
             hasScrollBody: false,
             child: Align(
               alignment: Alignment.bottomCenter,
-              child: StreamedStateBuilder<bool>(
-                  streamedState: wm.isButtonEnabledState,
-                  builder: (context, isButtonEnabled) {
-                    return ButtonSave(
-                      title: titleButtonSaveAddSightScreen,
-                      isButtonEnabled: isButtonEnabled!,
-                      onPressed: () =>
-                          isButtonEnabled ? wm.submitForm(context) : null,
-                    );
-                  }),
+              child: BlocBuilder<AddPlaceBloc, AddPlaceState>(
+                builder: (context, state) {
+                  return ButtonSave(
+                    title: titleButtonSaveAddSightScreen,
+                    isButtonEnabled: state.isValid,
+                    onPressed: state.isValid
+                        ? () =>
+                            context.read<AddPlaceBloc>().add(FormSubmitted())
+                        : null,
+                  );
+                },
+              ),
             ),
           ),
         ],
@@ -134,14 +125,28 @@ class _AddPlaceScreenState extends WidgetState<AddPlaceWidgetModel> {
       sizedBoxH12,
       SizedBox(
         height: 48,
-        child: CustomTextFieldUnderlineWidget(
-          focusNode: wm.fieldCategoryFocus,
-          controller: fieldCategory,
-          // controller: wm.fieldCategory.controller,
-          onTap: _onSelectCategory,
-          // onTap: wm.selectCategory,
-          validator: wm.validateCategory,
-          onSaved: wm.saveSelectedCategory,
+        child: BlocBuilder<AddPlaceBloc, AddPlaceState>(
+          builder: (context, state) {
+            return Stack(children: [
+              CustomTextFieldUnderlineWidget(
+                onTap: _onSelectCategory,
+                onChanged: (value) => context.read<AddPlaceBloc>().add(
+                      FieldCategoryChanged(fieldCategory: value),
+                    ),
+                validator: (value) => state.fieldCategoryIsValid,
+              ),
+              Positioned(
+                bottom: 14,
+                child: Text(
+                  state.fieldCategory,
+                  style: state.fieldCategory == emptyCategory
+                      ? Theme.of(context).primaryTextTheme.subtitle1!.copyWith(
+                          color: Theme.of(context).colorScheme.secondary2)
+                      : Theme.of(context).primaryTextTheme.subtitle1,
+                ),
+              ),
+            ]);
+          },
         ),
       ),
     ];
@@ -149,19 +154,33 @@ class _AddPlaceScreenState extends WidgetState<AddPlaceWidgetModel> {
 
   /// выбрать категорию (onTap)
   Future<void> _onSelectCategory() async {
-    final result = await Navigator.push(
+    final newCategory = await Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => BlocProvider<SelectCategoryCubit>(
-          create: (context) => SelectCategoryCubit()
-            ..onTap(fieldCategory.text),
-          child: SelectCategoryScreen(selectedCategory: fieldCategory.text),
+        builder: (_) => MultiBlocProvider(
+          providers: [
+            BlocProvider<AddPlaceBloc>(
+              create: (_) => AddPlaceBloc(
+                context.read<PlaceInteractor>(),
+              ),
+            ),
+            BlocProvider<SelectCategoryCubit>(
+              create: (context) => SelectCategoryCubit()
+                ..onTap(
+                  context.read<AddPlaceBloc>().state.fieldCategory,
+                ),
+            ),
+          ],
+          child: SelectCategoryScreen(
+            selectedCategory: context.read<AddPlaceBloc>().state.fieldCategory,
+          ),
         ),
       ),
     );
 
-    /// todo временно для теста выбора категорий
-    fieldCategory.text = result;
+    context
+        .read<AddPlaceBloc>()
+        .add(FieldCategoryChanged(fieldCategory: newCategory));
   }
 
   /// поле Название
@@ -171,15 +190,16 @@ class _AddPlaceScreenState extends WidgetState<AddPlaceWidgetModel> {
       sizedBoxH12,
       SizedBox(
         height: heightInput,
-        child: CustomTextFieldWidget(
-          focusNode: wm.fieldNameFocus,
-          controller: wm.fieldName.controller,
-          onFieldSubmitted: (_) {
-            wm.fieldFocusChange(wm.fieldLatFocus);
+        child: BlocBuilder<AddPlaceBloc, AddPlaceState>(
+          builder: (context, state) {
+            return CustomTextFieldWidget(
+              onChanged: (value) => context.read<AddPlaceBloc>().add(
+                    FieldNameChanged(fieldName: value),
+                  ),
+              validator: (value) => state.fieldNameIsValid,
+              maxLength: 100,
+            );
           },
-          validator: wm.validateName,
-          onSaved: wm.saveName,
-          maxLength: 100,
         ),
       ),
     ];
@@ -195,16 +215,17 @@ class _AddPlaceScreenState extends WidgetState<AddPlaceWidgetModel> {
           sizedBoxH12,
           SizedBox(
             height: heightInput,
-            child: CustomTextFieldWidget(
-              focusNode: wm.fieldLatFocus,
-              controller: wm.fieldLat.controller,
-              onFieldSubmitted: (_) {
-                wm.fieldFocusChange(wm.fieldLngFocus);
+            child: BlocBuilder<AddPlaceBloc, AddPlaceState>(
+              builder: (context, state) {
+                return CustomTextFieldWidget(
+                  onChanged: (value) => context.read<AddPlaceBloc>().add(
+                        FieldLatChanged(fieldLat: value),
+                      ),
+                  validator: (value) => state.fieldLatIsValid,
+                  keyboardType: TextInputType.number,
+                  maxLength: 50,
+                );
               },
-              validator: wm.validateCoordinates,
-              onSaved: wm.saveLat,
-              keyboardType: TextInputType.number,
-              maxLength: 50,
             ),
           ),
         ],
@@ -222,16 +243,17 @@ class _AddPlaceScreenState extends WidgetState<AddPlaceWidgetModel> {
           sizedBoxH12,
           SizedBox(
             height: heightInput,
-            child: CustomTextFieldWidget(
-              focusNode: wm.fieldLngFocus,
-              controller: wm.fieldLng.controller,
-              onFieldSubmitted: (_) {
-                wm.fieldFocusChange(wm.fieldDescriptionFocus);
+            child: BlocBuilder<AddPlaceBloc, AddPlaceState>(
+              builder: (context, state) {
+                return CustomTextFieldWidget(
+                  onChanged: (value) => context.read<AddPlaceBloc>().add(
+                        FieldLngChanged(fieldLng: value),
+                      ),
+                  validator: (value) => state.fieldLngIsValid,
+                  keyboardType: TextInputType.number,
+                  maxLength: 50,
+                );
               },
-              validator: wm.validateCoordinates,
-              onSaved: wm.saveLng,
-              keyboardType: TextInputType.number,
-              maxLength: 50,
             ),
           ),
         ],
@@ -252,17 +274,18 @@ class _AddPlaceScreenState extends WidgetState<AddPlaceWidgetModel> {
     return [
       const Text(addNewSightLabelDetails),
       sizedBoxH12,
-      CustomTextFieldWidget(
-        focusNode: wm.fieldDescriptionFocus,
-        controller: wm.fieldDescription.controller,
-        onEditingComplete: () {
-          wm.clearFocus(wm.fieldDescriptionFocus);
+      BlocBuilder<AddPlaceBloc, AddPlaceState>(
+        builder: (context, state) {
+          return CustomTextFieldWidget(
+            onChanged: (value) => context.read<AddPlaceBloc>().add(
+                  FieldDescriptionChanged(fieldDescription: value),
+                ),
+            validator: (value) => state.fieldDescriptionIsValid,
+            textInputAction: TextInputAction.done,
+            maxLength: 300,
+            maxLines: 4,
+          );
         },
-        validator: wm.validateDetails,
-        onSaved: wm.saveDescription,
-        textInputAction: TextInputAction.done,
-        maxLength: 300,
-        maxLines: 4,
       ),
     ];
   }

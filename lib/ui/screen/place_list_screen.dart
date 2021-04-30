@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:places/blocs/add_place_screen/add_place/add_place_bloc.dart';
 import 'package:places/blocs/buttons/new_place_button_cubit.dart';
 import 'package:places/blocs/filters_screen/button/filter_button_cubit.dart';
 import 'package:places/blocs/filters_screen/filter/filter_cubit.dart';
 import 'package:places/blocs/place_list_screen/place_list/place_list_bloc.dart';
 import 'package:places/blocs/search_screen/search_bloc.dart';
+import 'package:places/data/interactor/place_interactor.dart';
 import 'package:places/data/interactor/search_interactor.dart';
 import 'package:places/data/interactor/settings_interactor.dart';
 import 'package:places/data/model/search_filter.dart';
 import 'package:places/data/model/place.dart';
 import 'package:places/data/model/card_type.dart';
-import 'package:places/ui/screen/add_place_screen/add_place_route.dart';
+import 'package:places/ui/screen/add_place_screen/add_place_screen.dart';
 import 'package:places/ui/screen/components/bottom_navigationbar.dart';
 import 'package:places/ui/screen/components/button_gradient.dart';
 import 'package:places/ui/screen/filters_screen.dart';
@@ -142,9 +144,17 @@ class _PlaceListScreenState extends State<PlaceListScreen> {
     }
   }
 
-  /// нажатие на градиентную кнопку - переходим на экран добавления
+  /// нажатие на градиентную кнопку - переходим на экран добавления места
   void _onPressedAddNewCard() {
-    Navigator.of(context).push(AddPlaceScreenRoute());
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => BlocProvider(
+          create: (_) => AddPlaceBloc(context.read<PlaceInteractor>()),
+          child: AddPlaceScreen(),
+        ),
+      ),
+    );
   }
 
   /// передаем текущий фильтр на экран поиска
