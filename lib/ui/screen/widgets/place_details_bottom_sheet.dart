@@ -156,14 +156,15 @@ class PlaceDetailsBottomSheet extends StatelessWidget {
                                       ),
                                       Expanded(
                                         child: BlocBuilder<FavoritesButtonCubit,
-                                            bool>(
+                                            FavoritesButtonState>(
                                           builder: (context, state) {
                                             return TextButton(
                                               onPressed: () {
                                                 context
                                                     .read<
                                                         FavoritesButtonCubit>()
-                                                    .pressButton(state);
+                                                    .pressButton(
+                                                        state.isFavorite);
                                               },
                                               style: TextButton.styleFrom(
                                                 minimumSize:
@@ -174,7 +175,7 @@ class PlaceDetailsBottomSheet extends StatelessWidget {
                                                     MainAxisAlignment.center,
                                                 children: [
                                                   IconSvg(
-                                                    icon: state
+                                                    icon: state.isFavorite
                                                         ? icFavoritesFull
                                                         : icFavorites,
                                                     color: Theme.of(context)
@@ -183,7 +184,7 @@ class PlaceDetailsBottomSheet extends StatelessWidget {
                                                   ),
                                                   sizedBoxW8,
                                                   Text(
-                                                    state
+                                                    state.isFavorite
                                                         ? buttonTitleIsFavourites
                                                         : buttonTitleAddToFavourites,
                                                     style: Theme.of(context)

@@ -126,11 +126,11 @@ class PlaceDetails extends StatelessWidget {
                               ),
                             ),
                             Expanded(
-                              child: BlocBuilder<FavoritesButtonCubit, bool>(
+                              child: BlocBuilder<FavoritesButtonCubit, FavoritesButtonState>(
                                 builder: (context, state) {
                                   return TextButton(
                                     onPressed: () {
-                                      context.read<FavoritesButtonCubit>().pressButton(state);
+                                      context.read<FavoritesButtonCubit>().pressButton(state.isFavorite);
                                     },
                                     style: TextButton.styleFrom(
                                       minimumSize: Size.fromHeight(40),
@@ -140,14 +140,14 @@ class PlaceDetails extends StatelessWidget {
                                           MainAxisAlignment.center,
                                       children: [
                                         IconSvg(
-                                          icon: state ? icFavoritesFull : icFavorites,
+                                          icon: state.isFavorite ? icFavoritesFull : icFavorites,
                                           color: Theme.of(context)
                                               .colorScheme
                                               .onPrimary,
                                         ),
                                         sizedBoxW8,
                                         Text(
-                                          state ? buttonTitleIsFavourites : buttonTitleAddToFavourites,
+                                          state.isFavorite ? buttonTitleIsFavourites : buttonTitleAddToFavourites,
                                           style: Theme.of(context)
                                               .textTheme
                                               .bodyText1,

@@ -199,12 +199,12 @@ class CardActions extends StatelessWidget {
 
   /// кнопки действий для карточки главного экрана
   List _buildActionsSearch(BuildContext context) => <Widget>[
-        BlocBuilder<FavoritesButtonCubit, bool>(builder: (context, state) {
+        BlocBuilder<FavoritesButtonCubit, FavoritesButtonState>(builder: (context, state) {
           return IconActionButton(
             onPressed: () {
-              context.read<FavoritesButtonCubit>().pressButton(state);
+              context.read<FavoritesButtonCubit>().pressButton(state.isFavorite);
             },
-            icon: state ? icFavoritesFull : icFavorites,
+            icon: state.isFavorite ? icFavoritesFull : icFavorites,
           );
         }),
       ];
