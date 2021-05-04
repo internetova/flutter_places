@@ -1,7 +1,7 @@
-part of 'add_place_bloc.dart';
+part of 'fields_bloc.dart';
 
-/// стейт формы добавления нового места
-class AddPlaceState extends Equatable {
+/// состояния полей формы добавления нового места
+class FieldsState extends Equatable {
   final String fieldCategory;
 
   String? get fieldCategoryIsValid => validateCategory(fieldCategory);
@@ -25,38 +25,35 @@ class AddPlaceState extends Equatable {
   /// покажем кнопку
   bool get isValid =>
       validateCategory(fieldCategory) == null &&
-          validateName(fieldName) == null &&
-          validateCoordinates(fieldLat) == null &&
-          validateCoordinates(fieldLng) == null &&
-          validateDetails(fieldDescription) == null;
+      validateName(fieldName) == null &&
+      validateCoordinates(fieldLat) == null &&
+      validateCoordinates(fieldLng) == null &&
+      validateDetails(fieldDescription) == null;
 
-  final FormSubmissionStatus formStatus;
+  final fieldCategoryController = TextEditingController();
 
   /// данные формы на старте
-  AddPlaceState({
+  FieldsState({
     this.fieldCategory = emptyCategory,
     this.fieldName = '',
     this.fieldLat = '',
     this.fieldLng = '',
     this.fieldDescription = '',
-    this.formStatus = const InitialFormStatus(),
   });
 
-  AddPlaceState copyWith({
+  FieldsState copyWith({
     String? fieldCategory,
     String? fieldName,
     String? fieldLat,
     String? fieldLng,
     String? fieldDescription,
-    FormSubmissionStatus? formStatus,
   }) {
-    return AddPlaceState(
+    return FieldsState(
       fieldCategory: fieldCategory ?? this.fieldCategory,
       fieldName: fieldName ?? this.fieldName,
       fieldLat: fieldLat ?? this.fieldLat,
       fieldLng: fieldLng ?? this.fieldLng,
       fieldDescription: fieldDescription ?? this.fieldDescription,
-      formStatus: formStatus ?? this.formStatus,
     );
   }
 
@@ -92,7 +89,6 @@ class AddPlaceState extends Equatable {
 
     return null;
   }
-
   /// конец валидации
 
   @override

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:places/blocs/add_place_screen/add_place/add_place_bloc.dart';
+import 'package:places/blocs/add_place_screen/fields/fields_bloc.dart';
+import 'package:places/blocs/add_place_screen/form/add_form_bloc.dart';
+import 'package:places/blocs/add_place_screen/user_images/user_images_cubit.dart';
 import 'package:places/blocs/buttons/new_place_button_cubit.dart';
 import 'package:places/blocs/filters_screen/button/filter_button_cubit.dart';
 import 'package:places/blocs/filters_screen/filter/filter_cubit.dart';
@@ -73,8 +75,10 @@ class _PlaceListScreenState extends State<PlaceListScreen> {
                     builder: (BuildContext context, PlaceListState state) {
                       if (state is PlaceListLoadSuccess) {
                         context.read<NewPlaceButtonCubit>().show();
-                        return _buildListCard(orientation,
-                            data: state.placesList);
+                        return _buildListCard(
+                          orientation,
+                          data: state.placesList,
+                        );
                       }
 
                       if (state is PlaceListLoadFailure) {
@@ -149,8 +153,18 @@ class _PlaceListScreenState extends State<PlaceListScreen> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => BlocProvider(
-          create: (_) => AddPlaceBloc(context.read<PlaceInteractor>()),
+        builder: (context) => MultiBlocProvider(
+          providers: [
+            BlocProvider<FieldsBloc>(
+              create: (_) => FieldsBloc(),
+            ),
+            BlocProvider<UserImagesCubit>(
+              create: (_) => UserImagesCubit(),
+            ),
+            BlocProvider<AddFormBloc>(
+              create: (_) => AddFormBloc(context.read<PlaceInteractor>()),
+            ),
+          ],
           child: AddPlaceScreen(),
         ),
       ),
@@ -162,7 +176,7 @@ class _PlaceListScreenState extends State<PlaceListScreen> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => BlocProvider(
+        builder: (context) => BlocProvider<SearchBloc>(
           create: (_) => SearchBloc(context.read<SearchInteractor>())
             ..add(GetSearchHistory()),
           child: SearchScreen(filter: _searchFilter),
@@ -183,8 +197,12 @@ class _PlaceListScreenState extends State<PlaceListScreen> {
               create: (_) => FilterCubit()..start(_searchFilter),
             ),
             BlocProvider<FilterButtonCubit>(
-              create: (_) => FilterButtonCubit()
-                ..startSearch(_searchFilter.typeFilter, _searchFilter.radius),
+              create: (_) => FilterButtonCubit(
+                context.read<PlaceInteractor>(),
+              )..startSearch(
+                  _searchFilter.typeFilter,
+                  _searchFilter.radius,
+                ),
             ),
           ],
           child: FiltersScreen(filter: _searchFilter),

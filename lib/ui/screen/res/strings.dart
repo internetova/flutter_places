@@ -77,6 +77,7 @@ const titleButtonSaveSelectCategoryScreen = 'СОХРАНИТЬ';
 /// экран добавления нового  места
 const titleAppBarAddSightScreen = 'Новое место';
 const titleButtonSaveAddSightScreen = 'СОЗДАТЬ';
+const titleButtonSaveOneMoreAddSightScreen = 'ПОПРОБОВАТЬ ЕЩЁ';
 const leadingAppBarAddSightScreen = 'Отмена';
 
 /// форма добавления нового места

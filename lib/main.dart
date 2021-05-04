@@ -58,11 +58,13 @@ class App extends StatelessWidget {
               AppRoutes.home: (context) => MultiBlocProvider(
                     providers: [
                       BlocProvider<PlaceListBloc>(
-                        create: (_) =>
-                            PlaceListBloc(context.read<PlaceInteractor>()),
+                        create: (_) => PlaceListBloc(
+                          context.read<PlaceInteractor>(),
+                        ),
                       ),
                       BlocProvider<NewPlaceButtonCubit>(
-                          create: (_) => NewPlaceButtonCubit()),
+                        create: (_) => NewPlaceButtonCubit(),
+                      ),
                     ],
                     child: PlaceListScreen(),
                   ),
@@ -70,13 +72,13 @@ class App extends StatelessWidget {
                     providers: [
                       BlocProvider<PlannedPlacesBloc>(
                         create: (_) => PlannedPlacesBloc(
-                            context.read<FavoritePlacesInteractor>())
-                          ..add(PlannedPlacesLoad()),
+                          context.read<FavoritePlacesInteractor>(),
+                        )..add(PlannedPlacesLoad()),
                       ),
                       BlocProvider<VisitedPlacesBloc>(
                         create: (_) => VisitedPlacesBloc(
-                            context.read<FavoritePlacesInteractor>())
-                          ..add(VisitedPlacesLoad()),
+                          context.read<FavoritePlacesInteractor>(),
+                        )..add(VisitedPlacesLoad()),
                       )
                     ],
                     child: VisitingScreen(),

@@ -13,6 +13,7 @@ class CustomTextFieldWidget extends StatefulWidget {
   final TextEditingController? controller;
   final ValueChanged? onFieldSubmitted; // переход к следующему полю
   final VoidCallback? onEditingComplete; // закончили редактировать поле
+  final VoidCallback onClear; // кнопка очистить поле для смены состояния
   final String? Function(String?)? validator;
   final ValueChanged<String?>? onChanged;
   final ValueChanged<String?>? onSaved; // сохранить если все поля валидны
@@ -29,6 +30,7 @@ class CustomTextFieldWidget extends StatefulWidget {
     this.onFieldSubmitted,
     this.onEditingComplete,
     this.onChanged,
+    required this.onClear,
     required this.validator,
     this.onSaved,
     required this.maxLength,
@@ -88,6 +90,7 @@ class _CustomTextFieldWidgetState extends State<CustomTextFieldWidget> {
         suffixIcon: _clearField(
           focusNode: _focusNode,
           controller: _controller,
+          onClear: widget.onClear,
         ),
         enabledBorder: _buildBorderColor(_controller),
       ),
@@ -101,9 +104,13 @@ class _CustomTextFieldWidgetState extends State<CustomTextFieldWidget> {
   Widget _clearField({
     required FocusNode focusNode,
     required TextEditingController controller,
+    required VoidCallback onClear,
   }) {
     if (focusNode.hasPrimaryFocus && controller.text.isNotEmpty) {
-      return ButtonClear(controller: controller);
+      return ButtonClear(
+        controller: controller,
+        onClear: onClear,
+      );
     }
 
     return const SizedBox(width: 0);
@@ -150,12 +157,12 @@ class _CustomTextFieldUnderlineWidgetState
     extends State<CustomTextFieldUnderlineWidget> {
   late TextEditingController _controller;
 
+
   @override
   void initState() {
     super.initState();
 
     _controller = widget.controller ?? TextEditingController();
-
     /// следим за изменениями текстового поля
     _controller.addListener(() => setState(() {}));
   }
@@ -218,7 +225,7 @@ class _CustomTextFieldUnderlineWidgetState
                 .subtitle1!
                 .copyWith(color: Theme.of(context).colorScheme.secondary2)
             : Theme.of(context).primaryTextTheme.subtitle1,
-        readOnly: true,
+        readOnly: false,
         decoration: InputDecoration(
           suffixIcon: Padding(
             padding: const EdgeInsets.all(12.0),

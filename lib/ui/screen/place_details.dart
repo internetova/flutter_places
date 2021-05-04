@@ -130,7 +130,6 @@ class PlaceDetails extends StatelessWidget {
                                 builder: (context, state) {
                                   return TextButton(
                                     onPressed: () {
-                                      print('onTaped Избранное');
                                       context.read<FavoritesButtonCubit>().pressButton(state);
                                     },
                                     style: TextButton.styleFrom(

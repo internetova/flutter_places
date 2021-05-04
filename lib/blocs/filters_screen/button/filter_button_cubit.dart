@@ -8,9 +8,10 @@ part 'filter_button_state.dart';
 
 /// кубит для кнопки фильтра
 class FilterButtonCubit extends Cubit<FilterButtonState> {
-  FilterButtonCubit() : super(FilterButtonState());
+  final PlaceInteractor _interactor;
 
-  final PlaceInteractor _interactor = PlaceInteractor();
+  FilterButtonCubit(this._interactor) : super(FilterButtonState());
+
 
   Future<void> startSearch(List<String> categories, double radius) async {
     final filter = SearchFilter(radius: radius, typeFilter: categories);

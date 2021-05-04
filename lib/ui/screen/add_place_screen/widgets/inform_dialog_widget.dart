@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:places/ui/screen/place_list_screen.dart';
+import 'package:places/ui/screen/res/app_routes.dart';
 import 'package:places/ui/screen/res/sizes.dart';
 import 'package:places/ui/screen/res/strings.dart';
 
@@ -64,12 +65,7 @@ class InformDialogWidget extends StatelessWidget {
       actions: [
         TextButton(
           onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => PlaceListScreen(),
-              ),
-            );
+            Navigator.of(context).pushReplacementNamed(AppRoutes.home);
           },
           child: Text(
             addNewSightAlertDialogSubmit,
