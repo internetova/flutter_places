@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:places/data/interactor/place_interactor.dart';
@@ -12,7 +14,6 @@ class FilterButtonCubit extends Cubit<FilterButtonState> {
 
   FilterButtonCubit(this._interactor) : super(FilterButtonState());
 
-
   Future<void> startSearch(List<String> categories, double radius) async {
     final filter = SearchFilter(radius: radius, typeFilter: categories);
     try {
@@ -25,7 +26,7 @@ class FilterButtonCubit extends Cubit<FilterButtonState> {
         clear();
       }
     } catch (_) {
-      emit(FilterButtonState(isEnabled: false, title: 'Что-то не так 😳'));
+      emit(FilterButtonState(isEnabled: false, title: filterTitleErrorButton));
       rethrow;
     }
   }

@@ -62,6 +62,7 @@ const filterClearFilters = 'Очистить';
 const filterTitleCategories = 'КАТЕГОРИИ';
 const filterTitleSlider = 'Расстояние';
 const filterTitleButton = 'ПОКАЗАТЬ';
+const filterTitleErrorButton = 'Что-то не так 😳';
 
 /// экран настройки
 const titleScreenSettings = Text(

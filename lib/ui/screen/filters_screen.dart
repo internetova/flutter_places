@@ -14,8 +14,8 @@ import 'package:places/ui/screen/widgets/filter_category_item.dart';
 
 /// экран фильтра для поиска
 /// выбираем типы мест и расстояние
-/// сервер принимает только одно расстояние - радиус, поэтому для фильтра
-/// беру максимальное из Range слайдера
+/// сервер принимает только одно расстояние - радиус, поэтому
+/// Range слайдер переделала в слайдер
 class FiltersScreen extends StatefulWidget {
   final SearchFilter filter;
 
