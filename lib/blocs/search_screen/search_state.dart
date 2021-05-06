@@ -36,3 +36,9 @@ class FailureSearchState extends SearchState {
   @override
   List<Object?> get props => [];
 }
+
+/// состояние строки поиска
+class ChangedTextFieldSearchState extends SearchState {
+  @override
+  List<Object?> get props => [];
+}

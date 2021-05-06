@@ -37,6 +37,9 @@ class _SearchScreenState extends State<SearchScreen> {
   void initState() {
     super.initState();
     _searchController.addListener(() => setState(() {}));
+
+    /// старт поиска при изменении текста в поле запроса
+    context.read<SearchBloc>().add(StartSearchFromTextField(widget.filter));
   }
 
   @override
@@ -63,6 +66,8 @@ class _SearchScreenState extends State<SearchScreen> {
             }
           } else if (state is FailureSearchState) {
             return _buildSearchError();
+          } else if (state is ChangedTextFieldSearchState) {
+            return SizedBox.shrink();
           }
 
           return _buildLoader();
@@ -95,6 +100,7 @@ class _SearchScreenState extends State<SearchScreen> {
                     controller: _searchController,
                     onStartNewSearch: _onStartNewSearch,
                     onEditingComplete: _searchOnEditingComplete,
+                    onChanged: (value) => _searchOnChanged(value),
                   ),
                 ],
               ),
@@ -102,6 +108,13 @@ class _SearchScreenState extends State<SearchScreen> {
           ),
         ),
       );
+
+  void _searchOnChanged(String queryString) {
+    context.read<SearchBloc>().add(ChangedTextFieldSearch(queryString));
+
+    /// обновим последний запрос чтобы выделить жирным в случае успешного поиска
+    _lastSearch = queryString;
+  }
 
   /// клик по кнопке клавиатуры - отправить запрос на поиск
   void _searchOnEditingComplete() {
