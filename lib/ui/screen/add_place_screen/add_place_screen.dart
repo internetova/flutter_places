@@ -166,9 +166,11 @@ class _AddPlaceScreenState extends State<AddPlaceScreen> {
   }
 
   /// клик по кнопке Создать
-  void _formSubmit(BuildContext context,
-      {required FieldsState fieldsState,
-      required UserImagesState imagesState}) {
+  void _formSubmit(
+    BuildContext context, {
+    required FieldsState fieldsState,
+    required UserImagesState imagesState,
+  }) {
     // отправляем данные из полей формы и загруженные фото
     context.read<AddFormBloc>().add(
           FormEventSubmitted(
@@ -210,12 +212,9 @@ class _AddPlaceScreenState extends State<AddPlaceScreen> {
             return Stack(
               children: [
                 // todo баг с цветом границы категории срабатывает не сразу,
-                // а при обращении в следующему полю
+                // а при обращении к следующему полю
                 CustomTextFieldUnderlineWidget(
                   onTap: _onSelectCategory,
-                  onChanged: (value) => context.read<FieldsBloc>().add(
-                        CategoryChanged(fieldCategory: value),
-                      ),
                   validator: (value) => state.fieldCategoryIsValid,
                 ),
                 Positioned(
@@ -227,8 +226,7 @@ class _AddPlaceScreenState extends State<AddPlaceScreen> {
                             .primaryTextTheme
                             .subtitle1!
                             .copyWith(
-                                color:
-                                    Theme.of(context).colorScheme.secondary2)
+                                color: Theme.of(context).colorScheme.secondary2)
                         : Theme.of(context).primaryTextTheme.subtitle1,
                   ),
                 ),

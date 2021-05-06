@@ -81,6 +81,7 @@ class _SearchScreenState extends State<SearchScreen> {
   Widget _buildAppBar() => PreferredSize(
         preferredSize: Size.fromHeight(132),
         child: AppBar(
+          automaticallyImplyLeading: false,
           flexibleSpace: Align(
             alignment: Alignment.bottomLeft,
             child: Container(
