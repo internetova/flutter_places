@@ -199,10 +199,8 @@ class _PlaceListScreenState extends State<PlaceListScreen> {
             BlocProvider<FilterButtonCubit>(
               create: (_) => FilterButtonCubit(
                 context.read<PlaceInteractor>(),
-              )..startSearch(
-                  _searchFilter.typeFilter,
-                  _searchFilter.radius,
-                ),
+              )
+                ..onChangedFilter(_searchFilter),
             ),
           ],
           child: FiltersScreen(filter: _searchFilter),

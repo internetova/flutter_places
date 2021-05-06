@@ -33,6 +33,15 @@ class _FiltersScreenState extends State<FiltersScreen> {
   final List<PlaceType> categories = PlaceType.getList;
 
   @override
+  void initState() {
+    super.initState();
+
+    /// старт поиска при изменении параметров фильтра для отображения
+    /// результата на кнопке Показать
+    context.read<FilterButtonCubit>().startSearchFilter();
+  }
+
+  @override
   Widget build(BuildContext context) {
     /// физическая ширина и высота экрана
     final _screenWidth = MediaQuery.of(context).size.width;
@@ -41,10 +50,11 @@ class _FiltersScreenState extends State<FiltersScreen> {
     return BlocListener<FilterCubit, FilterState>(
       listener: (context, state) {
         if (state.filteredCategories.isNotEmpty) {
-          /// отображение количества результатов на кнопке
-          context.read<FilterButtonCubit>().startSearch(
-                state.filteredCategories,
-                state.radius,
+          context.read<FilterButtonCubit>().onChangedFilter(
+                SearchFilter(
+                  typeFilter: state.filteredCategories,
+                  radius: state.radius,
+                ),
               );
         } else {
           context.read<FilterButtonCubit>().clear();
