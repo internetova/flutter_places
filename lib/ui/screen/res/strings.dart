@@ -3,13 +3,15 @@ import 'package:places/data/model/card_type.dart';
 import 'package:places/ui/screen/res/assets.dart';
 
 /// Текстовые контстанты
-/// sight_list_screen
+/// place_list_screen
 const appBarTitle = 'Список\nинтересных мест';
 const titleButtonAddNewCard = 'НОВОЕ МЕСТО';
+const appTitle = 'Places';
 
 /// sight_details - экран с подробностями
 const buttonTitleToSchedule = 'Запланировать';
 const buttonTitleAddToFavourites = 'В Избранное';
+const buttonTitleIsFavourites = 'В Избранном';
 const buttonTitleBuildRoute = 'ПОСТРОИТЬ МАРШРУТ';
 
 /// visiting_screen - Избранное
@@ -60,6 +62,7 @@ const filterClearFilters = 'Очистить';
 const filterTitleCategories = 'КАТЕГОРИИ';
 const filterTitleSlider = 'Расстояние';
 const filterTitleButton = 'ПОКАЗАТЬ';
+const filterTitleErrorButton = 'Что-то не так 😳';
 
 /// экран настройки
 const titleScreenSettings = Text(
@@ -75,6 +78,7 @@ const titleButtonSaveSelectCategoryScreen = 'СОХРАНИТЬ';
 /// экран добавления нового  места
 const titleAppBarAddSightScreen = 'Новое место';
 const titleButtonSaveAddSightScreen = 'СОЗДАТЬ';
+const titleButtonSaveOneMoreAddSightScreen = 'ПОПРОБОВАТЬ ЕЩЁ';
 const leadingAppBarAddSightScreen = 'Отмена';
 
 /// форма добавления нового места
@@ -108,7 +112,9 @@ const searchAppBarTitle = 'Список интересных мест';
 const searchEmptyHeader = 'Ничего не найдено.';
 const searchEmptyText = 'Попробуйте изменить параметры\nпоиска';
 const searchError = 'Ошибка';
-const searchHeaderHistory = 'ВЫ ИСКАЛИ';
+const searchHeaderHistory = 'Вы искали и нашли ';
+const searchIsShot = 'Запрос меньше 3х символов!';
+const searchClear = 'Очистить историю';
 
 /// Туториал скрин
 const tutorialButtonAppBarTitle = 'Пропустить';

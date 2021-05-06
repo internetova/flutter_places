@@ -6,17 +6,21 @@ import 'package:places/ui/screen/res/strings.dart';
 import 'package:places/ui/screen/res/themes.dart';
 
 /// градиентная кнопка для главного экрана Добавить новое место
+/// [onPressed] переход на экран добавления нового места
+/// [isEnabled] показать или скрыть кнопку добавления
 class ButtonGradient extends StatelessWidget {
   final VoidCallback onPressed;
+  final bool isEnabled;
 
   const ButtonGradient({
     Key? key,
     required this.onPressed,
-  })  : super(key: key);
+    required this.isEnabled,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Material(
+    return isEnabled ? Material(
       borderRadius: BorderRadius.circular(radiusButtonAddNewCard),
       clipBehavior: Clip.antiAlias,
       child: InkWell(
@@ -45,6 +49,6 @@ class ButtonGradient extends StatelessWidget {
           ),
         ),
       ),
-    );
+    ) : SizedBox.shrink();
   }
 }

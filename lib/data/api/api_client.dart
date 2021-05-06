@@ -25,12 +25,13 @@ class ApiClient {
       ..interceptors.add(
         InterceptorsWrapper(
           onRequest: (options, handler) {
-            print(
-                'Interceptors Отправлен запрос: ${options.baseUrl}${options.path}');
+            // print( todo удалить позже
+            //     'Interceptors Отправлен запрос: ${options.baseUrl}${options.path}');
             return handler.next(options);
           },
           onResponse: (response, handler) {
-            print('Interceptors Получен ответ: $response');
+            // todo удалить позже
+            // print('Interceptors Получен ответ: $response');
             return handler.next(response);
           },
           onError: (DioError e, handler) {
@@ -48,31 +49,27 @@ class ApiClient {
   static final _client = addInterceptors(_dio);
 
   /// получить с сервера
-  Future<Response> get(String url,
-          {Map<String, dynamic>? queryParameters}) async =>
-      await _client.get(url);
+  Future<Response> get(String url, {Map<String, dynamic>? queryParameters}) =>
+      _client.get(url);
 
   /// отправить на сервер
-  Future<Response> post(String url, {dynamic data}) async =>
-      await _client.post(url, data: data);
+  Future<Response> post(String url, {dynamic data}) =>
+      _client.post(url, data: data);
 
   /// обновить существующую позицию
-  Future<Response> put(String url, {required dynamic data}) async =>
-      await _client.put(url, data: data);
+  Future<Response> put(String url, {required dynamic data}) =>
+      _client.put(url, data: data);
 
   /// удалить
-  Future<Response> delete(String url) async => await _client.delete(url);
+  Future<Response> delete(String url) => _client.delete(url);
 
   /// обработка ошибок
-  NetworkException getNetworkException(DioError error,
-      {StreamController? streamController}) {
+  NetworkException getNetworkException(DioError error) {
     final exception = NetworkException(
       request: '${error.requestOptions.baseUrl}${error.requestOptions.path}',
       errorCode: error.response?.statusCode,
       errorText: error.message,
     );
-
-    streamController?.sink.addError(exception);
 
     return exception;
   }

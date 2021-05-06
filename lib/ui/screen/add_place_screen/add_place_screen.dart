@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:mwwm/mwwm.dart';
-import 'package:places/ui/screen/add_place_screen/add_place_wm.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:places/blocs/add_place_screen/fields/fields_bloc.dart';
+import 'package:places/blocs/add_place_screen/form/add_form_bloc.dart';
+import 'package:places/blocs/add_place_screen/select_category/select_category_cubit.dart';
+import 'package:places/blocs/add_place_screen/user_images/user_images_cubit.dart';
+import 'package:places/ui/screen/add_place_screen/select_category_screen.dart';
 import 'package:places/ui/screen/add_place_screen/widgets/custom_text_field_widget.dart';
 import 'package:places/ui/screen/components/button_save.dart';
 import 'package:places/ui/screen/components/button_text.dart';
@@ -9,21 +13,26 @@ import 'package:places/ui/screen/components/title_leading_appbar.dart';
 import 'package:places/ui/screen/res/sizes.dart';
 import 'package:places/ui/screen/res/strings.dart';
 import 'package:places/ui/screen/res/themes.dart';
-import 'package:places/ui/screen/utilities/test_images_data.dart';
 import 'package:places/ui/screen/widgets/choice_of_loading_images.dart';
+import 'package:places/ui/screen/widgets/empty_page.dart';
 import 'package:places/ui/screen/widgets/list_cards_with_added_img.dart';
-import 'package:relation/relation.dart';
 
 /// экран добавление нового места
-class AddPlaceScreen extends CoreMwwmWidget {
-  AddPlaceScreen({required WidgetModelBuilder widgetModelBuilder})
-      : super(widgetModelBuilder: widgetModelBuilder);
-
+class AddPlaceScreen extends StatefulWidget {
   @override
   _AddPlaceScreenState createState() => _AddPlaceScreenState();
 }
 
-class _AddPlaceScreenState extends WidgetState<AddPlaceWidgetModel> {
+class _AddPlaceScreenState extends State<AddPlaceScreen> {
+  final _formKey = GlobalKey<FormState>();
+  late final _fieldDescriptionFocus;
+
+  @override
+  void initState() {
+    super.initState();
+    _fieldDescriptionFocus = FocusNode();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,24 +43,24 @@ class _AddPlaceScreenState extends WidgetState<AddPlaceWidgetModel> {
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
               child: Form(
-                key: wm.formKey,
+                key: _formKey,
                 autovalidateMode: AutovalidateMode.onUserInteraction,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    StreamedStateBuilder<List<TestImage>>(
-                        streamedState: wm.userListImgState,
-                        builder: (context, userListImg) {
-                          return ListCardsWithAddedImg(
-                            data: userListImg!,
-                            onAddImage: () {
-                              wm.addImg();
-                              // todo пока закоментировала до реализации загрузки фото
-                              // _showImageLoadingWindow();
-                            },
-                            onRemoveImage: wm.removeImg,
-                          );
-                        }),
+                    BlocBuilder<UserImagesCubit, UserImagesState>(
+                        builder: (context, state) {
+                      final cubit = context.read<UserImagesCubit>();
+                      return ListCardsWithAddedImg(
+                        data: state.userImages,
+                        onAddImage: () {
+                          cubit.addImg();
+                          // todo пока закоментировала до реализации загрузки фото
+                          // _showImageLoadingWindow();
+                        },
+                        onRemoveImage: cubit.removeImg,
+                      );
+                    }),
                     sizedBoxH24,
                     ..._buildCategory(),
                     sizedBoxH24,
@@ -76,22 +85,100 @@ class _AddPlaceScreenState extends WidgetState<AddPlaceWidgetModel> {
             hasScrollBody: false,
             child: Align(
               alignment: Alignment.bottomCenter,
-              child: StreamedStateBuilder<bool>(
-                  streamedState: wm.isButtonEnabledState,
-                  builder: (context, isButtonEnabled) {
+              child: BlocBuilder<AddFormBloc, AddFormState>(
+                builder: (context, state) {
+                  /// для дальнейшей передачи данных в отправку формы
+                  final isEnabled = context.watch<FieldsBloc>().state.isValid &&
+                      context
+                          .watch<UserImagesCubit>()
+                          .state
+                          .userImages
+                          .isNotEmpty;
+                  final fieldsState = context.watch<FieldsBloc>().state;
+                  final imagesState = context.watch<UserImagesCubit>().state;
+
+                  if (state is AddFormInitial) {
+                    /// кнопка активна когда форма валидна
                     return ButtonSave(
                       title: titleButtonSaveAddSightScreen,
-                      isButtonEnabled: isButtonEnabled!,
-                      onPressed: () =>
-                          isButtonEnabled ? wm.submitForm(context) : null,
+                      isButtonEnabled: isEnabled,
+                      onPressed: isEnabled
+                          ? () => _formSubmit(
+                                context,
+                                fieldsState: fieldsState,
+                                imagesState: imagesState,
+                              )
+                          : null,
                     );
-                  }),
+                  } else if (state is AddFormSubmitting) {
+                    return Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        CircularProgressIndicator(),
+                        sizedBoxH16,
+                        ButtonSave(
+                          title: titleButtonSaveAddSightScreen,
+                          isButtonEnabled: false,
+                          onPressed: null,
+                        ),
+                      ],
+                    );
+                  } else if (state is AddFormSubmissionSuccess) {
+                    /// подтверждаем сохранение данных
+                    return ButtonSave(
+                      title: titleButtonSaveAddSightScreen,
+                      isButtonEnabled: false,
+                      onPressed: null,
+                    );
+                  } else if (state is AddFormSubmissionFailed) {
+                    return Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        EmptyPage(
+                            icon: appNetworkException['emptyScreenIcon']!,
+                            header: appNetworkException['emptyScreenHeader']!,
+                            text: appNetworkException['emptyScreenText']!),
+                        sizedBoxH24,
+                        ButtonSave(
+                          title: titleButtonSaveOneMoreAddSightScreen,
+                          isButtonEnabled: isEnabled,
+                          onPressed: isEnabled
+                              ? () => _formSubmit(
+                                    context,
+                                    fieldsState: fieldsState,
+                                    imagesState: imagesState,
+                                  )
+                              : null,
+                        ),
+                      ],
+                    );
+                  }
+
+                  return SizedBox.shrink();
+                },
+              ),
             ),
           ),
         ],
       ),
       // resizeToAvoidBottomInset: false,
     );
+  }
+
+  /// клик по кнопке Создать
+  void _formSubmit(
+    BuildContext context, {
+    required FieldsState fieldsState,
+    required UserImagesState imagesState,
+  }) {
+    // отправляем данные из полей формы и загруженные фото
+    context.read<AddFormBloc>().add(
+          FormEventSubmitted(
+            context,
+            fieldsState: fieldsState,
+            imagesState: imagesState,
+          ),
+        );
   }
 
   /// AppBar
@@ -120,15 +207,66 @@ class _AddPlaceScreenState extends WidgetState<AddPlaceWidgetModel> {
       sizedBoxH12,
       SizedBox(
         height: 48,
-          child: CustomTextFieldUnderlineWidget(
-            focusNode: wm.fieldCategoryFocus,
-            controller: wm.fieldCategory.controller,
-            onTap: wm.selectCategory,
-            validator: wm.validateCategory,
-            onSaved: wm.saveSelectedCategory,
+        child: BlocBuilder<FieldsBloc, FieldsState>(
+          builder: (context, state) {
+            return Stack(
+              children: [
+                // todo баг с цветом границы категории срабатывает не сразу,
+                // а при обращении к следующему полю
+                CustomTextFieldUnderlineWidget(
+                  onTap: _onSelectCategory,
+                  validator: (value) => state.fieldCategoryIsValid,
+                ),
+                Positioned(
+                  bottom: 14,
+                  child: Text(
+                    state.fieldCategory,
+                    style: state.fieldCategory == emptyCategory
+                        ? Theme.of(context)
+                            .primaryTextTheme
+                            .subtitle1!
+                            .copyWith(
+                                color: Theme.of(context).colorScheme.secondary2)
+                        : Theme.of(context).primaryTextTheme.subtitle1,
+                  ),
+                ),
+              ],
+            );
+          },
+        ),
+      ),
+    ];
+  }
+
+  /// выбрать категорию (onTap)
+  Future<void> _onSelectCategory() async {
+    final newCategory = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => MultiBlocProvider(
+          providers: [
+            BlocProvider.value(
+              value: BlocProvider.of<FieldsBloc>(context),
+            ),
+            BlocProvider<SelectCategoryCubit>(
+              create: (context) => SelectCategoryCubit()
+                ..onTap(
+                  context.read<FieldsBloc>().state.fieldCategory,
+                ),
+            ),
+          ],
+          child: SelectCategoryScreen(
+            selectedCategory: context.read<FieldsBloc>().state.fieldCategory,
           ),
         ),
-    ];
+      ),
+    );
+
+    context.read<FieldsBloc>().add(
+          CategoryChanged(fieldCategory: newCategory),
+        );
+    print('newCategory $newCategory');
+    FocusScope.of(context).nextFocus();
   }
 
   /// поле Название
@@ -138,15 +276,20 @@ class _AddPlaceScreenState extends WidgetState<AddPlaceWidgetModel> {
       sizedBoxH12,
       SizedBox(
         height: heightInput,
-        child: CustomTextFieldWidget(
-          focusNode: wm.fieldNameFocus,
-          controller: wm.fieldName.controller,
-          onFieldSubmitted: (_) {
-            wm.fieldFocusChange(wm.fieldLatFocus);
+        child: BlocBuilder<FieldsBloc, FieldsState>(
+          builder: (context, state) {
+            return CustomTextFieldWidget(
+              onChanged: (value) => context.read<FieldsBloc>().add(
+                    NameChanged(fieldName: value),
+                  ),
+              onClear: () => context.read<FieldsBloc>().add(
+                    NameChanged(fieldName: ''),
+                  ),
+              validator: (value) => state.fieldNameIsValid,
+              onFieldSubmitted: (_) => FocusScope.of(context).nextFocus(),
+              maxLength: 100,
+            );
           },
-          validator: wm.validateName,
-          onSaved: wm.saveName,
-          maxLength: 100,
         ),
       ),
     ];
@@ -162,16 +305,21 @@ class _AddPlaceScreenState extends WidgetState<AddPlaceWidgetModel> {
           sizedBoxH12,
           SizedBox(
             height: heightInput,
-            child: CustomTextFieldWidget(
-              focusNode: wm.fieldLatFocus,
-              controller: wm.fieldLat.controller,
-              onFieldSubmitted: (_) {
-                wm.fieldFocusChange( wm.fieldLngFocus);
+            child: BlocBuilder<FieldsBloc, FieldsState>(
+              builder: (context, state) {
+                return CustomTextFieldWidget(
+                  onChanged: (value) => context.read<FieldsBloc>().add(
+                        LatChanged(fieldLat: value),
+                      ),
+                  onClear: () => context.read<FieldsBloc>().add(
+                        LatChanged(fieldLat: ''),
+                      ),
+                  validator: (value) => state.fieldLatIsValid,
+                  onFieldSubmitted: (_) => FocusScope.of(context).nextFocus(),
+                  keyboardType: TextInputType.number,
+                  maxLength: 50,
+                );
               },
-              validator: wm.validateCoordinates,
-              onSaved: wm.saveLat,
-              keyboardType: TextInputType.number,
-              maxLength: 50,
             ),
           ),
         ],
@@ -189,16 +337,22 @@ class _AddPlaceScreenState extends WidgetState<AddPlaceWidgetModel> {
           sizedBoxH12,
           SizedBox(
             height: heightInput,
-            child: CustomTextFieldWidget(
-              focusNode: wm.fieldLngFocus,
-              controller: wm.fieldLng.controller,
-              onFieldSubmitted: (_) {
-                wm.fieldFocusChange( wm.fieldDescriptionFocus);
+            child: BlocBuilder<FieldsBloc, FieldsState>(
+              builder: (context, state) {
+                return CustomTextFieldWidget(
+                  onChanged: (value) => context.read<FieldsBloc>().add(
+                        LngChanged(fieldLng: value),
+                      ),
+                  onClear: () => context.read<FieldsBloc>().add(
+                        LngChanged(fieldLng: ''),
+                      ),
+                  validator: (value) => state.fieldLngIsValid,
+                  onFieldSubmitted: (_) => FocusScope.of(context)
+                      .requestFocus(_fieldDescriptionFocus),
+                  keyboardType: TextInputType.number,
+                  maxLength: 50,
+                );
               },
-              validator: wm.validateCoordinates,
-              onSaved: wm.saveLng,
-              keyboardType: TextInputType.number,
-              maxLength: 50,
             ),
           ),
         ],
@@ -219,17 +373,23 @@ class _AddPlaceScreenState extends WidgetState<AddPlaceWidgetModel> {
     return [
       const Text(addNewSightLabelDetails),
       sizedBoxH12,
-      CustomTextFieldWidget(
-        focusNode: wm.fieldDescriptionFocus,
-        controller: wm.fieldDescription.controller,
-        onEditingComplete: () {
-          wm.clearFocus(wm.fieldDescriptionFocus);
+      BlocBuilder<FieldsBloc, FieldsState>(
+        builder: (context, state) {
+          return CustomTextFieldWidget(
+            focusNode: _fieldDescriptionFocus,
+            onChanged: (value) => context.read<FieldsBloc>().add(
+                  DescriptionChanged(fieldDescription: value),
+                ),
+            onClear: () => context.read<FieldsBloc>().add(
+                  DescriptionChanged(fieldDescription: ''),
+                ),
+            validator: (value) => state.fieldDescriptionIsValid,
+            onEditingComplete: () => FocusScope.of(context).unfocus(),
+            textInputAction: TextInputAction.done,
+            maxLength: 300,
+            maxLines: 4,
+          );
         },
-        validator: wm.validateDetails,
-        onSaved: wm.saveDescription,
-        textInputAction: TextInputAction.done,
-        maxLength: 300,
-        maxLines: 4,
       ),
     ];
   }

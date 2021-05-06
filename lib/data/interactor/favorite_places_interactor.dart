@@ -16,18 +16,6 @@ class FavoritePlacesInteractor {
   final ApiPlaceRepository apiRepository = ApiPlaceRepository(ApiClient());
   final LocalPlaceRepository localRepository = LocalPlaceRepository();
 
-  /// стрим контроллер для избранных мест
-  final StreamController<List<Place>> _streamController =
-      StreamController.broadcast();
-
-  /// стрим для списка избранных мест
-  Stream<List<Place>> get listFavorites => _streamController.stream;
-
-  /// закрыть стрим
-  void dispose() {
-    _streamController.close();
-  }
-
   /// ИЗБРАННЫЕ МЕСТА
   /// сортировка по удалённости, данные с сервера
   Future<List<Place>> getFavoritesPlaces() async {
@@ -37,8 +25,6 @@ class FavoritePlacesInteractor {
       places.sort((a, b) => a.distance!.compareTo(b.distance!));
     }
 
-    print('Interactor getFavoritesPlaces (${places.length} шт.): $places');
-
     return places;
   }
 
@@ -47,17 +33,12 @@ class FavoritePlacesInteractor {
     try {
       List<Place> places = await localRepository.getPlannedPlaces();
 
-      /// временно, удалю
-      // await apiRepository.testNetwork();
-
-      print('Interactor getPlannedPlaces $places');
-
-      /// пушим в стрим
-      _streamController.sink.add(places);
+      /// todo временно для тестирования, удалю
+      await apiRepository.testNetwork();
 
       return places;
     } on DioError catch (e) {
-      throw apiRepository.getNetworkException(e, streamController: _streamController);
+      throw apiRepository.getNetworkException(e);
     }
   }
 
@@ -66,17 +47,12 @@ class FavoritePlacesInteractor {
     try {
       List<Place> places = await localRepository.getVisitedPlaces();
 
-      /// временно, удалю
-      // await apiRepository.testNetwork();
-
-      print('Interactor getVisitedPlaces $places');
-
-      /// пушим в стрим
-      _streamController.sink.add(places);
+      /// todo временно для тестирования, удалю
+      await apiRepository.testNetwork();
 
       return places;
     } on DioError catch (e) {
-      throw apiRepository.getNetworkException(e, streamController: _streamController);
+      throw apiRepository.getNetworkException(e);
     }
   }
 
@@ -94,8 +70,6 @@ class FavoritePlacesInteractor {
 
     /// запишем в базу данных
     await localRepository.updatePlace(updatedPlace);
-
-    print('Interactor getFavoritePlaceDetails: $updatedPlace');
 
     return updatedPlace;
   }
@@ -117,8 +91,6 @@ class FavoritePlacesInteractor {
     );
 
     await localRepository.updatePlace(visitingPlace);
-
-    print('Interactor addToVisitingPlaces: $visitingPlace');
   }
 
   /// удалить из избранного

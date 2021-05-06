@@ -14,8 +14,6 @@ class LocalPlaceRepository implements PlaceRepository<Place> {
 
       return result;
     });
-    print(
-        'LocalRepository Список Избранных (${response.length} шт.): $response');
 
     return response;
   }
@@ -24,8 +22,8 @@ class LocalPlaceRepository implements PlaceRepository<Place> {
   Future<List<Place>> getPlannedPlaces() async {
     final response = await Future.delayed(Duration(seconds: 1), () {
       final result = LocalStorage.favoritesPlaces
-          .where((place) =>
-              place.isFavorite && place.cardType == CardType.planned)
+          .where(
+              (place) => place.isFavorite && place.cardType == CardType.planned)
           .toList();
 
       return result;
@@ -40,8 +38,8 @@ class LocalPlaceRepository implements PlaceRepository<Place> {
   Future<List<Place>> getVisitedPlaces() async {
     final response = await Future.delayed(Duration(seconds: 1), () {
       final result = LocalStorage.favoritesPlaces
-          .where((place) =>
-              place.isFavorite && place.cardType == CardType.visited)
+          .where(
+              (place) => place.isFavorite && place.cardType == CardType.visited)
           .toList();
 
       return result;
@@ -57,7 +55,8 @@ class LocalPlaceRepository implements PlaceRepository<Place> {
   Future<Place> getPlaceDetail(int id) async {
     final response =
         await Future<Place>.delayed(Duration(seconds: 1), () async {
-      final indexPlaces = await _findIndexPlacesInList(id);
+      final indexPlaces =
+          await _findIndexPlacesInList(LocalStorage.favoritesPlaces, id);
 
       if (indexPlaces != -1) {
         return LocalStorage.favoritesPlaces[indexPlaces];
@@ -67,46 +66,61 @@ class LocalPlaceRepository implements PlaceRepository<Place> {
         throw Exception(ErrorResponseStrings.e404);
       }
     });
-    print('LocalRepository Детали места: $response');
 
     return response;
   }
 
   /// добавить в избранное
   @override
-  Future<Place> addNewPlace(Place place) async {
-    final response =
-        await Future<Place>.delayed(Duration(seconds: 1), () async {
-      final indexPlaces = await _findIndexPlacesInList(place.id);
+  Future<void> addNewPlace(Place place) async {
+      final indexPlaces =
+          await _findIndexPlacesInList(LocalStorage.favoritesPlaces, place.id);
 
       if (indexPlaces == -1) {
         final favoritePlace = Place.addFavorites(place);
         LocalStorage.favoritesPlaces.add(favoritePlace);
 
-        return LocalStorage.favoritesPlaces.last;
+        /// поставить отметку Избранное на закэшированных данных
+        final resultCacheIndex =
+        await _findIndexPlacesInList(LocalStorage.cachePlaces, place.id);
+        if (resultCacheIndex != -1) {
+          LocalStorage.cachePlaces[resultCacheIndex] =
+              Place.switchFavoriteStatus(
+                  place: LocalStorage.cachePlaces[resultCacheIndex],
+                  isFav: true);
+        }
+
       } else {
         print('LocalRepository addNewPlace в Избранное: такой объект уже есть');
-        throw Exception(ErrorResponseStrings.e409);
       }
-    });
-    print('LocalRepository addNewPlace в Избранное: $response');
 
-    return response;
+    print('LocalRepository addNewPlace в Избранное: $place');
   }
 
   /// удалить из избранного
   @override
   Future<void> removePlace(int id) async {
-    await Future.delayed(Duration(seconds: 1), () async {
-      final result = await _findIndexPlacesInList(id);
+      final result =
+          await _findIndexPlacesInList(LocalStorage.favoritesPlaces, id);
 
       if (result != -1) {
+        /// удалить из Избранного
         LocalStorage.favoritesPlaces.removeAt(result);
+
+        /// снять отметку Избранное из закэшированных данных
+        final resultCacheIndex =
+            await _findIndexPlacesInList(LocalStorage.cachePlaces, id);
+        if (resultCacheIndex != -1) {
+          LocalStorage.cachePlaces[resultCacheIndex] =
+              Place.switchFavoriteStatus(
+                  place: LocalStorage.cachePlaces[resultCacheIndex],
+                  isFav: false);
+        }
+
         print('LocalRepository removePlaceИзбранное ID: $id');
       } else {
         print('LocalRepository removePlace: Такой элемент не найден!');
       }
-    });
   }
 
   /// переключатель кнопки Избранное
@@ -125,7 +139,8 @@ class LocalPlaceRepository implements PlaceRepository<Place> {
   @override
   Future<void> updatePlace(Place place) async {
     await Future.delayed(Duration(seconds: 1), () async {
-      final result = await _findIndexPlacesInList(place.id);
+      final result =
+          await _findIndexPlacesInList(LocalStorage.favoritesPlaces, place.id);
 
       if (result != -1) {
         LocalStorage.favoritesPlaces[result] = place;
@@ -138,19 +153,14 @@ class LocalPlaceRepository implements PlaceRepository<Place> {
   /// ВСПОМОГАТЕЛЬНЫЕ МЕТОДЫ для мест
 
   /// ищем место в списке мест по id места
-  Future<int> _findIndexPlacesInList(int id) async {
-    final indexPlaces = await Future.delayed(Duration(seconds: 1), () {
-      final result = LocalStorage.favoritesPlaces
-          .indexWhere((element) => element.id == id);
+  Future<int> _findIndexPlacesInList(List<Place> data, int id) async {
+      final result = data.indexWhere((element) => element.id == id);
 
       if (result == -1) {
         return -1;
       } else {
         return result;
       }
-    });
-
-    return indexPlaces;
   }
 
   /// ПОИСК

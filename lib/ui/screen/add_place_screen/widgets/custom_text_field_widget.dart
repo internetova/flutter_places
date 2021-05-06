@@ -9,12 +9,14 @@ import 'package:places/ui/screen/res/themes.dart';
 ///
 /// текстовое поле формы добавления нового места
 class CustomTextFieldWidget extends StatefulWidget {
-  final FocusNode focusNode;
-  final TextEditingController controller;
+  final FocusNode? focusNode;
+  final TextEditingController? controller;
   final ValueChanged? onFieldSubmitted; // переход к следующему полю
   final VoidCallback? onEditingComplete; // закончили редактировать поле
+  final VoidCallback onClear; // кнопка очистить поле для смены состояния
   final String? Function(String?)? validator;
-  final ValueChanged<String?> onSaved; // сохранить если все поля валидны
+  final ValueChanged<String?>? onChanged;
+  final ValueChanged<String?>? onSaved; // сохранить если все поля валидны
   final int maxLength;
   final int maxLines;
   final TextInputType keyboardType;
@@ -23,12 +25,14 @@ class CustomTextFieldWidget extends StatefulWidget {
 
   const CustomTextFieldWidget({
     Key? key,
-    required this.focusNode,
-    required this.controller,
+    this.focusNode,
+    this.controller,
     this.onFieldSubmitted,
     this.onEditingComplete,
+    this.onChanged,
+    required this.onClear,
     required this.validator,
-    required this.onSaved,
+    this.onSaved,
     required this.maxLength,
     this.maxLines = 1,
     this.keyboardType = TextInputType.text,
@@ -48,12 +52,19 @@ class _CustomTextFieldWidgetState extends State<CustomTextFieldWidget> {
   void initState() {
     super.initState();
 
-    _controller = widget.controller;
-    _focusNode = widget.focusNode;
+    _controller = widget.controller ?? TextEditingController();
+    _focusNode = widget.focusNode ?? FocusNode();
 
     /// следим за изменениями текстового поля и фокуса
     _controller.addListener(() => setState(() {}));
     _focusNode.addListener(() => setState(() {}));
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    _focusNode.dispose();
+    super.dispose();
   }
 
   @override
@@ -63,7 +74,6 @@ class _CustomTextFieldWidgetState extends State<CustomTextFieldWidget> {
       onEditingComplete: widget.onEditingComplete,
       onFieldSubmitted: widget.onFieldSubmitted,
       controller: _controller,
-      cursorHeight: 24,
       cursorWidth: 1,
       maxLength: widget.maxLength,
       maxLines: widget.maxLines,
@@ -80,9 +90,11 @@ class _CustomTextFieldWidgetState extends State<CustomTextFieldWidget> {
         suffixIcon: _clearField(
           focusNode: _focusNode,
           controller: _controller,
+          onClear: widget.onClear,
         ),
         enabledBorder: _buildBorderColor(_controller),
       ),
+      onChanged: widget.onChanged,
       validator: widget.validator,
       onSaved: widget.onSaved,
     );
@@ -92,9 +104,13 @@ class _CustomTextFieldWidgetState extends State<CustomTextFieldWidget> {
   Widget _clearField({
     required FocusNode focusNode,
     required TextEditingController controller,
+    required VoidCallback onClear,
   }) {
     if (focusNode.hasPrimaryFocus && controller.text.isNotEmpty) {
-      return ButtonClear(controller: controller);
+      return ButtonClear(
+        controller: controller,
+        onClear: onClear,
+      );
     }
 
     return const SizedBox(width: 0);
@@ -115,19 +131,21 @@ class _CustomTextFieldWidgetState extends State<CustomTextFieldWidget> {
 
 /// поле с нижним подчеркиванием для Категории
 class CustomTextFieldUnderlineWidget extends StatefulWidget {
-  final FocusNode focusNode;
-  final TextEditingController controller;
+  final FocusNode? focusNode;
+  final TextEditingController? controller;
   final VoidCallback onTap;
+  final ValueChanged<String?>? onChanged;
   final String? Function(String?)? validator;
-  final ValueChanged<String?> onSaved;
+  final ValueChanged<String?>? onSaved;
 
   const CustomTextFieldUnderlineWidget({
     Key? key,
-    required this.focusNode,
-    required this.controller,
+    this.focusNode,
+    this.controller,
     required this.onTap,
+    this.onChanged,
     required this.validator,
-    required this.onSaved,
+    this.onSaved,
   }) : super(key: key);
 
   @override
@@ -143,10 +161,15 @@ class _CustomTextFieldUnderlineWidgetState
   void initState() {
     super.initState();
 
-    _controller = widget.controller;
-
+    _controller = widget.controller ?? TextEditingController();
     /// следим за изменениями текстового поля
     _controller.addListener(() => setState(() {}));
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 
   @override
@@ -211,6 +234,7 @@ class _CustomTextFieldUnderlineWidgetState
             ),
           ),
         ),
+        onChanged: widget.onChanged,
         validator: widget.validator,
         onSaved: widget.onSaved,
         onTap: widget.onTap,

@@ -4,8 +4,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:places/blocs/buttons/favorites_button_cubit.dart';
 import 'package:places/blocs/visiting_screen/planned/planned_places_bloc.dart';
 import 'package:places/blocs/visiting_screen/visited/visited_places_bloc.dart';
+import 'package:places/data/interactor/place_interactor.dart';
 import 'package:places/data/model/place.dart';
 import 'package:places/data/model/card_type.dart';
 import 'package:places/ui/screen/components/icon_action_button.dart';
@@ -16,7 +18,6 @@ import 'package:places/ui/screen/res/themes.dart';
 import 'package:places/ui/screen/place_details.dart';
 import 'package:places/ui/screen/widgets/reminder_time_ios.dart';
 import 'package:places/ui/screen/widgets/place_details_bottom_sheet.dart';
-import 'favorites_button_stream.dart';
 
 /// карточка интересного места
 /// в зависимости от места показа карточки - Список поиска, в Избранном
@@ -37,48 +38,54 @@ class PlaceCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AspectRatio(
-      aspectRatio: 3 / 2,
-      child: Material(
-        borderRadius: BorderRadius.circular(radiusCard),
-        clipBehavior: Clip.antiAlias,
-        color: Theme.of(context).primaryColorLight,
-        child: Stack(
-          children: [
-            Column(
-              children: [
-                Stack(
-                  children: [
-                    CardImagePreview(imgUrl: card.urls.first),
-                    Positioned(
-                      top: 8,
-                      left: 16,
-                      right: 12,
-                      child: CardContentType(type: card.getPlaceTypeName()),
-                    ),
-                  ],
-                ),
-                CardContent(card: card, cardType: cardType),
-              ],
-            ),
-            Positioned.fill(
-              child: Material(
-                type: MaterialType.transparency,
-                child: InkWell(
-                  onTap: () {
-                    cardType == CardType.search
-                        ? _showDetailsBottomSheet(context)
-                        : _showDetailsScreen(context);
-                  },
+    return BlocProvider<FavoritesButtonCubit>(
+      create: (context) => FavoritesButtonCubit(
+        context.read<PlaceInteractor>(),
+        place: card,
+      ),
+      child: AspectRatio(
+        aspectRatio: 3 / 2,
+        child: Material(
+          borderRadius: BorderRadius.circular(radiusCard),
+          clipBehavior: Clip.antiAlias,
+          color: Theme.of(context).primaryColorLight,
+          child: Stack(
+            children: [
+              Column(
+                children: [
+                  Stack(
+                    children: [
+                      CardImagePreview(imgUrl: card.urls.first),
+                      Positioned(
+                        top: 8,
+                        left: 16,
+                        right: 12,
+                        child: CardContentType(type: card.getPlaceTypeName()),
+                      ),
+                    ],
+                  ),
+                  CardContent(card: card, cardType: cardType),
+                ],
+              ),
+              Positioned.fill(
+                child: Material(
+                  type: MaterialType.transparency,
+                  child: InkWell(
+                    onTap: () {
+                      cardType == CardType.search
+                          ? _showDetailsBottomSheet(context)
+                          : _showDetailsScreen(context);
+                    },
+                  ),
                 ),
               ),
-            ),
-            Positioned(
-              top: 8,
-              right: 16,
-              child: CardActions(card: card, cardType: cardType),
-            ),
-          ],
+              Positioned(
+                top: 8,
+                right: 16,
+                child: CardActions(card: card, cardType: cardType),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -192,9 +199,14 @@ class CardActions extends StatelessWidget {
 
   /// кнопки действий для карточки главного экрана
   List _buildActionsSearch(BuildContext context) => <Widget>[
-        FavoritesButtonStream(
-          place: card,
-        ),
+        BlocBuilder<FavoritesButtonCubit, FavoritesButtonState>(builder: (context, state) {
+          return IconActionButton(
+            onPressed: () {
+              context.read<FavoritesButtonCubit>().pressButton(state.isFavorite);
+            },
+            icon: state.isFavorite ? icFavoritesFull : icFavorites,
+          );
+        }),
       ];
 
   /// кнопки действий для карточки Хочу посетить
@@ -245,7 +257,7 @@ class CardActions extends StatelessWidget {
         ),
       ];
 
-  /// удалить карточку через Bloc
+  /// удалить карточку
   void _deleteCard(BuildContext context, CardType cardType) {
     if (cardType == CardType.planned) {
       BlocProvider.of<PlannedPlacesBloc>(context)

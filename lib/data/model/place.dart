@@ -1,3 +1,4 @@
+import 'package:equatable/equatable.dart';
 import 'package:places/data/dto/place_dto.dart';
 import 'package:places/data/model/card_type.dart';
 import 'package:places/data/model/place_type.dart';
@@ -7,7 +8,7 @@ import 'package:places/data/model/place_type.dart';
 /// [cardType] - флаг для кнопок действий на карточке (на поиске, в избранном)
 /// [date] - дата планирования или когда посетил, может быть null
 /// сохраняем в локальной базе данных
-class Place {
+class Place extends Equatable {
   final int id;
   final double lat;
   final double lng;
@@ -131,4 +132,7 @@ class Place {
 
     return result;
   }
+
+  @override
+  List<Object?> get props => [id, name, description];
 }

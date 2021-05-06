@@ -25,22 +25,18 @@ class ApiPlaceRepository implements PlaceRepository<PlaceDto> {
     final data = PlacesFilterRequestDto(
       lat: filter.userLocation.lat,
       lng: filter.userLocation.lng,
-      radius: filter.radius.end,
+      radius: filter.radius,
       typeFilter: filter.typeFilter,
       nameFilter: keywords != null ? keywords.trim() : null,
     ).toJson();
-
-    print('ApiRepository запрос: PlacesFilterRequestDto $data');
 
     final response = await _client.post(
       ApiConstants.filteredPlacesUrl,
       data: jsonEncode(data),
     );
+
     final places =
         (response.data as List).map((e) => PlaceDto.fromJson(e)).toList();
-
-    print(
-        'ApiRepository ответ filtered places (${places.length} шт.): $places');
 
     return places;
   }
@@ -50,7 +46,6 @@ class ApiPlaceRepository implements PlaceRepository<PlaceDto> {
   Future<PlaceDto> getPlaceDetail(int id) async {
     final response = await _client.get('${ApiConstants.placesUrl}/$id');
     final place = PlaceDto.fromJson((response.data as Map<String, dynamic>));
-    print('ApiRepository place: $place');
 
     return place;
   }
@@ -76,11 +71,7 @@ class ApiPlaceRepository implements PlaceRepository<PlaceDto> {
   /// ‼️❓ ДЛЯ теста
   /// удалить место
   @override
-  Future<void> removePlace(int id) async {
-    await _client.delete('${ApiConstants.placesUrl}/$id');
-
-    print('ApiRepository: Удалено!');
-  }
+  Future<void> removePlace(int id) => _client.delete('${ApiConstants.placesUrl}/$id');
 
   /// обновить место
   @override
@@ -91,19 +82,13 @@ class ApiPlaceRepository implements PlaceRepository<PlaceDto> {
       url,
       data: jsonEncode(place.toJson()),
     );
-
-    print('ApiRepository: Обновлено!');
   }
 
-  /// проверим есть ли доступ в сеть 🤓
-  Future<Response> testNetwork() async {
-
-    return _client.get('${ApiConstants.placesUrl}?count=1');
-  }
+  /// todo проверим есть ли доступ в сеть 🤓
+  Future<Response> testNetwork() =>
+      _client.get('${ApiConstants.placesUrl}?count=1');
 
   /// обработка ошибок
-  NetworkException getNetworkException(
-      DioError error, {StreamController? streamController}) {
-    return _client.getNetworkException(error, streamController: streamController);
-  }
+  NetworkException getNetworkException(DioError error) =>
+      _client.getNetworkException(error);
 }

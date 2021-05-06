@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:places/blocs/filters_screen/button/filter_button_cubit.dart';
+import 'package:places/blocs/filters_screen/filter/filter_cubit.dart';
 import 'package:places/data/model/search_filter.dart';
 import 'package:places/data/model/place_type.dart';
 import 'package:places/ui/screen/components/button_save.dart';
@@ -11,8 +14,8 @@ import 'package:places/ui/screen/widgets/filter_category_item.dart';
 
 /// экран фильтра для поиска
 /// выбираем типы мест и расстояние
-/// сервер принимает только одно расстояние - радиус, поэтому для фильтра
-/// беру максимальное из Range слайдера
+/// сервер принимает только одно расстояние - радиус, поэтому
+/// Range слайдер переделала в слайдер
 class FiltersScreen extends StatefulWidget {
   final SearchFilter filter;
 
@@ -21,145 +24,113 @@ class FiltersScreen extends StatefulWidget {
     required this.filter,
   }) : super(key: key);
 
-  /// для доступа к методу обработки кликов по категориям из дочернего виджета
-  static _FiltersScreenState? of(BuildContext context) =>
-      context.findAncestorStateOfType<_FiltersScreenState>();
-
   @override
   _FiltersScreenState createState() => _FiltersScreenState();
 }
 
 class _FiltersScreenState extends State<FiltersScreen> {
-  /// кнопка Показать отключена если нет результатов
-  bool _isButtonEnabled = false;
-  VoidCallback? _onPressed;
-
   /// список всех типов мест - категорий
-  List<PlaceType> categories = PlaceType.getList;
-
-  /// для теста удалить
-  List<String> _filteredData = [
-    // 'qqq',
-    // 'qqq',
-    // 'qqq',
-    // 'qqq',
-    // 'qqq',
-  ];
-
-  /// для построения индикаторов выбранных категорий
-  /// создаём карту со всеми категориями в которой будем отмечать текущий
-  /// статус категории: выбрано / не выбрано
-  List<Map<String, dynamic>> _selectedCategories = [];
-
-  /// только выбранные категории для передачи в фильтр поиска
-  List<String> _filteredCategories = [];
-
-  /// данные слайдера
-  double _startValue = rangeSliderFilterDefault.start;
-  double _endValue = rangeSliderFilterDefault.end;
-  late RangeValues _currentRangeValues;
+  final List<PlaceType> categories = PlaceType.getList;
 
   @override
   void initState() {
-    _filteredCategories = widget.filter.typeFilter;
-    _currentRangeValues = widget.filter.radius;
-    _selectedCategories = _currentStatusCategories(
-        _startCategories(categories), widget.filter.typeFilter);
     super.initState();
-  }
 
-  /// вызываем из дочернего виджета [FilterCategoryItem]
-  /// выбор / отмена категорий для фильтра, фильтрация базы данных
-  void setCategories(Map<String, dynamic> selectedCat) {
-    setState(() {
-      selectedCat['isSelected'] = !selectedCat['isSelected'];
-      _filteredCategories = _filterCategories(_selectedCategories);
-      // _filteredData = filterData(
-      //     data: _fullData,
-      //     categories: _filteredCategories,
-      //     centerPoint: _startSearchPoint,
-      //     distance: _currentRangeValues);
-    });
+    /// старт поиска при изменении параметров фильтра для отображения
+    /// результата на кнопке Показать
+    context.read<FilterButtonCubit>().startSearchFilter();
   }
 
   @override
   Widget build(BuildContext context) {
-    if (_filteredData.isNotEmpty) {
-      _isButtonEnabled = true;
-
-      _onPressed = () {
-        final _newSearchFilter = SearchFilter(
-          radius: _currentRangeValues,
-          typeFilter: _filteredCategories,
-        );
-
-        Navigator.pop(context, _newSearchFilter);
-      };
-    } else {
-      _isButtonEnabled = false;
-      _onPressed = null;
-    }
-
     /// физическая ширина и высота экрана
     final _screenWidth = MediaQuery.of(context).size.width;
     final _screenHeight = MediaQuery.of(context).size.height;
 
-    return Scaffold(
-      body: CustomScrollView(
-        slivers: [
-          _buildFilterAppBar(),
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 16.0,
-                vertical: 24.0,
-              ),
-              child: _buildTitleFilter(),
-            ),
-          ),
-          _buildCategories(
-            _screenWidth,
-            _screenHeight,
-          ),
-          SliverList(
-            delegate: SliverChildListDelegate([
-              Padding(
+    return BlocListener<FilterCubit, FilterState>(
+      listener: (context, state) {
+        if (state.filteredCategories.isNotEmpty) {
+          context.read<FilterButtonCubit>().onChangedFilter(
+                SearchFilter(
+                  typeFilter: state.filteredCategories,
+                  radius: state.radius,
+                ),
+              );
+        } else {
+          context.read<FilterButtonCubit>().clear();
+        }
+      },
+      child: Scaffold(
+        body: CustomScrollView(
+          slivers: [
+            _buildFilterAppBar(),
+            SliverToBoxAdapter(
+              child: Padding(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 16.0,
                   vertical: 24.0,
                 ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _buildHeaderSlider(),
-                    _buildSlider(),
-                  ],
-                ),
-              ),
-            ]),
-          ),
-          SliverFillRemaining(
-            hasScrollBody: false,
-            child: Align(
-              alignment: Alignment.bottomCenter,
-              child: ButtonSave(
-                title: _buildTitleButton(),
-                isButtonEnabled: _isButtonEnabled,
-                onPressed: _onPressed,
+                child: _buildTitleFilter(),
               ),
             ),
-          ),
-        ],
+            BlocBuilder<FilterCubit, FilterState>(
+              builder: (_, state) {
+                return _buildCategories(
+                  _screenWidth,
+                  _screenHeight,
+                );
+              },
+            ),
+            SliverList(
+              delegate: SliverChildListDelegate([
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16.0,
+                    vertical: 24.0,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _buildHeaderSlider(),
+                      BlocBuilder<FilterCubit, FilterState>(
+                        builder: (_, state) {
+                          return _buildSlider();
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ]),
+            ),
+            SliverFillRemaining(
+              hasScrollBody: false,
+              child: Align(
+                alignment: Alignment.bottomCenter,
+                child: BlocBuilder<FilterButtonCubit, FilterButtonState>(
+                  builder: (context, state) {
+                    return ButtonSave(
+                      title: state.title,
+                      isButtonEnabled: state.isEnabled,
+                      onPressed: state.isEnabled ? _showResult : null,
+                    );
+                  },
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
 
-  String _buildTitleButton() {
-    if (_filteredData.isEmpty) {
-      return filterTitleButton;
-    } else {
-      return '$filterTitleButton (${_filteredData.length})';
-    }
+  /// кнопка с результатами
+  void _showResult() {
+    final _newSearchFilter = SearchFilter(
+      radius: context.read<FilterCubit>().state.radius,
+      typeFilter: context.read<FilterCubit>().state.filteredCategories,
+    );
+
+    Navigator.pop(context, _newSearchFilter);
   }
 
   /// AppBar
@@ -199,13 +170,13 @@ class _FiltersScreenState extends State<FiltersScreen> {
     return width <= 375 && height <= 667 // iphone 8
         ? _categoriesSmallSize(
             categories,
-            _selectedCategories,
+            context.read<FilterCubit>().state.mapCategories,
           )
         : SliverPadding(
             padding: const EdgeInsets.symmetric(horizontal: 24.0),
             sliver: _categoriesNormalSize(
               categories,
-              _selectedCategories,
+              context.read<FilterCubit>().state.mapCategories,
             ),
           );
   }
@@ -225,6 +196,9 @@ class _FiltersScreenState extends State<FiltersScreen> {
             return FilterCategoryItem(
               placeType: catalog[index],
               selectedCat: selectedCat[index],
+              onPressed: () {
+                context.read<FilterCubit>().onTap(catalog[index].code);
+              },
             );
           },
           childCount: catalog.length,
@@ -245,6 +219,9 @@ class _FiltersScreenState extends State<FiltersScreen> {
                 return FilterCategoryItem(
                   placeType: catalog[index],
                   selectedCat: selectedCat[index],
+                  onPressed: () {
+                    context.read<FilterCubit>().onTap(catalog[index].code);
+                  },
                 );
               }),
         ),
@@ -261,7 +238,7 @@ class _FiltersScreenState extends State<FiltersScreen> {
               style: Theme.of(context).primaryTextTheme.subtitle1,
             ),
             Text(
-              'от ${_convertMeterToKm(_currentRangeValues.start)} до ${_convertMeterToKm(_currentRangeValues.end)}',
+              'до ${_convertMeterToKm(context.watch<FilterCubit>().state.radius)}',
               style: Theme.of(context).primaryTextTheme.subtitle1!.copyWith(
                   color: Theme.of(context).colorScheme.secondaryVariant),
             ),
@@ -270,69 +247,19 @@ class _FiltersScreenState extends State<FiltersScreen> {
       );
 
   /// слайдер
-  Widget _buildSlider() => RangeSlider(
-        min: _startValue,
-        max: _endValue,
-        values: _currentRangeValues,
-        onChanged: (RangeValues values) {
-          setState(() {
-            _currentRangeValues = values;
-            //   _filteredData = filterData(
-            //       data: _fullData, // база карточек
-            //       categories: _filteredCategories, // выбранные категории
-            //       centerPoint: _startSearchPoint, // точка отсчёта расстояния
-            //       distance: _currentRangeValues);
-          });
+  Widget _buildSlider() => Slider(
+        min: rangeSliderFilterDefault.start,
+        max: rangeSliderFilterDefault.end,
+        value: context.read<FilterCubit>().state.radius,
+        onChanged: (double value) {
+          context.read<FilterCubit>().onChanged(value);
         },
       );
 
-  /// оставляем только выбранные категории и передаем их в фильтр для поиска
-  List<String> _filterCategories(List<Map<String, dynamic>> categories) {
-    List<String> result = [];
-
-    categories.where((cat) => cat['isSelected'] == true).forEach((cat) {
-      result.add(cat['type']);
-    });
-
-    return result;
-  }
-
-  /// создаём карту со всеми типами мест и метками текущего состояния категории
-  /// выбрано / не выбрано
-  /// со старта все false если ничего не было выбрано ранее
-  List<Map<String, dynamic>> _startCategories(List<PlaceType> categories) {
-    return categories
-        .map((e) => {'type': e.code, 'isSelected': false})
-        .toList();
-  }
-
-  /// если пришли настройки фильтра с предыдущего экрана применяем выбранные категории
-  List<Map<String, dynamic>> _currentStatusCategories(
-      List<Map<String, dynamic>> categories, List<String> filteredCategories) {
-    for (final cat in categories) {
-      cat['isSelected'] = filteredCategories.contains(cat['type']);
-    }
-    return categories;
-  }
-
   /// очистка фильтра по кнопке Очистить
   void _onClearFilter() {
-    setState(() {
-      _selectedCategories = _clearCategories(categories);
-      _currentRangeValues = _startDataSlider();
-      // _filteredData.clear();
-      _isButtonEnabled = false;
-      _onPressed = null;
-    });
-  }
-
-  /// очистка выбранных категорий
-  List<Map<String, dynamic>> _clearCategories(List<PlaceType> categories) {
-    _filteredCategories.clear();
-
-    return categories
-        .map((e) => {'type': e.code, 'isSelected': false})
-        .toList();
+    context.read<FilterCubit>().clear();
+    context.read<FilterButtonCubit>().clear();
   }
 
   /// вернуться на предыдущий экран без сохранения
@@ -349,6 +276,3 @@ String _convertMeterToKm(double value) {
     return '${(value / 1000).toStringAsFixed(2)} км';
   }
 }
-
-/// стартовые данные для слайдера в метрах
-RangeValues _startDataSlider() => rangeSliderFilterAfterReset;
