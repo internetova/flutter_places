@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:places/blocs/onboarding_screen/onboarding_cubit.dart';
 import 'package:places/ui/screen/components/icon_svg.dart';
+import 'package:places/ui/screen/onboarding_screen.dart';
 import 'package:places/ui/screen/res/app_routes.dart';
 import 'package:places/ui/screen/res/assets.dart';
 import 'package:places/ui/screen/res/sizes.dart';
@@ -84,7 +87,7 @@ class _SplashScreenState extends State<SplashScreen>
   /// инициализация приложения
   /// имитируем подготовку данных и возвращаем готовность
   Future<bool> _initializeApp() async {
-    return Future.delayed(const Duration(seconds: 4), () => true);
+    return Future.delayed(const Duration(seconds: 2), () => true);
   }
 
   /// логика перехода либо на онбординг, если был первый вход,
@@ -98,8 +101,25 @@ class _SplashScreenState extends State<SplashScreen>
         Future.delayed(const Duration(seconds: 2)),
       ]);
 
-      Navigator.of(context).pushReplacementNamed(
-          widget.isFirstStart ? AppRoutes.onboarding : AppRoutes.home);
+      // todo удалить
+      // Navigator.of(context).pushReplacementNamed(
+      //     widget.isFirstStart ? AppRoutes.onboarding : AppRoutes.home);
+
+      if (widget.isFirstStart) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => BlocProvider<OnboardingCubit>(
+              create: (_) => OnboardingCubit(),
+              child: OnboardingScreen(),
+            ),
+          ),
+        );
+      } else {
+        Navigator.of(context).pushReplacementNamed(AppRoutes.home);
+      }
+
+
     } catch (e) {
       print('Ошибка: $e');
     }

@@ -57,6 +57,7 @@ class App extends StatelessWidget {
             // todo временно
             // initialRoute: AppRoutes.home,
             initialRoute: AppRoutes.splash,
+            // initialRoute: AppRoutes.onboarding,
             routes: {
               AppRoutes.home: (context) => MultiBlocProvider(
                     providers: [

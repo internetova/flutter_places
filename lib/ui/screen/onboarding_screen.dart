@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:places/blocs/onboarding_screen/onboarding_cubit.dart';
 import 'package:places/ui/screen/components/button_save.dart';
 import 'package:places/ui/screen/res/assets.dart';
 import 'package:places/ui/screen/res/sizes.dart';
@@ -8,65 +10,53 @@ import 'package:places/ui/screen/res/themes.dart';
 
 /// экран туториала
 class OnboardingScreen extends StatefulWidget {
-  /// для обновления значения текущей страницы при перелистывании
-  static _OnboardingScreenState? of(BuildContext context) =>
-      context.findAncestorStateOfType<_OnboardingScreenState>();
-
   @override
   _OnboardingScreenState createState() => _OnboardingScreenState();
 }
 
 class _OnboardingScreenState extends State<OnboardingScreen> {
+  /// страницы с туториалом
   final List<TutorialItem> _data = _dataPages;
-  int? _currentPage;
-
-  @override
-  void initState() {
-    _currentPage = 0;
-
-    super.initState();
-  }
-
-  void updateState(int currentPage) {
-    setState(() {
-      _currentPage = currentPage;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        toolbarHeight: toolbarHeightStandard,
-        actions: [
-          _buttonSkip(_data, _currentPage!),
-        ],
-      ),
-      body: Stack(
-        children: [
-          TutorialList(
-            data: _data,
+    return BlocBuilder<OnboardingCubit, OnboardingState>(
+      builder: (context, state) {
+        return Scaffold(
+          appBar: AppBar(
+            toolbarHeight: toolbarHeightStandard,
+            actions: [
+              _buttonSkip(_data, state.currentPage),
+            ],
           ),
-          Positioned.fill(
-            bottom: 100,
-            child: Align(
-              alignment: Alignment.bottomCenter,
-              child: PageSelector(
+          body: Stack(
+            children: [
+              _TutorialList(
                 data: _data,
-                currentIndex: _currentPage!,
               ),
-            ),
+              Positioned.fill(
+                bottom: 100,
+                child: Align(
+                  alignment: Alignment.bottomCenter,
+                  child: _PageSelector(
+                    data: _data,
+                    currentIndex: state.currentPage,
+                  ),
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
-      floatingActionButton: _buttonStart(_data, _currentPage),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      resizeToAvoidBottomInset: false,
+          floatingActionButton: _buttonStart(_data, state.currentPage),
+          floatingActionButtonLocation:
+              FloatingActionButtonLocation.centerDocked,
+          resizeToAvoidBottomInset: false,
+        );
+      },
     );
   }
 
   /// кнопка старт
-  Widget _buttonStart(List<TutorialItem> data, int? currentIndex) {
+  Widget _buttonStart(List<TutorialItem> data, int currentIndex) {
     if (currentIndex == data.length - 1) {
       return ButtonSave(
         title: tutorialButtonTitle,
@@ -133,10 +123,10 @@ List<TutorialItem> _dataPages = [
 ];
 
 /// виджет контента c индикатором страниц
-class TutorialItemWidget extends StatelessWidget {
+class _TutorialItemWidget extends StatelessWidget {
   final TutorialItem item;
 
-  TutorialItemWidget({
+  _TutorialItemWidget({
     required this.item,
   });
 
@@ -174,15 +164,15 @@ class TutorialItemWidget extends StatelessWidget {
 }
 
 /// индикаторы страниц
-class PageSelector extends StatelessWidget {
+class _PageSelector extends StatelessWidget {
   final List<TutorialItem> data;
   final int currentIndex;
 
-  const PageSelector({
+  const _PageSelector({
     Key? key,
     required this.data,
     required this.currentIndex,
-  })  : super(key: key);
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -194,7 +184,7 @@ class PageSelector extends StatelessWidget {
             (i, element) => MapEntry(
               i,
               Container(
-                margin: EdgeInsets.all(4),
+                margin: const EdgeInsets.all(4),
                 width: _getWidth(
                   context,
                   index: i,
@@ -217,7 +207,11 @@ class PageSelector extends StatelessWidget {
   }
 
   /// цвет индикатора текущей страницы
-  Color _getColor(BuildContext context, {int? index, int? currentIndex}) {
+  Color _getColor(
+    BuildContext context, {
+    required int index,
+    required int currentIndex,
+  }) {
     if (index == currentIndex) {
       return Theme.of(context).accentColor;
     } else {
@@ -226,7 +220,11 @@ class PageSelector extends StatelessWidget {
   }
 
   /// ширина индикатора текущей страницы
-  double _getWidth(BuildContext context, {int? index, int? currentIndex}) {
+  double _getWidth(
+    BuildContext context, {
+    required int index,
+    required int currentIndex,
+  }) {
     if (index == currentIndex) {
       return 24;
     } else {
@@ -236,25 +234,25 @@ class PageSelector extends StatelessWidget {
 }
 
 /// список страниц туториала
-class TutorialList extends StatelessWidget {
+class _TutorialList extends StatelessWidget {
   final List<TutorialItem> data;
   final PageController _controller = PageController(initialPage: 0);
 
-  TutorialList({
+  _TutorialList({
     Key? key,
     required this.data,
-  })  : super(key: key);
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return PageView.builder(
         onPageChanged: (value) {
-          OnboardingScreen.of(context)!.updateState(value);
+          context.read<OnboardingCubit>().changedPage(value);
         },
         controller: _controller,
         itemCount: data.length,
         itemBuilder: (BuildContext context, int index) {
-          return TutorialItemWidget(
+          return _TutorialItemWidget(
             item: data[index],
           );
         });
