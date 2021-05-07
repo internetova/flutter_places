@@ -11,22 +11,49 @@ class SplashScreen extends StatefulWidget {
   final bool isFirstStart;
 
   /// пока поставлю true
-  const SplashScreen({Key? key, this.isFirstStart = true})
-      : super(key: key);
+  const SplashScreen({Key? key, this.isFirstStart = true}) : super(key: key);
 
   @override
   _SplashScreenState createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen> {
+class _SplashScreenState extends State<SplashScreen>
+    with SingleTickerProviderStateMixin {
   /// чтобы отследить завершение инициализации приложения
   Future<bool>? _isInitialized;
+
+  late final AnimationController _animationController;
+  late final Animation<double> _rotateAnimation;
 
   @override
   void initState() {
     _isInitialized = _initializeApp();
     _navigateToNext();
+
+    _animationController = AnimationController(
+      vsync: this,
+      duration: Duration(milliseconds: 1500),
+    );
+
+    _rotateAnimation = Tween<double>(
+      begin: 0,
+      end: -1,
+    ).animate(
+      CurvedAnimation(
+        parent: _animationController,
+        curve: Curves.easeInOut,
+      ),
+    );
+
+    _animationController.repeat();
+
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
   }
 
   @override
@@ -43,9 +70,12 @@ class _SplashScreenState extends State<SplashScreen> {
         ),
       ),
       child: Center(
-        child: IconSvg(
-          icon: icSplashLogo,
-          size: splashLogo,
+        child: RotationTransition(
+          turns: _rotateAnimation,
+          child: IconSvg(
+            icon: icSplashLogo,
+            size: splashLogo,
+          ),
         ),
       ),
     );
@@ -54,7 +84,7 @@ class _SplashScreenState extends State<SplashScreen> {
   /// инициализация приложения
   /// имитируем подготовку данных и возвращаем готовность
   Future<bool> _initializeApp() async {
-    return Future.delayed(const Duration(seconds: 2), () => true);
+    return Future.delayed(const Duration(seconds: 4), () => true);
   }
 
   /// логика перехода либо на онбординг, если был первый вход,
