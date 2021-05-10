@@ -14,7 +14,6 @@ import 'package:places/ui/screen/res/strings.dart';
 import 'package:places/ui/screen/res/themes.dart';
 import 'package:places/ui/screen/settings_screen.dart';
 import 'package:places/ui/screen/place_list_screen.dart';
-import 'package:places/ui/screen/splash_screen.dart';
 import 'package:places/ui/screen/visiting_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -56,8 +55,7 @@ class App extends StatelessWidget {
             theme: notifier.darkTheme! ? _darkTheme : _lightTheme,
             // todo временно
             // initialRoute: AppRoutes.home,
-            initialRoute: AppRoutes.splash,
-            // initialRoute: AppRoutes.onboarding,
+            initialRoute: AppRoutes.visiting,
             routes: {
               AppRoutes.home: (context) => MultiBlocProvider(
                     providers: [
@@ -89,8 +87,6 @@ class App extends StatelessWidget {
                   ),
               AppRoutes.settings: (context) => SettingsScreen(),
               AppRoutes.onboarding: (context) => OnboardingScreen(),
-              // todo временно
-              AppRoutes.splash: (context) => SplashScreen(),
             },
           );
         },

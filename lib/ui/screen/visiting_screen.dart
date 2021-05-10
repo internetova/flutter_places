@@ -48,27 +48,31 @@ class _VisitingScreenState extends State<VisitingScreen>
         toolbarHeight: 156,
         bottom: PreferredSize(
           preferredSize: Size.fromHeight(60),
-          child: Container(
-            margin: const EdgeInsets.only(
+          child: Padding(
+            padding: const EdgeInsets.only(
               left: 16.0,
-              bottom: 30.0,
               right: 16.0,
+              bottom: 30.0,
             ),
-            height: 40,
-            decoration: BoxDecoration(
-              color: Theme.of(context).primaryColorDark,
+            child: Material(
+              type: MaterialType.transparency,
+              clipBehavior: Clip.antiAlias,
               borderRadius: BorderRadius.circular(40),
-            ),
-            child: TabBar(
-              controller: _tabController,
-              tabs: [
-                Tab(
-                  text: tabPlanned,
+              child: Container(
+                height: 40,
+                color: Theme.of(context).primaryColorDark,
+                child: TabBar(
+                  controller: _tabController,
+                  tabs: [
+                    Tab(
+                      text: tabPlanned,
+                    ),
+                    Tab(
+                      text: tabVisited,
+                    ),
+                  ],
                 ),
-                Tab(
-                  text: tabVisited,
-                ),
-              ],
+              ),
             ),
           ),
         ),
