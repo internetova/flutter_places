@@ -14,13 +14,61 @@ class OnboardingScreen extends StatefulWidget {
   _OnboardingScreenState createState() => _OnboardingScreenState();
 }
 
-class _OnboardingScreenState extends State<OnboardingScreen> {
+class _OnboardingScreenState extends State<OnboardingScreen>
+    with SingleTickerProviderStateMixin {
   /// страницы с туториалом
   final List<TutorialItem> _data = _dataPages;
 
+  late final AnimationController _animationController;
+  late final Animation<Offset> _buttonAnimation;
+  late final Animation<double> _buttonSkipAnimation;
+
+  @override
+  void initState() {
+    _animationController = AnimationController(
+      vsync: this,
+      duration: Duration(milliseconds: 700),
+    );
+
+    _buttonAnimation = Tween<Offset>(
+      begin: Offset(0, 1),
+      end: Offset(0, 0),
+    ).animate(
+      CurvedAnimation(
+        parent: _animationController,
+        curve: Curves.easeInBack,
+      ),
+    );
+
+    _buttonSkipAnimation = Tween<double>(
+      begin: 1,
+      end: 0,
+    ).animate(
+      CurvedAnimation(
+        parent: _animationController,
+        curve: Curves.easeInBack,
+      ),
+    );
+
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<OnboardingCubit, OnboardingState>(
+    return BlocConsumer<OnboardingCubit, OnboardingState>(
+      listener: (context, state) {
+        if (state.currentPage == _data.length - 1) {
+          _animationController.forward();
+        } else {
+          _animationController.reset();
+        }
+      },
       builder: (context, state) {
         return Scaffold(
           appBar: AppBar(
@@ -58,12 +106,15 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   /// кнопка старт
   Widget _buttonStart(List<TutorialItem> data, int currentIndex) {
     if (currentIndex == data.length - 1) {
-      return ButtonSave(
-        title: tutorialButtonTitle,
-        isButtonEnabled: true,
-        onPressed: () {
-          Navigator.of(context).pushReplacementNamed('/');
-        },
+      return SlideTransition(
+        position: _buttonAnimation,
+        child: ButtonSave(
+          title: tutorialButtonTitle,
+          isButtonEnabled: true,
+          onPressed: () {
+            Navigator.of(context).pushReplacementNamed('/');
+          },
+        ),
       );
     }
     return SizedBox.shrink();
@@ -80,13 +131,30 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             textStyle: Theme.of(context).textTheme.headline5,
           ),
           onPressed: () {
-            print('onPressed $tutorialButtonAppBarTitle');
+            Navigator.of(context).pushReplacementNamed('/');
           },
           child: Text(tutorialButtonAppBarTitle),
         ),
       );
+    } else {
+      return FadeTransition(
+        opacity: _buttonSkipAnimation,
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: TextButton(
+            style: TextButton.styleFrom(
+              primary: Theme.of(context).accentColor,
+              textStyle: Theme.of(context).textTheme.headline5,
+            ),
+            onPressed: () {
+              print('onPressed $tutorialButtonAppBarTitle');
+            },
+            child: Text(tutorialButtonAppBarTitle),
+          ),
+        ),
+      );
     }
-    return SizedBox.shrink();
+    // return SizedBox.shrink();
   }
 }
 
@@ -123,7 +191,7 @@ List<TutorialItem> _dataPages = [
 ];
 
 /// виджет контента c индикатором страниц
-class _TutorialItemWidget extends StatelessWidget {
+class _TutorialItemWidget extends StatefulWidget {
   final TutorialItem item;
 
   _TutorialItemWidget({
@@ -131,20 +199,60 @@ class _TutorialItemWidget extends StatelessWidget {
   });
 
   @override
+  __TutorialItemWidgetState createState() => __TutorialItemWidgetState();
+}
+
+class __TutorialItemWidgetState extends State<_TutorialItemWidget>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _animationController;
+  late final Animation<double> _scaleAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _animationController = AnimationController(
+      vsync: this,
+      duration: Duration(milliseconds: 700),
+    );
+
+    _scaleAnimation = Tween<double>(
+      begin: 0,
+      end: 1,
+    ).animate(
+      CurvedAnimation(
+        parent: _animationController,
+        curve: Curves.easeIn,
+      ),
+    );
+
+    _animationController.forward();
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Center(
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          SvgPicture.asset(
-            item.icon,
-            width: 104,
-            height: 104,
-            color: Theme.of(context).colorScheme.primary,
+          ScaleTransition(
+            scale: _scaleAnimation,
+            child: SvgPicture.asset(
+              widget.item.icon,
+              width: 104,
+              height: 104,
+              color: Theme.of(context).colorScheme.primary,
+            ),
           ),
           sizedBoxH40,
           Text(
-            item.title,
+            widget.item.title,
             style: Theme.of(context).textTheme.headline4!.copyWith(
                   color: Theme.of(context).colorScheme.primary,
                 ),
@@ -152,7 +260,7 @@ class _TutorialItemWidget extends StatelessWidget {
           ),
           sizedBoxH8,
           Text(
-            item.text,
+            widget.item.text,
             style: Theme.of(context).textTheme.bodyText2,
             textAlign: TextAlign.center,
           ),

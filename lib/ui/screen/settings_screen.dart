@@ -1,9 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:places/blocs/onboarding_screen/onboarding_cubit.dart';
 import 'package:places/data/interactor/settings_interactor.dart';
 import 'package:places/ui/screen/components/bottom_navigationbar.dart';
-import 'package:places/ui/screen/res/app_routes.dart';
+import 'package:places/ui/screen/onboarding_screen.dart';
 import 'package:places/ui/screen/res/assets.dart';
 import 'package:places/ui/screen/res/strings.dart';
 import 'package:places/ui/screen/res/themes.dart';
@@ -85,7 +87,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
             color: Theme.of(context).accentColor,
           ),
           onPressed: () {
-            Navigator.of(context).pushReplacementNamed(AppRoutes.onboarding);
+            Navigator.of(context).pushReplacement(
+              MaterialPageRoute(
+                builder: (context) => BlocProvider<OnboardingCubit>(
+                  create: (_) => OnboardingCubit(),
+                  child: OnboardingScreen(),
+                ),
+              ),
+            );
           }),
     );
   }

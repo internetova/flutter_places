@@ -87,7 +87,7 @@ class _SplashScreenState extends State<SplashScreen>
   /// инициализация приложения
   /// имитируем подготовку данных и возвращаем готовность
   Future<bool> _initializeApp() async {
-    return Future.delayed(const Duration(seconds: 2), () => true);
+    return Future.delayed(const Duration(seconds: 4), () => true);
   }
 
   /// логика перехода либо на онбординг, если был первый вход,
@@ -98,7 +98,7 @@ class _SplashScreenState extends State<SplashScreen>
     try {
       await Future.wait([
         _isInitialized!,
-        Future.delayed(const Duration(seconds: 2)),
+        Future.delayed(const Duration(seconds: 2))
       ]);
 
       // todo удалить
@@ -106,8 +106,7 @@ class _SplashScreenState extends State<SplashScreen>
       //     widget.isFirstStart ? AppRoutes.onboarding : AppRoutes.home);
 
       if (widget.isFirstStart) {
-        Navigator.pushReplacement(
-          context,
+        Navigator.of(context).pushReplacement(
           MaterialPageRoute(
             builder: (context) => BlocProvider<OnboardingCubit>(
               create: (_) => OnboardingCubit(),
