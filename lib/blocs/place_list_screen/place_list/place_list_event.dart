@@ -5,7 +5,7 @@ abstract class PlaceListEvent extends Equatable {
   const PlaceListEvent();
 }
 
-/// запрошены данные
+/// запрошены данные из сети
 class PlaceListRequested extends PlaceListEvent {
   final SearchFilter filter;
 
@@ -13,6 +13,14 @@ class PlaceListRequested extends PlaceListEvent {
 
   @override
   List<Object?> get props => [filter];
+}
+
+// запрошены данные из кэша
+class LocalPlaceListRequested extends PlaceListEvent {
+  LocalPlaceListRequested();
+
+  @override
+  List<Object?> get props => [];
 }
 
 /// нажата кнопка Избранное

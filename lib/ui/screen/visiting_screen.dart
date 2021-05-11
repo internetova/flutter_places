@@ -95,6 +95,9 @@ class _VisitingScreenState extends State<VisitingScreen>
                 return _buildFavorites(
                   data: state.placesList,
                   typeCard: CardType.planned,
+                  updateCurrentList: () {
+                    _updateList(CardType.planned);
+                  },
                 );
               }
 
@@ -119,6 +122,9 @@ class _VisitingScreenState extends State<VisitingScreen>
               return _buildFavorites(
                 data: state.placesList,
                 typeCard: CardType.visited,
+                updateCurrentList: () {
+                  _updateList(CardType.visited);
+                },
               );
             }
 
@@ -136,6 +142,18 @@ class _VisitingScreenState extends State<VisitingScreen>
     );
   }
 
+  /// обновляем список карточек после возвращения с экрана детализации, т.к.
+  /// там мы могли, например, удалить карточку из избранного
+  /// пробрасываем этот метод в самый низ - дочерний элемент, который строит
+  /// карточку, т.к. там мы отслеживаем возвращение с детального экрана
+  void _updateList(CardType cardType) {
+    if (cardType == CardType.planned) {
+      context.read<PlannedPlacesBloc>().add(PlannedPlacesLoad());
+    } else if (cardType == CardType.visited) {
+      context.read<VisitedPlacesBloc>().add(VisitedPlacesLoad());
+    }
+  }
+
   /// если есть ошибка
   Widget _buildExceptionInfo() => Center(
         child: EmptyPage(
@@ -149,6 +167,7 @@ class _VisitingScreenState extends State<VisitingScreen>
   Widget _buildFavorites({
     required List<Place>? data,
     required CardType typeCard,
+    required VoidCallback updateCurrentList,
   }) {
     Widget favTabBarView;
 
@@ -170,6 +189,7 @@ class _VisitingScreenState extends State<VisitingScreen>
                   key: ValueKey(card),
                   card: card,
                   cardType: typeCard,
+                  updateCurrentList: updateCurrentList,
                 ))
             .toList(),
         onReorder: (int oldIndex, int newIndex) {

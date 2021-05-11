@@ -8,15 +8,19 @@ import 'package:places/ui/screen/widgets/place_card.dart';
 /// [data] список мест
 /// [cardType] тип карточки для отображения в соответствующем разделе с
 /// правильными кнопками действий на карточке и внутренним наполнением
+/// [updateCurrentList] пробрасываем из самого верхнего виджета экрана -
+/// в этой функции будем отправлять эвент на обновление текущего списка
 class ListCardsPortrait extends StatelessWidget {
   final List<Place> data;
   final CardType cardType;
+  final VoidCallback updateCurrentList;
 
   const ListCardsPortrait({
     Key? key,
     required this.data,
     required this.cardType,
-  })  : super(key: key);
+    required this.updateCurrentList,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) => SliverList(
@@ -27,6 +31,7 @@ class ListCardsPortrait extends StatelessWidget {
               child: PlaceCard(
                 card: data[index],
                 cardType: cardType,
+                updateCurrentList: updateCurrentList,
               ),
             );
           },
@@ -39,15 +44,19 @@ class ListCardsPortrait extends StatelessWidget {
 /// [data] список мест
 /// [cardType] тип карточки для отображения в соответствующем разделе с
 /// правильными кнопками действий на карточке и внутренним наполнением
+/// [updateCurrentList] пробрасываем из самого верхнего виджета экрана -
+/// в этой функции будем отправлять эвент на обновление текущего списка
 class ListCardsLandscape extends StatelessWidget {
   final List<Place> data;
   final CardType cardType;
+  final VoidCallback updateCurrentList;
 
   const ListCardsLandscape({
     Key? key,
     required this.data,
     required this.cardType,
-  })  : super(key: key);
+    required this.updateCurrentList,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) => SliverGrid(
@@ -58,6 +67,7 @@ class ListCardsLandscape extends StatelessWidget {
               child: PlaceCard(
                 card: data[index],
                 cardType: cardType,
+                updateCurrentList: updateCurrentList,
               ),
             );
           },

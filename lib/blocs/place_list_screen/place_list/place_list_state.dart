@@ -19,9 +19,16 @@ class PlaceListLoadSuccess extends PlaceListState {
 
   @override
   List<Object> get props => [placesList];
+}
+
+/// локальные данные загружены
+class LocalPlaceListLoadSuccess extends PlaceListState {
+  final List<Place> placesList;
+
+  LocalPlaceListLoadSuccess(this.placesList);
 
   @override
-  String toString() => 'PlaceListLoadSuccess $placesList';
+  List<Object> get props => [placesList];
 }
 
 /// состояние ошибки

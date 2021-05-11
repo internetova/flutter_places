@@ -9,7 +9,7 @@ import 'package:places/data/res/error_response_strings.dart';
 class LocalPlaceRepository implements PlaceRepository<Place> {
   /// получить все избранные (хочу посетить / посетил)
   Future<List<Place>> getPlaces() async {
-    final response = await Future.delayed(Duration(seconds: 1), () {
+    final response = await Future.delayed(Duration(seconds: 0), () {
       final result = LocalStorage.favoritesPlaces;
 
       return result;
@@ -18,9 +18,13 @@ class LocalPlaceRepository implements PlaceRepository<Place> {
     return response;
   }
 
+  /// получить кэшированный список мест
+  /// это данные, которые были сохранены локально после обращения к серверу
+  Future<List<Place>> getLocalFilteredPlace() async => LocalStorage.cachePlaces;
+
   /// получить запланированные места
   Future<List<Place>> getPlannedPlaces() async {
-    final response = await Future.delayed(Duration(seconds: 1), () {
+    final response = await Future.delayed(Duration(seconds: 0), () {
       final result = LocalStorage.favoritesPlaces
           .where(
               (place) => place.isFavorite && place.cardType == CardType.planned)
@@ -36,7 +40,7 @@ class LocalPlaceRepository implements PlaceRepository<Place> {
 
   /// получить посещенные места
   Future<List<Place>> getVisitedPlaces() async {
-    final response = await Future.delayed(Duration(seconds: 1), () {
+    final response = await Future.delayed(Duration(seconds: 0), () {
       final result = LocalStorage.favoritesPlaces
           .where(
               (place) => place.isFavorite && place.cardType == CardType.visited)
@@ -54,7 +58,7 @@ class LocalPlaceRepository implements PlaceRepository<Place> {
   @override
   Future<Place> getPlaceDetail(int id) async {
     final response =
-        await Future<Place>.delayed(Duration(seconds: 1), () async {
+        await Future<Place>.delayed(Duration(seconds: 0), () async {
       final indexPlaces =
           await _findIndexPlacesInList(LocalStorage.favoritesPlaces, id);
 
@@ -138,7 +142,7 @@ class LocalPlaceRepository implements PlaceRepository<Place> {
   /// перенести в посещённые)
   @override
   Future<void> updatePlace(Place place) async {
-    await Future.delayed(Duration(seconds: 1), () async {
+    await Future.delayed(Duration(seconds: 0), () async {
       final result =
           await _findIndexPlacesInList(LocalStorage.favoritesPlaces, place.id);
 

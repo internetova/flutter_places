@@ -26,20 +26,24 @@ import 'package:places/ui/screen/widgets/place_details_bottom_sheet.dart';
 /// [card] карточка одна на все сценарии использования, разделяем с помощью [cardType]
 /// [cardType] тип карточки для отображения в соответствующем разделе с
 /// правильными кнопками действий на карточке и внутренним наполнением
+/// [updateCurrentList] пробрасываем из самого верхнего виджета экрана -
+/// в этой функции будем отправлять эвент на обновление текущего списка
 class PlaceCard extends StatelessWidget {
   final Place card;
   final CardType cardType;
+  final VoidCallback updateCurrentList;
 
-  PlaceCard({
-    Key? key,
-    required this.card,
-    required this.cardType,
-  }) : super(key: key);
+  PlaceCard(
+      {Key? key,
+      required this.card,
+      required this.cardType,
+      required this.updateCurrentList})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider<FavoritesButtonCubit>(
-      create: (context) => FavoritesButtonCubit(
+      create: (_) => FavoritesButtonCubit(
         context.read<PlaceInteractor>(),
         place: card,
       ),
@@ -92,8 +96,8 @@ class PlaceCard extends StatelessWidget {
   }
 
   /// показать боттомшит с деталями
-  void _showDetailsBottomSheet(BuildContext context) {
-    showModalBottomSheet(
+  Future<void> _showDetailsBottomSheet(BuildContext context) async {
+    await showModalBottomSheet(
       context: context,
       builder: (_) {
         return PlaceDetailsBottomSheet(card: card);
@@ -101,16 +105,25 @@ class PlaceCard extends StatelessWidget {
       isScrollControlled: true,
       isDismissible: true,
     );
+
+    /// после закрытия боттомшита обновляем список карточек - данные берём из
+    /// кэша, т.к. мы могли его изменить действиями - кнопкой Избранное
+    /// в этой функции будем отправлять эвент на обновление текущего списка
+    updateCurrentList();
   }
 
   /// перейти на отдельный экран с деталями
-  void _showDetailsScreen(BuildContext context) {
-    Navigator.push(
-      context,
+  Future<void> _showDetailsScreen(BuildContext context) async {
+    await Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (context) => PlaceDetails(card: card),
+        builder: (_) => PlaceDetails(card: card),
       ),
     );
+
+    /// после возвращения с экрана с подробностями обновляем список карточек,
+    /// т.к. мы могли его изменить действиями на предыдущем экране
+    /// в этой функции будем отправлять эвент на обновление текущего списка
+    updateCurrentList();
   }
 }
 
@@ -199,10 +212,13 @@ class CardActions extends StatelessWidget {
 
   /// кнопки действий для карточки главного экрана
   List _buildActionsSearch(BuildContext context) => <Widget>[
-        BlocBuilder<FavoritesButtonCubit, FavoritesButtonState>(builder: (context, state) {
+        BlocBuilder<FavoritesButtonCubit, FavoritesButtonState>(
+            builder: (context, state) {
           return IconActionButton(
             onPressed: () {
-              context.read<FavoritesButtonCubit>().pressButton(state.isFavorite);
+              context
+                  .read<FavoritesButtonCubit>()
+                  .pressButton(state.isFavorite);
             },
             icon: state.isFavorite ? icFavoritesFull : icFavorites,
           );

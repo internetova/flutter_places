@@ -43,7 +43,7 @@ class _PlaceListScreenState extends State<PlaceListScreen> {
 
   /// фильтр - получаем из раздела настроек локальной базы данных
   /// отправляем запрос с фильтром
-  void _getStartData() async {
+  Future<void> _getStartData() async {
     _searchFilter = await _settingsInteractor.getSearchFilter();
     _placeListBloc.add(PlaceListRequested(filter: _searchFilter));
   }
@@ -78,6 +78,16 @@ class _PlaceListScreenState extends State<PlaceListScreen> {
                         return _buildListCard(
                           orientation,
                           data: state.placesList,
+                          updateCurrentList: _updateList,
+                        );
+                      }
+
+                      if (state is LocalPlaceListLoadSuccess) {
+                        context.read<NewPlaceButtonCubit>().show();
+                        return _buildListCard(
+                          orientation,
+                          data: state.placesList,
+                          updateCurrentList: _updateList,
                         );
                       }
 
@@ -118,6 +128,12 @@ class _PlaceListScreenState extends State<PlaceListScreen> {
     );
   }
 
+  void _updateList() {
+    print('------------_updateList');
+    context.read<PlaceListBloc>().add(LocalPlaceListRequested());
+    // context.read<PlaceListBloc>().add(PlaceListRequested(filter: _searchFilter));
+  }
+
   /// SliverAppBar в зависимости от ориентации экрана
   Widget _buildSliverAppBar(Orientation orientation) {
     if (orientation == Orientation.portrait) {
@@ -134,16 +150,22 @@ class _PlaceListScreenState extends State<PlaceListScreen> {
   }
 
   /// отображение списка карточек в зависимости от ориентации экрана
-  Widget _buildListCard(Orientation orientation, {required List<Place> data}) {
+  Widget _buildListCard(
+    Orientation orientation, {
+    required List<Place> data,
+    required VoidCallback updateCurrentList,
+  }) {
     if (orientation == Orientation.portrait) {
       return ListCardsPortrait(
         data: data,
         cardType: CardType.search,
+        updateCurrentList: _updateList,
       );
     } else {
       return ListCardsLandscape(
         data: data,
         cardType: CardType.search,
+        updateCurrentList: _updateList,
       );
     }
   }
@@ -199,8 +221,7 @@ class _PlaceListScreenState extends State<PlaceListScreen> {
             BlocProvider<FilterButtonCubit>(
               create: (_) => FilterButtonCubit(
                 context.read<PlaceInteractor>(),
-              )
-                ..onChangedFilter(_searchFilter),
+              )..onChangedFilter(_searchFilter),
             ),
           ],
           child: FiltersScreen(filter: _searchFilter),

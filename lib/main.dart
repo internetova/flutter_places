@@ -53,9 +53,7 @@ class App extends StatelessWidget {
             debugShowCheckedModeBanner: false,
             title: appTitle,
             theme: notifier.darkTheme! ? _darkTheme : _lightTheme,
-            // todo временно
-            // initialRoute: AppRoutes.home,
-            initialRoute: AppRoutes.visiting,
+            initialRoute: AppRoutes.home,
             routes: {
               AppRoutes.home: (context) => MultiBlocProvider(
                     providers: [
