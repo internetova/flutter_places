@@ -24,6 +24,7 @@ import 'package:places/ui/screen/widgets/empty_page.dart';
 import 'package:places/ui/screen/widgets/list_cards.dart';
 import 'package:places/ui/screen/components/search_bar_static.dart';
 import 'package:places/ui/screen/search_screen.dart';
+import 'package:places/ui/screen/widgets/loader.dart';
 import 'package:provider/provider.dart';
 
 /// список интересных мест
@@ -33,7 +34,8 @@ class PlaceListScreen extends StatefulWidget {
   _PlaceListScreenState createState() => _PlaceListScreenState();
 }
 
-class _PlaceListScreenState extends State<PlaceListScreen> with SingleTickerProviderStateMixin  {
+class _PlaceListScreenState extends State<PlaceListScreen>
+    with SingleTickerProviderStateMixin {
   /// фильтр для поиска
   /// при первом запуске берётся дефолтный из настроек программы
   /// при изменении перезаписывается на пользовательский
@@ -131,8 +133,8 @@ class _PlaceListScreenState extends State<PlaceListScreen> with SingleTickerProv
                       return const SliverToBoxAdapter(
                         child: Padding(
                           padding: const EdgeInsets.only(top: 40.0),
-                          child: const Center(
-                            child: CircularProgressIndicator(),
+                          child: Loader(
+                            loaderSize: LoaderSize.small,
                           ),
                         ),
                       );
@@ -144,12 +146,12 @@ class _PlaceListScreenState extends State<PlaceListScreen> with SingleTickerProv
           ),
           floatingActionButton: BlocBuilder<NewPlaceButtonCubit, bool>(
               builder: (context, state) => SlideTransition(
-                position: _buttonAnimation,
-                child: ButtonGradient(
+                    position: _buttonAnimation,
+                    child: ButtonGradient(
                       onPressed: _onPressedAddNewCard,
                       isEnabled: state,
                     ),
-              )),
+                  )),
           floatingActionButtonLocation:
               FloatingActionButtonLocation.centerFloat,
           bottomNavigationBar: const MainBottomNavigationBar(current: 0),

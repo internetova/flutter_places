@@ -34,6 +34,10 @@ const milliseconds400 = Duration(milliseconds: 400);
 const milliseconds500 = Duration(milliseconds: 500);
 const milliseconds700 = Duration(milliseconds: 700);
 const milliseconds1500 = Duration(milliseconds: 1500);
+const seconds1 = Duration(seconds: 1);
+const seconds2 = Duration(seconds: 2);
+const seconds3 = Duration(seconds: 3);
+const seconds5 = Duration(seconds: 5);
 
 /// Дефолтные значения Range слайдера в фильтре поиска min-max в метрах
 const RangeValues rangeSliderFilterDefault = RangeValues(100.0, 10000.0);

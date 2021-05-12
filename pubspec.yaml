@@ -38,6 +38,7 @@ flutter:
     - res/icons/catalog/
     - res/icons/tutorial/
     - res/icons/empty_pages/
+    - res/icons/loader/
     - res/test_data/
 
   fonts:
