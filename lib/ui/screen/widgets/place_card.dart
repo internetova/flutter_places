@@ -76,9 +76,11 @@ class PlaceCard extends StatelessWidget {
                   type: MaterialType.transparency,
                   child: InkWell(
                     onTap: () {
-                      cardType == CardType.search
-                          ? _showDetailsBottomSheet(context)
-                          : _showDetailsScreen(context);
+                      _showDetailsScreen(context);
+                      // todo отключила боттомшит на главной странице
+                      // cardType == CardType.search
+                      //     ? _showDetailsBottomSheet(context)
+                      //     : _showDetailsScreen(context);
                     },
                   ),
                 ),
@@ -95,6 +97,7 @@ class PlaceCard extends StatelessWidget {
     );
   }
 
+  /// todo пока отключила, может потом вообще удалю
   /// показать боттомшит с деталями
   Future<void> _showDetailsBottomSheet(BuildContext context) async {
     await showModalBottomSheet(
@@ -214,13 +217,17 @@ class CardActions extends StatelessWidget {
   List _buildActionsSearch(BuildContext context) => <Widget>[
         BlocBuilder<FavoritesButtonCubit, FavoritesButtonState>(
             builder: (context, state) {
-          return IconActionButton(
-            onPressed: () {
-              context
-                  .read<FavoritesButtonCubit>()
-                  .pressButton(state.isFavorite);
-            },
-            icon: state.isFavorite ? icFavoritesFull : icFavorites,
+          return AnimatedSwitcher(
+            duration: Duration(milliseconds: 400),
+            child: IconActionButton(
+              key: ValueKey(state),
+              onPressed: () {
+                context
+                    .read<FavoritesButtonCubit>()
+                    .pressButton(state.isFavorite);
+              },
+              icon: state.isFavorite ? icFavoritesFull : icFavorites,
+            ),
           );
         }),
       ];

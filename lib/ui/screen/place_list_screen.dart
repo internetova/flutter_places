@@ -128,10 +128,9 @@ class _PlaceListScreenState extends State<PlaceListScreen> {
     );
   }
 
+  /// обновить список после возврата с детальной страницы
   void _updateList() {
-    print('------------_updateList');
     context.read<PlaceListBloc>().add(LocalPlaceListRequested());
-    // context.read<PlaceListBloc>().add(PlaceListRequested(filter: _searchFilter));
   }
 
   /// SliverAppBar в зависимости от ориентации экрана

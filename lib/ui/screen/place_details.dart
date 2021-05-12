@@ -126,33 +126,44 @@ class PlaceDetails extends StatelessWidget {
                               ),
                             ),
                             Expanded(
-                              child: BlocBuilder<FavoritesButtonCubit, FavoritesButtonState>(
+                              child: BlocBuilder<FavoritesButtonCubit,
+                                  FavoritesButtonState>(
                                 builder: (context, state) {
-                                  return TextButton(
-                                    onPressed: () {
-                                      context.read<FavoritesButtonCubit>().pressButton(state.isFavorite);
-                                    },
-                                    style: TextButton.styleFrom(
-                                      minimumSize: Size.fromHeight(40),
-                                    ),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        IconSvg(
-                                          icon: state.isFavorite ? icFavoritesFull : icFavorites,
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .onPrimary,
-                                        ),
-                                        sizedBoxW8,
-                                        Text(
-                                          state.isFavorite ? buttonTitleIsFavourites : buttonTitleAddToFavourites,
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .bodyText1,
-                                        ),
-                                      ],
+                                  return AnimatedSwitcher(
+                                    duration: Duration(milliseconds: 400),
+                                    child: TextButton(
+                                      key: ValueKey(state),
+                                      onPressed: () {
+                                        context
+                                            .read<FavoritesButtonCubit>()
+                                            .pressButton(state.isFavorite);
+                                      },
+                                      style: TextButton.styleFrom(
+                                        minimumSize: Size.fromHeight(40),
+                                      ),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          IconSvg(
+                                            icon: state.isFavorite
+                                                ? icFavoritesFull
+                                                : icFavorites,
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .onPrimary,
+                                          ),
+                                          sizedBoxW8,
+                                          Text(
+                                            state.isFavorite
+                                                ? buttonTitleIsFavourites
+                                                : buttonTitleAddToFavourites,
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .bodyText1,
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   );
                                 },
