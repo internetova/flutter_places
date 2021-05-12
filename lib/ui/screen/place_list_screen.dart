@@ -33,7 +33,7 @@ class PlaceListScreen extends StatefulWidget {
   _PlaceListScreenState createState() => _PlaceListScreenState();
 }
 
-class _PlaceListScreenState extends State<PlaceListScreen> {
+class _PlaceListScreenState extends State<PlaceListScreen> with SingleTickerProviderStateMixin  {
   /// фильтр для поиска
   /// при первом запуске берётся дефолтный из настроек программы
   /// при изменении перезаписывается на пользовательский
@@ -48,13 +48,40 @@ class _PlaceListScreenState extends State<PlaceListScreen> {
     _placeListBloc.add(PlaceListRequested(filter: _searchFilter));
   }
 
+  /// анимация кнопки создания нового места
+  late final AnimationController _animationController;
+  late final Animation<Offset> _buttonAnimation;
+
   @override
   void initState() {
     _settingsInteractor = context.read<SettingsInteractor>();
     _placeListBloc = context.read<PlaceListBloc>();
     _getStartData();
 
+    _animationController = AnimationController(
+      vsync: this,
+      duration: Duration(milliseconds: 1500),
+    );
+
+    _buttonAnimation = Tween<Offset>(
+      begin: Offset(-3, 0),
+      end: Offset(0, 0),
+    ).animate(
+      CurvedAnimation(
+        parent: _animationController,
+        curve: Curves.easeInBack,
+      ),
+    );
+
+    _animationController.forward();
+
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
   }
 
   @override
@@ -116,10 +143,13 @@ class _PlaceListScreenState extends State<PlaceListScreen> {
             ),
           ),
           floatingActionButton: BlocBuilder<NewPlaceButtonCubit, bool>(
-              builder: (context, state) => ButtonGradient(
-                    onPressed: _onPressedAddNewCard,
-                    isEnabled: state,
-                  )),
+              builder: (context, state) => SlideTransition(
+                position: _buttonAnimation,
+                child: ButtonGradient(
+                      onPressed: _onPressedAddNewCard,
+                      isEnabled: state,
+                    ),
+              )),
           floatingActionButtonLocation:
               FloatingActionButtonLocation.centerFloat,
           bottomNavigationBar: const MainBottomNavigationBar(current: 0),
