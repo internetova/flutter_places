@@ -15,11 +15,13 @@ import 'package:places/ui/screen/res/themes.dart';
 class PlaceCardVisiting extends StatelessWidget {
   final Place card;
   final CardType cardType;
+  final VoidCallback updateCurrentList;
 
   const PlaceCardVisiting({
     Key? key,
     required this.card,
     required this.cardType,
+    required this.updateCurrentList
   }) : super(key: key);
 
   @override
@@ -44,6 +46,7 @@ class PlaceCardVisiting extends StatelessWidget {
             child: PlaceCard(
               card: card,
               cardType: cardType,
+              updateCurrentList: updateCurrentList,
             ),
           )
         ],

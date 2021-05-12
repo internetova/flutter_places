@@ -18,12 +18,14 @@ class PlaceListBloc extends Bloc<PlaceListEvent, PlaceListState> {
   @override
   Stream<PlaceListState> mapEventToState(PlaceListEvent event) async* {
     if (event is PlaceListRequested) {
-      yield* _mapPlaceListRequestedToState(event);
+      yield* _placeListRequested(event);
+    } else if (event is LocalPlaceListRequested) {
+      yield* _localPlaceListRequested();
     }
   }
 
-  /// обрабатываем запрос данных
-  Stream<PlaceListState> _mapPlaceListRequestedToState(
+  /// обрабатываем запрос данных из сети
+  Stream<PlaceListState> _placeListRequested(
       PlaceListRequested event) async* {
     yield PlaceListLoading();
 
@@ -31,6 +33,19 @@ class PlaceListBloc extends Bloc<PlaceListEvent, PlaceListState> {
       final placesList =
           await _interactor.getFilteredPlace(filter: event.filter);
       yield PlaceListLoadSuccess(placesList);
+    } catch (_) {
+      yield PlaceListLoadFailure();
+      rethrow;
+    }
+  }
+
+  /// обрабатываем запрос данных из локального хранилища
+  Stream<PlaceListState>_localPlaceListRequested() async*{
+    yield PlaceListLoading();
+
+    try {
+      final placesList = await _interactor.getLocalFilteredPlace();
+      yield LocalPlaceListLoadSuccess(placesList);
     } catch (_) {
       yield PlaceListLoadFailure();
       rethrow;

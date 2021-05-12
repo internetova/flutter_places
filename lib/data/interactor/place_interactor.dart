@@ -94,6 +94,13 @@ class PlaceInteractor {
     return Place.fromApi(place);
   }
 
+  /// метод для показа списка отфильтрованных мест из локального хранилища
+  /// применяем на главном экране после закрытия боттомшита с детальной
+  /// информацией, т.к. в боттомшите мы можем добавлять и удалять карточки в
+  /// Избранном
+  Future<List<Place>> getLocalFilteredPlace() =>
+      localRepository.getLocalFilteredPlace();
+
   /// детализация места
   Future<PlaceDto> getPlaceDetails(int id) => apiRepository.getPlaceDetail(id);
 

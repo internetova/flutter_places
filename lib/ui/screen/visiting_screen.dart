@@ -48,27 +48,31 @@ class _VisitingScreenState extends State<VisitingScreen>
         toolbarHeight: 156,
         bottom: PreferredSize(
           preferredSize: Size.fromHeight(60),
-          child: Container(
-            margin: const EdgeInsets.only(
+          child: Padding(
+            padding: const EdgeInsets.only(
               left: 16.0,
-              bottom: 30.0,
               right: 16.0,
+              bottom: 30.0,
             ),
-            height: 40,
-            decoration: BoxDecoration(
-              color: Theme.of(context).primaryColorDark,
+            child: Material(
+              type: MaterialType.transparency,
+              clipBehavior: Clip.antiAlias,
               borderRadius: BorderRadius.circular(40),
-            ),
-            child: TabBar(
-              controller: _tabController,
-              tabs: [
-                Tab(
-                  text: tabPlanned,
+              child: Container(
+                height: 40,
+                color: Theme.of(context).primaryColorDark,
+                child: TabBar(
+                  controller: _tabController,
+                  tabs: [
+                    Tab(
+                      text: tabPlanned,
+                    ),
+                    Tab(
+                      text: tabVisited,
+                    ),
+                  ],
                 ),
-                Tab(
-                  text: tabVisited,
-                ),
-              ],
+              ),
             ),
           ),
         ),
@@ -91,6 +95,9 @@ class _VisitingScreenState extends State<VisitingScreen>
                 return _buildFavorites(
                   data: state.placesList,
                   typeCard: CardType.planned,
+                  updateCurrentList: () {
+                    _updateList(CardType.planned);
+                  },
                 );
               }
 
@@ -115,6 +122,9 @@ class _VisitingScreenState extends State<VisitingScreen>
               return _buildFavorites(
                 data: state.placesList,
                 typeCard: CardType.visited,
+                updateCurrentList: () {
+                  _updateList(CardType.visited);
+                },
               );
             }
 
@@ -132,6 +142,18 @@ class _VisitingScreenState extends State<VisitingScreen>
     );
   }
 
+  /// обновляем список карточек после возвращения с экрана детализации, т.к.
+  /// там мы могли, например, удалить карточку из избранного
+  /// пробрасываем этот метод в самый низ - дочерний элемент, который строит
+  /// карточку, т.к. там мы отслеживаем возвращение с детального экрана
+  void _updateList(CardType cardType) {
+    if (cardType == CardType.planned) {
+      context.read<PlannedPlacesBloc>().add(PlannedPlacesLoad());
+    } else if (cardType == CardType.visited) {
+      context.read<VisitedPlacesBloc>().add(VisitedPlacesLoad());
+    }
+  }
+
   /// если есть ошибка
   Widget _buildExceptionInfo() => Center(
         child: EmptyPage(
@@ -145,6 +167,7 @@ class _VisitingScreenState extends State<VisitingScreen>
   Widget _buildFavorites({
     required List<Place>? data,
     required CardType typeCard,
+    required VoidCallback updateCurrentList,
   }) {
     Widget favTabBarView;
 
@@ -166,6 +189,7 @@ class _VisitingScreenState extends State<VisitingScreen>
                   key: ValueKey(card),
                   card: card,
                   cardType: typeCard,
+                  updateCurrentList: updateCurrentList,
                 ))
             .toList(),
         onReorder: (int oldIndex, int newIndex) {
