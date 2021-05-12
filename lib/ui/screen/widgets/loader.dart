@@ -4,7 +4,7 @@ import 'package:places/ui/screen/res/sizes.dart';
 
 enum LoaderSize { small, large }
 
-/// лоадер маленький из дизайна
+/// лоадер из дизайна
 class Loader extends StatefulWidget {
   final LoaderSize loaderSize;
 
@@ -60,7 +60,7 @@ class _LoaderState extends State<Loader>
     );
   }
 
-  /// лоадер в зависимости от текущей темы
+  /// лоадер в зависимости от текущей темы и размера
   Widget _getLoaderImage(Brightness brightness) {
     Widget loader;
 

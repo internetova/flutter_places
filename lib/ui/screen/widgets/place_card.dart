@@ -148,18 +148,36 @@ class CardImagePreview extends StatelessWidget {
       child: Image.network(
         imgUrl,
         fit: BoxFit.cover,
-        loadingBuilder: (BuildContext context, Widget child,
-            ImageChunkEvent? loadingProgress) {
-          if (loadingProgress == null) return child;
-          return Center(
-            child: CircularProgressIndicator(
-              value: loadingProgress.expectedTotalBytes != null
-                  ? loadingProgress.cumulativeBytesLoaded /
-                      loadingProgress.expectedTotalBytes!
-                  : null,
-            ),
+        frameBuilder: (
+          BuildContext context,
+          Widget child,
+          int? frame,
+          bool wasSynchronouslyLoaded,
+        ) {
+          if (wasSynchronouslyLoaded) {
+            return child;
+          }
+          return AnimatedOpacity(
+            child: child,
+            opacity: frame == null ? 0 : 1,
+            duration: milliseconds1500,
+            curve: Curves.easeOut,
           );
         },
+        // ❓❓❓❓❓❓ я так понимаю тут либо прозрачность загрузки, либо лоадер?
+        // todo с лоадером не работает прозрачность загрузки, в примере без лоадера
+        // loadingBuilder: (BuildContext context, Widget child,
+        //     ImageChunkEvent? loadingProgress) {
+        //   if (loadingProgress == null) return child;
+        //   return Center(
+        //     child: CircularProgressIndicator(
+        //       value: loadingProgress.expectedTotalBytes != null
+        //           ? loadingProgress.cumulativeBytesLoaded /
+        //               loadingProgress.expectedTotalBytes!
+        //           : null,
+        //     ),
+        //   );
+        // },
       ),
     );
   }
