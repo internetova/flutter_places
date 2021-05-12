@@ -99,16 +99,20 @@ class _AddPlaceScreenState extends State<AddPlaceScreen> {
 
                   if (state is AddFormInitial) {
                     /// кнопка активна когда форма валидна
-                    return ButtonSave(
-                      title: titleButtonSaveAddSightScreen,
-                      isButtonEnabled: isEnabled,
-                      onPressed: isEnabled
-                          ? () => _formSubmit(
-                                context,
-                                fieldsState: fieldsState,
-                                imagesState: imagesState,
-                              )
-                          : null,
+                    return AnimatedSwitcher(
+                      duration: Duration(milliseconds: 300),
+                      child: ButtonSave(
+                        key: ValueKey(isEnabled),
+                        title: titleButtonSaveAddSightScreen,
+                        isButtonEnabled: isEnabled,
+                        onPressed: isEnabled
+                            ? () => _formSubmit(
+                                  context,
+                                  fieldsState: fieldsState,
+                                  imagesState: imagesState,
+                                )
+                            : null,
+                      ),
                     );
                   } else if (state is AddFormSubmitting) {
                     return Column(

@@ -108,10 +108,14 @@ class _FiltersScreenState extends State<FiltersScreen> {
                 alignment: Alignment.bottomCenter,
                 child: BlocBuilder<FilterButtonCubit, FilterButtonState>(
                   builder: (context, state) {
-                    return ButtonSave(
-                      title: state.title,
-                      isButtonEnabled: state.isEnabled,
-                      onPressed: state.isEnabled ? _showResult : null,
+                    return AnimatedSwitcher(
+                      duration: Duration(milliseconds: 300),
+                      child: ButtonSave(
+                        key: ValueKey(state),
+                        title: state.title,
+                        isButtonEnabled: state.isEnabled,
+                        onPressed: state.isEnabled ? _showResult : null,
+                      ),
                     );
                   },
                 ),
