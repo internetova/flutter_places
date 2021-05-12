@@ -27,7 +27,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
   void initState() {
     _animationController = AnimationController(
       vsync: this,
-      duration: Duration(milliseconds: 700),
+      duration: milliseconds700,
     );
 
     _buttonAnimation = Tween<Offset>(
@@ -213,7 +213,7 @@ class __TutorialItemWidgetState extends State<_TutorialItemWidget>
 
     _animationController = AnimationController(
       vsync: this,
-      duration: Duration(milliseconds: 700),
+      duration: milliseconds700,
     );
 
     _scaleAnimation = Tween<double>(

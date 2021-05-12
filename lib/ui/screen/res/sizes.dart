@@ -28,6 +28,13 @@ const sizedBoxH40 = SizedBox(height: 40);
 /// SplashScreen
 const double splashLogo = 160;
 
+/// задержка
+const milliseconds300 = Duration(milliseconds: 300);
+const milliseconds400 = Duration(milliseconds: 400);
+const milliseconds500 = Duration(milliseconds: 500);
+const milliseconds700 = Duration(milliseconds: 700);
+const milliseconds1500 = Duration(milliseconds: 1500);
+
 /// Дефолтные значения Range слайдера в фильтре поиска min-max в метрах
 const RangeValues rangeSliderFilterDefault = RangeValues(100.0, 10000.0);
 const RangeValues rangeSliderFilterAfterReset = RangeValues(100.0, 3000.0);

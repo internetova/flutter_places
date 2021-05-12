@@ -60,7 +60,7 @@ class _PlaceListScreenState extends State<PlaceListScreen> with SingleTickerProv
 
     _animationController = AnimationController(
       vsync: this,
-      duration: Duration(milliseconds: 1500),
+      duration: milliseconds1500,
     );
 
     _buttonAnimation = Tween<Offset>(
@@ -290,7 +290,7 @@ class _SliverAppBarPortrait extends StatelessWidget {
         return FlexibleSpaceBar(
           centerTitle: true,
           title: AnimatedOpacity(
-            duration: Duration(milliseconds: 300),
+            duration: milliseconds300,
             opacity: top == 56.0 ? 1.0 : 0.0,
             child: Text(
               searchAppBarTitle,

@@ -100,7 +100,7 @@ class _AddPlaceScreenState extends State<AddPlaceScreen> {
                   if (state is AddFormInitial) {
                     /// кнопка активна когда форма валидна
                     return AnimatedSwitcher(
-                      duration: Duration(milliseconds: 300),
+                      duration: milliseconds300,
                       child: ButtonSave(
                         key: ValueKey(isEnabled),
                         title: titleButtonSaveAddSightScreen,

@@ -130,7 +130,7 @@ class PlaceDetails extends StatelessWidget {
                                   FavoritesButtonState>(
                                 builder: (context, state) {
                                   return AnimatedSwitcher(
-                                    duration: Duration(milliseconds: 400),
+                                    duration: milliseconds400,
                                     child: TextButton(
                                       key: ValueKey(state),
                                       onPressed: () {

@@ -218,7 +218,7 @@ class CardActions extends StatelessWidget {
         BlocBuilder<FavoritesButtonCubit, FavoritesButtonState>(
             builder: (context, state) {
           return AnimatedSwitcher(
-            duration: Duration(milliseconds: 400),
+            duration: milliseconds400,
             child: IconActionButton(
               key: ValueKey(state),
               onPressed: () {

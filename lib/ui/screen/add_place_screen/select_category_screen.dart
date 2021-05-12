@@ -32,7 +32,7 @@ class _SelectCategoryScreenState extends State<SelectCategoryScreen> {
           appBar: _buildSelectCategoryAppBar() as PreferredSizeWidget?,
           body: _buildCategories(),
           floatingActionButton: AnimatedSwitcher(
-            duration: Duration(milliseconds: 300),
+            duration: milliseconds300,
             child: ButtonSave(
               key: ValueKey(state),
               title: titleButtonSaveSelectCategoryScreen,

@@ -109,7 +109,7 @@ class _FiltersScreenState extends State<FiltersScreen> {
                 child: BlocBuilder<FilterButtonCubit, FilterButtonState>(
                   builder: (context, state) {
                     return AnimatedSwitcher(
-                      duration: Duration(milliseconds: 300),
+                      duration: milliseconds300,
                       child: ButtonSave(
                         key: ValueKey(state),
                         title: state.title,
