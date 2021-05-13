@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:places/blocs/buttons/favorites_button_cubit.dart';
+import 'package:places/blocs/place_details_screen/details_slider/details_slider_cubit.dart';
 import 'package:places/data/interactor/place_interactor.dart';
 import 'package:places/data/model/place.dart';
 import 'package:places/ui/screen/components/icon_svg.dart';
@@ -18,11 +19,18 @@ class PlaceDetails extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: BlocProvider<FavoritesButtonCubit>(
-        create: (context) => FavoritesButtonCubit(
-          context.read<PlaceInteractor>(),
-          place: card,
-        ),
+      body: MultiBlocProvider(
+        providers: [
+          BlocProvider<FavoritesButtonCubit>(
+            create: (context) => FavoritesButtonCubit(
+              context.read<PlaceInteractor>(),
+              place: card,
+            ),
+          ),
+          BlocProvider<DetailsSliderCubit>(
+            create: (_) => DetailsSliderCubit(),
+          ),
+        ],
         child: CustomScrollView(
           slivers: [
             SliverAppBar(

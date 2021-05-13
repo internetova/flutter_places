@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:places/blocs/buttons/favorites_button_cubit.dart';
+import 'package:places/blocs/place_details_screen/details_slider/details_slider_cubit.dart';
 import 'package:places/blocs/visiting_screen/planned/planned_places_bloc.dart';
 import 'package:places/blocs/visiting_screen/visited/visited_places_bloc.dart';
 import 'package:places/data/interactor/place_interactor.dart';
@@ -15,7 +16,7 @@ import 'package:places/ui/screen/res/sizes.dart';
 import 'package:places/ui/screen/res/strings.dart';
 import 'package:places/ui/screen/res/assets.dart';
 import 'package:places/ui/screen/res/themes.dart';
-import 'package:places/ui/screen/place_details.dart';
+import 'package:places/ui/screen/place_details_screen.dart';
 import 'package:places/ui/screen/widgets/reminder_time_ios.dart';
 import 'package:places/ui/screen/widgets/place_details_bottom_sheet.dart';
 
@@ -119,7 +120,10 @@ class PlaceCard extends StatelessWidget {
   Future<void> _showDetailsScreen(BuildContext context) async {
     await Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (_) => PlaceDetails(card: card),
+        builder: (context) => BlocProvider<DetailsSliderCubit>(
+          create: (_) => DetailsSliderCubit(),
+          child: PlaceDetails(card: card),
+        ),
       ),
     );
 

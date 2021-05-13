@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:places/blocs/place_details_screen/details_slider/details_slider_cubit.dart';
 import 'package:places/ui/screen/components/icon_svg.dart';
 import 'package:places/ui/screen/res/assets.dart';
 import 'package:places/ui/screen/res/sizes.dart';
@@ -7,7 +9,7 @@ import 'package:places/ui/screen/res/sizes.dart';
 enum WhereShowSlider { screen, bottomSheet }
 
 /// слайдер фотографий
-class PlaceDetailsSlider extends StatefulWidget {
+class PlaceDetailsSlider extends StatelessWidget {
   final List<String> images;
   final WhereShowSlider whereShowSlider;
 
@@ -17,59 +19,38 @@ class PlaceDetailsSlider extends StatefulWidget {
     required this.whereShowSlider,
   }) : super(key: key);
 
-  /// для обновления индекса текущей фотографии из дочернего виджета
-  static _PlaceDetailsSliderState? of(BuildContext context) =>
-      context.findAncestorStateOfType<_PlaceDetailsSliderState>();
-
-  @override
-  _PlaceDetailsSliderState createState() => _PlaceDetailsSliderState();
-}
-
-class _PlaceDetailsSliderState extends State<PlaceDetailsSlider> {
-  /// индикатор просмотренных фотографий
-  late int _currentImage;
-
-  @override
-  void initState() {
-    _currentImage = 0;
-
-    super.initState();
-  }
-
-  void _updateState(int currentImage) {
-    setState(() {
-      _currentImage = currentImage;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        return Stack(
-          children: [
-            _ListSliderItems(
-              images: widget.images,
-            ),
-            Positioned(
-              bottom: 0,
-              child: ConstrainedBox(
-                constraints: BoxConstraints.tight(
-                  Size(constraints.maxWidth, 8.0),
+    return BlocBuilder<DetailsSliderCubit, DetailsSliderState>(
+      builder: (context, state) {
+        return LayoutBuilder(
+          builder: (context, constraints) {
+            return Stack(
+              children: [
+                _ListSliderItems(
+                  images: images,
                 ),
-                child: _ProgressIndicatorImages(
-                  data: widget.images,
-                  currentIndex: _currentImage,
+                Positioned(
+                  bottom: 0,
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints.tight(
+                      Size(constraints.maxWidth, 8.0),
+                    ),
+                    child: _ProgressIndicatorImages(
+                      data: images,
+                      currentIndex: state.currentPage,
+                    ),
+                  ),
                 ),
-              ),
-            ),
-            if (widget.whereShowSlider == WhereShowSlider.screen)
-              Positioned(
-                top: 36,
-                left: 16,
-                child: _ButtonBack(),
-              ),
-          ],
+                if (whereShowSlider == WhereShowSlider.screen)
+                  Positioned(
+                    top: 36,
+                    left: 16,
+                    child: _ButtonBack(),
+                  ),
+              ],
+            );
+          },
         );
       },
     );
@@ -212,7 +193,7 @@ class _ListSliderItems extends StatelessWidget {
   Widget build(BuildContext context) {
     return PageView.builder(
       onPageChanged: (value) {
-        PlaceDetailsSlider.of(context)!._updateState(value);
+        context.read<DetailsSliderCubit>().changedPage(value);
       },
       controller: _controller,
       itemCount: images.length,
