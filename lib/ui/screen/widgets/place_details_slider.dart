@@ -198,8 +198,11 @@ class _ListSliderItems extends StatelessWidget {
       controller: _controller,
       itemCount: images.length,
       itemBuilder: (BuildContext context, int index) {
-        return _SliderItem(
-          url: images[index],
+        return Hero(
+          tag: images[0],
+          child: _SliderItem(
+            url: images[index],
+          ),
         );
       },
     );
