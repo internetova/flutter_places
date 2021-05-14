@@ -24,6 +24,7 @@ import 'package:places/ui/screen/widgets/empty_page.dart';
 import 'package:places/ui/screen/widgets/list_cards.dart';
 import 'package:places/ui/screen/components/search_bar_static.dart';
 import 'package:places/ui/screen/search_screen.dart';
+import 'package:places/ui/screen/widgets/loader.dart';
 import 'package:provider/provider.dart';
 
 /// список интересных мест
@@ -33,7 +34,8 @@ class PlaceListScreen extends StatefulWidget {
   _PlaceListScreenState createState() => _PlaceListScreenState();
 }
 
-class _PlaceListScreenState extends State<PlaceListScreen> {
+class _PlaceListScreenState extends State<PlaceListScreen>
+    with SingleTickerProviderStateMixin {
   /// фильтр для поиска
   /// при первом запуске берётся дефолтный из настроек программы
   /// при изменении перезаписывается на пользовательский
@@ -48,13 +50,40 @@ class _PlaceListScreenState extends State<PlaceListScreen> {
     _placeListBloc.add(PlaceListRequested(filter: _searchFilter));
   }
 
+  /// анимация кнопки создания нового места
+  late final AnimationController _animationController;
+  late final Animation<Offset> _buttonAnimation;
+
   @override
   void initState() {
     _settingsInteractor = context.read<SettingsInteractor>();
     _placeListBloc = context.read<PlaceListBloc>();
     _getStartData();
 
+    _animationController = AnimationController(
+      vsync: this,
+      duration: milliseconds1500,
+    );
+
+    _buttonAnimation = Tween<Offset>(
+      begin: Offset(-3, 0),
+      end: Offset(0, 0),
+    ).animate(
+      CurvedAnimation(
+        parent: _animationController,
+        curve: Curves.easeInBack,
+      ),
+    );
+
+    _animationController.forward();
+
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
   }
 
   @override
@@ -104,8 +133,8 @@ class _PlaceListScreenState extends State<PlaceListScreen> {
                       return const SliverToBoxAdapter(
                         child: Padding(
                           padding: const EdgeInsets.only(top: 40.0),
-                          child: const Center(
-                            child: CircularProgressIndicator(),
+                          child: Loader(
+                            loaderSize: LoaderSize.small,
                           ),
                         ),
                       );
@@ -116,9 +145,12 @@ class _PlaceListScreenState extends State<PlaceListScreen> {
             ),
           ),
           floatingActionButton: BlocBuilder<NewPlaceButtonCubit, bool>(
-              builder: (context, state) => ButtonGradient(
-                    onPressed: _onPressedAddNewCard,
-                    isEnabled: state,
+              builder: (context, state) => SlideTransition(
+                    position: _buttonAnimation,
+                    child: ButtonGradient(
+                      onPressed: _onPressedAddNewCard,
+                      isEnabled: state,
+                    ),
                   )),
           floatingActionButtonLocation:
               FloatingActionButtonLocation.centerFloat,
@@ -128,10 +160,9 @@ class _PlaceListScreenState extends State<PlaceListScreen> {
     );
   }
 
+  /// обновить список после возврата с детальной страницы
   void _updateList() {
-    print('------------_updateList');
     context.read<PlaceListBloc>().add(LocalPlaceListRequested());
-    // context.read<PlaceListBloc>().add(PlaceListRequested(filter: _searchFilter));
   }
 
   /// SliverAppBar в зависимости от ориентации экрана
@@ -261,7 +292,7 @@ class _SliverAppBarPortrait extends StatelessWidget {
         return FlexibleSpaceBar(
           centerTitle: true,
           title: AnimatedOpacity(
-            duration: Duration(milliseconds: 300),
+            duration: milliseconds300,
             opacity: top == 56.0 ? 1.0 : 0.0,
             child: Text(
               searchAppBarTitle,

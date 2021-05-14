@@ -35,7 +35,7 @@ class _SplashScreenState extends State<SplashScreen>
 
     _animationController = AnimationController(
       vsync: this,
-      duration: Duration(milliseconds: 1500),
+      duration: milliseconds1500,
     );
 
     _rotateAnimation = Tween<double>(

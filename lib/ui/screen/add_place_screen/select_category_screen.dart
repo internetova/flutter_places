@@ -31,10 +31,14 @@ class _SelectCategoryScreenState extends State<SelectCategoryScreen> {
         return Scaffold(
           appBar: _buildSelectCategoryAppBar() as PreferredSizeWidget?,
           body: _buildCategories(),
-          floatingActionButton: ButtonSave(
-            title: titleButtonSaveSelectCategoryScreen,
-            isButtonEnabled: state.isButtonEnabled,
-            onPressed: state.isButtonEnabled ? _onPressedSave : null,
+          floatingActionButton: AnimatedSwitcher(
+            duration: milliseconds300,
+            child: ButtonSave(
+              key: ValueKey(state),
+              title: titleButtonSaveSelectCategoryScreen,
+              isButtonEnabled: state.isButtonEnabled,
+              onPressed: state.isButtonEnabled ? _onPressedSave : null,
+            ),
           ),
           floatingActionButtonLocation:
               FloatingActionButtonLocation.centerDocked,

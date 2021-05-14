@@ -61,3 +61,9 @@ const icSplashLogo = '$_baseResPath/splash_logo.svg';
 const icCamera = '$_baseResPath/camera.svg';
 const icPhoto = '$_baseResPath/photo.svg';
 const icFail = '$_baseResPath/fail.svg';
+
+/// лоадер из дизайна
+const icLoaderSmallWhite = '$_baseResPath/loader/small_white.png';
+const icLoaderSmallBlack = '$_baseResPath/loader/small_black.png';
+const icLoaderLargeWhite = '$_baseResPath/loader/large_white.png';
+const icLoaderLargeBlack = '$_baseResPath/loader/large_black.png';

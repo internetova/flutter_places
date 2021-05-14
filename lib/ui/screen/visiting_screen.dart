@@ -7,6 +7,7 @@ import 'package:places/data/model/card_type.dart';
 import 'package:places/ui/screen/components/bottom_navigationbar.dart';
 import 'package:places/ui/screen/res/strings.dart';
 import 'package:places/ui/screen/widgets/empty_page.dart';
+import 'package:places/ui/screen/widgets/loader.dart';
 import 'package:places/ui/screen/widgets/place_card_visiting.dart';
 
 /// экран с избранными карточками - Хочу посетить / Посетил
@@ -106,7 +107,9 @@ class _VisitingScreenState extends State<VisitingScreen>
               }
 
               return const Center(
-                child: CircularProgressIndicator(),
+                child: Loader(
+                  loaderSize: LoaderSize.small,
+                ),
               );
             },
           ),

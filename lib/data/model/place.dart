@@ -37,8 +37,7 @@ class Place extends Equatable {
 
   /// место из api переводим в места для ui
   /// если место у юзера в избранных, то ставим соответствующие отметки
-  static Place fromApi(PlaceDto place,
-      {bool? isFavorite, CardType? cardType}) {
+  static Place fromApi(PlaceDto place, {bool? isFavorite, CardType? cardType}) {
     return Place(
       id: place.id,
       lat: place.lat,
@@ -92,7 +91,8 @@ class Place extends Equatable {
   }
 
   /// переключаем статус места - избранное / не избранное
-  static Place switchFavoriteStatus({required Place place, required bool isFav}) {
+  static Place switchFavoriteStatus(
+      {required Place place, required bool isFav}) {
     return Place(
       id: place.id,
       lat: place.lat,
@@ -134,5 +134,17 @@ class Place extends Equatable {
   }
 
   @override
-  List<Object?> get props => [id, name, description];
+  List<Object?> get props => [
+        id,
+        lat,
+        lng,
+        name,
+        urls,
+        placeType,
+        description,
+        distance,
+        isFavorite,
+        cardType,
+        date,
+      ];
 }
