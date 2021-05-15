@@ -1,5 +1,4 @@
 import 'package:places/data/model/coordinates.dart';
-import 'package:places/data/model/search_filter.dart';
 import 'package:places/data/model/place.dart';
 import 'package:places/data/model/card_type.dart';
 
@@ -7,7 +6,6 @@ import 'package:places/data/model/card_type.dart';
 /// имитация локального хранилища
 /// храним:
 /// 1. текущую геолокацию пользователя
-/// 2. настройки поискового фильтра если юзер пока не задал свой
 /// 3. кэшированные и обработанные данные(isFavorite)
 /// 4. список избранных мест
 /// 5. историю поиска пользователя
@@ -17,20 +15,6 @@ class LocalStorage {
 
   /// 1. Геолокация пользователя
   static Coordinates userLocation = Coordinates(lat: 55.994909, lng: 37.606793);
-
-  /// 2. Фильтр для поиска по умолчанию
-  /// при изменении пересохраняется в момент отправки нового запроса
-  static SearchFilter searchFilter = SearchFilter(
-    radius: 10000.0, //  в метрах
-    typeFilter: [
-      'park',
-      'cafe',
-      'other',
-      'museum',
-      'restaurant',
-      'hotel',
-    ],
-  );
 
   /// 3. Сохранённые данные с сервера и обрабатанные в соответствии
   /// со списком избранных мест для отображения на Главной странице

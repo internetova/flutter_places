@@ -170,20 +170,6 @@ class CardImagePreview extends StatelessWidget {
               curve: Curves.easeOut,
             );
           },
-          // ❓❓❓❓❓❓ я так понимаю тут либо прозрачность загрузки, либо лоадер?
-          // todo с лоадером не работает прозрачность загрузки, в примере без лоадера
-          // loadingBuilder: (BuildContext context, Widget child,
-          //     ImageChunkEvent? loadingProgress) {
-          //   if (loadingProgress == null) return child;
-          //   return Center(
-          //     child: CircularProgressIndicator(
-          //       value: loadingProgress.expectedTotalBytes != null
-          //           ? loadingProgress.cumulativeBytesLoaded /
-          //               loadingProgress.expectedTotalBytes!
-          //           : null,
-          //     ),
-          //   );
-          // },
         ),
       ),
     );

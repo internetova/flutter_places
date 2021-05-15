@@ -5,7 +5,7 @@ import 'package:places/data/repository/local_settings_repository.dart';
 /// 1. тема
 /// 2. фильтр
 class SettingsInteractor {
-  static final LocalSettingsRepository _settingsRepository =
+  final LocalSettingsRepository _settingsRepository =
       LocalSettingsRepository();
 
   /// 1. тема: переключение текущей темы приложения

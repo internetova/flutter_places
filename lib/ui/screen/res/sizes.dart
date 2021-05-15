@@ -42,3 +42,14 @@ const seconds5 = Duration(seconds: 5);
 /// Дефолтные значения Range слайдера в фильтре поиска min-max в метрах
 const RangeValues rangeSliderFilterDefault = RangeValues(100.0, 10000.0);
 const RangeValues rangeSliderFilterAfterReset = RangeValues(100.0, 3000.0);
+
+/// Дефолтные значения фильтра если ничего не сохранено в SharedPreferences
+const double searchFilterRadius = 10000.0; // в метрах
+const List<String> searchFilterTypeFilter = [
+  'park',
+  'cafe',
+  'other',
+  'museum',
+  'restaurant',
+  'hotel',
+];
