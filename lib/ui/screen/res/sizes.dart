@@ -45,7 +45,7 @@ const RangeValues rangeSliderFilterAfterReset = RangeValues(100.0, 3000.0);
 
 /// Дефолтные значения фильтра если ничего не сохранено в SharedPreferences
 const double searchFilterRadius = 10000.0; // в метрах
-const List<String> searchFilterTypeFilter = [
+final List<String> searchFilterTypeFilter = [
   'park',
   'cafe',
   'other',

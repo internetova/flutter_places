@@ -9,8 +9,6 @@ class SettingsInteractor {
   final LocalSettingsRepository _settingsRepository = LocalSettingsRepository();
 
   /// 1. тема: переключение текущей темы приложения
-  // Future<void> toggleTheme() => _settingsRepository.toggleTheme();
-
   /// 1.1. получить тему
   Future<bool> getTheme() async => _settingsRepository.getTheme();
 

@@ -63,9 +63,15 @@ class App extends StatelessWidget {
               initialRoute: AppRoutes.splash,
               routes: {
                 AppRoutes.splash: (context) => SplashScreen(
-                    isFirstStart: BlocProvider.of<SettingsAppCubit>(context)
-                        .state
-                        .isFirstStart),
+                      isFirstStart: BlocProvider.of<SettingsAppCubit>(context)
+                          .state
+                          .isFirstStart,
+                    ),
+                AppRoutes.onboarding: (context) => OnboardingScreen(
+                      isFirstStart: BlocProvider.of<SettingsAppCubit>(context)
+                          .state
+                          .isFirstStart,
+                    ),
                 AppRoutes.home: (context) => MultiBlocProvider(
                       providers: [
                         BlocProvider<PlaceListBloc>(
@@ -95,10 +101,6 @@ class App extends StatelessWidget {
                       child: VisitingScreen(),
                     ),
                 AppRoutes.settings: (context) => SettingsScreen(),
-                AppRoutes.onboarding: (context) => OnboardingScreen(
-                    isFirstStart: BlocProvider.of<SettingsAppCubit>(context)
-                        .state
-                        .isFirstStart),
               },
             );
           },
