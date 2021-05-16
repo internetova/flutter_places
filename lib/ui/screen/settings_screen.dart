@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:places/blocs/onboarding_screen/onboarding_cubit.dart';
-import 'package:places/data/interactor/settings_interactor.dart';
+import 'package:places/blocs/theme/theme_cubit.dart';
 import 'package:places/ui/screen/components/bottom_navigationbar.dart';
 import 'package:places/ui/screen/onboarding_screen.dart';
 import 'package:places/ui/screen/res/assets.dart';
@@ -12,21 +12,7 @@ import 'package:places/ui/screen/res/themes.dart';
 import 'package:provider/provider.dart';
 
 /// экран с настройками приложения
-class SettingsScreen extends StatefulWidget {
-  @override
-  _SettingsScreenState createState() => _SettingsScreenState();
-}
-
-class _SettingsScreenState extends State<SettingsScreen> {
-  late SettingsInteractor _settingsInteractor;
-
-  @override
-  void initState() {
-    _settingsInteractor = context.read<SettingsInteractor>();
-
-    super.initState();
-  }
-
+class SettingsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -43,7 +29,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             children: [
               _buildThemeMode(),
               Divider(),
-              _buildTutorial(),
+              _buildTutorial(context),
               Divider(),
             ],
           ),
@@ -55,26 +41,27 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   /// Тёмная тема
   Widget _buildThemeMode() {
-    return Consumer<ThemeNotifier>(
-      builder: (context, notifier, child) => ListTile(
-        contentPadding: const EdgeInsets.symmetric(horizontal: 0),
-        title: Text(
-          itemThemeDark,
-          style: Theme.of(context).primaryTextTheme.subtitle1,
-        ),
-        trailing: CupertinoSwitch(
-            trackColor: Theme.of(context).colorScheme.inactiveBlack,
-            value: notifier.darkTheme!,
-            onChanged: (currentValue) {
-              notifier.toggleTheme();
-              _settingsInteractor.toggleTheme();
-            }),
-      ),
+    return BlocBuilder<ThemeCubit, ThemeState>(
+      builder: (context, state) {
+        return ListTile(
+          contentPadding: const EdgeInsets.symmetric(horizontal: 0),
+          title: Text(
+            itemThemeDark,
+            style: Theme.of(context).primaryTextTheme.subtitle1,
+          ),
+          trailing: CupertinoSwitch(
+              trackColor: Theme.of(context).colorScheme.inactiveBlack,
+              value: state.isDark,
+              onChanged: (currentValue) {
+                context.read<ThemeCubit>().toggleTheme(currentValue);
+              }),
+        );
+      },
     );
   }
 
   /// Смотреть туториал
-  Widget _buildTutorial() {
+  Widget _buildTutorial(BuildContext context) {
     return ListTile(
       contentPadding: const EdgeInsets.symmetric(horizontal: 0),
       title: Text(
