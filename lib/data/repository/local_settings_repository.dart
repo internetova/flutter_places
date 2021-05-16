@@ -5,33 +5,25 @@ import 'package:places/data/model/search_filter.dart';
 /// используется для:
 /// 1. переключение темы приложения
 /// 2. фильтр поиска
+/// 3. первый запуск приложения
 class LocalSettingsRepository {
   /// хранилище ключ-значение фильтра и др. настроек
   final SharedPreferencesStorage _preferencesStorage =
       SharedPreferencesStorage();
 
-  /// 1. настройка темы приложения
-  /// сохранить настройки и переключить тему
-  // Future<void> toggleTheme() async {
-  //   bool currentTheme = await LocalStorage.userSetting['isDarkTheme'];
-  //   LocalStorage.userSetting['isDarkTheme'] = !currentTheme;
-  //
-  //   print('isDarkTheme: ${LocalStorage.userSetting['isDarkTheme']}');
-  // }
-
   /// 1.1. получить тему
   Future<bool> getTheme() async => _preferencesStorage.getTheme();
 
   /// 1.2. сохранить тему
-  Future<void> saveTheme({required bool isDark}) async =>
-      _preferencesStorage.saveTheme(isDark);
+  Future<void> setTheme({required bool isDark}) async =>
+      _preferencesStorage.setTheme(isDark);
 
   /// 1.3. переключить тему
   Future<void> toggleTheme({required bool isDark}) async {
     if (isDark) {
-      await saveTheme(isDark: isDark);
+      await setTheme(isDark: isDark);
     } else {
-      await saveTheme(isDark: !isDark);
+      await setTheme(isDark: !isDark);
     }
     print('isDark $isDark');
   }
@@ -43,5 +35,13 @@ class LocalSettingsRepository {
 
   /// 2.2. обновим дефолтные настройки на данные юзера
   Future<void> updateFilter({required SearchFilter newFilter}) async =>
-      _preferencesStorage.saveSearchFilter(newFilter);
+      _preferencesStorage.setSearchFilter(newFilter);
+
+  /// 3.   первый запуск приложения
+  /// 3.1. получить данные
+  Future<bool> getIsFirstStart() async => _preferencesStorage.getIsFirstStart();
+
+  /// 3.2. сохранить данные
+  Future<void> setIsFirstStart(bool isFirstRun) async =>
+      _preferencesStorage.setIsFirstStart(isFirstRun);
 }

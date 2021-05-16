@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:places/blocs/onboarding_screen/onboarding_cubit.dart';
+import 'package:places/blocs/settings_app/settings_app_cubit.dart';
 import 'package:places/ui/screen/components/button_save.dart';
+import 'package:places/ui/screen/res/app_routes.dart';
 import 'package:places/ui/screen/res/assets.dart';
 import 'package:places/ui/screen/res/sizes.dart';
 import 'package:places/ui/screen/res/strings.dart';
@@ -10,6 +12,14 @@ import 'package:places/ui/screen/res/themes.dart';
 
 /// экран туториала
 class OnboardingScreen extends StatefulWidget {
+  /// первый старт приложения
+  final bool isFirstStart;
+
+  const OnboardingScreen({
+    Key? key,
+    required this.isFirstStart,
+  }) : super(key: key);
+
   @override
   _OnboardingScreenState createState() => _OnboardingScreenState();
 }
@@ -111,9 +121,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
         child: ButtonSave(
           title: tutorialButtonTitle,
           isButtonEnabled: true,
-          onPressed: () {
-            Navigator.of(context).pushReplacementNamed('/');
-          },
+          onPressed: _startApp,
         ),
       );
     }
@@ -130,9 +138,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
             primary: Theme.of(context).accentColor,
             textStyle: Theme.of(context).textTheme.headline5,
           ),
-          onPressed: () {
-            Navigator.of(context).pushReplacementNamed('/');
-          },
+          onPressed: _startApp,
           child: Text(tutorialButtonAppBarTitle),
         ),
       );
@@ -146,15 +152,21 @@ class _OnboardingScreenState extends State<OnboardingScreen>
               primary: Theme.of(context).accentColor,
               textStyle: Theme.of(context).textTheme.headline5,
             ),
-            onPressed: () {
-              print('onPressed $tutorialButtonAppBarTitle');
-            },
+            onPressed: _startApp,
             child: Text(tutorialButtonAppBarTitle),
           ),
         ),
       );
     }
     // return SizedBox.shrink();
+  }
+
+  /// перейти на главную страницу
+  void _startApp() {
+    if (widget.isFirstStart) {
+      BlocProvider.of<SettingsAppCubit>(context).setIsFirstRun(false);
+    }
+    Navigator.of(context).pushReplacementNamed(AppRoutes.home);
   }
 }
 

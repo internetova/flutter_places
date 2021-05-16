@@ -13,8 +13,10 @@ class SplashScreen extends StatefulWidget {
   /// первый старт приложения
   final bool isFirstStart;
 
-  /// пока поставлю true
-  const SplashScreen({Key? key, this.isFirstStart = true}) : super(key: key);
+  const SplashScreen({
+    Key? key,
+    required this.isFirstStart,
+  }) : super(key: key);
 
   @override
   _SplashScreenState createState() => _SplashScreenState();
@@ -23,7 +25,7 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen>
     with SingleTickerProviderStateMixin {
   /// чтобы отследить завершение инициализации приложения
-  Future<bool>? _isInitialized;
+  late Future<bool> _isInitialized;
 
   late final AnimationController _animationController;
   late final Animation<double> _rotateAnimation;
@@ -96,29 +98,24 @@ class _SplashScreenState extends State<SplashScreen>
     /// 1. завершена инициализация
     /// 2. прошло минимальное время отображения сплэш-экрана.
     try {
+      /// ждём когда завершится инициализация приложения
       await Future.wait([
-        _isInitialized!,
-        Future.delayed(const Duration(seconds: 2))
+        _isInitialized,
+        Future.delayed(const Duration(seconds: 2)),
       ]);
-
-      // todo удалить
-      // Navigator.of(context).pushReplacementNamed(
-      //     widget.isFirstStart ? AppRoutes.onboarding : AppRoutes.home);
 
       if (widget.isFirstStart) {
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(
             builder: (context) => BlocProvider<OnboardingCubit>(
               create: (_) => OnboardingCubit(),
-              child: OnboardingScreen(),
+              child: OnboardingScreen(isFirstStart: widget.isFirstStart),
             ),
           ),
         );
       } else {
         Navigator.of(context).pushReplacementNamed(AppRoutes.home);
       }
-
-
     } catch (e) {
       print('Ошибка: $e');
     }

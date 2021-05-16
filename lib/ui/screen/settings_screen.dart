@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:places/blocs/onboarding_screen/onboarding_cubit.dart';
-import 'package:places/blocs/theme/theme_cubit.dart';
+import 'package:places/blocs/settings_app/settings_app_cubit.dart';
 import 'package:places/ui/screen/components/bottom_navigationbar.dart';
 import 'package:places/ui/screen/onboarding_screen.dart';
 import 'package:places/ui/screen/res/assets.dart';
@@ -41,7 +41,7 @@ class SettingsScreen extends StatelessWidget {
 
   /// Тёмная тема
   Widget _buildThemeMode() {
-    return BlocBuilder<ThemeCubit, ThemeState>(
+    return BlocBuilder<SettingsAppCubit, SettingsAppState>(
       builder: (context, state) {
         return ListTile(
           contentPadding: const EdgeInsets.symmetric(horizontal: 0),
@@ -53,7 +53,7 @@ class SettingsScreen extends StatelessWidget {
               trackColor: Theme.of(context).colorScheme.inactiveBlack,
               value: state.isDark,
               onChanged: (currentValue) {
-                context.read<ThemeCubit>().toggleTheme(currentValue);
+                context.read<SettingsAppCubit>().toggleTheme(currentValue);
               }),
         );
       },
@@ -78,7 +78,11 @@ class SettingsScreen extends StatelessWidget {
               MaterialPageRoute(
                 builder: (context) => BlocProvider<OnboardingCubit>(
                   create: (_) => OnboardingCubit(),
-                  child: OnboardingScreen(),
+                  child: OnboardingScreen(
+                    isFirstStart: BlocProvider.of<SettingsAppCubit>(context)
+                        .state
+                        .isFirstStart,
+                  ),
                 ),
               ),
             );

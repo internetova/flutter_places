@@ -13,13 +13,16 @@ class SharedPreferencesStorage {
   /// ключи для значений темы
   final String _keyThemeIsDark = 'keyThemeIsDark';
 
+  /// первый запуск приложения
+  final String _keyIsFirstStart = '_keyIsFirstStart';
+
   /// загружаем и анализируем данные с диска
   _initPrefs() async {
     _prefs ??= await SharedPreferences.getInstance();
   }
 
   /// фильтр сохраняем
-  Future<void> saveSearchFilter(SearchFilter filter) async {
+  Future<void> setSearchFilter(SearchFilter filter) async {
     await _initPrefs();
 
     await _prefs?.setDouble(_keyRadius, filter.radius);
@@ -36,7 +39,7 @@ class SharedPreferencesStorage {
   }
 
   /// тема сохраняем
-  Future<void> saveTheme(bool isDark) async {
+  Future<void> setTheme(bool isDark) async {
     await _initPrefs();
     await _prefs?.setBool(_keyThemeIsDark, isDark);
   }
@@ -45,5 +48,19 @@ class SharedPreferencesStorage {
    Future<bool> getTheme() async {
     await _initPrefs();
     return _prefs?.getBool(_keyThemeIsDark) ?? false;
+  }
+
+  /// Первый запуск приложения [isFirstStart] сохраняем
+  /// после первого запуска и просмотра туториала по кнопке ставим false, чтобы
+  /// при следующем запуске туториал не показывался
+  Future<void> setIsFirstStart(bool isFirstRun) async {
+    await _initPrefs();
+    await _prefs?.setBool(_keyIsFirstStart, isFirstRun);
+  }
+
+  /// Первый запуск приложения [isFirstStart]  получаем
+  Future<bool> getIsFirstStart() async {
+    await _initPrefs();
+    return _prefs?.getBool(_keyIsFirstStart) ?? true;
   }
 }

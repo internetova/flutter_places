@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:places/blocs/buttons/new_place_button_cubit.dart';
 import 'package:places/blocs/place_list_screen/place_list/place_list_bloc.dart';
-import 'package:places/blocs/theme/theme_cubit.dart';
+import 'package:places/blocs/settings_app/settings_app_cubit.dart';
 import 'package:places/blocs/visiting_screen/planned/planned_places_bloc.dart';
 import 'package:places/blocs/visiting_screen/visited/visited_places_bloc.dart';
 import 'package:places/data/interactor/favorite_places_interactor.dart';
@@ -15,6 +15,7 @@ import 'package:places/ui/screen/res/strings.dart';
 import 'package:places/ui/screen/res/themes.dart';
 import 'package:places/ui/screen/settings_screen.dart';
 import 'package:places/ui/screen/place_list_screen.dart';
+import 'package:places/ui/screen/splash_screen.dart';
 import 'package:places/ui/screen/visiting_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -47,20 +48,24 @@ class App extends StatelessWidget {
       ],
       child: MultiBlocProvider(
         providers: [
-          BlocProvider<ThemeCubit>(
-            create: (context) => ThemeCubit(
+          BlocProvider<SettingsAppCubit>(
+            create: (context) => SettingsAppCubit(
               context.read<SettingsInteractor>(),
             )..initState(),
           ),
         ],
-        child: BlocBuilder<ThemeCubit, ThemeState>(
+        child: BlocBuilder<SettingsAppCubit, SettingsAppState>(
           builder: (context, state) {
             return MaterialApp(
               debugShowCheckedModeBanner: false,
               title: appTitle,
               theme: state.isDark ? _darkTheme : _lightTheme,
-              initialRoute: AppRoutes.home,
+              initialRoute: AppRoutes.splash,
               routes: {
+                AppRoutes.splash: (context) => SplashScreen(
+                    isFirstStart: BlocProvider.of<SettingsAppCubit>(context)
+                        .state
+                        .isFirstStart),
                 AppRoutes.home: (context) => MultiBlocProvider(
                       providers: [
                         BlocProvider<PlaceListBloc>(
@@ -90,7 +95,10 @@ class App extends StatelessWidget {
                       child: VisitingScreen(),
                     ),
                 AppRoutes.settings: (context) => SettingsScreen(),
-                AppRoutes.onboarding: (context) => OnboardingScreen(),
+                AppRoutes.onboarding: (context) => OnboardingScreen(
+                    isFirstStart: BlocProvider.of<SettingsAppCubit>(context)
+                        .state
+                        .isFirstStart),
               },
             );
           },
