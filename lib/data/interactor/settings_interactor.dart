@@ -16,10 +16,6 @@ class SettingsInteractor {
   Future<void> setTheme({required bool isDark}) async =>
       _settingsRepository.setTheme(isDark: isDark);
 
-  /// 1.2. переключить тему
-  Future<void> toggleTheme({required bool isDark}) async =>
-      _settingsRepository.setTheme(isDark: isDark);
-
   /// 2.   фильтр
   /// 2.1. получить фильтр для поиска
   Future<SearchFilter> getSearchFilter() => _settingsRepository.getFilter();

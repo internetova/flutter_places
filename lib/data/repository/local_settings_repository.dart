@@ -18,16 +18,6 @@ class LocalSettingsRepository {
   Future<void> setTheme({required bool isDark}) async =>
       _preferencesStorage.setTheme(isDark);
 
-  /// 1.3. переключить тему
-  Future<void> toggleTheme({required bool isDark}) async {
-    if (isDark) {
-      await setTheme(isDark: isDark);
-    } else {
-      await setTheme(isDark: !isDark);
-    }
-    print('isDark $isDark');
-  }
-
   /// 2.   фильтр поиска
   /// 2.1. получить фильтр из базы
   Future<SearchFilter> getFilter() async =>

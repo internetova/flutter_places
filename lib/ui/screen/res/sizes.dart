@@ -37,6 +37,7 @@ const milliseconds1500 = Duration(milliseconds: 1500);
 const seconds1 = Duration(seconds: 1);
 const seconds2 = Duration(seconds: 2);
 const seconds3 = Duration(seconds: 3);
+const seconds4 = Duration(seconds: 4);
 const seconds5 = Duration(seconds: 5);
 
 /// Дефолтные значения Range слайдера в фильтре поиска min-max в метрах

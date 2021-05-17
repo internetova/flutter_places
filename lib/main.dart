@@ -40,7 +40,7 @@ class App extends StatelessWidget {
           create: (_) => FavoritePlacesInteractor(),
         ),
         Provider<SettingsInteractor>(
-          create: (context) => SettingsInteractor(),
+          create: (_) => SettingsInteractor(),
         ),
         Provider<SearchInteractor>(
           create: (_) => SearchInteractor(),
@@ -63,9 +63,8 @@ class App extends StatelessWidget {
               initialRoute: AppRoutes.splash,
               routes: {
                 AppRoutes.splash: (context) => SplashScreen(
-                      isFirstStart: BlocProvider.of<SettingsAppCubit>(context)
-                          .state
-                          .isFirstStart,
+                      settingsAppState:
+                          BlocProvider.of<SettingsAppCubit>(context).state,
                     ),
                 AppRoutes.onboarding: (context) => OnboardingScreen(
                       isFirstStart: BlocProvider.of<SettingsAppCubit>(context)

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:places/blocs/onboarding_screen/onboarding_cubit.dart';
+import 'package:places/blocs/settings_app/settings_app_cubit.dart';
 import 'package:places/ui/screen/components/icon_svg.dart';
 import 'package:places/ui/screen/onboarding_screen.dart';
 import 'package:places/ui/screen/res/app_routes.dart';
@@ -11,11 +12,11 @@ import 'package:places/ui/screen/res/themes.dart';
 /// сплэш-экран приложения
 class SplashScreen extends StatefulWidget {
   /// первый старт приложения
-  final bool isFirstStart;
+  final SettingsAppState settingsAppState;
 
   const SplashScreen({
     Key? key,
-    required this.isFirstStart,
+    required this.settingsAppState,
   }) : super(key: key);
 
   @override
@@ -24,15 +25,12 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen>
     with SingleTickerProviderStateMixin {
-  /// чтобы отследить завершение инициализации приложения
-  late Future<bool> _isInitialized;
-
+  /// анимация логотипа
   late final AnimationController _animationController;
   late final Animation<double> _rotateAnimation;
 
   @override
   void initState() {
-    _isInitialized = _initializeApp();
     _navigateToNext();
 
     _animationController = AnimationController(
@@ -86,38 +84,32 @@ class _SplashScreenState extends State<SplashScreen>
     );
   }
 
-  /// инициализация приложения
-  /// имитируем подготовку данных и возвращаем готовность
-  Future<bool> _initializeApp() async {
-    return Future.delayed(const Duration(seconds: 4), () => true);
-  }
-
-  /// логика перехода либо на онбординг, если был первый вход,
+  /// Данные о первом входе получаем из конструктора, а туда передали из
+  /// экземпляра [SettingsAppCubit], при создании которого инициализировали
+  /// получение текущих настроек пользователя из локального хранилища.
+  /// Логика перехода либо на онбординг, если был первый вход,
   /// либо на главный экран
   Future<void> _navigateToNext() async {
-    /// 1. завершена инициализация
-    /// 2. прошло минимальное время отображения сплэш-экрана.
-    try {
-      /// ждём когда завершится инициализация приложения
-      await Future.wait([
-        _isInitialized,
-        Future.delayed(const Duration(seconds: 2)),
-      ]);
+    /// ждём когда завершится инициализация приложения - выполнится ивент
+    /// по инициализации настроек и обновится виджет с флагом [isAppReady]
+    /// показываем анимацию
+    await Future.delayed(seconds4);
 
-      if (widget.isFirstStart) {
+    if (widget.settingsAppState.isAppReady) {
+      if (widget.settingsAppState.isFirstStart) {
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(
             builder: (context) => BlocProvider<OnboardingCubit>(
               create: (_) => OnboardingCubit(),
-              child: OnboardingScreen(isFirstStart: widget.isFirstStart),
+              child: OnboardingScreen(
+                isFirstStart: widget.settingsAppState.isFirstStart,
+              ),
             ),
           ),
         );
       } else {
         Navigator.of(context).pushReplacementNamed(AppRoutes.home);
       }
-    } catch (e) {
-      print('Ошибка: $e');
     }
   }
 }

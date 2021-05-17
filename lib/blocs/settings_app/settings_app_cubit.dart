@@ -16,17 +16,21 @@ class SettingsAppCubit extends Cubit<SettingsAppState> {
   Future<void> initState() async {
     final bool isDark = await _interactor.getTheme();
     final bool isFirstStart = await _interactor.getIsFirstStart();
-    emit(SettingsAppState(isDark: isDark, isFirstStart: isFirstStart));
+    emit(SettingsAppState(
+      isDark: isDark,
+      isFirstStart: isFirstStart,
+      isAppReady: true,
+    ));
   }
 
   /// переключаем тему
   Future<void> toggleTheme(bool isDark) async {
-    await _interactor.toggleTheme(isDark: isDark);
+    await _interactor.setTheme(isDark: isDark);
     emit(state.copyWith(isDark: isDark));
   }
 
   /// сохраняем первый запуск приложения
-  Future<void> setIsFirstRun(bool isFirstRun) async{
+  Future<void> setIsFirstRun(bool isFirstRun) async {
     await _interactor.setIsFirstStart(isFirstRun);
     emit(state.copyWith(isFirstStart: false));
   }
