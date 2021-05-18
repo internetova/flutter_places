@@ -12,14 +12,6 @@ import 'package:places/ui/screen/res/themes.dart';
 
 /// экран туториала
 class OnboardingScreen extends StatefulWidget {
-  /// первый старт приложения
-  // final bool isFirstStart;
-
-  // const OnboardingScreen({
-  //   Key? key,
-  //   required this.isFirstStart,
-  // }) : super(key: key);
-
   @override
   _OnboardingScreenState createState() => _OnboardingScreenState();
 }
@@ -158,15 +150,12 @@ class _OnboardingScreenState extends State<OnboardingScreen>
         ),
       );
     }
-    // return SizedBox.shrink();
   }
 
   /// перейти на главную страницу
   void _startApp() {
     if (context.read<SettingsAppCubit>().state.isFirstStart) {
-    // if (widget.isFirstStart) {
       context.read<SettingsAppCubit>().setIsFirstRun(false);
-      // BlocProvider.of<SettingsAppCubit>(context).setIsFirstRun(false);
     }
     Navigator.of(context).pushReplacementNamed(AppRoutes.home);
   }
