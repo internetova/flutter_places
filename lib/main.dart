@@ -5,10 +5,14 @@ import 'package:places/blocs/place_list_screen/place_list/place_list_bloc.dart';
 import 'package:places/blocs/settings_app/settings_app_cubit.dart';
 import 'package:places/blocs/visiting_screen/planned/planned_places_bloc.dart';
 import 'package:places/blocs/visiting_screen/visited/visited_places_bloc.dart';
+import 'package:places/data/api/api_client.dart';
+import 'package:places/data/database/database.dart';
 import 'package:places/data/interactor/favorite_places_interactor.dart';
 import 'package:places/data/interactor/place_interactor.dart';
 import 'package:places/data/interactor/search_interactor.dart';
 import 'package:places/data/interactor/settings_interactor.dart';
+import 'package:places/data/repository/api_place_repository.dart';
+import 'package:places/data/repository/local_place_repository.dart';
 import 'package:places/ui/screen/onboarding_screen.dart';
 import 'package:places/ui/res/app_routes.dart';
 import 'package:places/ui/res/strings.dart';
@@ -33,17 +37,50 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        Provider<PlaceInteractor>(
-          create: (_) => PlaceInteractor(),
+        Provider<ApiClient>(
+          create: (_) => ApiClient(),
+        ),
+        Provider<AppDb>(
+          create: (_) => AppDb(),
+        ),
+        ProxyProvider<ApiClient, ApiPlaceRepository>(
+          update: (_, apiClient, apiPlaceRepository) =>
+              ApiPlaceRepository(apiClient),
+        ),
+        ProxyProvider<AppDb, LocalPlaceRepository>(
+          update: (_, appDb, localPlaceRepository) =>
+              LocalPlaceRepository(appDb),
+        ),
+        ProxyProvider2<ApiPlaceRepository, LocalPlaceRepository,
+            PlaceInteractor>(
+          update: (
+            _,
+            apiPlaceRepository,
+            localPlaceRepository,
+            placeInteractor,
+          ) =>
+              PlaceInteractor(
+                  apiRepository: apiPlaceRepository,
+                  localRepository: localPlaceRepository),
+        ),
+        ProxyProvider2<ApiPlaceRepository, LocalPlaceRepository,
+            SearchInteractor>(
+          update: (
+            _,
+            apiPlaceRepository,
+            localPlaceRepository,
+            searchInteractor,
+          ) =>
+              SearchInteractor(
+            apiRepository: apiPlaceRepository,
+            localRepository: localPlaceRepository,
+          ),
         ),
         Provider<FavoritePlacesInteractor>(
           create: (_) => FavoritePlacesInteractor(),
         ),
         Provider<SettingsInteractor>(
           create: (_) => SettingsInteractor(),
-        ),
-        Provider<SearchInteractor>(
-          create: (_) => SearchInteractor(),
         ),
       ],
       child: MultiBlocProvider(

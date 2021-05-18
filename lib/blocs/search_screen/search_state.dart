@@ -23,7 +23,7 @@ class LoadedSearchState extends SearchState {
 
 /// результаты истории поиска загружены
 class LoadedSearchHistoryState extends SearchState {
-  final List<String> result;
+  final List<SearchHistoryItem> result;
 
   LoadedSearchHistoryState(this.result);
 

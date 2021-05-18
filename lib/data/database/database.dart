@@ -20,31 +20,43 @@ class AppDb extends _$AppDb {
 
   /// получить все запросы
   /// последние выводятся первыми
-  Future<List<SearchHistory>> getSearchHistory() => (select(tableSearchHistory)
+  Future<List<SearchHistory>> getSearchHistory() =>
+      (select(tableSearchHistory)
         ..orderBy([
-          (u) => OrderingTerm(
+              (u) =>
+              OrderingTerm(
                 expression: u.id,
                 mode: OrderingMode.desc,
               )
         ]))
-      .get();
+          .get();
 
   /// сохранить новый запрос
-  Future<void> saveSearchRequest(String request) => into(tableSearchHistory)
-      .insert(TableSearchHistoryCompanion(request: Value(request)));
+  Future<void> saveSearchRequest(String request) =>
+      into(tableSearchHistory)
+          .insert(TableSearchHistoryCompanion(request: Value(request)));
 
   /// удалить запрос из истории
   Future<void> deleteSearchRequest(int id) =>
-      (delete(tableSearchHistory)..where((item) => item.id.equals(id))).go();
+      (delete(tableSearchHistory)
+        ..where((row) => row.id.equals(id))).go();
 
   /// очистить историю запросов
   Future<void> clearSearchHistory() => delete(tableSearchHistory).go();
+
+  /// найти запрос в базе данных
+  /// если такой запрос уже есть, то новый добавлять не будем
+  /// в базу я добавляю только удачные запросы - те, по результатам которых
+  /// юзер перешёл
+  Future<List<SearchHistory>> checkSearchRequest(String request) =>
+      (select(tableSearchHistory)
+        ..where((row) => row.request.equals(request))).get();
 }
 
 /// открытие соединения и создание базы данных
 LazyDatabase _openConnection() {
   return LazyDatabase(
-    () async {
+        () async {
       final dbFolder = await getApplicationDocumentsDirectory();
       final file = File(p.join(dbFolder.path, 'db.sqlite'));
       return VmDatabase(file);

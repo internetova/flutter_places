@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:dio/dio.dart';
 import 'package:places/data/api/api_client.dart';
+import 'package:places/data/database/database.dart';
 import 'package:places/data/model/card_type.dart';
 import 'package:places/data/model/place.dart';
 import 'package:places/data/repository/api_place_repository.dart';
@@ -14,7 +15,7 @@ class FavoritePlacesInteractor {
   FavoritePlacesInteractor();
 
   final ApiPlaceRepository apiRepository = ApiPlaceRepository(ApiClient());
-  final LocalPlaceRepository localRepository = LocalPlaceRepository();
+  final LocalPlaceRepository localRepository = LocalPlaceRepository(AppDb());
 
   /// ИЗБРАННЫЕ МЕСТА
   /// сортировка по удалённости, данные с сервера

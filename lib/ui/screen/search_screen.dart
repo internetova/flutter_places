@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:places/blocs/search_screen/search_bloc.dart';
 import 'package:places/data/model/search_filter.dart';
 import 'package:places/data/model/place.dart';
+import 'package:places/data/model/search_history_item.dart';
 import 'package:places/ui/components/bottom_navigationbar.dart';
 import 'package:places/ui/components/button_text.dart';
 import 'package:places/ui/components/card_square_img.dart';
@@ -13,6 +14,7 @@ import 'package:places/ui/res/strings.dart';
 import 'package:places/ui/res/themes.dart';
 import 'package:places/ui/screen/place_details_screen.dart';
 import 'package:places/ui/widgets/empty_page.dart';
+import 'package:places/ui/widgets/loader.dart';
 import 'package:places/ui/widgets/search_bar.dart';
 
 /// экран поиска
@@ -162,10 +164,8 @@ class _SearchScreenState extends State<SearchScreen> {
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: SizedBox(
-          child: const CircularProgressIndicator(),
-          width: 40,
-          height: 40,
+        child: Loader(
+          loaderSize: LoaderSize.small,
         ),
       ),
     );
@@ -175,9 +175,12 @@ class _SearchScreenState extends State<SearchScreen> {
   Widget _buildSearchItem(Place card) {
     return ListTile(
       contentPadding: const EdgeInsets.symmetric(vertical: 8.0),
-      leading: CardSquareImg(
-        image: NetworkImage(
-          card.urls.first,
+      leading: Hero(
+        tag: '${card.urls.first}',
+        child: CardSquareImg(
+          image: NetworkImage(
+            card.urls.first,
+          ),
         ),
       ),
       title: RichText(
@@ -290,7 +293,7 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   /// история поисковых запросов
-  Widget _buildSearchHistory(List<String> data) {
+  Widget _buildSearchHistory(List<SearchHistoryItem> data) {
     if (data.isEmpty) {
       return SizedBox.shrink();
     }
@@ -308,36 +311,49 @@ class _SearchScreenState extends State<SearchScreen> {
                   .caption!
                   .copyWith(color: Theme.of(context).colorScheme.inactiveBlack),
             ),
-            const SizedBox(height: 4),
-            for (int i = 0; i < data.length; i++) ...[
-              ListTile(
-                contentPadding: const EdgeInsets.all(0),
-                title: Text(
-                  data[i],
-                  style: Theme.of(context).primaryTextTheme.subtitle1!.copyWith(
-                      color: Theme.of(context).colorScheme.secondary2),
-                ),
-                trailing: IconButton(
-                  onPressed: () {
-                    /// удаляем позицию из истории запросов
-                    context.read<SearchBloc>().add(RemoveRequestFromHistory(i));
-                  },
-                  icon: SvgPicture.asset(
-                    icDelete,
-                    color: Theme.of(context).colorScheme.inactiveBlack,
+            sizedBoxH4,
+            ListView.separated(
+              shrinkWrap: true,
+              itemCount: data.length,
+              itemBuilder: (BuildContext context, int index) {
+                return ListTile(
+                  contentPadding: const EdgeInsets.all(0),
+                  title: Text(
+                    data[index].request,
+                    style: Theme.of(context)
+                        .primaryTextTheme
+                        .subtitle1!
+                        .copyWith(
+                            color: Theme.of(context).colorScheme.secondary2),
                   ),
-                  splashRadius: splashRadiusSmall,
-                ),
-                onTap: () {
-                  /// выполняем поиск по тапу по пункту в истории запросов
-                  _searchController.text = data[i];
-                  _lastSearch = data[i];
-                  context.read<SearchBloc>().add(GetSearchResult(
-                      filter: widget.filter, keywords: _searchController.text));
-                },
-              ),
-              Divider(),
-            ],
+                  trailing: IconButton(
+                    onPressed: () {
+                      /// удаляем позицию из истории запросов
+                      context
+                          .read<SearchBloc>()
+                          .add(DeleteRequestFromHistory(data[index].id));
+                    },
+                    icon: SvgPicture.asset(
+                      icDelete,
+                      color: Theme.of(context).colorScheme.inactiveBlack,
+                    ),
+                    splashRadius: splashRadiusSmall,
+                  ),
+                  onTap: () {
+                    /// выполняем поиск по тапу по пункту в истории запросов
+                    _searchController.text = data[index].request;
+                    _lastSearch = data[index].request;
+                    context.read<SearchBloc>().add(GetSearchResult(
+                          filter: widget.filter,
+                          keywords: _searchController.text,
+                        ));
+                  },
+                );
+              },
+              separatorBuilder: (BuildContext context, int index) {
+                return Divider();
+              },
+            ),
             ButtonText(
               title: searchClear,
               onPressed: () {

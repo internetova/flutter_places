@@ -5,8 +5,8 @@ class SearchHistoryItem {
   final int id;
   final String request;
 
-  SearchHistoryItem(
-    this.id,
-    this.request,
-  );
+  SearchHistoryItem({
+    required this.id,
+    required this.request,
+  });
 }

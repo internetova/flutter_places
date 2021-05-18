@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:dio/dio.dart';
-import 'package:places/data/api/api_client.dart';
 import 'package:places/data/dto/place_dto.dart';
 import 'package:places/data/model/place.dart';
 import 'package:places/data/model/search_filter.dart';
@@ -14,10 +13,13 @@ import 'package:places/data/repository/local_place_repository.dart';
 /// [apiRepository] данные из сети
 /// [localRepository] локальные данные
 class PlaceInteractor {
-  PlaceInteractor();
+  final ApiPlaceRepository apiRepository;
+  final LocalPlaceRepository localRepository;
 
-  final ApiPlaceRepository apiRepository = ApiPlaceRepository(ApiClient());
-  final LocalPlaceRepository localRepository = LocalPlaceRepository();
+  PlaceInteractor({
+    required this.apiRepository,
+    required this.localRepository,
+  });
 
   /// фильтрованный список интересных мест в формате Dto
   /// на странице фильтра на кнопке надо выводить только количество найденных мест
