@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:places/blocs/buttons/new_place_button_cubit.dart';
+import 'package:places/blocs/onboarding_screen/onboarding_cubit.dart';
 import 'package:places/blocs/place_list_screen/place_list/place_list_bloc.dart';
 import 'package:places/blocs/settings_app/settings_app_cubit.dart';
 import 'package:places/blocs/visiting_screen/planned/planned_places_bloc.dart';
@@ -60,16 +61,17 @@ class App extends StatelessWidget {
               debugShowCheckedModeBanner: false,
               title: appTitle,
               theme: state.isDark ? _darkTheme : _lightTheme,
-              initialRoute: AppRoutes.splash,
+              initialRoute: state.isAppNotReady
+                  ? AppRoutes.splash
+                  : state.isFirstStart
+                      ? AppRoutes.onboarding
+                      : AppRoutes.home,
               routes: {
-                AppRoutes.splash: (context) => SplashScreen(
-                      settingsAppState:
-                          BlocProvider.of<SettingsAppCubit>(context).state,
-                    ),
-                AppRoutes.onboarding: (context) => OnboardingScreen(
-                      isFirstStart: BlocProvider.of<SettingsAppCubit>(context)
-                          .state
-                          .isFirstStart,
+                AppRoutes.splash: (context) => SplashScreen(),
+                AppRoutes.onboarding: (context) =>
+                    BlocProvider<OnboardingCubit>(
+                      create: (_) => OnboardingCubit(),
+                      child: OnboardingScreen(),
                     ),
                 AppRoutes.home: (context) => MultiBlocProvider(
                       providers: [

@@ -11,14 +11,6 @@ import 'package:places/ui/screen/res/themes.dart';
 
 /// сплэш-экран приложения
 class SplashScreen extends StatefulWidget {
-  /// первый старт приложения
-  final SettingsAppState settingsAppState;
-
-  const SplashScreen({
-    Key? key,
-    required this.settingsAppState,
-  }) : super(key: key);
-
   @override
   _SplashScreenState createState() => _SplashScreenState();
 }
@@ -95,21 +87,17 @@ class _SplashScreenState extends State<SplashScreen>
     /// показываем анимацию
     await Future.delayed(seconds4);
 
-    if (widget.settingsAppState.isAppReady) {
-      if (widget.settingsAppState.isFirstStart) {
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(
-            builder: (context) => BlocProvider<OnboardingCubit>(
-              create: (_) => OnboardingCubit(),
-              child: OnboardingScreen(
-                isFirstStart: widget.settingsAppState.isFirstStart,
-              ),
-            ),
+    if (context.read<SettingsAppCubit>().state.isFirstStart) {
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (context) => BlocProvider<OnboardingCubit>(
+            create: (_) => OnboardingCubit(),
+            child: OnboardingScreen(),
           ),
-        );
-      } else {
-        Navigator.of(context).pushReplacementNamed(AppRoutes.home);
-      }
+        ),
+      );
+    } else {
+      Navigator.of(context).pushReplacementNamed(AppRoutes.home);
     }
   }
 }
