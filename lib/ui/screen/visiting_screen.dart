@@ -88,7 +88,9 @@ class _VisitingScreenState extends State<VisitingScreen>
             builder: (_, state) {
               if (state is PlannedPlacesLoadInProgress) {
                 return const Center(
-                  child: CircularProgressIndicator(),
+                  child: Loader(
+                    loaderSize: LoaderSize.small,
+                  ),
                 );
               }
 
@@ -117,7 +119,9 @@ class _VisitingScreenState extends State<VisitingScreen>
               builder: (_, state) {
             if (state is VisitedPlacesLoadInProgress) {
               return const Center(
-                child: CircularProgressIndicator(),
+                child: Loader(
+                  loaderSize: LoaderSize.small,
+                ),
               );
             }
 
@@ -136,7 +140,9 @@ class _VisitingScreenState extends State<VisitingScreen>
             }
 
             return const Center(
-              child: CircularProgressIndicator(),
+              child: Loader(
+                loaderSize: LoaderSize.small,
+              ),
             );
           }),
         ],

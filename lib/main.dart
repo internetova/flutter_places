@@ -42,6 +42,7 @@ class App extends StatelessWidget {
         ),
         Provider<AppDb>(
           create: (_) => AppDb(),
+          dispose: (context, appDb) => appDb.close(),
         ),
         ProxyProvider<ApiClient, ApiPlaceRepository>(
           update: (_, apiClient, apiPlaceRepository) =>

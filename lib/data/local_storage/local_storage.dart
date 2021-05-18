@@ -8,8 +8,6 @@ import 'package:places/data/model/card_type.dart';
 /// 1. текущую геолокацию пользователя
 /// 3. кэшированные и обработанные данные(isFavorite)
 /// 4. список избранных мест
-/// 5. историю поиска пользователя
-/// 6. настройки пользователя тема
 class LocalStorage {
   LocalStorage._();
 
@@ -56,13 +54,4 @@ class LocalStorage {
       cardType: CardType.visited,
     )
   ];
-
-  /// 5. История поиска
-  static List<String> searchHistory = [];
-
-  /// 6. Настройки пользователя
-  static Map<String, dynamic> userSetting = {
-    'isDarkTheme': false, // тема
-    'isFirstStart': false, // первый запуск приложения
-  };
 }
