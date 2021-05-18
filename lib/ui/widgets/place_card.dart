@@ -11,14 +11,14 @@ import 'package:places/blocs/visiting_screen/visited/visited_places_bloc.dart';
 import 'package:places/data/interactor/place_interactor.dart';
 import 'package:places/data/model/place.dart';
 import 'package:places/data/model/card_type.dart';
-import 'package:places/ui/screen/components/icon_action_button.dart';
-import 'package:places/ui/screen/res/sizes.dart';
-import 'package:places/ui/screen/res/strings.dart';
-import 'package:places/ui/screen/res/assets.dart';
-import 'package:places/ui/screen/res/themes.dart';
+import 'package:places/ui/components/icon_action_button.dart';
+import 'package:places/ui/res/sizes.dart';
+import 'package:places/ui/res/strings.dart';
+import 'package:places/ui/res/assets.dart';
+import 'package:places/ui/res/themes.dart';
 import 'package:places/ui/screen/place_details_screen.dart';
-import 'package:places/ui/screen/widgets/reminder_time_ios.dart';
-import 'package:places/ui/screen/widgets/place_details_bottom_sheet.dart';
+import 'package:places/ui/widgets/reminder_time_ios.dart';
+import 'package:places/ui/widgets/place_details_bottom_sheet.dart';
 
 /// карточка интересного места
 /// в зависимости от места показа карточки - Список поиска, в Избранном

@@ -15,16 +15,16 @@ import 'package:places/data/model/search_filter.dart';
 import 'package:places/data/model/place.dart';
 import 'package:places/data/model/card_type.dart';
 import 'package:places/ui/screen/add_place_screen/add_place_screen.dart';
-import 'package:places/ui/screen/components/bottom_navigationbar.dart';
-import 'package:places/ui/screen/components/button_gradient.dart';
+import 'package:places/ui/components/bottom_navigationbar.dart';
+import 'package:places/ui/components/button_gradient.dart';
 import 'package:places/ui/screen/filters_screen.dart';
-import 'package:places/ui/screen/res/sizes.dart';
-import 'package:places/ui/screen/res/strings.dart';
-import 'package:places/ui/screen/widgets/empty_page.dart';
-import 'package:places/ui/screen/widgets/list_cards.dart';
-import 'package:places/ui/screen/components/search_bar_static.dart';
+import 'package:places/ui/res/sizes.dart';
+import 'package:places/ui/res/strings.dart';
+import 'package:places/ui/widgets/empty_page.dart';
+import 'package:places/ui/widgets/list_cards.dart';
+import 'package:places/ui/components/search_bar_static.dart';
 import 'package:places/ui/screen/search_screen.dart';
-import 'package:places/ui/screen/widgets/loader.dart';
+import 'package:places/ui/widgets/loader.dart';
 import 'package:provider/provider.dart';
 
 /// список интересных мест

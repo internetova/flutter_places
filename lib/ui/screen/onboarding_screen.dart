@@ -3,12 +3,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:places/blocs/onboarding_screen/onboarding_cubit.dart';
 import 'package:places/blocs/settings_app/settings_app_cubit.dart';
-import 'package:places/ui/screen/components/button_save.dart';
-import 'package:places/ui/screen/res/app_routes.dart';
-import 'package:places/ui/screen/res/assets.dart';
-import 'package:places/ui/screen/res/sizes.dart';
-import 'package:places/ui/screen/res/strings.dart';
-import 'package:places/ui/screen/res/themes.dart';
+import 'package:places/ui/components/button_save.dart';
+import 'package:places/ui/res/app_routes.dart';
+import 'package:places/ui/res/assets.dart';
+import 'package:places/ui/res/sizes.dart';
+import 'package:places/ui/res/strings.dart';
+import 'package:places/ui/res/themes.dart';
 
 /// экран туториала
 class OnboardingScreen extends StatefulWidget {

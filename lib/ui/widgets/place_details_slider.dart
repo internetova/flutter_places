@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:places/blocs/place_details_screen/details_slider/details_slider_cubit.dart';
-import 'package:places/ui/screen/components/icon_svg.dart';
-import 'package:places/ui/screen/res/assets.dart';
-import 'package:places/ui/screen/res/sizes.dart';
+import 'package:places/ui/components/icon_svg.dart';
+import 'package:places/ui/res/assets.dart';
+import 'package:places/ui/res/sizes.dart';
 
 /// где показывать - на скрине или боттомшите
 enum WhereShowSlider { screen, bottomSheet }

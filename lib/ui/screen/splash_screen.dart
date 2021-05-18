@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:places/blocs/onboarding_screen/onboarding_cubit.dart';
 import 'package:places/blocs/settings_app/settings_app_cubit.dart';
-import 'package:places/ui/screen/components/icon_svg.dart';
+import 'package:places/ui/components/icon_svg.dart';
 import 'package:places/ui/screen/onboarding_screen.dart';
-import 'package:places/ui/screen/res/app_routes.dart';
-import 'package:places/ui/screen/res/assets.dart';
-import 'package:places/ui/screen/res/sizes.dart';
-import 'package:places/ui/screen/res/themes.dart';
+import 'package:places/ui/res/app_routes.dart';
+import 'package:places/ui/res/assets.dart';
+import 'package:places/ui/res/sizes.dart';
+import 'package:places/ui/res/themes.dart';
 
 /// сплэш-экран приложения
 class SplashScreen extends StatefulWidget {

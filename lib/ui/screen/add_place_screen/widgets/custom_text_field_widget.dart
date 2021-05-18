@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:places/ui/screen/components/button_clear.dart';
-import 'package:places/ui/screen/components/icon_svg.dart';
-import 'package:places/ui/screen/res/assets.dart';
-import 'package:places/ui/screen/res/strings.dart';
-import 'package:places/ui/screen/res/themes.dart';
+import 'package:places/ui/components/button_clear.dart';
+import 'package:places/ui/components/icon_svg.dart';
+import 'package:places/ui/res/assets.dart';
+import 'package:places/ui/res/strings.dart';
+import 'package:places/ui/res/themes.dart';
 
 /// ПОЛЯ для формы добавления нового места
 ///

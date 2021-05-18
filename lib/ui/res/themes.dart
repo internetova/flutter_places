@@ -1,8 +1,8 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:places/ui/screen/res/colors.dart';
-import 'package:places/ui/screen/res/text_styles.dart';
+import 'package:places/ui/res/colors.dart';
+import 'package:places/ui/res/text_styles.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AppTheme {

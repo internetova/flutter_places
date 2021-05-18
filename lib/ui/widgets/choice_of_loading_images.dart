@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:places/ui/screen/res/sizes.dart';
-import 'package:places/ui/screen/res/strings.dart';
-import 'package:places/ui/screen/widgets/list_of_image_upload_options.dart';
+import 'package:places/ui/res/sizes.dart';
+import 'package:places/ui/res/strings.dart';
+import 'package:places/ui/widgets/list_of_image_upload_options.dart';
 
 /// диалог выбора загрузки изображений для экрана добавления нового места
 class ChoiceOfLoadingImages extends StatelessWidget {

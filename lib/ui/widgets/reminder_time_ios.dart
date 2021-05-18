@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:places/ui/screen/res/sizes.dart';
-import 'package:places/ui/screen/res/strings.dart';
+import 'package:places/ui/res/sizes.dart';
+import 'package:places/ui/res/strings.dart';
 
 /// действия на карточке
 /// пикер времени IOS

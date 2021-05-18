@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:places/ui/screen/res/app_routes.dart';
-import 'package:places/ui/screen/res/sizes.dart';
-import 'package:places/ui/screen/res/strings.dart';
+import 'package:places/ui/res/app_routes.dart';
+import 'package:places/ui/res/sizes.dart';
+import 'package:places/ui/res/strings.dart';
 
 /// после добавления нового места показываем диалог с подтверждением
 class InformDialogWidget extends StatelessWidget {

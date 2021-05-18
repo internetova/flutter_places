@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:places/ui/screen/res/sizes.dart';
-import 'package:places/ui/screen/res/themes.dart';
+import 'package:places/ui/res/sizes.dart';
+import 'package:places/ui/res/themes.dart';
 
 /// кнопка сохранить / создать при добавлении нового места
 class ButtonSave extends StatelessWidget {

@@ -4,16 +4,16 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:places/blocs/search_screen/search_bloc.dart';
 import 'package:places/data/model/search_filter.dart';
 import 'package:places/data/model/place.dart';
-import 'package:places/ui/screen/components/bottom_navigationbar.dart';
-import 'package:places/ui/screen/components/button_text.dart';
-import 'package:places/ui/screen/components/card_square_img.dart';
-import 'package:places/ui/screen/res/assets.dart';
-import 'package:places/ui/screen/res/sizes.dart';
-import 'package:places/ui/screen/res/strings.dart';
-import 'package:places/ui/screen/res/themes.dart';
+import 'package:places/ui/components/bottom_navigationbar.dart';
+import 'package:places/ui/components/button_text.dart';
+import 'package:places/ui/components/card_square_img.dart';
+import 'package:places/ui/res/assets.dart';
+import 'package:places/ui/res/sizes.dart';
+import 'package:places/ui/res/strings.dart';
+import 'package:places/ui/res/themes.dart';
 import 'package:places/ui/screen/place_details_screen.dart';
-import 'package:places/ui/screen/widgets/empty_page.dart';
-import 'package:places/ui/screen/widgets/search_bar.dart';
+import 'package:places/ui/widgets/empty_page.dart';
+import 'package:places/ui/widgets/search_bar.dart';
 
 /// экран поиска
 class SearchScreen extends StatefulWidget {

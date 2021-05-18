@@ -4,11 +4,11 @@ import 'package:places/blocs/buttons/favorites_button_cubit.dart';
 import 'package:places/blocs/place_details_screen/details_slider/details_slider_cubit.dart';
 import 'package:places/data/interactor/place_interactor.dart';
 import 'package:places/data/model/place.dart';
-import 'package:places/ui/screen/components/icon_svg.dart';
-import 'package:places/ui/screen/res/sizes.dart';
-import 'package:places/ui/screen/res/strings.dart';
-import 'package:places/ui/screen/res/assets.dart';
-import 'package:places/ui/screen/widgets/place_details_slider.dart';
+import 'package:places/ui/components/icon_svg.dart';
+import 'package:places/ui/res/sizes.dart';
+import 'package:places/ui/res/strings.dart';
+import 'package:places/ui/res/assets.dart';
+import 'package:places/ui/widgets/place_details_slider.dart';
 
 /// экран с подробным описанием карточки / достопримечательности
 class PlaceDetails extends StatelessWidget {

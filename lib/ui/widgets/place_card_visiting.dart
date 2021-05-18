@@ -4,12 +4,12 @@ import 'package:places/blocs/visiting_screen/planned/planned_places_bloc.dart';
 import 'package:places/blocs/visiting_screen/visited/visited_places_bloc.dart';
 import 'package:places/data/model/place.dart';
 import 'package:places/data/model/card_type.dart';
-import 'package:places/ui/screen/components/icon_svg.dart';
-import 'package:places/ui/screen/res/assets.dart';
-import 'package:places/ui/screen/res/sizes.dart';
-import 'package:places/ui/screen/res/strings.dart';
-import 'package:places/ui/screen/widgets/place_card.dart';
-import 'package:places/ui/screen/res/themes.dart';
+import 'package:places/ui/components/icon_svg.dart';
+import 'package:places/ui/res/assets.dart';
+import 'package:places/ui/res/sizes.dart';
+import 'package:places/ui/res/strings.dart';
+import 'package:places/ui/widgets/place_card.dart';
+import 'package:places/ui/res/themes.dart';
 
 /// карточка для избранного
 class PlaceCardVisiting extends StatelessWidget {

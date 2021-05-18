@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:places/data/model/card_type.dart';
-import 'package:places/ui/screen/res/assets.dart';
+import 'package:places/ui/res/assets.dart';
 
 /// Текстовые контстанты
 /// place_list_screen

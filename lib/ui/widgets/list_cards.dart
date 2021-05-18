@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:places/data/model/place.dart';
 import 'package:places/data/model/card_type.dart';
-import 'package:places/ui/screen/widgets/place_card.dart';
+import 'package:places/ui/widgets/place_card.dart';
 
 /// для главной страницы
 /// строим часть экрана где выводятся карточки

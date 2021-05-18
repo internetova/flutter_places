@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:places/ui/screen/components/button_card_add_img.dart';
-import 'package:places/ui/screen/components/card_square_img.dart';
-import 'package:places/ui/screen/components/dismiss_bg_img.dart';
-import 'package:places/ui/screen/res/sizes.dart';
-import 'package:places/ui/screen/utilities/test_images_data.dart';
+import 'package:places/ui/components/button_card_add_img.dart';
+import 'package:places/ui/components/card_square_img.dart';
+import 'package:places/ui/components/dismiss_bg_img.dart';
+import 'package:places/ui/res/sizes.dart';
+import 'package:places/ui/utilities/test_images_data.dart';
 
 /// список добавленных фото на странице добавления нового места
 class ListCardsWithAddedImg extends StatelessWidget {

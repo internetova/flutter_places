@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:places/ui/screen/res/sizes.dart';
+import 'package:places/ui/res/sizes.dart';
 
 /// кнопка очистки поля
 /// [onStartNewSearch] меняет состояние экрана на стартовое для нового поиска

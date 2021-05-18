@@ -1,5 +1,5 @@
 import 'package:places/data/model/search_filter.dart';
-import 'package:places/ui/screen/res/sizes.dart';
+import 'package:places/ui/res/sizes.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// локальное хранилище с использованием SharedPreferences

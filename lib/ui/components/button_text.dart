@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:places/ui/screen/res/sizes.dart';
+import 'package:places/ui/res/sizes.dart';
 
 /// текстовая кнопка сливающаяся с фоном
 /// на экране добавления нового места - Указать на карте

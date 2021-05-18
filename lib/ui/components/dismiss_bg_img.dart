@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:places/ui/screen/components/icon_svg.dart';
-import 'package:places/ui/screen/res/assets.dart';
+import 'package:places/ui/components/icon_svg.dart';
+import 'package:places/ui/res/assets.dart';
 
 /// фон при смахивании картинки на экране добавления нового места
 class DismissBackgroundImg extends StatelessWidget {

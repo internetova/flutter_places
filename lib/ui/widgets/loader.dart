@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:places/ui/screen/res/assets.dart';
-import 'package:places/ui/screen/res/sizes.dart';
+import 'package:places/ui/res/assets.dart';
+import 'package:places/ui/res/sizes.dart';
 
 enum LoaderSize { small, large }
 

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:places/data/model/place_type.dart';
 import 'package:places/ui/screen/filters_screen.dart';
-import 'package:places/ui/screen/res/assets.dart';
+import 'package:places/ui/res/assets.dart';
 
 /// айтем категории фильтра
 /// [placeType] название места (категория)

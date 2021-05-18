@@ -4,11 +4,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:places/blocs/onboarding_screen/onboarding_cubit.dart';
 import 'package:places/blocs/settings_app/settings_app_cubit.dart';
-import 'package:places/ui/screen/components/bottom_navigationbar.dart';
+import 'package:places/ui/components/bottom_navigationbar.dart';
 import 'package:places/ui/screen/onboarding_screen.dart';
-import 'package:places/ui/screen/res/assets.dart';
-import 'package:places/ui/screen/res/strings.dart';
-import 'package:places/ui/screen/res/themes.dart';
+import 'package:places/ui/res/assets.dart';
+import 'package:places/ui/res/strings.dart';
+import 'package:places/ui/res/themes.dart';
 import 'package:provider/provider.dart';
 
 /// экран с настройками приложения

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:places/ui/screen/res/sizes.dart';
+import 'package:places/ui/res/sizes.dart';
 
 /// пустые страницы
 /// Избранное, результаты поиска

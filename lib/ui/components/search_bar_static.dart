@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:places/ui/screen/components/icon_svg.dart';
-import 'package:places/ui/screen/res/assets.dart';
-import 'package:places/ui/screen/res/sizes.dart';
-import 'package:places/ui/screen/res/strings.dart';
-import 'package:places/ui/screen/res/themes.dart';
+import 'package:places/ui/components/icon_svg.dart';
+import 'package:places/ui/res/assets.dart';
+import 'package:places/ui/res/sizes.dart';
+import 'package:places/ui/res/strings.dart';
+import 'package:places/ui/res/themes.dart';
 
 /// виджет поисковой строки для главного экрана
 /// декоративный - выполняет роль перехода на другие экраны:

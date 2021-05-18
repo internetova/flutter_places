@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:places/ui/screen/res/app_routes.dart';
-import 'package:places/ui/screen/res/assets.dart';
-import 'package:places/ui/screen/res/strings.dart';
+import 'package:places/ui/res/app_routes.dart';
+import 'package:places/ui/res/assets.dart';
+import 'package:places/ui/res/strings.dart';
 
 /// BottomNavigationBar приложения
 class MainBottomNavigationBar extends StatelessWidget {
