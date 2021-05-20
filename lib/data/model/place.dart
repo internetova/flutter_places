@@ -44,7 +44,8 @@ class Place extends Equatable {
         urls = (json['urls'] as List<dynamic>).whereType<String>().toList(),
         placeType = json['placeType'] as String,
         description = json['description'] as String,
-        distance = json['distance'] != null ? json['distance'] as double? : null,
+        distance =
+            json['distance'] != null ? json['distance'] as double? : null,
         isFavorite = json['isFavorite'] as bool,
         cardType = CardType.values.elementAt(json['cardType']),
         date = json['date'] != null ? json['date'] : null;
@@ -119,7 +120,8 @@ class Place extends Equatable {
   }
 
   /// переключаем статус места - избранное / не избранное
-  static Place switchFavoriteStatus({required Place place, required bool isFav}) {
+  static Place switchFavoriteStatusPlanned(
+      {required Place place, required bool isFav}) {
     return Place(
       id: place.id,
       lat: place.lat,
@@ -135,12 +137,32 @@ class Place extends Equatable {
     );
   }
 
+  /// переносим место в посещённые
+  static Place switchFavoriteStatusVisited(
+      {required Place place}) {
+    return Place(
+      id: place.id,
+      lat: place.lat,
+      lng: place.lng,
+      name: place.name,
+      urls: place.urls,
+      placeType: place.placeType,
+      description: place.description,
+      distance: place.distance,
+      isFavorite: true,
+      cardType: CardType.visited,
+      date: place.date,
+    );
+  }
+  
+
   /// получить название типа места по коду
   /// т.к. сервер отдаёт только код
   String getPlaceTypeName() {
     String name;
 
-    int result = PlaceType.getList.indexWhere((element) => element.code == placeType);
+    int result =
+        PlaceType.getList.indexWhere((element) => element.code == placeType);
 
     if (result == -1) {
       name = PlaceType.placeTypeNameDefault;

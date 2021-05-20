@@ -66,8 +66,9 @@ class PlaceInteractor {
       uiPlaces = apiPlaces.map((place) => Place.fromApi(place)).toList();
     } else {
       /// если есть, то проставляем отметки Избранное / или нет
-      uiPlaces =
-          apiPlaces.map((place) => _markFavorites(favoritesPlaces, place)).toList();
+      uiPlaces = apiPlaces
+          .map((place) => _markFavorites(favoritesPlaces, place))
+          .toList();
     }
 
     /// если в кэше уже есть карточки, очищаем кэш для обновленных данных
@@ -76,6 +77,13 @@ class PlaceInteractor {
     if (cachePlaces.isNotEmpty) {
       await localRepository.clearCachePlaces();
     }
+
+    /// todo это для тестирования карточки Посетил, потом удалить
+    /// беру рандомную карточку из загруженных с сервера и добавляю ее
+    /// в избранные Посетил
+    // final int randomPlace = Random().nextInt(uiPlaces.length);
+    // await localRepository.addNewPlace(
+    //     Place.switchFavoriteStatusVisited(place: uiPlaces[randomPlace]));
 
     /// сохраняем данные с сервера в локальную память типа кэш
     await localRepository.addCachePlacesAll(uiPlaces);
@@ -110,12 +118,15 @@ class PlaceInteractor {
   Future<void> addNewPlace(PlaceDto place) => apiRepository.addNewPlace(place);
 
   /// добавить место в список избранного
-  Future<void> addToFavorites(Place place) => localRepository.addNewPlace(place);
+  Future<void> addToFavorites(Place place) =>
+      localRepository.addNewPlace(place);
 
   /// удалить место из списка избранного
-  Future<void> removeFromFavorites(Place place) => localRepository.removePlace(place);
+  Future<void> removeFromFavorites(Place place) =>
+      localRepository.removePlace(place);
 
   /// переключатель кнопки Избранное
   /// true - в избранном
-  Future<bool> toggleFavorites(Place place) => localRepository.toggleFavorite(place);
+  Future<bool> toggleFavorites(Place place) =>
+      localRepository.toggleFavorite(place);
 }

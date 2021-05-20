@@ -68,11 +68,11 @@ class LocalPlaceRepository implements PlaceRepository<Place> {
     return place;
   }
 
-  /// добавить в избранное
+  /// добавить в избранное Хочу посетить
   @override
   Future<void> addNewPlace(Place place) async {
     await _appDb.addToFavorites(place);
-    await _appDb.updateCachePlacesItem(Place.switchFavoriteStatus(
+    await _appDb.updateCachePlacesItem(Place.switchFavoriteStatusPlanned(
         place: place, isFav: true));
   }
 
@@ -80,7 +80,7 @@ class LocalPlaceRepository implements PlaceRepository<Place> {
   @override
   Future<void> removePlace(Place place) async {
     await _appDb.removeFromFavorites(place);
-    await _appDb.updateCachePlacesItem(Place.switchFavoriteStatus(
+    await _appDb.updateCachePlacesItem(Place.switchFavoriteStatusPlanned(
         place: place, isFav: false));
   }
 

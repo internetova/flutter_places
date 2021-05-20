@@ -106,7 +106,7 @@ class AppDb extends _$AppDb {
       into(tableFavorites).insertOnConflictUpdate(TableFavoritesCompanion(
         placeId: Value(place.id),
         place: Value(place),
-        cardType: Value<CardType>(CardType.planned),
+        cardType: Value<CardType>(place.cardType),
       ));
 
   /// удалить из Избранного

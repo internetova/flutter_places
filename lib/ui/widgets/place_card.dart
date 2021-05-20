@@ -283,12 +283,16 @@ class CardActions extends StatelessWidget {
           },
           icon: icShare,
         ),
-        IconActionButton(
-          onPressed: () {
-            _deleteCard(context, card.cardType);
-          },
-          icon: icClose,
-        ),
+
+        /// todo пока скрыла, в задании 15.3 - удаление не делать, карточки
+        /// остаются навсегда
+        /// ----------------
+        // IconActionButton(
+        //   onPressed: () {
+        //     _deleteCard(context, card.cardType);
+        //   },
+        //   icon: icClose,
+        // ),
       ];
 
   /// удалить карточку
