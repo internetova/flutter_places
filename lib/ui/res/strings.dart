@@ -10,9 +10,11 @@ const appTitle = 'Places';
 
 /// sight_details - экран с подробностями
 const buttonTitleToSchedule = 'Запланировать';
+const buttonTitleToShare = 'Поделиться';
 const buttonTitleAddToFavourites = 'В Избранное';
 const buttonTitleIsFavourites = 'В Избранном';
 const buttonTitleBuildRoute = 'ПОСТРОИТЬ МАРШРУТ';
+const buttonTitleBuildRouteFinish = 'ПРОЙДЕНО';
 
 /// visiting_screen - Избранное
 /// для таббара

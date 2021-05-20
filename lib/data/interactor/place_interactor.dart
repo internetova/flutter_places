@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:dio/dio.dart';
 import 'package:places/data/dto/place_dto.dart';
@@ -79,7 +80,7 @@ class PlaceInteractor {
     }
 
     /// todo это для тестирования карточки Посетил, потом удалить
-    /// беру рандомную карточку из загруженных с сервера и добавляю ее
+    /// ‼️ беру рандомную карточку из загруженных с сервера и добавляю ее
     /// в избранные Посетил
     // final int randomPlace = Random().nextInt(uiPlaces.length);
     // await localRepository.addNewPlace(
