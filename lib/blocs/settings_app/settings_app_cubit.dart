@@ -19,7 +19,7 @@ class SettingsAppCubit extends Cubit<SettingsAppState> {
     emit(SettingsAppState(
       isDark: isDark,
       isFirstStart: isFirstStart,
-      isAppReady: true,
+      isAppNotReady: false,
     ));
   }
 

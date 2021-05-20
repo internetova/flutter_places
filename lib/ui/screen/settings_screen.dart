@@ -78,11 +78,7 @@ class SettingsScreen extends StatelessWidget {
               MaterialPageRoute(
                 builder: (context) => BlocProvider<OnboardingCubit>(
                   create: (_) => OnboardingCubit(),
-                  child: OnboardingScreen(
-                    isFirstStart: BlocProvider.of<SettingsAppCubit>(context)
-                        .state
-                        .isFirstStart,
-                  ),
+                  child: OnboardingScreen(),
                 ),
               ),
             );

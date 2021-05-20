@@ -12,14 +12,6 @@ import 'package:places/ui/res/themes.dart';
 
 /// экран туториала
 class OnboardingScreen extends StatefulWidget {
-  /// первый старт приложения
-  final bool isFirstStart;
-
-  const OnboardingScreen({
-    Key? key,
-    required this.isFirstStart,
-  }) : super(key: key);
-
   @override
   _OnboardingScreenState createState() => _OnboardingScreenState();
 }
@@ -106,7 +98,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
           ),
           floatingActionButton: _buttonStart(_data, state.currentPage),
           floatingActionButtonLocation:
-              FloatingActionButtonLocation.centerDocked,
+          FloatingActionButtonLocation.centerDocked,
           resizeToAvoidBottomInset: false,
         );
       },
@@ -158,13 +150,12 @@ class _OnboardingScreenState extends State<OnboardingScreen>
         ),
       );
     }
-    // return SizedBox.shrink();
   }
 
   /// перейти на главную страницу
   void _startApp() {
-    if (widget.isFirstStart) {
-      BlocProvider.of<SettingsAppCubit>(context).setIsFirstRun(false);
+    if (context.read<SettingsAppCubit>().state.isFirstStart) {
+      context.read<SettingsAppCubit>().setIsFirstRun(false);
     }
     Navigator.of(context).pushReplacementNamed(AppRoutes.home);
   }
@@ -266,8 +257,8 @@ class __TutorialItemWidgetState extends State<_TutorialItemWidget>
           Text(
             widget.item.title,
             style: Theme.of(context).textTheme.headline4!.copyWith(
-                  color: Theme.of(context).colorScheme.primary,
-                ),
+              color: Theme.of(context).colorScheme.primary,
+            ),
             textAlign: TextAlign.center,
           ),
           sizedBoxH8,
@@ -302,25 +293,25 @@ class _PageSelector extends StatelessWidget {
           .asMap()
           .map(
             (i, element) => MapEntry(
-              i,
-              Container(
-                margin: const EdgeInsets.all(4),
-                width: _getWidth(
+          i,
+          Container(
+            margin: const EdgeInsets.all(4),
+            width: _getWidth(
+              context,
+              index: i,
+              currentIndex: currentIndex,
+            ),
+            height: 8,
+            decoration: BoxDecoration(
+                color: _getColor(
                   context,
                   index: i,
                   currentIndex: currentIndex,
                 ),
-                height: 8,
-                decoration: BoxDecoration(
-                    color: _getColor(
-                      context,
-                      index: i,
-                      currentIndex: currentIndex,
-                    ),
-                    borderRadius: BorderRadius.circular(8)),
-              ),
-            ),
-          )
+                borderRadius: BorderRadius.circular(8)),
+          ),
+        ),
+      )
           .values
           .toList(),
     );
@@ -328,10 +319,10 @@ class _PageSelector extends StatelessWidget {
 
   /// цвет индикатора текущей страницы
   Color _getColor(
-    BuildContext context, {
-    required int index,
-    required int currentIndex,
-  }) {
+      BuildContext context, {
+        required int index,
+        required int currentIndex,
+      }) {
     if (index == currentIndex) {
       return Theme.of(context).accentColor;
     } else {
@@ -341,10 +332,10 @@ class _PageSelector extends StatelessWidget {
 
   /// ширина индикатора текущей страницы
   double _getWidth(
-    BuildContext context, {
-    required int index,
-    required int currentIndex,
-  }) {
+      BuildContext context, {
+        required int index,
+        required int currentIndex,
+      }) {
     if (index == currentIndex) {
       return 24;
     } else {

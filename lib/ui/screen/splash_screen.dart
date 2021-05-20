@@ -11,14 +11,6 @@ import 'package:places/ui/res/themes.dart';
 
 /// сплэш-экран приложения
 class SplashScreen extends StatefulWidget {
-  /// первый старт приложения
-  final SettingsAppState settingsAppState;
-
-  const SplashScreen({
-    Key? key,
-    required this.settingsAppState,
-  }) : super(key: key);
-
   @override
   _SplashScreenState createState() => _SplashScreenState();
 }
@@ -84,32 +76,25 @@ class _SplashScreenState extends State<SplashScreen>
     );
   }
 
-  /// Данные о первом входе получаем из конструктора, а туда передали из
-  /// экземпляра [SettingsAppCubit], при создании которого инициализировали
-  /// получение текущих настроек пользователя из локального хранилища.
   /// Логика перехода либо на онбординг, если был первый вход,
   /// либо на главный экран
   Future<void> _navigateToNext() async {
     /// ждём когда завершится инициализация приложения - выполнится ивент
-    /// по инициализации настроек и обновится виджет с флагом [isAppReady]
+    /// по инициализации настроек и обновится виджет с флагом [isAppNotReady]
     /// показываем анимацию
     await Future.delayed(seconds4);
 
-    if (widget.settingsAppState.isAppReady) {
-      if (widget.settingsAppState.isFirstStart) {
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(
-            builder: (context) => BlocProvider<OnboardingCubit>(
-              create: (_) => OnboardingCubit(),
-              child: OnboardingScreen(
-                isFirstStart: widget.settingsAppState.isFirstStart,
-              ),
-            ),
+    if (context.read<SettingsAppCubit>().state.isFirstStart) {
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (context) => BlocProvider<OnboardingCubit>(
+            create: (_) => OnboardingCubit(),
+            child: OnboardingScreen(),
           ),
-        );
-      } else {
-        Navigator.of(context).pushReplacementNamed(AppRoutes.home);
-      }
+        ),
+      );
+    } else {
+      Navigator.of(context).pushReplacementNamed(AppRoutes.home);
     }
   }
 }
