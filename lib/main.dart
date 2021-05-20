@@ -62,8 +62,9 @@ class App extends StatelessWidget {
             placeInteractor,
           ) =>
               PlaceInteractor(
-                  apiRepository: apiPlaceRepository,
-                  localRepository: localPlaceRepository),
+            apiRepository: apiPlaceRepository,
+            localRepository: localPlaceRepository,
+          ),
         ),
         ProxyProvider2<ApiPlaceRepository, LocalPlaceRepository,
             SearchInteractor>(
@@ -112,8 +113,8 @@ class App extends StatelessWidget {
               initialRoute: state.isAppNotReady
                   ? AppRoutes.splash
                   : state.isFirstStart
-                  ? AppRoutes.onboarding
-                  : AppRoutes.home,
+                      ? AppRoutes.onboarding
+                      : AppRoutes.home,
               routes: {
                 AppRoutes.splash: (context) => SplashScreen(),
                 AppRoutes.onboarding: (context) =>

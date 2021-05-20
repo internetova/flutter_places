@@ -113,7 +113,9 @@ class _SearchScreenState extends State<SearchScreen> {
       );
 
   void _searchOnChanged(String queryString) {
-    context.read<SearchBloc>().add(ChangedTextFieldSearch(queryString));
+    if (_searchController.text.isNotEmpty) {
+      context.read<SearchBloc>().add(ChangedTextFieldSearch(queryString));
+    }
 
     /// обновим последний запрос чтобы выделить жирным в случае успешного поиска
     _lastSearch = queryString;
