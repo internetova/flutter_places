@@ -4,7 +4,6 @@ import 'package:dio/dio.dart';
 import 'package:places/data/dto/place_dto.dart';
 import 'package:places/data/model/place.dart';
 import 'package:places/data/model/search_filter.dart';
-import 'package:places/data/local_storage/local_storage.dart';
 import 'package:places/data/repository/api_place_repository.dart';
 import 'package:places/data/repository/local_place_repository.dart';
 
@@ -58,29 +57,31 @@ class PlaceInteractor {
   /// записываем данные типа в кэш
   /// дальше в программе работаем с Place
   Future<List<Place>> _transformApiPlaces(List<PlaceDto> apiPlaces) async {
-    final localPlaces = await localRepository.getPlaces();
+    final favoritesPlaces = await localRepository.getFavoritesPlaces();
     List<Place> uiPlaces = [];
 
     /// если в локальной базе карточек нет, то для дальнейшей работы
     /// просто переводим все карточки в UiPlace
-    if (localPlaces.length == 0) {
+    if (favoritesPlaces.isEmpty) {
       uiPlaces = apiPlaces.map((place) => Place.fromApi(place)).toList();
     } else {
       /// если есть, то проставляем отметки Избранное / или нет
       uiPlaces =
-          apiPlaces.map((place) => _markFavorites(localPlaces, place)).toList();
+          apiPlaces.map((place) => _markFavorites(favoritesPlaces, place)).toList();
     }
 
     /// если в кэше уже есть карточки, очищаем кэш для обновленных данных
-    if (LocalStorage.cachePlaces.length > 0) {
-      LocalStorage.cachePlaces.clear();
+    final List<Place> cachePlaces = await localRepository.getCachePlaces();
+
+    if (cachePlaces.isNotEmpty) {
+      await localRepository.clearCachePlaces();
     }
 
     /// сохраняем данные с сервера в локальную память типа кэш
-    LocalStorage.cachePlaces.addAll(uiPlaces);
+    await localRepository.addCachePlacesAll(uiPlaces);
 
     /// вернём данные из кэша для дальнейшей работы
-    return LocalStorage.cachePlaces;
+    return localRepository.getCachePlaces();
   }
 
   /// ➡ вспомогательный метод:
@@ -100,8 +101,7 @@ class PlaceInteractor {
   /// применяем на главном экране после закрытия боттомшита с детальной
   /// информацией, т.к. в боттомшите мы можем добавлять и удалять карточки в
   /// Избранном
-  Future<List<Place>> getLocalFilteredPlace() =>
-      localRepository.getLocalFilteredPlace();
+  Future<List<Place>> getCachePlaces() => localRepository.getCachePlaces();
 
   /// детализация места
   Future<PlaceDto> getPlaceDetails(int id) => apiRepository.getPlaceDetail(id);
@@ -110,14 +110,12 @@ class PlaceInteractor {
   Future<void> addNewPlace(PlaceDto place) => apiRepository.addNewPlace(place);
 
   /// добавить место в список избранного
-  Future<void> addToFavorites(Place place) =>
-      localRepository.addNewPlace(place);
+  Future<void> addToFavorites(Place place) => localRepository.addNewPlace(place);
 
   /// удалить место из списка избранного
-  Future<void> removeFromFavorites(int id) => localRepository.removePlace(id);
+  Future<void> removeFromFavorites(Place place) => localRepository.removePlace(place);
 
   /// переключатель кнопки Избранное
   /// true - в избранном
-  Future<bool> toggleFavorites(Place place) =>
-      localRepository.toggleFavorite(place);
+  Future<bool> toggleFavorites(Place place) => localRepository.toggleFavorite(place);
 }

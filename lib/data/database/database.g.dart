@@ -193,9 +193,10 @@ class $TableSearchHistoryTable extends TableSearchHistory
 
 class Favorites extends DataClass implements Insertable<Favorites> {
   final int placeId;
-  final Place? place;
+  final Place place;
   final CardType cardType;
-  Favorites({required this.placeId, this.place, required this.cardType});
+  Favorites(
+      {required this.placeId, required this.place, required this.cardType});
   factory Favorites.fromData(Map<String, dynamic> data, GeneratedDatabase db,
       {String? prefix}) {
     final effectivePrefix = prefix ?? '';
@@ -203,7 +204,7 @@ class Favorites extends DataClass implements Insertable<Favorites> {
       placeId: const IntType()
           .mapFromDatabaseResponse(data['${effectivePrefix}place_id'])!,
       place: $TableFavoritesTable.$converter0.mapToDart(const StringType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}place'])),
+          .mapFromDatabaseResponse(data['${effectivePrefix}place']))!,
       cardType: $TableFavoritesTable.$converter1.mapToDart(const IntType()
           .mapFromDatabaseResponse(data['${effectivePrefix}card_type']))!,
     );
@@ -212,9 +213,9 @@ class Favorites extends DataClass implements Insertable<Favorites> {
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['place_id'] = Variable<int>(placeId);
-    if (!nullToAbsent || place != null) {
+    {
       final converter = $TableFavoritesTable.$converter0;
-      map['place'] = Variable<String?>(converter.mapToSql(place));
+      map['place'] = Variable<String>(converter.mapToSql(place)!);
     }
     {
       final converter = $TableFavoritesTable.$converter1;
@@ -226,8 +227,7 @@ class Favorites extends DataClass implements Insertable<Favorites> {
   TableFavoritesCompanion toCompanion(bool nullToAbsent) {
     return TableFavoritesCompanion(
       placeId: Value(placeId),
-      place:
-          place == null && nullToAbsent ? const Value.absent() : Value(place),
+      place: Value(place),
       cardType: Value(cardType),
     );
   }
@@ -237,7 +237,7 @@ class Favorites extends DataClass implements Insertable<Favorites> {
     serializer ??= moorRuntimeOptions.defaultSerializer;
     return Favorites(
       placeId: serializer.fromJson<int>(json['placeId']),
-      place: serializer.fromJson<Place?>(json['place']),
+      place: serializer.fromJson<Place>(json['place']),
       cardType: serializer.fromJson<CardType>(json['cardType']),
     );
   }
@@ -246,7 +246,7 @@ class Favorites extends DataClass implements Insertable<Favorites> {
     serializer ??= moorRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'placeId': serializer.toJson<int>(placeId),
-      'place': serializer.toJson<Place?>(place),
+      'place': serializer.toJson<Place>(place),
       'cardType': serializer.toJson<CardType>(cardType),
     };
   }
@@ -281,7 +281,7 @@ class Favorites extends DataClass implements Insertable<Favorites> {
 
 class TableFavoritesCompanion extends UpdateCompanion<Favorites> {
   final Value<int> placeId;
-  final Value<Place?> place;
+  final Value<Place> place;
   final Value<CardType> cardType;
   const TableFavoritesCompanion({
     this.placeId = const Value.absent(),
@@ -290,12 +290,13 @@ class TableFavoritesCompanion extends UpdateCompanion<Favorites> {
   });
   TableFavoritesCompanion.insert({
     this.placeId = const Value.absent(),
-    this.place = const Value.absent(),
+    required Place place,
     required CardType cardType,
-  }) : cardType = Value(cardType);
+  })  : place = Value(place),
+        cardType = Value(cardType);
   static Insertable<Favorites> custom({
     Expression<int>? placeId,
-    Expression<Place?>? place,
+    Expression<Place>? place,
     Expression<CardType>? cardType,
   }) {
     return RawValuesInsertable({
@@ -306,7 +307,7 @@ class TableFavoritesCompanion extends UpdateCompanion<Favorites> {
   }
 
   TableFavoritesCompanion copyWith(
-      {Value<int>? placeId, Value<Place?>? place, Value<CardType>? cardType}) {
+      {Value<int>? placeId, Value<Place>? place, Value<CardType>? cardType}) {
     return TableFavoritesCompanion(
       placeId: placeId ?? this.placeId,
       place: place ?? this.place,
@@ -322,7 +323,7 @@ class TableFavoritesCompanion extends UpdateCompanion<Favorites> {
     }
     if (place.present) {
       final converter = $TableFavoritesTable.$converter0;
-      map['place'] = Variable<String?>(converter.mapToSql(place.value));
+      map['place'] = Variable<String>(converter.mapToSql(place.value)!);
     }
     if (cardType.present) {
       final converter = $TableFavoritesTable.$converter1;
@@ -365,7 +366,7 @@ class $TableFavoritesTable extends TableFavorites
     return GeneratedTextColumn(
       'place',
       $tableName,
-      true,
+      false,
     );
   }
 
@@ -422,8 +423,8 @@ class $TableFavoritesTable extends TableFavorites
 
 class CachePlaces extends DataClass implements Insertable<CachePlaces> {
   final int placeId;
-  final Place? place;
-  CachePlaces({required this.placeId, this.place});
+  final Place place;
+  CachePlaces({required this.placeId, required this.place});
   factory CachePlaces.fromData(Map<String, dynamic> data, GeneratedDatabase db,
       {String? prefix}) {
     final effectivePrefix = prefix ?? '';
@@ -431,16 +432,16 @@ class CachePlaces extends DataClass implements Insertable<CachePlaces> {
       placeId: const IntType()
           .mapFromDatabaseResponse(data['${effectivePrefix}place_id'])!,
       place: $TableCachePlacesTable.$converter0.mapToDart(const StringType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}place'])),
+          .mapFromDatabaseResponse(data['${effectivePrefix}place']))!,
     );
   }
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['place_id'] = Variable<int>(placeId);
-    if (!nullToAbsent || place != null) {
+    {
       final converter = $TableCachePlacesTable.$converter0;
-      map['place'] = Variable<String?>(converter.mapToSql(place));
+      map['place'] = Variable<String>(converter.mapToSql(place)!);
     }
     return map;
   }
@@ -448,8 +449,7 @@ class CachePlaces extends DataClass implements Insertable<CachePlaces> {
   TableCachePlacesCompanion toCompanion(bool nullToAbsent) {
     return TableCachePlacesCompanion(
       placeId: Value(placeId),
-      place:
-          place == null && nullToAbsent ? const Value.absent() : Value(place),
+      place: Value(place),
     );
   }
 
@@ -458,7 +458,7 @@ class CachePlaces extends DataClass implements Insertable<CachePlaces> {
     serializer ??= moorRuntimeOptions.defaultSerializer;
     return CachePlaces(
       placeId: serializer.fromJson<int>(json['placeId']),
-      place: serializer.fromJson<Place?>(json['place']),
+      place: serializer.fromJson<Place>(json['place']),
     );
   }
   @override
@@ -466,7 +466,7 @@ class CachePlaces extends DataClass implements Insertable<CachePlaces> {
     serializer ??= moorRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'placeId': serializer.toJson<int>(placeId),
-      'place': serializer.toJson<Place?>(place),
+      'place': serializer.toJson<Place>(place),
     };
   }
 
@@ -495,18 +495,18 @@ class CachePlaces extends DataClass implements Insertable<CachePlaces> {
 
 class TableCachePlacesCompanion extends UpdateCompanion<CachePlaces> {
   final Value<int> placeId;
-  final Value<Place?> place;
+  final Value<Place> place;
   const TableCachePlacesCompanion({
     this.placeId = const Value.absent(),
     this.place = const Value.absent(),
   });
   TableCachePlacesCompanion.insert({
     this.placeId = const Value.absent(),
-    this.place = const Value.absent(),
-  });
+    required Place place,
+  }) : place = Value(place);
   static Insertable<CachePlaces> custom({
     Expression<int>? placeId,
-    Expression<Place?>? place,
+    Expression<Place>? place,
   }) {
     return RawValuesInsertable({
       if (placeId != null) 'place_id': placeId,
@@ -515,7 +515,7 @@ class TableCachePlacesCompanion extends UpdateCompanion<CachePlaces> {
   }
 
   TableCachePlacesCompanion copyWith(
-      {Value<int>? placeId, Value<Place?>? place}) {
+      {Value<int>? placeId, Value<Place>? place}) {
     return TableCachePlacesCompanion(
       placeId: placeId ?? this.placeId,
       place: place ?? this.place,
@@ -530,7 +530,7 @@ class TableCachePlacesCompanion extends UpdateCompanion<CachePlaces> {
     }
     if (place.present) {
       final converter = $TableCachePlacesTable.$converter0;
-      map['place'] = Variable<String?>(converter.mapToSql(place.value));
+      map['place'] = Variable<String>(converter.mapToSql(place.value)!);
     }
     return map;
   }
@@ -568,7 +568,7 @@ class $TableCachePlacesTable extends TableCachePlaces
     return GeneratedTextColumn(
       'place',
       $tableName,
-      true,
+      false,
     );
   }
 

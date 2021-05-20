@@ -7,7 +7,7 @@ import 'package:places/blocs/visiting_screen/planned/planned_places_bloc.dart';
 import 'package:places/blocs/visiting_screen/visited/visited_places_bloc.dart';
 import 'package:places/data/api/api_client.dart';
 import 'package:places/data/database/database.dart';
-import 'package:places/data/interactor/favorite_places_interactor.dart';
+import 'package:places/data/interactor/favorite_interactor.dart';
 import 'package:places/data/interactor/place_interactor.dart';
 import 'package:places/data/interactor/search_interactor.dart';
 import 'package:places/data/interactor/settings_interactor.dart';
@@ -77,8 +77,18 @@ class App extends StatelessWidget {
             localRepository: localPlaceRepository,
           ),
         ),
-        Provider<FavoritePlacesInteractor>(
-          create: (_) => FavoritePlacesInteractor(),
+        ProxyProvider2<ApiPlaceRepository, LocalPlaceRepository,
+            FavoriteInteractor>(
+          update: (
+            _,
+            apiPlaceRepository,
+            localPlaceRepository,
+            favoriteInteractor,
+          ) =>
+              FavoriteInteractor(
+            apiRepository: apiPlaceRepository,
+            localRepository: localPlaceRepository,
+          ),
         ),
         Provider<SettingsInteractor>(
           create: (_) => SettingsInteractor(),
@@ -126,12 +136,12 @@ class App extends StatelessWidget {
                       providers: [
                         BlocProvider<PlannedPlacesBloc>(
                           create: (_) => PlannedPlacesBloc(
-                            context.read<FavoritePlacesInteractor>(),
+                            context.read<FavoriteInteractor>(),
                           )..add(PlannedPlacesLoad()),
                         ),
                         BlocProvider<VisitedPlacesBloc>(
                           create: (_) => VisitedPlacesBloc(
-                            context.read<FavoritePlacesInteractor>(),
+                            context.read<FavoriteInteractor>(),
                           )..add(VisitedPlacesLoad()),
                         )
                       ],

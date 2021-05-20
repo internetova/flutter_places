@@ -1,8 +1,6 @@
 import 'dart:async';
 
 import 'package:dio/dio.dart';
-import 'package:places/data/api/api_client.dart';
-import 'package:places/data/database/database.dart';
 import 'package:places/data/model/card_type.dart';
 import 'package:places/data/model/place.dart';
 import 'package:places/data/repository/api_place_repository.dart';
@@ -11,16 +9,19 @@ import 'package:places/data/repository/local_place_repository.dart';
 /// интерактор для работы с Избранными местами
 /// [apiRepository] данные из сети
 /// [localRepository] локальные данные
-class FavoritePlacesInteractor {
-  FavoritePlacesInteractor();
+class FavoriteInteractor {
+  final ApiPlaceRepository apiRepository;
+  final LocalPlaceRepository localRepository;
 
-  final ApiPlaceRepository apiRepository = ApiPlaceRepository(ApiClient());
-  final LocalPlaceRepository localRepository = LocalPlaceRepository(AppDb());
+  FavoriteInteractor({
+    required this.apiRepository,
+    required this.localRepository,
+  });
 
   /// ИЗБРАННЫЕ МЕСТА
   /// сортировка по удалённости, данные с сервера
   Future<List<Place>> getFavoritesPlaces() async {
-    List<Place> places = await localRepository.getPlaces();
+    List<Place> places = await localRepository.getFavoritesPlaces();
 
     if (places.length > 1) {
       places.sort((a, b) => a.distance!.compareTo(b.distance!));
@@ -76,7 +77,7 @@ class FavoritePlacesInteractor {
   }
 
   /// добавить в посещенные
-  Future<void> addToVisitingPlaces(Place place) async {
+  Future<void> moveToVisitingPlaces(Place place) async {
     final visitingPlace = Place(
       id: place.id,
       lat: place.lat,
@@ -95,7 +96,7 @@ class FavoritePlacesInteractor {
   }
 
   /// удалить из избранного
-  Future<void> removePlace(int id) => localRepository.removePlace(id);
+  Future<void> removePlace(Place place) => localRepository.removePlace(place);
 
   /// ➡ вспомогательный метод
   /// получить текущую дистанцию до места

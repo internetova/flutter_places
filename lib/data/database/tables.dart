@@ -24,7 +24,7 @@ class TableSearchHistory extends Table {
 class TableFavorites extends Table {
   IntColumn get placeId => integer()();
 
-  TextColumn get place => text().map(const PlaceConverter()).nullable()();
+  TextColumn get place => text().map(const PlaceConverter())();
 
   IntColumn get cardType => intEnum<CardType>()();
 
@@ -39,7 +39,7 @@ class TableFavorites extends Table {
 class TableCachePlaces extends Table {
   IntColumn get placeId => integer()();
 
-  TextColumn get place => text().map(const PlaceConverter()).nullable()();
+  TextColumn get place => text().map(const PlaceConverter())();
 
   Set<Column>? get primaryKey => {placeId};
 }

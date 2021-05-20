@@ -48,7 +48,8 @@ class AppDb extends _$AppDb {
   /// в базу я добавляю только удачные запросы - те, по результатам которых
   /// юзер перешёл
   Future<List<SearchHistory>> checkSearchRequest(String request) =>
-      (select(tableSearchHistory)..where((row) => row.request.equals(request))).get();
+      (select(tableSearchHistory)..where((row) => row.request.equals(request)))
+          .get();
 
   ///---- РАЗДЕЛ КЭШ ДЛЯ ГЛАВНОЙ СТРАНИЦЫ ------
   /// получить кэш мест
@@ -79,7 +80,7 @@ class AppDb extends _$AppDb {
         places
             .map((place) => TableCachePlacesCompanion.insert(
                   placeId: Value(place.id),
-                  place: Value(place),
+                  place: place,
                 ))
             .toList(),
       );
@@ -87,6 +88,9 @@ class AppDb extends _$AppDb {
   }
 
   ///---- РАЗДЕЛ ИЗБРАННОЕ ------
+  /// получить все места Избранного (планирую + посетил)
+  Future<List<Favorites>> getFavoritesPlaces() => select(tableFavorites).get();
+
   /// enum CardType { search - 0, planned - 1, visited -2 }
   /// получить места Планирую посетить
   Future<List<Favorites>> getPlannedPlaces() =>
@@ -97,22 +101,31 @@ class AppDb extends _$AppDb {
       (select(tableFavorites)..where((row) => row.cardType.equals(2))).get();
 
   /// добавить место в Избранные
+  /// безопасное добавление - перезапишет существующую запись либо добавит новую
   Future<void> addToFavorites(Place place) =>
-      into(tableFavorites).insert(TableFavoritesCompanion(
+      into(tableFavorites).insertOnConflictUpdate(TableFavoritesCompanion(
         placeId: Value(place.id),
         place: Value(place),
+        cardType: Value<CardType>(CardType.planned),
       ));
 
   /// удалить из Избранного
-  Future<void> removeFromFavorites(int id) =>
-      (delete(tableFavorites)..where((row) => row.placeId.equals(id))).go();
+  Future<void> removeFromFavorites(Place place) =>
+      (delete(tableFavorites)..where((row) => row.placeId.equals(place.id)))
+          .go();
 
-  /// изменить место (запланировать дату, перенести в Посетил и т.п.)
+  /// изменить место (запланировать дату, обновить данные, перенести в Посетил)
   Future<void> updateFavoritesPlace(Place place) =>
       update(tableFavorites).replace(TableFavoritesCompanion(
         placeId: Value(place.id),
         place: Value(place),
+        cardType: Value<CardType>(place.cardType),
       ));
+
+  /// получить место по id
+  Future<Favorites> getFavoritesItem(int id) =>
+      (select(tableFavorites)..where((row) => row.placeId.equals(id)))
+          .getSingle();
 }
 
 /// открытие соединения и создание базы данных

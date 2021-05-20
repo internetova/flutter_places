@@ -35,8 +35,7 @@ class ApiPlaceRepository implements PlaceRepository<PlaceDto> {
       data: jsonEncode(data),
     );
 
-    final places =
-        (response.data as List).map((e) => PlaceDto.fromJson(e)).toList();
+    final places = (response.data as List).map((e) => PlaceDto.fromJson(e)).toList();
 
     return places;
   }
@@ -71,7 +70,8 @@ class ApiPlaceRepository implements PlaceRepository<PlaceDto> {
   /// ‼️❓ ДЛЯ теста
   /// удалить место
   @override
-  Future<void> removePlace(int id) => _client.delete('${ApiConstants.placesUrl}/$id');
+  Future<void> removePlace(PlaceDto place) =>
+      _client.delete('${ApiConstants.placesUrl}/${place.id}');
 
   /// обновить место
   @override
@@ -85,8 +85,7 @@ class ApiPlaceRepository implements PlaceRepository<PlaceDto> {
   }
 
   /// todo проверим есть ли доступ в сеть 🤓
-  Future<Response> testNetwork() =>
-      _client.get('${ApiConstants.placesUrl}?count=1');
+  Future<Response> testNetwork() => _client.get('${ApiConstants.placesUrl}?count=1');
 
   /// обработка ошибок
   NetworkException getNetworkException(DioError error) =>

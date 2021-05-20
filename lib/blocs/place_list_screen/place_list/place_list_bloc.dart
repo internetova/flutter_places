@@ -44,7 +44,7 @@ class PlaceListBloc extends Bloc<PlaceListEvent, PlaceListState> {
     yield PlaceListLoading();
 
     try {
-      final placesList = await _interactor.getLocalFilteredPlace();
+      final placesList = await _interactor.getCachePlaces();
       yield LocalPlaceListLoadSuccess(placesList);
     } catch (_) {
       yield PlaceListLoadFailure();
