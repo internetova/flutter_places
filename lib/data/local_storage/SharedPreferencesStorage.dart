@@ -17,7 +17,7 @@ class SharedPreferencesStorage {
   final String _keyIsFirstStart = '_keyIsFirstStart';
 
   /// загружаем и анализируем данные с диска
-  _initPrefs() async {
+  Future<void> _initPrefs() async {
     _prefs ??= await SharedPreferences.getInstance();
   }
 

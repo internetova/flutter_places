@@ -82,7 +82,7 @@ class _SplashScreenState extends State<SplashScreen>
     /// ждём когда завершится инициализация приложения - выполнится ивент
     /// по инициализации настроек и обновится виджет с флагом [isAppNotReady]
     /// показываем анимацию
-    await Future.delayed(seconds5);
+    await Future.delayed(seconds4);
 
     if (context.read<SettingsAppCubit>().state.isFirstStart) {
       Navigator.of(context).pushReplacement(
