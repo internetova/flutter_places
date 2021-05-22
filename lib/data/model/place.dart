@@ -35,6 +35,35 @@ class Place extends Equatable {
     this.date,
   });
 
+  /// для сохранения в базу данных
+  Place.fromJson(Map<String, dynamic> json)
+      : id = json['id'] as int,
+        lat = json['lat'] as double,
+        lng = json['lng'] as double,
+        name = json['name'] as String,
+        urls = (json['urls'] as List<dynamic>).whereType<String>().toList(),
+        placeType = json['placeType'] as String,
+        description = json['description'] as String,
+        distance =
+            json['distance'] != null ? json['distance'] as double? : null,
+        isFavorite = json['isFavorite'] as bool,
+        cardType = CardType.values.elementAt(json['cardType']),
+        date = json['date'] != null ? json['date'] : null;
+
+  Map<String, dynamic> toJson() => {
+        'id': id,
+        'lat': lat,
+        'lng': lng,
+        'name': name,
+        'urls': urls,
+        'placeType': placeType,
+        'description': description,
+        'distance': distance,
+        'isFavorite': isFavorite,
+        'cardType': cardType.index,
+        'date': date,
+      };
+
   /// место из api переводим в места для ui
   /// если место у юзера в избранных, то ставим соответствующие отметки
   static Place fromApi(PlaceDto place, {bool? isFavorite, CardType? cardType}) {
@@ -91,7 +120,7 @@ class Place extends Equatable {
   }
 
   /// переключаем статус места - избранное / не избранное
-  static Place switchFavoriteStatus(
+  static Place switchFavoriteStatusPlanned(
       {required Place place, required bool isFav}) {
     return Place(
       id: place.id,
@@ -107,6 +136,25 @@ class Place extends Equatable {
       date: place.date,
     );
   }
+
+  /// переносим место в посещённые
+  static Place switchFavoriteStatusVisited(
+      {required Place place}) {
+    return Place(
+      id: place.id,
+      lat: place.lat,
+      lng: place.lng,
+      name: place.name,
+      urls: place.urls,
+      placeType: place.placeType,
+      description: place.description,
+      distance: place.distance,
+      isFavorite: true,
+      cardType: CardType.visited,
+      date: place.date,
+    );
+  }
+  
 
   /// получить название типа места по коду
   /// т.к. сервер отдаёт только код

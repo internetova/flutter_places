@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:places/blocs/add_place_screen/select_category/select_category_cubit.dart';
 import 'package:places/data/model/place_type.dart';
-import 'package:places/ui/screen/components/button_save.dart';
-import 'package:places/ui/screen/components/icon_leading_appbar.dart';
-import 'package:places/ui/screen/components/icon_svg.dart';
-import 'package:places/ui/screen/res/assets.dart';
-import 'package:places/ui/screen/res/sizes.dart';
-import 'package:places/ui/screen/res/strings.dart';
+import 'package:places/ui/components/button_save.dart';
+import 'package:places/ui/components/icon_leading_appbar.dart';
+import 'package:places/ui/components/icon_svg.dart';
+import 'package:places/ui/res/assets.dart';
+import 'package:places/ui/res/sizes.dart';
+import 'package:places/ui/res/strings.dart';
 
 /// выбор категории -> из добавления нового места AddSightScreen
 class SelectCategoryScreen extends StatefulWidget {

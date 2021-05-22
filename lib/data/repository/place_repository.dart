@@ -7,7 +7,7 @@ abstract class PlaceRepository<T> {
   Future<void> addNewPlace(T place);
 
   /// удалить место
-  Future<void> removePlace(int id);
+  Future<void> removePlace(T place);
 
   /// обновить место
   Future<void> updatePlace(T place);

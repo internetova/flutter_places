@@ -7,15 +7,15 @@ import 'package:places/blocs/add_place_screen/select_category/select_category_cu
 import 'package:places/blocs/add_place_screen/user_images/user_images_cubit.dart';
 import 'package:places/ui/screen/add_place_screen/select_category_screen.dart';
 import 'package:places/ui/screen/add_place_screen/widgets/custom_text_field_widget.dart';
-import 'package:places/ui/screen/components/button_save.dart';
-import 'package:places/ui/screen/components/button_text.dart';
-import 'package:places/ui/screen/components/title_leading_appbar.dart';
-import 'package:places/ui/screen/res/sizes.dart';
-import 'package:places/ui/screen/res/strings.dart';
-import 'package:places/ui/screen/res/themes.dart';
-import 'package:places/ui/screen/widgets/choice_of_loading_images.dart';
-import 'package:places/ui/screen/widgets/empty_page.dart';
-import 'package:places/ui/screen/widgets/list_cards_with_added_img.dart';
+import 'package:places/ui/components/button_save.dart';
+import 'package:places/ui/components/button_text.dart';
+import 'package:places/ui/components/title_leading_appbar.dart';
+import 'package:places/ui/res/sizes.dart';
+import 'package:places/ui/res/strings.dart';
+import 'package:places/ui/res/themes.dart';
+import 'package:places/ui/widgets/choice_of_loading_images.dart';
+import 'package:places/ui/widgets/empty_page.dart';
+import 'package:places/ui/widgets/list_cards_with_added_img.dart';
 
 /// экран добавление нового места
 class AddPlaceScreen extends StatefulWidget {

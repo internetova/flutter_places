@@ -5,6 +5,7 @@ import 'package:equatable/equatable.dart';
 import 'package:places/data/interactor/search_interactor.dart';
 import 'package:places/data/model/place.dart';
 import 'package:places/data/model/search_filter.dart';
+import 'package:places/data/model/search_history_item.dart';
 import 'package:rxdart/rxdart.dart';
 
 part 'search_event.dart';
@@ -28,8 +29,8 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
       yield* _getSearchResult(event);
 
       /// удалить запрос из истории поиска
-    } else if (event is RemoveRequestFromHistory) {
-      yield* _removeRequestFromHistory(event);
+    } else if (event is DeleteRequestFromHistory) {
+      yield* _deleteRequestFromHistory(event);
 
       /// очистить историю поиска
     } else if (event is ClearSearchHistory) {
@@ -83,9 +84,9 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
   }
 
   /// удалить конкретный запрос
-  Stream<SearchState> _removeRequestFromHistory(
-      RemoveRequestFromHistory event) async* {
-    _searchInteractor.removeKeywords(event.index);
+  Stream<SearchState> _deleteRequestFromHistory(
+      DeleteRequestFromHistory event) async* {
+    _searchInteractor.deleteSearchRequest(event.index);
     add(GetSearchHistory());
   }
 

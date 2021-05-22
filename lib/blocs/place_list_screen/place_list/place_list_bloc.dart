@@ -7,6 +7,7 @@ import 'package:places/data/model/place.dart';
 import 'package:places/data/model/search_filter.dart';
 
 part 'place_list_event.dart';
+
 part 'place_list_state.dart';
 
 /// блок для [PlaceListScreen]
@@ -25,8 +26,7 @@ class PlaceListBloc extends Bloc<PlaceListEvent, PlaceListState> {
   }
 
   /// обрабатываем запрос данных из сети
-  Stream<PlaceListState> _placeListRequested(
-      PlaceListRequested event) async* {
+  Stream<PlaceListState> _placeListRequested(PlaceListRequested event) async* {
     yield PlaceListLoading();
 
     try {
@@ -40,11 +40,11 @@ class PlaceListBloc extends Bloc<PlaceListEvent, PlaceListState> {
   }
 
   /// обрабатываем запрос данных из локального хранилища
-  Stream<PlaceListState>_localPlaceListRequested() async*{
+  Stream<PlaceListState> _localPlaceListRequested() async* {
     yield PlaceListLoading();
 
     try {
-      final placesList = await _interactor.getLocalFilteredPlace();
+      final placesList = await _interactor.getCachePlaces();
       yield LocalPlaceListLoadSuccess(placesList);
     } catch (_) {
       yield PlaceListLoadFailure();

@@ -4,11 +4,11 @@ import 'package:places/blocs/visiting_screen/planned/planned_places_bloc.dart';
 import 'package:places/blocs/visiting_screen/visited/visited_places_bloc.dart';
 import 'package:places/data/model/place.dart';
 import 'package:places/data/model/card_type.dart';
-import 'package:places/ui/screen/components/bottom_navigationbar.dart';
-import 'package:places/ui/screen/res/strings.dart';
-import 'package:places/ui/screen/widgets/empty_page.dart';
-import 'package:places/ui/screen/widgets/loader.dart';
-import 'package:places/ui/screen/widgets/place_card_visiting.dart';
+import 'package:places/ui/components/bottom_navigationbar.dart';
+import 'package:places/ui/res/strings.dart';
+import 'package:places/ui/widgets/empty_page.dart';
+import 'package:places/ui/widgets/loader.dart';
+import 'package:places/ui/widgets/place_card_visiting.dart';
 
 /// экран с избранными карточками - Хочу посетить / Посетил
 class VisitingScreen extends StatefulWidget {
@@ -88,7 +88,9 @@ class _VisitingScreenState extends State<VisitingScreen>
             builder: (_, state) {
               if (state is PlannedPlacesLoadInProgress) {
                 return const Center(
-                  child: CircularProgressIndicator(),
+                  child: Loader(
+                    loaderSize: LoaderSize.small,
+                  ),
                 );
               }
 
@@ -117,7 +119,9 @@ class _VisitingScreenState extends State<VisitingScreen>
               builder: (_, state) {
             if (state is VisitedPlacesLoadInProgress) {
               return const Center(
-                child: CircularProgressIndicator(),
+                child: Loader(
+                  loaderSize: LoaderSize.small,
+                ),
               );
             }
 
@@ -136,7 +140,9 @@ class _VisitingScreenState extends State<VisitingScreen>
             }
 
             return const Center(
-              child: CircularProgressIndicator(),
+              child: Loader(
+                loaderSize: LoaderSize.small,
+              ),
             );
           }),
         ],

@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:places/data/interactor/favorite_places_interactor.dart';
+import 'package:places/data/interactor/favorite_interactor.dart';
 import 'package:places/data/model/place.dart';
 
 part 'planned_places_event.dart';
@@ -10,7 +10,7 @@ part 'planned_places_state.dart';
 
 /// блок Избранное - Хочу посетить
 class PlannedPlacesBloc extends Bloc<PlannedPlacesEvent, PlannedPlacesState> {
-  final FavoritePlacesInteractor _interactor;
+  final FavoriteInteractor _interactor;
 
   PlannedPlacesBloc(this._interactor) : super(PlannedPlacesLoadInProgress());
 
@@ -40,7 +40,7 @@ class PlannedPlacesBloc extends Bloc<PlannedPlacesEvent, PlannedPlacesState> {
   Stream<PlannedPlacesState> _mapRemovePlaceToState(
       PlannedPlacesRemovePlace event) async* {
     try {
-      await _interactor.removePlace(event.place.id);
+      await _interactor.removePlace(event.place);
       add(PlannedPlacesLoad());
     } catch (_) {
       yield PlannedPlacesLoadFailure();

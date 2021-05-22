@@ -1,5 +1,5 @@
-import 'package:places/ui/screen/res/assets.dart';
-import 'package:places/ui/screen/res/strings.dart';
+import 'package:places/ui/res/assets.dart';
+import 'package:places/ui/res/strings.dart';
 
 /// тип мест для работы в программе,
 /// т.к. сервер отдаёт тип только в виде кода, напромер 'park'

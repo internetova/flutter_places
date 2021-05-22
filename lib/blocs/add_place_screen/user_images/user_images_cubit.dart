@@ -1,6 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:places/ui/screen/utilities/test_images_data.dart';
+import 'package:places/ui/utilities/test_images_data.dart';
 
 part 'user_images_state.dart';
 

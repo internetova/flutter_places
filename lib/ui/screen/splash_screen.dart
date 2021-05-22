@@ -1,36 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:places/blocs/onboarding_screen/onboarding_cubit.dart';
-import 'package:places/ui/screen/components/icon_svg.dart';
+import 'package:places/blocs/settings_app/settings_app_cubit.dart';
+import 'package:places/ui/components/icon_svg.dart';
 import 'package:places/ui/screen/onboarding_screen.dart';
-import 'package:places/ui/screen/res/app_routes.dart';
-import 'package:places/ui/screen/res/assets.dart';
-import 'package:places/ui/screen/res/sizes.dart';
-import 'package:places/ui/screen/res/themes.dart';
+import 'package:places/ui/res/app_routes.dart';
+import 'package:places/ui/res/assets.dart';
+import 'package:places/ui/res/sizes.dart';
+import 'package:places/ui/res/themes.dart';
 
 /// сплэш-экран приложения
 class SplashScreen extends StatefulWidget {
-  /// первый старт приложения
-  final bool isFirstStart;
-
-  /// пока поставлю true
-  const SplashScreen({Key? key, this.isFirstStart = true}) : super(key: key);
-
   @override
   _SplashScreenState createState() => _SplashScreenState();
 }
 
 class _SplashScreenState extends State<SplashScreen>
     with SingleTickerProviderStateMixin {
-  /// чтобы отследить завершение инициализации приложения
-  Future<bool>? _isInitialized;
-
+  /// анимация логотипа
   late final AnimationController _animationController;
   late final Animation<double> _rotateAnimation;
 
   @override
   void initState() {
-    _isInitialized = _initializeApp();
     _navigateToNext();
 
     _animationController = AnimationController(
@@ -84,43 +76,25 @@ class _SplashScreenState extends State<SplashScreen>
     );
   }
 
-  /// инициализация приложения
-  /// имитируем подготовку данных и возвращаем готовность
-  Future<bool> _initializeApp() async {
-    return Future.delayed(const Duration(seconds: 4), () => true);
-  }
-
-  /// логика перехода либо на онбординг, если был первый вход,
+  /// Логика перехода либо на онбординг, если был первый вход,
   /// либо на главный экран
   Future<void> _navigateToNext() async {
-    /// 1. завершена инициализация
-    /// 2. прошло минимальное время отображения сплэш-экрана.
-    try {
-      await Future.wait([
-        _isInitialized!,
-        Future.delayed(const Duration(seconds: 2))
-      ]);
+    /// ждём когда завершится инициализация приложения - выполнится ивент
+    /// по инициализации настроек и обновится виджет с флагом [isAppNotReady]
+    /// показываем анимацию
+    await Future.delayed(seconds4);
 
-      // todo удалить
-      // Navigator.of(context).pushReplacementNamed(
-      //     widget.isFirstStart ? AppRoutes.onboarding : AppRoutes.home);
-
-      if (widget.isFirstStart) {
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(
-            builder: (context) => BlocProvider<OnboardingCubit>(
-              create: (_) => OnboardingCubit(),
-              child: OnboardingScreen(),
-            ),
+    if (context.read<SettingsAppCubit>().state.isFirstStart) {
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (context) => BlocProvider<OnboardingCubit>(
+            create: (_) => OnboardingCubit(),
+            child: OnboardingScreen(),
           ),
-        );
-      } else {
-        Navigator.of(context).pushReplacementNamed(AppRoutes.home);
-      }
-
-
-    } catch (e) {
-      print('Ошибка: $e');
+        ),
+      );
+    } else {
+      Navigator.of(context).pushReplacementNamed(AppRoutes.home);
     }
   }
 }

@@ -19,7 +19,7 @@ class FavoritesButtonCubit extends Cubit<FavoritesButtonState> {
     bool currentStatus = !isFavorite;
     /// вносит изменения в базах данных
     _interactor.toggleFavorites(
-        Place.switchFavoriteStatus(place: place, isFav: currentStatus));
+        Place.switchFavoriteStatusPlanned(place: place, isFav: currentStatus));
 
     emit(FavoritesButtonState(currentStatus));
   }

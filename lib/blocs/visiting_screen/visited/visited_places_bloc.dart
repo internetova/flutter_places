@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:places/data/interactor/favorite_places_interactor.dart';
+import 'package:places/data/interactor/favorite_interactor.dart';
 import 'package:places/data/model/place.dart';
 
 part 'visited_places_event.dart';
@@ -10,7 +10,7 @@ part 'visited_places_state.dart';
 
 /// блок экрана Избранное
 class VisitedPlacesBloc extends Bloc<VisitedPlacesEvent, VisitedPlacesState> {
-  final FavoritePlacesInteractor _interactor;
+  final FavoriteInteractor _interactor;
 
   VisitedPlacesBloc(this._interactor) : super(VisitedPlacesLoadInProgress());
 
@@ -40,7 +40,7 @@ class VisitedPlacesBloc extends Bloc<VisitedPlacesEvent, VisitedPlacesState> {
   Stream<VisitedPlacesState> _mapRemovePlaceToState(
       VisitedPlacesRemovePlace event) async* {
     try {
-      await _interactor.removePlace(event.place.id);
+      await _interactor.removePlace(event.place);
       add(VisitedPlacesLoad());
     } catch (_) {
       yield VisitedPlacesLoadFailure();

@@ -4,7 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:places/data/interactor/place_interactor.dart';
 import 'package:places/data/model/search_filter.dart';
-import 'package:places/ui/screen/res/strings.dart';
+import 'package:places/ui/res/strings.dart';
 import 'package:rxdart/rxdart.dart';
 
 part 'filter_button_state.dart';

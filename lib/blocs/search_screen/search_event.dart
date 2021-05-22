@@ -26,10 +26,10 @@ class GetSearchHistory extends SearchEvent {
 }
 
 /// удалить запрос из истории поиска
-class RemoveRequestFromHistory extends SearchEvent {
+class DeleteRequestFromHistory extends SearchEvent {
   final int index;
 
-  RemoveRequestFromHistory(this.index);
+  DeleteRequestFromHistory(this.index);
 
   @override
   List<Object?> get props => [index];

@@ -1,8 +1,8 @@
 import 'package:dio/dio.dart';
-import 'package:places/data/api/api_client.dart';
 import 'package:places/data/dto/place_dto.dart';
 import 'package:places/data/model/place.dart';
 import 'package:places/data/model/search_filter.dart';
+import 'package:places/data/model/search_history_item.dart';
 import 'package:places/data/repository/api_place_repository.dart';
 import 'package:places/data/repository/local_place_repository.dart';
 
@@ -11,8 +11,13 @@ import 'package:places/data/repository/local_place_repository.dart';
 /// [apiRepository] данные из сети
 /// [localRepository] локальные данные
 class SearchInteractor {
-  final ApiPlaceRepository apiRepository = ApiPlaceRepository(ApiClient());
-  final LocalPlaceRepository localRepository = LocalPlaceRepository();
+  final ApiPlaceRepository apiRepository;
+  final LocalPlaceRepository localRepository;
+
+  SearchInteractor({
+    required this.apiRepository,
+    required this.localRepository,
+  });
 
   /// получить результаты поиска
   Future<List<Place>> getSearchResult(
@@ -23,7 +28,7 @@ class SearchInteractor {
 
       /// сохраним удачный поисковый запрос в базе данных
       if (placesDto.isNotEmpty) {
-        _saveKeywords(keywords);
+        _saveSearchRequest(keywords);
       }
 
       /// отсортировали по удаленности, дистанцию отдал сервер
@@ -43,14 +48,16 @@ class SearchInteractor {
   }
 
   /// получить историю запросов
-  Future<List<String>> getSearchHistory() => localRepository.getSearchHistory();
+  Future<List<SearchHistoryItem>> getSearchHistory() =>
+      localRepository.getSearchHistory();
 
   /// сохранить поисковое выражение в историю запросов
-  Future<void> _saveKeywords(String keywords) =>
-      localRepository.saveKeywords(keywords);
+  Future<void> _saveSearchRequest(String request) =>
+      localRepository.saveSearchRequest(request);
 
   /// удалить запрос
-  Future<void> removeKeywords(int i) => localRepository.removeKeywords(i);
+  Future<void> deleteSearchRequest(int i) =>
+      localRepository.deleteSearchRequest(i);
 
   /// очистить историю
   Future<void> clearSearchHistory() => localRepository.clearSearchHistory();
