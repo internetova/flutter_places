@@ -58,6 +58,7 @@ const Map<String, String> appNetworkException = {
 /// Ошибки и исключения
 const appExceptionNoInternetConnection = 'Нет интернет соединения';
 const appExceptionUnknownError = 'Неизвестная ошибка';
+const appExceptionNoImageSelected = 'Не выбрано изображение';
 
 /// экран фильтров
 const filterClearFilters = 'Очистить';

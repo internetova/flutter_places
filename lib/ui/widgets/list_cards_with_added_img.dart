@@ -1,13 +1,14 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:places/ui/components/button_card_add_img.dart';
 import 'package:places/ui/components/card_square_img.dart';
 import 'package:places/ui/components/dismiss_bg_img.dart';
 import 'package:places/ui/res/sizes.dart';
-import 'package:places/ui/utilities/test_images_data.dart';
 
 /// список добавленных фото на странице добавления нового места
 class ListCardsWithAddedImg extends StatelessWidget {
-  final List<TestImage> data;
+  final List<File> data;
   final VoidCallback? onAddImage;
   final ValueChanged<int> onRemoveImage;
 
@@ -45,7 +46,7 @@ class ListCardsWithAddedImg extends StatelessWidget {
 
 /// карточка с фото которую можно удалить нажатием и смахиванием вверх
 class RemovableCardWithAddedImg extends StatelessWidget {
-  final TestImage image;
+  final File image;
   final VoidCallback onRemoveImage;
 
   const RemovableCardWithAddedImg({
@@ -70,9 +71,7 @@ class RemovableCardWithAddedImg extends StatelessWidget {
         child: Row(
           children: [
             CardSquareImgWithDeleteIcon(
-              image: AssetImage(
-                image.url,
-              ),
+              image: image,
             ),
             sizedBoxW16,
           ],

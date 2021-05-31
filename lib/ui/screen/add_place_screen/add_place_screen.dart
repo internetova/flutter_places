@@ -48,19 +48,19 @@ class _AddPlaceScreenState extends State<AddPlaceScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    BlocBuilder<UserImagesCubit, UserImagesState>(
-                        builder: (context, state) {
-                      final cubit = context.read<UserImagesCubit>();
-                      return ListCardsWithAddedImg(
-                        data: state.userImages,
-                        onAddImage: () {
-                          cubit.addImg();
-                          // todo пока закоментировала до реализации загрузки фото
-                          // _showImageLoadingWindow();
-                        },
-                        onRemoveImage: cubit.removeImg,
-                      );
-                    }),
+                    BlocConsumer<UserImagesCubit, UserImagesState>(
+                      listener: (context, state) {},
+                      builder: (context, state) {
+                        final cubit = context.read<UserImagesCubit>();
+                        return ListCardsWithAddedImg(
+                          data: state.userImages,
+                          onAddImage: () {
+                            _showImageLoadingWindow(context, cubit);
+                          },
+                          onRemoveImage: cubit.removeImg,
+                        );
+                      },
+                    ),
                     sizedBoxH24,
                     ..._buildCategory(),
                     sizedBoxH24,
@@ -398,13 +398,13 @@ class _AddPlaceScreenState extends State<AddPlaceScreen> {
     ];
   }
 
-  /// todo скрыла до реализации загрузки фотографий
   /// окно для выбора загрузки фотографий
-  Future<void> _showImageLoadingWindow() async {
+  Future<void> _showImageLoadingWindow(
+      BuildContext context, UserImagesCubit imagesCubit) async {
     return showDialog(
         context: context,
         builder: (_) {
-          return ChoiceOfLoadingImages();
+          return ChoiceOfLoadingImages(imagesCubit: imagesCubit);
         });
   }
 }

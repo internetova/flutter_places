@@ -21,6 +21,7 @@ import 'package:places/ui/res/themes.dart';
 import 'package:places/ui/screen/settings_screen.dart';
 import 'package:places/ui/screen/place_list_screen.dart';
 import 'package:places/ui/screen/splash_screen.dart';
+import 'package:places/ui/screen/test_screen.dart';
 import 'package:places/ui/screen/visiting_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -151,6 +152,8 @@ class App extends StatelessWidget {
                       child: VisitingScreen(),
                     ),
                 AppRoutes.settings: (context) => SettingsScreen(),
+                /// todo временно
+                AppRoutes.tempTest: (context) => TestScreen(),
               },
             );
           },
