@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'dart:math';
+import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:places/data/dto/place_dto.dart';
@@ -130,4 +130,7 @@ class PlaceInteractor {
   /// true - в избранном
   Future<bool> toggleFavorites(Place place) =>
       localRepository.toggleFavorite(place);
+
+  /// загрузка фото
+Future<String> uploadFile(File image) =>  apiRepository.uploadFile(image);
 }

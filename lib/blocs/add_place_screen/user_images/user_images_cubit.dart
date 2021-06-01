@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:bloc/bloc.dart';
-import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:places/ui/res/strings.dart';
@@ -22,12 +21,16 @@ class UserImagesCubit extends Cubit<UserImagesState> {
     emit(UserImagesState(_userImages));
 
     Navigator.pop(context);
-
   }
 
   /// загрузить изображение
   Future _getImage({required ImageSource source}) async {
-    final pickedFile = await picker.getImage(source: source);
+    final pickedFile = await picker.getImage(
+      source: source,
+      imageQuality: 80,
+      maxHeight: 800,
+      maxWidth: 800,
+    );
 
     if (pickedFile != null) {
       _userImages.add(File(pickedFile.path));

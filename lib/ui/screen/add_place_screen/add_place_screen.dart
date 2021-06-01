@@ -24,7 +24,6 @@ class AddPlaceScreen extends StatefulWidget {
 }
 
 class _AddPlaceScreenState extends State<AddPlaceScreen> {
-  final _formKey = GlobalKey<FormState>();
   late final _fieldDescriptionFocus;
 
   @override
@@ -43,13 +42,11 @@ class _AddPlaceScreenState extends State<AddPlaceScreen> {
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
               child: Form(
-                key: _formKey,
                 autovalidateMode: AutovalidateMode.onUserInteraction,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    BlocConsumer<UserImagesCubit, UserImagesState>(
-                      listener: (context, state) {},
+                    BlocBuilder<UserImagesCubit, UserImagesState>(
                       builder: (context, state) {
                         final cubit = context.read<UserImagesCubit>();
                         return ListCardsWithAddedImg(
@@ -215,8 +212,6 @@ class _AddPlaceScreenState extends State<AddPlaceScreen> {
           builder: (context, state) {
             return Stack(
               children: [
-                // todo баг с цветом границы категории срабатывает не сразу,
-                // а при обращении к следующему полю
                 CustomTextFieldUnderlineWidget(
                   onTap: _onSelectCategory,
                   validator: (value) => state.fieldCategoryIsValid,

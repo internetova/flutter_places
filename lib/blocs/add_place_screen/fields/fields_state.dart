@@ -30,8 +30,6 @@ class FieldsState extends Equatable {
       validateCoordinates(fieldLng) == null &&
       validateDetails(fieldDescription) == null;
 
-  final fieldCategoryController = TextEditingController();
-
   /// данные формы на старте
   FieldsState({
     this.fieldCategory = emptyCategory,

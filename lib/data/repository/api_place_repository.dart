@@ -1,7 +1,10 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:http_parser/http_parser.dart';
+import 'package:mime_type/mime_type.dart';
 import 'package:places/data/api/api_client.dart';
 import 'package:places/data/api/api_constants.dart';
 import 'package:places/data/dto/place_dto.dart';
@@ -9,6 +12,7 @@ import 'package:places/data/dto/places_filter_request_dto.dart';
 import 'package:places/data/exceptions/network_exception.dart';
 import 'package:places/data/model/search_filter.dart';
 import 'package:places/data/repository/place_repository.dart';
+import 'package:places/data/res/error_response_strings.dart';
 
 /// УДАЛЁННЫЙ РЕПОЗИТОРИЙ
 /// запрос данных с сервера
@@ -35,7 +39,8 @@ class ApiPlaceRepository implements PlaceRepository<PlaceDto> {
       data: jsonEncode(data),
     );
 
-    final places = (response.data as List).map((e) => PlaceDto.fromJson(e)).toList();
+    final places =
+    (response.data as List).map((e) => PlaceDto.fromJson(e)).toList();
 
     return places;
   }
@@ -61,33 +66,56 @@ class ApiPlaceRepository implements PlaceRepository<PlaceDto> {
     return newPlace;
   }
 
-  /// добавить список мест для теста с моковыми данными
-  /// todo это для теста, потом удалить
-  Future<void> addPlacesList(List<PlaceDto> data) async {
-    data.forEach(addNewPlace);
+  /// загрузка фото
+  Future<String> uploadFile(File image) async {
+    String? filename = image.path.split('/').last;
+
+    /// тип загружаемых данных
+    String? mimeType = mime(filename);
+    String? mimee = mimeType?.split('/')[0];
+    String? type = mimeType?.split('/')[1];
+
+    if (mimeType != null) {
+      FormData formData = FormData.fromMap({
+        'image': await MultipartFile.fromFile(
+          image.path,
+          filename: filename,
+          contentType: MediaType(mimee!, type!),
+        ),
+      });
+
+      final response = await _client.post(
+        ApiConstants.uploadFileUrl,
+        data: formData,
+      );
+
+      return '${ApiConstants.baseUrl}/${response.headers['location']?.first}';
+    } else {
+      throw Exception(ErrorResponseStrings.eMimeType);
+    }
   }
 
-  /// ‼️❓ ДЛЯ теста
-  /// удалить место
-  @override
-  Future<void> removePlace(PlaceDto place) =>
-      _client.delete('${ApiConstants.placesUrl}/${place.id}');
+    /// удалить место
+    @override
+    Future<void> removePlace(PlaceDto place) =>
+        _client.delete('${ApiConstants.placesUrl}/${place.id}');
 
-  /// обновить место
-  @override
-  Future<void> updatePlace(PlaceDto place) async {
-    final url = '${ApiConstants.placesUrl}/${place.id}';
+    /// обновить место
+    @override
+    Future<void> updatePlace(PlaceDto place) async {
+      final url = '${ApiConstants.placesUrl}/${place.id}';
 
-    await _client.put(
-      url,
-      data: jsonEncode(place.toJson()),
-    );
+      await _client.put(
+        url,
+        data: jsonEncode(place.toJson()),
+      );
+    }
+
+    /// todo проверим есть ли доступ в сеть 🤓
+    Future<Response> testNetwork() =>
+        _client.get('${ApiConstants.placesUrl}?count=1');
+
+    /// обработка ошибок
+    NetworkException getNetworkException(DioError error) =>
+        _client.getNetworkException(error);
   }
-
-  /// todo проверим есть ли доступ в сеть 🤓
-  Future<Response> testNetwork() => _client.get('${ApiConstants.placesUrl}?count=1');
-
-  /// обработка ошибок
-  NetworkException getNetworkException(DioError error) =>
-      _client.getNetworkException(error);
-}

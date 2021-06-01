@@ -25,13 +25,13 @@ class ApiClient {
       ..interceptors.add(
         InterceptorsWrapper(
           onRequest: (options, handler) {
-            // print( todo удалить позже
-            //     'Interceptors Отправлен запрос: ${options.baseUrl}${options.path}');
+            // todo удалить позже
+            print('Interceptors Отправлен запрос: ${options.baseUrl}${options.path}');
             return handler.next(options);
           },
           onResponse: (response, handler) {
             // todo удалить позже
-            // print('Interceptors Получен ответ: $response');
+            print('Interceptors Получен ответ: $response');
             return handler.next(response);
           },
           onError: (DioError e, handler) {
