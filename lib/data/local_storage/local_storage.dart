@@ -1,5 +1,5 @@
 import 'package:places/data/model/coordinates.dart';
-
+/// todo удалить после реализации
 /// ‼️ временно
 /// имитация локального хранилища
 /// храним:

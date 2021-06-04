@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:places/blocs/buttons/new_place_button_cubit.dart';
+import 'package:places/blocs/location/location_bloc.dart';
 import 'package:places/blocs/onboarding_screen/onboarding_cubit.dart';
 import 'package:places/blocs/place_list_screen/place_list/place_list_bloc.dart';
 import 'package:places/blocs/settings_app/settings_app_cubit.dart';
@@ -104,6 +105,11 @@ class App extends StatelessWidget {
               context.read<SettingsInteractor>(),
             )..initState(),
           ),
+          BlocProvider<LocationBloc>(
+            create: (context) =>
+            LocationBloc(),
+            // LocationBloc()..add(LocationStarted()),
+          ),
         ],
         child: BlocBuilder<SettingsAppCubit, SettingsAppState>(
           builder: (context, state) {
@@ -147,13 +153,13 @@ class App extends StatelessWidget {
                           create: (_) => VisitedPlacesBloc(
                             context.read<FavoriteInteractor>(),
                           )..add(VisitedPlacesLoad()),
-                        )
+                        ),
                       ],
                       child: VisitingScreen(),
                     ),
                 AppRoutes.settings: (context) => SettingsScreen(),
                 /// todo временно
-                AppRoutes.tempTest: (context) => TestScreen(),
+                AppRoutes.tempTest:(context) => TestScreen(),
               },
             );
           },

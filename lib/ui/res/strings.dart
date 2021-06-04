@@ -56,9 +56,13 @@ const Map<String, String> appNetworkException = {
 };
 
 /// Ошибки и исключения
-const appExceptionNoInternetConnection = 'Нет интернет соединения';
-const appExceptionUnknownError = 'Неизвестная ошибка';
-const appExceptionNoImageSelected = 'Не выбрано изображение';
+const appException = 'Ошибка!';
+const appExceptionNoInternetConnection = 'Нет интернет соединения.';
+const appExceptionUnknownError = 'Неизвестная ошибка.';
+const appExceptionNoImageSelected = 'Не выбрано изображение.';
+const appLocationServiceNotEnabled = 'Службы определения местоположения отключены.';
+const appLocationPermissionDenied = 'Доступ на определение местоложения запрещён. Для корректной работы сервиса включите геолокацию.';
+const appLocationPermissionDeniedForever = 'Доступ на определение местоложения запрещён навсегда. Мы не можем запрашивать разрешение.';
 
 /// экран фильтров
 const filterClearFilters = 'Очистить';

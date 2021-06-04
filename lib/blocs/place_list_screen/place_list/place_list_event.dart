@@ -6,13 +6,16 @@ abstract class PlaceListEvent extends Equatable {
 }
 
 /// запрошены данные из сети
+/// если геопозиция запрещена, то запрашиваем все данные
+/// иначе делаем запрос с фильтром
 class PlaceListRequested extends PlaceListEvent {
-  final SearchFilter filter;
+  final UserLocation? userLocation;
+  final SearchFilter? filter;
 
-  PlaceListRequested({required this.filter});
+  PlaceListRequested({this.userLocation, this.filter});
 
   @override
-  List<Object?> get props => [filter];
+  List<Object?> get props => [userLocation, filter];
 }
 
 // запрошены данные из кэша

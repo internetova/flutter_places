@@ -4,6 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:places/data/interactor/place_interactor.dart';
 import 'package:places/data/model/search_filter.dart';
+import 'package:places/data/model/user_location.dart';
 import 'package:places/ui/res/strings.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -31,16 +32,20 @@ class FilterButtonCubit extends Cubit<FilterButtonState> {
 
   /// запускам оптимизированный поиск для отображения количества результатов
   /// на кнопке Показать
-  Future<void> startSearchFilter() async {
+  Future<void> startSearchFilter(UserLocation userLocation) async {
     _currentFilter.debounceTime(Duration(milliseconds: 500)).listen((filter) {
-      _startSearch(filter);
+      _startSearch(userLocation, filter);
     });
   }
 
   /// поиск количества результатов удовлетворяющих фильтру
-  Future<void> _startSearch(SearchFilter filter) async {
+  Future<void> _startSearch(
+      UserLocation userLocation, SearchFilter filter) async {
     try {
-      final result = await _interactor.getPlaces(filter: filter);
+      final result = await _interactor.getPlaces(
+        userLocation: userLocation,
+        filter: filter,
+      );
 
       if (result.isNotEmpty) {
         emit(FilterButtonState(

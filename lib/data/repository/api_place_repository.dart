@@ -11,6 +11,7 @@ import 'package:places/data/dto/place_dto.dart';
 import 'package:places/data/dto/places_filter_request_dto.dart';
 import 'package:places/data/exceptions/network_exception.dart';
 import 'package:places/data/model/search_filter.dart';
+import 'package:places/data/model/user_location.dart';
 import 'package:places/data/repository/place_repository.dart';
 import 'package:places/data/res/error_response_strings.dart';
 
@@ -24,15 +25,29 @@ class ApiPlaceRepository implements PlaceRepository<PlaceDto> {
   /// запрашивает данные согласно фильтру юзера
   /// [nameFilter] может быть null - текстовый поиск по полю name
   /// [keywords] - ключевые слова для поиска
-  Future<List<PlaceDto>> getPlaces(
-      {required SearchFilter filter, String? keywords}) async {
-    final data = PlacesFilterRequestDto(
-      lat: filter.userLocation.lat,
-      lng: filter.userLocation.lng,
-      radius: filter.radius,
-      typeFilter: filter.typeFilter,
-      nameFilter: keywords != null ? keywords.trim() : null,
-    ).toJson();
+  Future<List<PlaceDto>> getPlaces({
+    UserLocation? userLocation,
+    SearchFilter? filter,
+    String? keywords,
+  }) async {
+    late Map<String, dynamic> data;
+
+    /// геолокация отключена - ищем по всей базе
+    if (userLocation == null) {
+      data = PlacesFilterRequestDto(
+        nameFilter: keywords != null ? keywords.trim() : null,
+      ).toJson();
+
+      /// иначе передаем фильтр и локацию пользователя
+    } else {
+      data = PlacesFilterRequestDto(
+        lat: userLocation.lat,
+        lng: userLocation.lng,
+        radius: filter?.radius,
+        typeFilter: filter?.typeFilter,
+        nameFilter: keywords != null ? keywords.trim() : null,
+      ).toJson();
+    }
 
     final response = await _client.post(
       ApiConstants.filteredPlacesUrl,
@@ -40,7 +55,17 @@ class ApiPlaceRepository implements PlaceRepository<PlaceDto> {
     );
 
     final places =
-    (response.data as List).map((e) => PlaceDto.fromJson(e)).toList();
+        (response.data as List).map((e) => PlaceDto.fromJson(e)).toList();
+
+    return places;
+  }
+
+  /// запросить все места без фильтра если нет доступа к геолокации
+  Future<List<PlaceDto>> getAllPlaces() async {
+    final response = await _client.get(ApiConstants.placesUrl);
+
+    final places =
+        (response.data as List).map((e) => PlaceDto.fromJson(e)).toList();
 
     return places;
   }
@@ -95,27 +120,27 @@ class ApiPlaceRepository implements PlaceRepository<PlaceDto> {
     }
   }
 
-    /// удалить место
-    @override
-    Future<void> removePlace(PlaceDto place) =>
-        _client.delete('${ApiConstants.placesUrl}/${place.id}');
+  /// удалить место
+  @override
+  Future<void> removePlace(PlaceDto place) =>
+      _client.delete('${ApiConstants.placesUrl}/${place.id}');
 
-    /// обновить место
-    @override
-    Future<void> updatePlace(PlaceDto place) async {
-      final url = '${ApiConstants.placesUrl}/${place.id}';
+  /// обновить место
+  @override
+  Future<void> updatePlace(PlaceDto place) async {
+    final url = '${ApiConstants.placesUrl}/${place.id}';
 
-      await _client.put(
-        url,
-        data: jsonEncode(place.toJson()),
-      );
-    }
-
-    /// todo проверим есть ли доступ в сеть 🤓
-    Future<Response> testNetwork() =>
-        _client.get('${ApiConstants.placesUrl}?count=1');
-
-    /// обработка ошибок
-    NetworkException getNetworkException(DioError error) =>
-        _client.getNetworkException(error);
+    await _client.put(
+      url,
+      data: jsonEncode(place.toJson()),
+    );
   }
+
+  /// todo проверим есть ли доступ в сеть 🤓
+  Future<Response> testNetwork() =>
+      _client.get('${ApiConstants.placesUrl}?count=1');
+
+  /// обработка ошибок
+  NetworkException getNetworkException(DioError error) =>
+      _client.getNetworkException(error);
+}

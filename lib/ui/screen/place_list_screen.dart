@@ -6,14 +6,16 @@ import 'package:places/blocs/add_place_screen/user_images/user_images_cubit.dart
 import 'package:places/blocs/buttons/new_place_button_cubit.dart';
 import 'package:places/blocs/filters_screen/button/filter_button_cubit.dart';
 import 'package:places/blocs/filters_screen/filter/filter_cubit.dart';
+import 'package:places/blocs/location/location_bloc.dart';
 import 'package:places/blocs/place_list_screen/place_list/place_list_bloc.dart';
 import 'package:places/blocs/search_screen/search_bloc.dart';
+import 'package:places/blocs/settings_app/settings_app_cubit.dart';
 import 'package:places/data/interactor/place_interactor.dart';
 import 'package:places/data/interactor/search_interactor.dart';
-import 'package:places/data/interactor/settings_interactor.dart';
 import 'package:places/data/model/search_filter.dart';
 import 'package:places/data/model/place.dart';
 import 'package:places/data/model/card_type.dart';
+import 'package:places/data/model/user_location.dart';
 import 'package:places/ui/screen/add_place_screen/add_place_screen.dart';
 import 'package:places/ui/components/bottom_navigationbar.dart';
 import 'package:places/ui/components/button_gradient.dart';
@@ -21,6 +23,7 @@ import 'package:places/ui/screen/filters_screen.dart';
 import 'package:places/ui/res/sizes.dart';
 import 'package:places/ui/res/strings.dart';
 import 'package:places/ui/widgets/empty_page.dart';
+import 'package:places/ui/widgets/inform_dialog_widget.dart';
 import 'package:places/ui/widgets/list_cards.dart';
 import 'package:places/ui/components/search_bar_static.dart';
 import 'package:places/ui/screen/search_screen.dart';
@@ -40,15 +43,11 @@ class _PlaceListScreenState extends State<PlaceListScreen>
   /// при первом запуске берётся дефолтный из настроек программы
   /// при изменении перезаписывается на пользовательский
   late SearchFilter _searchFilter;
-  late final SettingsInteractor _settingsInteractor;
-  late final PlaceListBloc _placeListBloc;
+  UserLocation? _userLocation;
 
-  /// фильтр - получаем из раздела настроек локальной базы данных
-  /// отправляем запрос с фильтром
-  Future<void> _getStartData() async {
-    _searchFilter = await _settingsInteractor.getSearchFilter();
-    _placeListBloc.add(PlaceListRequested(filter: _searchFilter));
-  }
+  late final SettingsAppCubit _settingsAppCubit;
+  late final LocationBloc _locationBloc;
+  late final PlaceListBloc _placeListBloc;
 
   /// анимация кнопки создания нового места
   late final AnimationController _animationController;
@@ -56,9 +55,30 @@ class _PlaceListScreenState extends State<PlaceListScreen>
 
   @override
   void initState() {
-    _settingsInteractor = context.read<SettingsInteractor>();
+    _settingsAppCubit = context.read<SettingsAppCubit>();
+    _locationBloc = context.read<LocationBloc>();
     _placeListBloc = context.read<PlaceListBloc>();
-    _getStartData();
+
+    _searchFilter = _settingsAppCubit.state.searchFilter;
+
+    if (_locationBloc.state is LocationLoadSuccess) {
+      final _locationLoadSuccessState =
+          _locationBloc.state as LocationLoadSuccess;
+
+      _userLocation = UserLocation(
+        lat: _locationLoadSuccessState.position.latitude,
+        lng: _locationLoadSuccessState.position.longitude,
+      );
+
+      _placeListBloc.add(
+        PlaceListRequested(
+          userLocation: _userLocation,
+          filter: _searchFilter,
+        ),
+      );
+    } else {
+      _placeListBloc.add(PlaceListRequested());
+    }
 
     _animationController = AnimationController(
       vsync: this,
@@ -232,7 +252,10 @@ class _PlaceListScreenState extends State<PlaceListScreen>
         builder: (context) => BlocProvider<SearchBloc>(
           create: (_) => SearchBloc(context.read<SearchInteractor>())
             ..add(GetSearchHistory()),
-          child: SearchScreen(filter: _searchFilter),
+          child: SearchScreen(
+            filter: _searchFilter,
+            userLocation: _userLocation,
+          ),
         ),
       ),
     );
@@ -241,29 +264,55 @@ class _PlaceListScreenState extends State<PlaceListScreen>
   /// переход на экран фильтра
   /// настройки фильтра возвращаем сюда и фильтруем данные
   _onPressedFilter() async {
-    final SearchFilter _newFilter = await Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => MultiBlocProvider(
-          providers: [
-            BlocProvider<FilterCubit>(
-              create: (_) => FilterCubit()..start(_searchFilter),
+    /// для фильтра используется радиус поиска, поэтому, если геопозиция
+    /// отключена, то вместо перехода на экран фильтра покажем окно
+    /// с предупреждением о необходимости включения геопозиции
+    if (_userLocation != null) {
+      final SearchFilter _newFilter = await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => MultiBlocProvider(
+            providers: [
+              BlocProvider<FilterCubit>(
+                create: (_) => FilterCubit()..start(_searchFilter),
+              ),
+              BlocProvider<FilterButtonCubit>(
+                create: (_) => FilterButtonCubit(
+                  context.read<PlaceInteractor>(),
+                )..onChangedFilter(_searchFilter),
+              ),
+            ],
+            child: FiltersScreen(
+              userLocation: _userLocation!,
+              filter: _searchFilter,
             ),
-            BlocProvider<FilterButtonCubit>(
-              create: (_) => FilterButtonCubit(
-                context.read<PlaceInteractor>(),
-              )..onChangedFilter(_searchFilter),
-            ),
-          ],
-          child: FiltersScreen(filter: _searchFilter),
+          ),
         ),
-      ),
-    );
+      );
 
-    _searchFilter = _newFilter;
-    _placeListBloc.add(PlaceListRequested(filter: _searchFilter));
+      _searchFilter = _newFilter;
+      _placeListBloc.add(
+        PlaceListRequested(
+          userLocation: _userLocation,
+          filter: _searchFilter,
+        ),
+      );
 
-    _settingsInteractor.updateSearchFilter(newFilter: _newFilter);
+      _settingsAppCubit.updateSearchFilter(_newFilter);
+    } else {
+      showDialog(
+          context: context,
+          builder: (_) {
+            return InformDialogWidget(
+              header: appException,
+              text: appLocationPermissionDenied,
+              informDialogType: InformDialogType.error,
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            );
+          });
+    }
   }
 }
 

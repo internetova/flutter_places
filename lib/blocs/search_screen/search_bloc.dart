@@ -6,6 +6,7 @@ import 'package:places/data/interactor/search_interactor.dart';
 import 'package:places/data/model/place.dart';
 import 'package:places/data/model/search_filter.dart';
 import 'package:places/data/model/search_history_item.dart';
+import 'package:places/data/model/user_location.dart';
 import 'package:rxdart/rxdart.dart';
 
 part 'search_event.dart';
@@ -51,11 +52,11 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     yield LoadingSearchState();
 
     try {
-      // todo удалить позже
-      print('-----старт поиска--------: ${event.keywords}');
-
       final placesList = await _searchInteractor.getSearchResult(
-          filter: event.filter, keywords: event.keywords);
+        userLocation: event.userLocation,
+        filter: event.filter,
+        keywords: event.keywords,
+      );
 
       yield LoadedSearchState(placesList);
     } catch (_) {
@@ -109,9 +110,15 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
   Stream<SearchState> _startSearchFromTextField(
       StartSearchFromTextField event) async* {
     _searchTerms
-        .debounceTime(Duration(milliseconds: 500))
+        .debounceTime(Duration(milliseconds: 700))
         .listen((queryString) {
-      add(GetSearchResult(filter: event.filter, keywords: queryString));
+      add(
+        GetSearchResult(
+          userLocation: event.userLocation,
+          filter: event.filter,
+          keywords: queryString,
+        ),
+      );
     });
   }
 }

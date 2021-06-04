@@ -5,6 +5,7 @@ import 'package:places/blocs/search_screen/search_bloc.dart';
 import 'package:places/data/model/search_filter.dart';
 import 'package:places/data/model/place.dart';
 import 'package:places/data/model/search_history_item.dart';
+import 'package:places/data/model/user_location.dart';
 import 'package:places/ui/components/bottom_navigationbar.dart';
 import 'package:places/ui/components/button_text.dart';
 import 'package:places/ui/components/card_square_img.dart';
@@ -19,10 +20,12 @@ import 'package:places/ui/widgets/search_bar.dart';
 
 /// экран поиска
 class SearchScreen extends StatefulWidget {
+  final UserLocation? userLocation;
   final SearchFilter filter;
 
   const SearchScreen({
     Key? key,
+    this.userLocation,
     required this.filter,
   }) : super(key: key);
 
@@ -41,7 +44,12 @@ class _SearchScreenState extends State<SearchScreen> {
     _searchController.addListener(() => setState(() {}));
 
     /// старт поиска при изменении текста в поле запроса
-    context.read<SearchBloc>().add(StartSearchFromTextField(widget.filter));
+    context.read<SearchBloc>().add(
+          StartSearchFromTextField(
+            userLocation: widget.userLocation,
+            filter: widget.filter,
+          ),
+        );
   }
 
   @override
@@ -126,9 +134,13 @@ class _SearchScreenState extends State<SearchScreen> {
     if (_searchController.text.isNotEmpty &&
         _searchController.text.trim().length > 2) {
       _lastSearch = _searchController.text;
-      context
-          .read<SearchBloc>()
-          .add(GetSearchResult(filter: widget.filter, keywords: _lastSearch));
+      context.read<SearchBloc>().add(
+            GetSearchResult(
+              userLocation: widget.userLocation,
+              filter: widget.filter,
+              keywords: _lastSearch,
+            ),
+          );
     } else {
       final snackBar = SnackBar(
         content: Text(searchIsShot),
@@ -345,10 +357,14 @@ class _SearchScreenState extends State<SearchScreen> {
                     /// выполняем поиск по тапу по пункту в истории запросов
                     _searchController.text = data[index].request;
                     _lastSearch = data[index].request;
-                    context.read<SearchBloc>().add(GetSearchResult(
-                          filter: widget.filter,
-                          keywords: _searchController.text,
-                        ));
+
+                    context.read<SearchBloc>().add(
+                          GetSearchResult(
+                            userLocation: widget.userLocation,
+                            filter: widget.filter,
+                            keywords: _searchController.text,
+                          ),
+                        );
                   },
                 );
               },

@@ -5,6 +5,7 @@ import 'package:dio/dio.dart';
 import 'package:places/data/dto/place_dto.dart';
 import 'package:places/data/model/place.dart';
 import 'package:places/data/model/search_filter.dart';
+import 'package:places/data/model/user_location.dart';
 import 'package:places/data/repository/api_place_repository.dart';
 import 'package:places/data/repository/local_place_repository.dart';
 
@@ -24,8 +25,14 @@ class PlaceInteractor {
   /// фильтрованный список интересных мест в формате Dto
   /// на странице фильтра на кнопке надо выводить только количество найденных мест
   /// без какой-либо обработки, поэтому используем "чистый" результат
-  Future<List<PlaceDto>> getPlaces({required SearchFilter filter}) =>
-      apiRepository.getPlaces(filter: filter);
+  Future<List<PlaceDto>> getPlaces({
+    required UserLocation userLocation,
+    required SearchFilter filter,
+  }) =>
+      apiRepository.getPlaces(
+        userLocation: userLocation,
+        filter: filter,
+      );
 
   /// производим обработку "чистого" результата: переводим данные из Dto в
   /// данные программы, сравниваем наличие мест в списке избранных и проставляем
@@ -33,10 +40,16 @@ class PlaceInteractor {
   /// на главной странице
   /// запрос только по фильтру
   /// (поиск по ключевым словам перенесен в [SearchInteractor])
-  Future<List<Place>> getFilteredPlace({required SearchFilter filter}) async {
+  Future<List<Place>> getFilteredPlace({
+    required UserLocation userLocation,
+    required SearchFilter filter,
+  }) async {
     try {
       /// получили данные из Api
-      final placesDto = await apiRepository.getPlaces(filter: filter);
+      final placesDto = await apiRepository.getPlaces(
+        userLocation: userLocation,
+        filter: filter,
+      );
 
       /// трансформировали и записали в кэш
       List<Place> places = await _transformApiPlaces(placesDto);
@@ -45,6 +58,21 @@ class PlaceInteractor {
       if (places.length > 1) {
         places.sort((a, b) => a.distance!.compareTo(b.distance!));
       }
+
+      return places;
+    } on DioError catch (e) {
+      throw apiRepository.getNetworkException(e);
+    }
+  }
+
+  /// запросить все места без фильтра если нет доступа к геолокации
+  Future<List<Place>> getAllPlace() async {
+    try {
+      /// получили данные из Api
+      final placesDto = await apiRepository.getAllPlaces();
+
+      /// трансформировали и записали в кэш
+      List<Place> places = await _transformApiPlaces(placesDto);
 
       return places;
     } on DioError catch (e) {
@@ -132,5 +160,5 @@ class PlaceInteractor {
       localRepository.toggleFavorite(place);
 
   /// загрузка фото
-Future<String> uploadFile(File image) =>  apiRepository.uploadFile(image);
+  Future<String> uploadFile(File image) => apiRepository.uploadFile(image);
 }

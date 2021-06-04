@@ -19,7 +19,7 @@ class LocalSettingsRepository {
       _preferencesStorage.setTheme(isDark);
 
   /// 2.   фильтр поиска
-  /// 2.1. получить фильтр из базы
+  /// 2.1. получить фильтр из базы (радиус, категории мест)
   Future<SearchFilter> getFilter() async =>
       _preferencesStorage.getSearchFilter();
 

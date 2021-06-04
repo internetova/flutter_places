@@ -7,16 +7,18 @@ abstract class SearchEvent extends Equatable {
 
 /// запрошены данные у сервера
 class GetSearchResult extends SearchEvent {
-  final SearchFilter filter;
+  final UserLocation? userLocation;
+  final SearchFilter? filter;
   final String keywords;
 
   GetSearchResult({
-    required this.filter,
+    this.userLocation,
+    this.filter,
     required this.keywords,
   });
 
   @override
-  List<Object?> get props => [filter, keywords];
+  List<Object?> get props => [userLocation, filter, keywords];
 }
 
 /// получить историю поисковых запросов
@@ -55,10 +57,11 @@ class ChangedTextFieldSearch extends SearchEvent {
 /// текстовый запрос возьмём из стрима,
 /// событие запустим в initState виджета [SearchScreen]
 class StartSearchFromTextField extends SearchEvent {
-  final SearchFilter filter;
+  final UserLocation? userLocation;
+  final SearchFilter? filter;
 
-  StartSearchFromTextField(this.filter);
+  StartSearchFromTextField({this.userLocation, this.filter});
 
   @override
-  List<Object?> get props => [filter];
+  List<Object?> get props => [userLocation, filter];
 }

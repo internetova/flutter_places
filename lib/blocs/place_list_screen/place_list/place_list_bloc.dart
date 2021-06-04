@@ -5,6 +5,7 @@ import 'package:equatable/equatable.dart';
 import 'package:places/data/interactor/place_interactor.dart';
 import 'package:places/data/model/place.dart';
 import 'package:places/data/model/search_filter.dart';
+import 'package:places/data/model/user_location.dart';
 
 part 'place_list_event.dart';
 
@@ -30,8 +31,17 @@ class PlaceListBloc extends Bloc<PlaceListEvent, PlaceListState> {
     yield PlaceListLoading();
 
     try {
-      final placesList =
-          await _interactor.getFilteredPlace(filter: event.filter);
+      late final List<Place> placesList;
+
+      if (event.userLocation != null && event.filter != null) {
+        placesList = await _interactor.getFilteredPlace(
+          userLocation: event.userLocation!,
+          filter: event.filter!,
+        );
+      } else {
+        placesList = await _interactor.getAllPlace();
+      }
+
       yield PlaceListLoadSuccess(placesList);
     } catch (_) {
       yield PlaceListLoadFailure();
