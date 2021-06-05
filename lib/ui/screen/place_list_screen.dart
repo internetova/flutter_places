@@ -124,11 +124,22 @@ class _PlaceListScreenState extends State<PlaceListScreen>
                     builder: (BuildContext context, PlaceListState state) {
                       if (state is PlaceListLoadSuccess) {
                         context.read<NewPlaceButtonCubit>().show();
-                        return _buildListCard(
-                          orientation,
-                          data: state.placesList,
-                          updateCurrentList: _updateList,
-                        );
+
+                        if (state.placesList.isEmpty) {
+                          return SliverToBoxAdapter(
+                            child: EmptyPage(
+                              icon: placeListEmpty['emptyScreenIcon']!,
+                              header: placeListEmpty['emptyScreenHeader']!,
+                              text: placeListEmpty['emptyScreenText']!,
+                            ),
+                          );
+                        } else {
+                          return _buildListCard(
+                            orientation,
+                            data: state.placesList,
+                            updateCurrentList: _updateList,
+                          );
+                        }
                       }
 
                       if (state is LocalPlaceListLoadSuccess) {

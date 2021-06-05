@@ -5,6 +5,7 @@ class AppRoutes {
   static const String visiting = '/visiting';
   static const String settings = '/settings';
   static const String onboarding = '/onboarding';
+  static const String map = '/map';
   /// todo удалить после тестирования виджета
   /// экран для тестирования всяких штук - загрузка фото
   static const String tempTest = '/tempTest';

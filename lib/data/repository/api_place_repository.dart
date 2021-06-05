@@ -49,6 +49,9 @@ class ApiPlaceRepository implements PlaceRepository<PlaceDto> {
       ).toJson();
     }
 
+    // todo
+    print('-------data Post запрос: $data');
+
     final response = await _client.post(
       ApiConstants.filteredPlacesUrl,
       data: jsonEncode(data),

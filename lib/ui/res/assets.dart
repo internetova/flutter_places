@@ -29,6 +29,8 @@ const icSearch = '$_baseResPath/search.svg';
 const icDelete = '$_baseResPath/delete.svg';
 const icClear = '$_baseResPath/clear.svg';
 const icBucket = '$_baseResPath/bucket.svg';
+const icGeolocation = '$_baseResPath/geolocation.svg';
+const icRefresh = '$_baseResPath/refresh.svg';
 
 /// пустые страницы (результат не найден) и ошибки
 const icEmptyPlanned = '$_baseResPath/empty_pages/card.svg';

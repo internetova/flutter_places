@@ -61,7 +61,7 @@ class _SearchScreenState extends State<SearchScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: _buildAppBar() as PreferredSizeWidget?,
+      appBar: _buildAppBar() as PreferredSizeWidget,
       body: BlocBuilder<SearchBloc, SearchState>(
         builder: (_, state) {
           if (state is LoadingSearchState) {

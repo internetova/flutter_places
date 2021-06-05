@@ -55,6 +55,13 @@ const Map<String, String> appNetworkException = {
   'emptyScreenText': 'Что-то пошло не так.\nПопробуйте позже.',
 };
 
+/// список мест пуст
+const Map<String, String> placeListEmpty = {
+  'emptyScreenIcon': icSearch,
+  'emptyScreenHeader': 'Пусто',
+  'emptyScreenText': 'Ничего не найдено.\n\nПопробуйте изменить\nпараметры фильтра поиска.',
+};
+
 /// Ошибки и исключения
 const appException = 'Ошибка!';
 const appExceptionNoInternetConnection = 'Нет интернет соединения.';
@@ -158,3 +165,6 @@ const placeTypeCodeTemple = 'temple'; // TODO: нет иконки
 const placeTypeNameTemple = 'Храм';
 const placeTypeCodeMonument = 'monument';// TODO: нет иконки
 const placeTypeNameMonument = 'Памятник';
+
+/// карта
+const mapAppBarTitle = 'Карта';

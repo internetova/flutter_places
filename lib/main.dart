@@ -15,6 +15,7 @@ import 'package:places/data/interactor/search_interactor.dart';
 import 'package:places/data/interactor/settings_interactor.dart';
 import 'package:places/data/repository/api_place_repository.dart';
 import 'package:places/data/repository/local_place_repository.dart';
+import 'package:places/ui/screen/map/map_screen.dart';
 import 'package:places/ui/screen/onboarding_screen.dart';
 import 'package:places/ui/res/app_routes.dart';
 import 'package:places/ui/res/strings.dart';
@@ -158,6 +159,7 @@ class App extends StatelessWidget {
                       child: VisitingScreen(),
                     ),
                 AppRoutes.settings: (context) => SettingsScreen(),
+                AppRoutes.map: (context) => MapScreen(),
                 /// todo временно
                 AppRoutes.tempTest:(context) => TestScreen(),
               },

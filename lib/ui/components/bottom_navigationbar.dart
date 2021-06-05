@@ -21,9 +21,7 @@ class MainBottomNavigationBar extends StatelessWidget {
             Navigator.of(context).pushReplacementNamed(AppRoutes.home);
             break;
           case 1:
-            /// todo карта
-            // print('onTaped Карта');
-            Navigator.of(context).pushReplacementNamed(AppRoutes.tempTest);
+            Navigator.of(context).pushReplacementNamed(AppRoutes.map);
             break;
           case 2:
             Navigator.of(context).pushReplacementNamed(AppRoutes.visiting);
