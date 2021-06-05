@@ -24,6 +24,7 @@ const icArrowLeading = '$_baseResPath/arrow_leading.svg';
 const icView = '$_baseResPath/view.svg';
 const icViewUp = '$_baseResPath/view_up.svg';
 const icPlus = '$_baseResPath/plus.svg';
+const icMinus = '$_baseResPath/minus.svg';
 const icFilter = '$_baseResPath/filter.svg';
 const icSearch = '$_baseResPath/search.svg';
 const icDelete = '$_baseResPath/delete.svg';

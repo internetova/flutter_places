@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:places/data/model/user_location.dart';
 
 /// размеры элементов
 const double radiusCard = 12;
@@ -56,3 +57,9 @@ final List<String> searchFilterTypeFilter = [
   'restaurant',
   'hotel',
 ];
+
+/// Красная площадь
+final defaultLocation = UserLocation(
+  lat: 55.754194,
+  lng: 37.620139,
+);
