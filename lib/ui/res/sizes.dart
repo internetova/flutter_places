@@ -17,6 +17,7 @@ const double splashRadiusSmall = 18;
 const double splashRadiusMedium = 28;
 
 /// частые отступы
+const sizedBoxW4 = SizedBox(width: 4);
 const sizedBoxW8 = SizedBox(width: 8);
 const sizedBoxW12 = SizedBox(width: 12);
 const sizedBoxW16 = SizedBox(width: 16);

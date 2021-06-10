@@ -219,7 +219,7 @@ class _BuildPlanButton extends StatelessWidget {
             icon: icCalendar,
             color: Theme.of(context).colorScheme.background,
           ),
-          sizedBoxW8,
+          sizedBoxW4,
           Text(
             buttonTitleToSchedule,
             style: Theme.of(context).primaryTextTheme.bodyText2,
@@ -255,7 +255,7 @@ class _BuildFavoritesButton extends StatelessWidget {
                   icon: state.isFavorite ? icFavoritesFull : icFavorites,
                   color: Theme.of(context).colorScheme.onPrimary,
                 ),
-                sizedBoxW8,
+                sizedBoxW4,
                 Text(
                   state.isFavorite
                       ? buttonTitleIsFavourites

@@ -157,7 +157,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
     if (context.read<SettingsAppCubit>().state.isFirstStart) {
       context.read<SettingsAppCubit>().setIsFirstRun(false);
     }
-    Navigator.of(context).pushReplacementNamed(AppRoutes.home);
+    AppRoutes.goMainScreen(context, pageIndex: 0);
   }
 }
 

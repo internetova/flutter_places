@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:places/blocs/location/location_bloc.dart';
-import 'package:places/blocs/onboarding_screen/onboarding_cubit.dart';
 import 'package:places/blocs/settings_app/settings_app_cubit.dart';
 import 'package:places/ui/components/icon_svg.dart';
-import 'package:places/ui/screen/onboarding_screen.dart';
 import 'package:places/ui/res/app_routes.dart';
 import 'package:places/ui/res/assets.dart';
 import 'package:places/ui/res/sizes.dart';
@@ -80,25 +77,17 @@ class _SplashScreenState extends State<SplashScreen>
   /// Логика перехода либо на онбординг, если был первый вход,
   /// либо на главный экран
   Future<void> _navigateToNext() async {
-    /// запустим определение геопозиции
-    context.read<LocationBloc>().add(LocationStarted());
-
     /// ждём когда завершится инициализация приложения - выполнится ивент
     /// по инициализации настроек и обновится виджет с флагом [isAppNotReady]
     /// показываем анимацию
     await Future.delayed(seconds4);
 
     if (context.read<SettingsAppCubit>().state.isFirstStart) {
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(
-          builder: (context) => BlocProvider<OnboardingCubit>(
-            create: (_) => OnboardingCubit(),
-            child: OnboardingScreen(),
-          ),
-        ),
-      );
+      AppRoutes.goOnboardingScreen(context);
     } else {
-      Navigator.of(context).pushReplacementNamed(AppRoutes.home);
+      AppRoutes.goMainScreen(context, pageIndex: 0);
     }
   }
 }
+
+class MainScreenRoute {}

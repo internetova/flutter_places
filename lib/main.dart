@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:places/blocs/buttons/new_place_button_cubit.dart';
 import 'package:places/blocs/location/location_bloc.dart';
+import 'package:places/blocs/main_screen/pages/main_pages_cubit.dart';
 import 'package:places/blocs/onboarding_screen/onboarding_cubit.dart';
 import 'package:places/blocs/place_list_screen/place_list/place_list_bloc.dart';
 import 'package:places/blocs/settings_app/settings_app_cubit.dart';
@@ -15,16 +16,12 @@ import 'package:places/data/interactor/search_interactor.dart';
 import 'package:places/data/interactor/settings_interactor.dart';
 import 'package:places/data/repository/api_place_repository.dart';
 import 'package:places/data/repository/local_place_repository.dart';
-import 'package:places/ui/screen/map/map_screen.dart';
+import 'package:places/ui/screen/main_screen.dart';
 import 'package:places/ui/screen/onboarding_screen.dart';
 import 'package:places/ui/res/app_routes.dart';
 import 'package:places/ui/res/strings.dart';
 import 'package:places/ui/res/themes.dart';
-import 'package:places/ui/screen/settings_screen.dart';
-import 'package:places/ui/screen/place_list_screen.dart';
 import 'package:places/ui/screen/splash_screen.dart';
-import 'package:places/ui/screen/test_screen.dart';
-import 'package:places/ui/screen/visiting_screen.dart';
 import 'package:provider/provider.dart';
 
 void main() {
@@ -106,11 +103,6 @@ class App extends StatelessWidget {
               context.read<SettingsInteractor>(),
             )..initState(),
           ),
-          BlocProvider<LocationBloc>(
-            create: (context) =>
-            LocationBloc(),
-            // LocationBloc()..add(LocationStarted()),
-          ),
         ],
         child: BlocBuilder<SettingsAppCubit, SettingsAppState>(
           builder: (context, state) {
@@ -122,7 +114,7 @@ class App extends StatelessWidget {
                   ? AppRoutes.splash
                   : state.isFirstStart
                       ? AppRoutes.onboarding
-                      : AppRoutes.home,
+                      : AppRoutes.main,
               routes: {
                 AppRoutes.splash: (context) => SplashScreen(),
                 AppRoutes.onboarding: (context) =>
@@ -130,21 +122,29 @@ class App extends StatelessWidget {
                       create: (_) => OnboardingCubit(),
                       child: OnboardingScreen(),
                     ),
-                AppRoutes.home: (context) => MultiBlocProvider(
+                AppRoutes.main: (context) => MultiBlocProvider(
                       providers: [
+                        /// запрос геолокации
+                        BlocProvider<LocationBloc>(
+                          create: (context) =>
+                              LocationBloc()..add(LocationStarted()),
+                        ),
+                        /// переключение страниц в нижней навигации
+                        BlocProvider<MainPagesCubit>(
+                          create: (_) => MainPagesCubit(),
+                        ),
+                        /// для главного экрана с местами - запрос мест
                         BlocProvider<PlaceListBloc>(
                           create: (_) => PlaceListBloc(
                             context.read<PlaceInteractor>(),
                           ),
                         ),
+                        /// для главного экрана с местами -
+                        /// показывает / скрывает кнопку Добавить новое место
                         BlocProvider<NewPlaceButtonCubit>(
                           create: (_) => NewPlaceButtonCubit(),
                         ),
-                      ],
-                      child: PlaceListScreen(),
-                    ),
-                AppRoutes.visiting: (context) => MultiBlocProvider(
-                      providers: [
+                        /// для экрана с Избранным
                         BlocProvider<PlannedPlacesBloc>(
                           create: (_) => PlannedPlacesBloc(
                             context.read<FavoriteInteractor>(),
@@ -156,12 +156,8 @@ class App extends StatelessWidget {
                           )..add(VisitedPlacesLoad()),
                         ),
                       ],
-                      child: VisitingScreen(),
+                      child: MainScreen(),
                     ),
-                AppRoutes.settings: (context) => SettingsScreen(),
-                AppRoutes.map: (context) => MapScreen(),
-                /// todo временно
-                AppRoutes.tempTest:(context) => TestScreen(),
               },
             );
           },

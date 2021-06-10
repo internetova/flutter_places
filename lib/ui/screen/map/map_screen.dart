@@ -3,8 +3,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:places/blocs/location/location_bloc.dart';
 import 'package:places/data/model/user_location.dart';
-import 'package:places/ui/components/bottom_navigationbar.dart';
 import 'package:places/ui/components/search_bar_static.dart';
+import 'package:places/ui/res/assets.dart';
 import 'package:places/ui/res/sizes.dart';
 import 'package:places/ui/res/strings.dart';
 import 'package:places/ui/screen/map/widgets/bottom_map_buttons.dart';
@@ -20,8 +20,11 @@ class MapScreen extends StatefulWidget {
 }
 
 class _MapScreenState extends State<MapScreen> {
-  late UserLocation _userLocation;
+  late final UserLocation _userLocation;
   late final LocationBloc _locationBloc;
+
+  /// для яндекс карты
+  late final Point _point;
   final Completer<YandexMapController> _completer = Completer();
 
   @override
@@ -40,6 +43,11 @@ class _MapScreenState extends State<MapScreen> {
       _userLocation = defaultLocation;
     }
 
+    _point = Point(
+      latitude: _userLocation.lat,
+      longitude: _userLocation.lng,
+    );
+
     super.initState();
   }
 
@@ -57,10 +65,12 @@ class _MapScreenState extends State<MapScreen> {
         onPressedZoomOut: _onPressedZoomOut,
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      bottomNavigationBar: const MainBottomNavigationBar(current: 1),
+      // todo del
+      // bottomNavigationBar: const MainBottomNavigationBar(current: 1),
     );
   }
 
+  /// создаём карту, перемещаемся в точку локации
   void _onMapCreated(YandexMapController controller) {
     _completer.complete(controller);
 
@@ -74,30 +84,38 @@ class _MapScreenState extends State<MapScreen> {
 
   Future<void> _onPressedGeolocation() async {
     YandexMapController controller = await _completer.future;
-
-    print('_onPressedGeolocation');
-
     _locationBloc.add(LocationStarted());
 
-    controller.move(
-      point: Point(
-        latitude: _userLocation.lat,
-        longitude: _userLocation.lng,
-        // latitude: defaultLocation.lat,
-        // longitude: defaultLocation.lng,
-      ),
+    print('_point $_point');
+
+    controller.showUserLayer(
+      iconName: _getIconicIAmHere() ,
+      arrowName: _getIconicIAmHere(),
+      accuracyCircleFillColor: Theme.of(context).accentColor.withOpacity(0.3),
     );
+
+    controller.move(point: _point);
   }
 
+  /// файл (png) иконки в зависимости от темы
+  String _getIconicIAmHere() {
+    return Theme.of(context).brightness == Brightness.light
+        ? icIAmHereWhite
+        : icIAmHereBlack;
+  }
+
+  /// обновить данные
   void _onPressedRefresh() {
     print('_onPressedRefresh');
   }
 
+  /// увеличить масштаб
   Future<void> _onPressedZoomIn() async {
     YandexMapController controller = await _completer.future;
     controller.zoomIn();
   }
 
+  /// уменьшить масштаб
   Future<void> _onPressedZoomOut() async {
     YandexMapController controller = await _completer.future;
     controller.zoomOut();

@@ -64,7 +64,7 @@ class InformDialogWidget extends StatelessWidget {
       actions: [
         TextButton(
           onPressed: () {
-            Navigator.of(context).pushReplacementNamed(AppRoutes.home);
+            AppRoutes.goMainScreen(context, pageIndex: 0);
           },
           child: Text(
             addNewSightAlertDialogSubmit,

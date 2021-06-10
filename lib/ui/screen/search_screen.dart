@@ -6,7 +6,6 @@ import 'package:places/data/model/search_filter.dart';
 import 'package:places/data/model/place.dart';
 import 'package:places/data/model/search_history_item.dart';
 import 'package:places/data/model/user_location.dart';
-import 'package:places/ui/components/bottom_navigationbar.dart';
 import 'package:places/ui/components/button_text.dart';
 import 'package:places/ui/components/card_square_img.dart';
 import 'package:places/ui/res/assets.dart';
@@ -83,7 +82,6 @@ class _SearchScreenState extends State<SearchScreen> {
           return _buildLoader();
         },
       ),
-      bottomNavigationBar: const MainBottomNavigationBar(current: 0),
     );
   }
 

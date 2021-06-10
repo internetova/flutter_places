@@ -1,32 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:places/blocs/add_place_screen/fields/fields_bloc.dart';
-import 'package:places/blocs/add_place_screen/form/add_form_bloc.dart';
-import 'package:places/blocs/add_place_screen/user_images/user_images_cubit.dart';
 import 'package:places/blocs/buttons/new_place_button_cubit.dart';
-import 'package:places/blocs/filters_screen/button/filter_button_cubit.dart';
-import 'package:places/blocs/filters_screen/filter/filter_cubit.dart';
 import 'package:places/blocs/location/location_bloc.dart';
 import 'package:places/blocs/place_list_screen/place_list/place_list_bloc.dart';
-import 'package:places/blocs/search_screen/search_bloc.dart';
 import 'package:places/blocs/settings_app/settings_app_cubit.dart';
-import 'package:places/data/interactor/place_interactor.dart';
-import 'package:places/data/interactor/search_interactor.dart';
 import 'package:places/data/model/search_filter.dart';
 import 'package:places/data/model/place.dart';
 import 'package:places/data/model/card_type.dart';
 import 'package:places/data/model/user_location.dart';
-import 'package:places/ui/screen/add_place_screen/add_place_screen.dart';
-import 'package:places/ui/components/bottom_navigationbar.dart';
+import 'package:places/ui/res/app_routes.dart';
 import 'package:places/ui/components/button_gradient.dart';
-import 'package:places/ui/screen/filters_screen.dart';
 import 'package:places/ui/res/sizes.dart';
 import 'package:places/ui/res/strings.dart';
 import 'package:places/ui/widgets/empty_page.dart';
 import 'package:places/ui/widgets/inform_dialog_widget.dart';
 import 'package:places/ui/widgets/list_cards.dart';
 import 'package:places/ui/components/search_bar_static.dart';
-import 'package:places/ui/screen/search_screen.dart';
 import 'package:places/ui/widgets/loader.dart';
 import 'package:provider/provider.dart';
 
@@ -185,7 +174,6 @@ class _PlaceListScreenState extends State<PlaceListScreen>
                   )),
           floatingActionButtonLocation:
               FloatingActionButtonLocation.centerFloat,
-          bottomNavigationBar: const MainBottomNavigationBar(current: 0),
         );
       },
     );
@@ -234,41 +222,15 @@ class _PlaceListScreenState extends State<PlaceListScreen>
 
   /// нажатие на градиентную кнопку - переходим на экран добавления места
   void _onPressedAddNewCard() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => MultiBlocProvider(
-          providers: [
-            BlocProvider<FieldsBloc>(
-              create: (_) => FieldsBloc(),
-            ),
-            BlocProvider<UserImagesCubit>(
-              create: (_) => UserImagesCubit(),
-            ),
-            BlocProvider<AddFormBloc>(
-              create: (_) => AddFormBloc(context.read<PlaceInteractor>()),
-            ),
-          ],
-          child: AddPlaceScreen(),
-        ),
-      ),
-    );
+    AppRoutes.goAddPlaceScreen(context);
   }
 
   /// передаем текущий фильтр на экран поиска
   void _onTapSearch() {
-    Navigator.push(
+    AppRoutes.goSearchScreen(
       context,
-      MaterialPageRoute(
-        builder: (context) => BlocProvider<SearchBloc>(
-          create: (_) => SearchBloc(context.read<SearchInteractor>())
-            ..add(GetSearchHistory()),
-          child: SearchScreen(
-            filter: _searchFilter,
-            userLocation: _userLocation,
-          ),
-        ),
-      ),
+      filter: _searchFilter,
+      userLocation: _userLocation,
     );
   }
 
@@ -279,27 +241,11 @@ class _PlaceListScreenState extends State<PlaceListScreen>
     /// отключена, то вместо перехода на экран фильтра покажем окно
     /// с предупреждением о необходимости включения геопозиции
     if (_userLocation != null) {
-      final SearchFilter _newFilter = await Navigator.push(
+      final SearchFilter _newFilter = await AppRoutes.goFiltersScreen(
         context,
-        MaterialPageRoute(
-          builder: (context) => MultiBlocProvider(
-            providers: [
-              BlocProvider<FilterCubit>(
-                create: (_) => FilterCubit()..start(_searchFilter),
-              ),
-              BlocProvider<FilterButtonCubit>(
-                create: (_) => FilterButtonCubit(
-                  context.read<PlaceInteractor>(),
-                )..onChangedFilter(_searchFilter),
-              ),
-            ],
-            child: FiltersScreen(
-              userLocation: _userLocation!,
-              filter: _searchFilter,
-            ),
-          ),
-        ),
-      );
+        filter: _searchFilter,
+        userLocation: _userLocation!,
+      ) as SearchFilter;
 
       _searchFilter = _newFilter;
       _placeListBloc.add(
@@ -319,6 +265,8 @@ class _PlaceListScreenState extends State<PlaceListScreen>
               text: appLocationPermissionDenied,
               informDialogType: InformDialogType.error,
               onPressed: () {
+                /// запросим данные геолокации
+                context.read<LocationBloc>().add(LocationStarted());
                 Navigator.of(context).pop();
               },
             );

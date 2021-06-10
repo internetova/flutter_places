@@ -30,8 +30,12 @@ const icSearch = '$_baseResPath/search.svg';
 const icDelete = '$_baseResPath/delete.svg';
 const icClear = '$_baseResPath/clear.svg';
 const icBucket = '$_baseResPath/bucket.svg';
+
+/// для карты
 const icGeolocation = '$_baseResPath/geolocation.svg';
 const icRefresh = '$_baseResPath/refresh.svg';
+const icIAmHereWhite = '$_baseResPath/map/i_am_here_white.png';
+const icIAmHereBlack = '$_baseResPath/map/i_am_here_black.png';
 
 /// пустые страницы (результат не найден) и ошибки
 const icEmptyPlanned = '$_baseResPath/empty_pages/card.svg';
