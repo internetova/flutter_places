@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:places/blocs/buttons/favorites_button_cubit.dart';
 import 'package:places/data/interactor/place_interactor.dart';
+import 'package:places/data/model/card_type.dart';
 import 'package:places/data/model/place.dart';
 import 'package:places/ui/components/icon_svg.dart';
 import 'package:places/ui/res/sizes.dart';
@@ -10,12 +11,14 @@ import 'package:places/ui/res/assets.dart';
 import 'package:places/ui/widgets/place_details_slider.dart';
 
 /// боттомшит с подробным описанием карточки / достопримечательности
+/// [cardType] - для формирования тега Hero
 class PlaceDetailsBottomSheet extends StatelessWidget {
   final Place card;
+  final CardType cardType;
 
   const PlaceDetailsBottomSheet({
     Key? key,
-    required this.card,
+    required this.card, required this.cardType,
   }) : super(key: key);
 
   @override
@@ -47,6 +50,7 @@ class PlaceDetailsBottomSheet extends StatelessWidget {
                         flexibleSpace: PlaceDetailsSlider(
                           images: card.urls,
                           whereShowSlider: WhereShowSlider.bottomSheet,
+                          cardType: cardType,
                         ),
                       ),
                       SliverList(

@@ -12,97 +12,103 @@ import 'package:places/ui/res/assets.dart';
 import 'package:places/ui/widgets/place_details_slider.dart';
 
 /// экран с подробным описанием карточки / достопримечательности
-class PlaceDetails extends StatelessWidget {
+/// [cardType] добавила откуда перешли на страницу, чтобы корректно работала
+/// анимация Hero после перехода на IndexedStack
+class PlaceDetailsScreen extends StatelessWidget {
   final Place card;
+  final CardType cardType;
 
-  const PlaceDetails({Key? key, required this.card}) : super(key: key);
+  const PlaceDetailsScreen({
+    Key? key,
+    required this.card,
+    required this.cardType,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: MultiBlocProvider(
-        providers: [
-          BlocProvider<FavoritesButtonCubit>(
-            create: (context) => FavoritesButtonCubit(
-              context.read<PlaceInteractor>(),
-              place: card,
-            ),
-          ),
-          BlocProvider<DetailsSliderCubit>(
-            create: (_) => DetailsSliderCubit(),
-          ),
-        ],
-        child: CustomScrollView(
-          slivers: [
-            SliverAppBar(
-              automaticallyImplyLeading: false,
-              expandedHeight: 360,
-              flexibleSpace: PlaceDetailsSlider(
-                images: card.urls,
-                whereShowSlider: WhereShowSlider.screen,
+      body: SafeArea(
+        child: MultiBlocProvider(
+          providers: [
+            BlocProvider<FavoritesButtonCubit>(
+              create: (context) => FavoritesButtonCubit(
+                context.read<PlaceInteractor>(),
+                place: card,
               ),
             ),
-            SliverList(
-              delegate: SliverChildListDelegate([
-                Padding(
-                  padding: const EdgeInsets.only(left: 16, top: 24, right: 16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        card.name,
-                        style: Theme.of(context).textTheme.headline4,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 2, bottom: 24),
-                        child: Row(
-                          children: [
-                            Text(
-                              card.getPlaceTypeName().toLowerCase(),
-                              style: Theme.of(context).textTheme.subtitle1,
-                            ),
-                            sizedBoxW16,
-                            Text(
-                              'закрыто до 09:00', // todo времеменная заглушка
-                              style: Theme.of(context).textTheme.bodyText2,
-                            ),
-                          ],
-                        ),
-                      ),
-                      Text(
-                        card.description,
-                        style: Theme.of(context).textTheme.bodyText1,
-                      ),
-                      sizedBoxH24,
-                      card.cardType == CardType.visited
-                          ? _BuildRouteButtonFinish()
-                          : _BuildRouteButton(),
-                      sizedBoxH24,
-                      Divider(),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 8, bottom: 8),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Expanded(
-                              child: card.cardType == CardType.visited
-                                  ? _BuildShareButton()
-                                  : _BuildPlanButton(),
-                            ),
-                            Expanded(
-                              child: card.cardType == CardType.visited
-                                  ? _BuildFavoritesButtonStatic()
-                                  : _BuildFavoritesButton(),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ]),
+            BlocProvider<DetailsSliderCubit>(
+              create: (_) => DetailsSliderCubit(),
             ),
           ],
+          child: CustomScrollView(
+            slivers: [
+              SliverAppBar(
+                automaticallyImplyLeading: false,
+                expandedHeight: 360,
+                flexibleSpace: PlaceDetailsSlider(
+                  images: card.urls,
+                  whereShowSlider: WhereShowSlider.screen,
+                  cardType: cardType,
+                ),
+              ),
+              SliverList(
+                delegate: SliverChildListDelegate([
+                  Padding(
+                    padding:
+                        const EdgeInsets.only(left: 16, top: 24, right: 16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          card.name,
+                          style: Theme.of(context).textTheme.headline4,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 2, bottom: 24),
+                          child: Row(
+                            children: [
+                              Text(
+                                card.getPlaceTypeName().toLowerCase(),
+                                style: Theme.of(context).textTheme.subtitle1,
+                              ),
+                            ],
+                          ),
+                        ),
+                        Text(
+                          card.description,
+                          style: Theme.of(context).textTheme.bodyText1,
+                        ),
+                        sizedBoxH24,
+                        card.cardType == CardType.visited
+                            ? _BuildRouteButtonFinish()
+                            : _BuildRouteButton(),
+                        sizedBoxH24,
+                        Divider(),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 8, bottom: 8),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Expanded(
+                                child: card.cardType == CardType.visited
+                                    ? _BuildShareButton()
+                                    : _BuildPlanButton(),
+                              ),
+                              Expanded(
+                                child: card.cardType == CardType.visited
+                                    ? _BuildFavoritesButtonStatic()
+                                    : _BuildFavoritesButton(),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ]),
+              ),
+            ],
+          ),
         ),
       ),
     );

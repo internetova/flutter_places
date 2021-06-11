@@ -85,7 +85,11 @@ class _SplashScreenState extends State<SplashScreen>
     if (context.read<SettingsAppCubit>().state.isFirstStart) {
       AppRoutes.goOnboardingScreen(context);
     } else {
-      AppRoutes.goMainScreen(context, pageIndex: 0);
+      AppRoutes.goMainScreen(
+        context,
+        pageIndex: 0,
+        searchFilter: context.read<SettingsAppCubit>().state.searchFilter,
+      );
     }
   }
 }

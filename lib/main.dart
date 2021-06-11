@@ -156,7 +156,7 @@ class App extends StatelessWidget {
                           )..add(VisitedPlacesLoad()),
                         ),
                       ],
-                      child: MainScreen(),
+                      child: MainScreen(searchFilter: state.searchFilter),
                     ),
               },
             );

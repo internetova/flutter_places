@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:places/blocs/search_screen/search_bloc.dart';
+import 'package:places/data/model/card_type.dart';
 import 'package:places/data/model/search_filter.dart';
 import 'package:places/data/model/place.dart';
 import 'package:places/data/model/search_history_item.dart';
@@ -211,7 +212,10 @@ class _SearchScreenState extends State<SearchScreen> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => PlaceDetails(card: card),
+            builder: (context) => PlaceDetailsScreen(
+              card: card,
+              cardType: CardType.search,
+            ),
           ),
         );
       },

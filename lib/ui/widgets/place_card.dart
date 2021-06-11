@@ -5,18 +5,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:places/blocs/buttons/favorites_button_cubit.dart';
-import 'package:places/blocs/place_details_screen/details_slider/details_slider_cubit.dart';
 import 'package:places/blocs/visiting_screen/planned/planned_places_bloc.dart';
 import 'package:places/blocs/visiting_screen/visited/visited_places_bloc.dart';
 import 'package:places/data/interactor/place_interactor.dart';
 import 'package:places/data/model/place.dart';
 import 'package:places/data/model/card_type.dart';
 import 'package:places/ui/components/icon_action_button.dart';
+import 'package:places/ui/res/app_routes.dart';
 import 'package:places/ui/res/sizes.dart';
 import 'package:places/ui/res/strings.dart';
 import 'package:places/ui/res/assets.dart';
 import 'package:places/ui/res/themes.dart';
-import 'package:places/ui/screen/place_details_screen.dart';
 import 'package:places/ui/widgets/reminder_time_ios.dart';
 import 'package:places/ui/widgets/place_details_bottom_sheet.dart';
 
@@ -34,12 +33,12 @@ class PlaceCard extends StatelessWidget {
   final CardType cardType;
   final VoidCallback updateCurrentList;
 
-  PlaceCard(
-      {Key? key,
-      required this.card,
-      required this.cardType,
-      required this.updateCurrentList})
-      : super(key: key);
+  PlaceCard({
+    Key? key,
+    required this.card,
+    required this.cardType,
+    required this.updateCurrentList,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -60,7 +59,10 @@ class PlaceCard extends StatelessWidget {
                 children: [
                   Stack(
                     children: [
-                      CardImagePreview(imgUrl: card.urls.first),
+                      CardImagePreview(
+                        imgUrl: card.urls.first,
+                        cardType: cardType,
+                      ),
                       Positioned(
                         top: 8,
                         left: 16,
@@ -77,7 +79,7 @@ class PlaceCard extends StatelessWidget {
                   type: MaterialType.transparency,
                   child: InkWell(
                     onTap: () {
-                      _showDetailsScreen(context);
+                      _showDetailsScreen(context, card, cardType);
                       // todo отключила боттомшит на главной странице
                       // cardType == CardType.search
                       //     ? _showDetailsBottomSheet(context)
@@ -104,7 +106,10 @@ class PlaceCard extends StatelessWidget {
     await showModalBottomSheet(
       context: context,
       builder: (_) {
-        return PlaceDetailsBottomSheet(card: card);
+        return PlaceDetailsBottomSheet(
+          card: card,
+          cardType: cardType,
+        );
       },
       isScrollControlled: true,
       isDismissible: true,
@@ -117,14 +122,16 @@ class PlaceCard extends StatelessWidget {
   }
 
   /// перейти на отдельный экран с деталями
-  Future<void> _showDetailsScreen(BuildContext context) async {
-    await Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => BlocProvider<DetailsSliderCubit>(
-          create: (_) => DetailsSliderCubit(),
-          child: PlaceDetails(card: card),
-        ),
-      ),
+  /// [cardType] - для формирования тега Hero
+  Future<void> _showDetailsScreen(
+    BuildContext context,
+    Place card,
+    CardType cardType,
+  ) async {
+    await AppRoutes.goPlaceDetailsScreen(
+      context,
+      card: card,
+      cardType: cardType,
     );
 
     /// после возвращения с экрана с подробностями обновляем список карточек,
@@ -136,12 +143,15 @@ class PlaceCard extends StatelessWidget {
 
 /// загружает картинку-превью карточки
 /// берёт первую из списка картинок
+/// [cardType] - для формирования тега Hero
 class CardImagePreview extends StatelessWidget {
   final String imgUrl;
+  final CardType cardType;
 
   const CardImagePreview({
     Key? key,
     required this.imgUrl,
+    required this.cardType,
   }) : super(key: key);
 
   @override
@@ -150,7 +160,9 @@ class CardImagePreview extends StatelessWidget {
       width: double.infinity,
       height: 96,
       child: Hero(
-        tag: imgUrl,
+        tag: cardType == CardType.search
+            ? 'fromSearch$imgUrl'
+            : 'fromFavorites$imgUrl',
         child: Image.network(
           imgUrl,
           fit: BoxFit.cover,
@@ -375,10 +387,6 @@ class CardContent extends StatelessWidget {
           if (cardType != CardType.search) ...[
             SizedBox(
               height: 12,
-            ),
-            Text(
-              'закрыто до 09:00', // временно
-              style: Theme.of(context).textTheme.bodyText2,
             ),
           ],
         ],

@@ -9,6 +9,7 @@ import 'package:places/blocs/filters_screen/filter/filter_cubit.dart';
 import 'package:places/blocs/location/location_bloc.dart';
 import 'package:places/blocs/main_screen/pages/main_pages_cubit.dart';
 import 'package:places/blocs/onboarding_screen/onboarding_cubit.dart';
+import 'package:places/blocs/place_details_screen/details_slider/details_slider_cubit.dart';
 import 'package:places/blocs/place_list_screen/place_list/place_list_bloc.dart';
 import 'package:places/blocs/search_screen/search_bloc.dart';
 import 'package:places/blocs/visiting_screen/planned/planned_places_bloc.dart';
@@ -16,12 +17,15 @@ import 'package:places/blocs/visiting_screen/visited/visited_places_bloc.dart';
 import 'package:places/data/interactor/favorite_interactor.dart';
 import 'package:places/data/interactor/place_interactor.dart';
 import 'package:places/data/interactor/search_interactor.dart';
+import 'package:places/data/model/card_type.dart';
+import 'package:places/data/model/place.dart';
 import 'package:places/data/model/search_filter.dart';
 import 'package:places/data/model/user_location.dart';
 import 'package:places/ui/screen/add_place_screen/add_place_screen.dart';
 import 'package:places/ui/screen/filters_screen.dart';
 import 'package:places/ui/screen/main_screen.dart';
 import 'package:places/ui/screen/onboarding_screen.dart';
+import 'package:places/ui/screen/place_details_screen.dart';
 import 'package:places/ui/screen/search_screen.dart';
 
 /// основные маршруты приложения
@@ -46,6 +50,7 @@ class AppRoutes {
   static Future<Object?> goMainScreen(
     BuildContext context, {
     required int pageIndex,
+    required SearchFilter searchFilter,
   }) {
     return Navigator.of(context).pushReplacement(
       MaterialPageRoute(
@@ -86,7 +91,7 @@ class AppRoutes {
               )..add(VisitedPlacesLoad()),
             ),
           ],
-          child: MainScreen(),
+          child: MainScreen(searchFilter: searchFilter),
         ),
       ),
     );
@@ -140,10 +145,10 @@ class AppRoutes {
   /// перейти на экран фильтра
   /// если геолокация недоступна, то ищем по всей базе
   static Future<Object?> goFiltersScreen(
-      BuildContext context, {
-        required UserLocation userLocation,
-        required SearchFilter filter,
-      }) {
+    BuildContext context, {
+    required UserLocation userLocation,
+    required SearchFilter filter,
+  }) {
     return Navigator.push(
       context,
       MaterialPageRoute(
@@ -162,6 +167,22 @@ class AppRoutes {
             userLocation: userLocation,
             filter: filter,
           ),
+        ),
+      ),
+    );
+  }
+
+  /// перейти на экран детальной информации
+  static Future<Object?> goPlaceDetailsScreen(
+      BuildContext context, {
+        required Place card,
+        required CardType cardType,
+      }) {
+    return Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => BlocProvider<DetailsSliderCubit>(
+          create: (_) => DetailsSliderCubit(),
+          child: PlaceDetailsScreen(card: card, cardType: cardType),
         ),
       ),
     );

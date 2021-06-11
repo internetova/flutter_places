@@ -65,8 +65,6 @@ class _MapScreenState extends State<MapScreen> {
         onPressedZoomOut: _onPressedZoomOut,
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      // todo del
-      // bottomNavigationBar: const MainBottomNavigationBar(current: 1),
     );
   }
 

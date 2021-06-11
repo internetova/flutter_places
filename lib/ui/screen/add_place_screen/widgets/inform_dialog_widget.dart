@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:places/ui/res/app_routes.dart';
 import 'package:places/ui/res/sizes.dart';
 import 'package:places/ui/res/strings.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:places/blocs/settings_app/settings_app_cubit.dart';
 
 /// после добавления нового места показываем диалог с подтверждением
 class InformDialogWidget extends StatelessWidget {
@@ -64,7 +66,11 @@ class InformDialogWidget extends StatelessWidget {
       actions: [
         TextButton(
           onPressed: () {
-            AppRoutes.goMainScreen(context, pageIndex: 0);
+            AppRoutes.goMainScreen(
+              context,
+              pageIndex: 0,
+              searchFilter: context.read<SettingsAppCubit>().state.searchFilter,
+            );
           },
           child: Text(
             addNewSightAlertDialogSubmit,

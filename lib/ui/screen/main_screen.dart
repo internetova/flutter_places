@@ -1,35 +1,74 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:places/blocs/location/location_bloc.dart';
 import 'package:places/blocs/main_screen/pages/main_pages_cubit.dart';
+import 'package:places/data/model/search_filter.dart';
+import 'package:places/data/model/user_location.dart';
 import 'package:places/ui/res/assets.dart';
 import 'package:places/ui/res/strings.dart';
 import 'package:places/ui/screen/map/map_screen.dart';
 import 'package:places/ui/screen/place_list_screen.dart';
 import 'package:places/ui/screen/settings_screen.dart';
 import 'package:places/ui/screen/visiting_screen.dart';
+import 'package:places/ui/widgets/loader.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 /// главный экран приложения
 class MainScreen extends StatelessWidget {
+  final SearchFilter searchFilter;
+
+  const MainScreen({Key? key, required this.searchFilter}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<MainPagesCubit, MainPagesState>(
+    return BlocConsumer<LocationBloc, LocationState>(
+      listener: (context, state) {
+        if (state is LocationFailure) {
+          final snackBar = SnackBar(
+            content: Text(appLocationPermissionDenied),
+            backgroundColor: Theme.of(context).errorColor,
+          );
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        }
+      },
       builder: (context, state) {
-        return Scaffold(
-          body: IndexedStack(
-            index: state.currentPage,
-            children: [
-              PlaceListScreen(),
-              MapScreen(),
-              VisitingScreen(),
-              SettingsScreen(),
-            ],
-          ),
-          bottomNavigationBar: _BuildBottomNavigationBar(
-            pageIndex: state.currentPage,
-          ),
-        );
+        if (state is LocationLoadInProgress) {
+          return Loader(loaderSize: LoaderSize.small);
+        } else if (state is LocationLoadSuccess || state is LocationFailure) {
+          UserLocation? _userLocation;
+
+          if (state is LocationLoadSuccess) {
+            _userLocation = UserLocation(
+              lat: state.position.latitude,
+              lng: state.position.longitude,
+            );
+          }
+
+          return BlocBuilder<MainPagesCubit, MainPagesState>(
+            builder: (context, state) {
+              return Scaffold(
+                body: IndexedStack(
+                  index: state.currentPage,
+                  children: [
+                    PlaceListScreen(
+                      userLocation: _userLocation,
+                      searchFilter: searchFilter,
+                    ),
+                    MapScreen(),
+                    VisitingScreen(),
+                    SettingsScreen(),
+                  ],
+                ),
+                bottomNavigationBar: _BuildBottomNavigationBar(
+                  pageIndex: state.currentPage,
+                ),
+              );
+            },
+          );
+        }
+
+        return Loader(loaderSize: LoaderSize.small);
       },
     );
   }

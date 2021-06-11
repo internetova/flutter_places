@@ -22,18 +22,21 @@ import 'package:provider/provider.dart';
 /// список интересных мест
 /// главная страница
 class PlaceListScreen extends StatefulWidget {
+  final SearchFilter searchFilter;
+  final UserLocation? userLocation;
+
+  const PlaceListScreen({
+    Key? key,
+    required this.searchFilter,
+    this.userLocation,
+  }) : super(key: key);
+
   @override
   _PlaceListScreenState createState() => _PlaceListScreenState();
 }
 
 class _PlaceListScreenState extends State<PlaceListScreen>
     with SingleTickerProviderStateMixin {
-  /// фильтр для поиска
-  /// при первом запуске берётся дефолтный из настроек программы
-  /// при изменении перезаписывается на пользовательский
-  late SearchFilter _searchFilter;
-  UserLocation? _userLocation;
-
   late final SettingsAppCubit _settingsAppCubit;
   late final LocationBloc _locationBloc;
   late final PlaceListBloc _placeListBloc;
@@ -48,26 +51,10 @@ class _PlaceListScreenState extends State<PlaceListScreen>
     _locationBloc = context.read<LocationBloc>();
     _placeListBloc = context.read<PlaceListBloc>();
 
-    _searchFilter = _settingsAppCubit.state.searchFilter;
-
-    if (_locationBloc.state is LocationLoadSuccess) {
-      final _locationLoadSuccessState =
-          _locationBloc.state as LocationLoadSuccess;
-
-      _userLocation = UserLocation(
-        lat: _locationLoadSuccessState.position.latitude,
-        lng: _locationLoadSuccessState.position.longitude,
-      );
-
-      _placeListBloc.add(
-        PlaceListRequested(
-          userLocation: _userLocation,
-          filter: _searchFilter,
-        ),
-      );
-    } else {
-      _placeListBloc.add(PlaceListRequested());
-    }
+    _placeListBloc.add(PlaceListRequested(
+      userLocation: widget.userLocation,
+      filter: widget.searchFilter,
+    ));
 
     _animationController = AnimationController(
       vsync: this,
@@ -181,7 +168,7 @@ class _PlaceListScreenState extends State<PlaceListScreen>
 
   /// обновить список после возврата с детальной страницы
   void _updateList() {
-    context.read<PlaceListBloc>().add(LocalPlaceListRequested());
+    _placeListBloc.add(LocalPlaceListRequested());
   }
 
   /// SliverAppBar в зависимости от ориентации экрана
@@ -229,8 +216,8 @@ class _PlaceListScreenState extends State<PlaceListScreen>
   void _onTapSearch() {
     AppRoutes.goSearchScreen(
       context,
-      filter: _searchFilter,
-      userLocation: _userLocation,
+      filter: widget.searchFilter,
+      userLocation: widget.userLocation,
     );
   }
 
@@ -239,23 +226,23 @@ class _PlaceListScreenState extends State<PlaceListScreen>
   _onPressedFilter() async {
     /// для фильтра используется радиус поиска, поэтому, если геопозиция
     /// отключена, то вместо перехода на экран фильтра покажем окно
-    /// с предупреждением о необходимости включения геопозиции
-    if (_userLocation != null) {
+    /// с предупреждением о необходимости включения геопозиции и при закрытии
+    /// окна запросим разрешение на геопозицию
+    if (widget.userLocation != null) {
       final SearchFilter _newFilter = await AppRoutes.goFiltersScreen(
         context,
-        filter: _searchFilter,
-        userLocation: _userLocation!,
+        filter: widget.searchFilter,
+        userLocation: widget.userLocation!,
       ) as SearchFilter;
 
-      _searchFilter = _newFilter;
+      _settingsAppCubit.updateSearchFilter(_newFilter);
+
       _placeListBloc.add(
         PlaceListRequested(
-          userLocation: _userLocation,
-          filter: _searchFilter,
+          userLocation: widget.userLocation,
+          filter: _newFilter,
         ),
       );
-
-      _settingsAppCubit.updateSearchFilter(_newFilter);
     } else {
       showDialog(
           context: context,
@@ -266,7 +253,7 @@ class _PlaceListScreenState extends State<PlaceListScreen>
               informDialogType: InformDialogType.error,
               onPressed: () {
                 /// запросим данные геолокации
-                context.read<LocationBloc>().add(LocationStarted());
+                _locationBloc.add(LocationStarted());
                 Navigator.of(context).pop();
               },
             );

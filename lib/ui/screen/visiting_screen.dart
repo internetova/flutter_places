@@ -24,8 +24,8 @@ class _VisitingScreenState extends State<VisitingScreen>
   @override
   void initState() {
     _tabController = TabController(length: 2, vsync: this);
-    _plannedPlacesBloc = BlocProvider.of<PlannedPlacesBloc>(context);
-    _visitedPlacesBloc = BlocProvider.of<VisitedPlacesBloc>(context);
+    _plannedPlacesBloc = context.read<PlannedPlacesBloc>();
+    _visitedPlacesBloc = context.read<VisitedPlacesBloc>();
 
     /// обновляем данные при переходе на соответствующую вкладку
     _tabController.addListener(() {
