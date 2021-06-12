@@ -3,6 +3,7 @@ import 'package:places/data/model/user_location.dart';
 
 /// размеры элементов
 const double radiusCard = 12;
+const double radiusButtonSmall = 10;
 const double radiusButton = 12;
 const double radiusInput = 8;
 const double radiusSearchInput = 12;

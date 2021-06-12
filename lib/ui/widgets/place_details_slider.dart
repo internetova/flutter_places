@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:places/blocs/place_details_screen/details_slider/details_slider_cubit.dart';
 import 'package:places/data/model/card_type.dart';
-import 'package:places/ui/components/icon_svg.dart';
+import 'package:places/ui/components/button%20_rounded_small.dart';
 import 'package:places/ui/res/assets.dart';
 import 'package:places/ui/res/sizes.dart';
 
@@ -70,29 +70,15 @@ class PlaceDetailsSlider extends StatelessWidget {
 class _ButtonBack extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return ConstrainedBox(
-      constraints: BoxConstraints.tight(
-        Size(32.0, 32.0),
-      ),
-      child: TextButton(
-        style: TextButton.styleFrom(
-          padding: EdgeInsets.zero,
-          backgroundColor: Theme.of(context).primaryColor,
-          minimumSize: Size.fromHeight(heightBigButton),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(
-              Radius.circular(10),
-            ),
-          ),
-        ),
-        child: IconSvg(
-          icon: icArrow,
-          color: Theme.of(context).colorScheme.onPrimary,
-        ),
-        onPressed: () {
-          Navigator.of(context).pop();
-        },
-      ),
+    return ButtonRoundedSmall(
+      size: 32,
+      radius: radiusButtonSmall,
+      backgroundColor: Theme.of(context).primaryColor,
+      icon: icArrow,
+      iconColor: Theme.of(context).colorScheme.onPrimary,
+      onPressed: () {
+        Navigator.of(context).pop();
+      },
     );
   }
 }
