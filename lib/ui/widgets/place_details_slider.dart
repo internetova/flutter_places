@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:places/blocs/place_details_screen/details_slider/details_slider_cubit.dart';
 import 'package:places/data/model/card_type.dart';
-import 'package:places/ui/components/button%20_rounded_small.dart';
+import 'package:places/ui/components/button_rounded.dart';
 import 'package:places/ui/res/assets.dart';
 import 'package:places/ui/res/sizes.dart';
 
@@ -70,7 +70,7 @@ class PlaceDetailsSlider extends StatelessWidget {
 class _ButtonBack extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return ButtonRoundedSmall(
+    return ButtonRounded(
       size: 32,
       radius: radiusButtonSmall,
       backgroundColor: Theme.of(context).primaryColor,

@@ -5,11 +5,13 @@ import 'package:places/blocs/place_details_screen/details_slider/details_slider_
 import 'package:places/data/interactor/place_interactor.dart';
 import 'package:places/data/model/card_type.dart';
 import 'package:places/data/model/place.dart';
+import 'package:places/ui/components/button_rounded.dart';
 import 'package:places/ui/components/icon_svg.dart';
 import 'package:places/ui/res/sizes.dart';
 import 'package:places/ui/res/strings.dart';
 import 'package:places/ui/res/assets.dart';
 import 'package:places/ui/widgets/place_details_slider.dart';
+import 'package:places/ui/res/themes.dart';
 
 /// экран с подробным описанием карточки / достопримечательности
 /// [cardType] добавила откуда перешли на страницу, чтобы корректно работала
@@ -187,20 +189,16 @@ class _BuildRouteButtonFinish extends StatelessWidget {
           ),
         ),
         sizedBoxW16,
-        TextButton(
+        ButtonRounded(
+          backgroundColor: Theme.of(context).accentColor,
+          size: heightBigButton,
+          radius: radiusCard,
+          icon: icGo,
+          iconColor: Theme.of(context).colorScheme.white,
           onPressed: () {
-            print('onPressed Построить маршрут');
+            // todo Построить маршрут
+            print('Построить маршрут');
           },
-          style: TextButton.styleFrom(
-            backgroundColor: Theme.of(context).accentColor,
-            minimumSize: Size(heightBigButton, heightBigButton),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(
-                Radius.circular(radiusCard),
-              ),
-            ),
-          ),
-          child: IconSvg(icon: icGo),
         ),
       ],
     );

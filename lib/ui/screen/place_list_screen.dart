@@ -51,10 +51,12 @@ class _PlaceListScreenState extends State<PlaceListScreen>
     _locationBloc = context.read<LocationBloc>();
     _placeListBloc = context.read<PlaceListBloc>();
 
-    _placeListBloc.add(PlaceListRequested(
-      userLocation: widget.userLocation,
-      filter: widget.searchFilter,
-    ));
+    _placeListBloc.add(
+      PlaceListRequested(
+        userLocation: widget.userLocation,
+        filter: widget.searchFilter,
+      ),
+    );
 
     _animationController = AnimationController(
       vsync: this,
@@ -97,7 +99,7 @@ class _PlaceListScreenState extends State<PlaceListScreen>
                         orientation == Orientation.portrait ? 16.0 : 34.0,
                   ),
                   sliver: BlocBuilder<PlaceListBloc, PlaceListState>(
-                    builder: (BuildContext context, PlaceListState state) {
+                    builder: (context, state) {
                       if (state is PlaceListLoadSuccess) {
                         context.read<NewPlaceButtonCubit>().show();
 
@@ -223,7 +225,7 @@ class _PlaceListScreenState extends State<PlaceListScreen>
 
   /// переход на экран фильтра
   /// настройки фильтра возвращаем сюда и фильтруем данные
-  _onPressedFilter() async {
+  Future<void> _onPressedFilter() async {
     print('_onPressedFilter'); // todo del
     /// для фильтра используется радиус поиска, поэтому, если геопозиция
     /// отключена, то вместо перехода на экран фильтра покажем окно

@@ -1,22 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:places/ui/components/button_rounded.dart';
 import 'package:places/ui/components/button_gradient.dart';
 import 'package:places/ui/res/assets.dart';
 import 'package:places/ui/res/sizes.dart';
-import 'package:places/ui/screen/map/widgets/round_button.dart';
+import 'package:places/ui/res/themes.dart';
 
-/// кнопки внизу карты - геопозиция, добавть новое место, обновить данные
+/// кнопки внизу карты - геопозиция, добавить новое место, обновить данные
 class BottomMapButtons extends StatelessWidget {
   final VoidCallback onPressedRefresh;
   final VoidCallback onPressedGeolocation;
-  final VoidCallback onPressedZoomIn;
-  final VoidCallback onPressedZoomOut;
 
   const BottomMapButtons({
     Key? key,
     required this.onPressedRefresh,
     required this.onPressedGeolocation,
-    required this.onPressedZoomIn,
-    required this.onPressedZoomOut,
   }) : super(key: key);
 
   @override
@@ -26,31 +23,18 @@ class BottomMapButtons extends StatelessWidget {
       children: [
         Row(
           children: [
-            Expanded(child: SizedBox.shrink()),
-            RoundButton(
-              icon: icPlus,
-              onPressed: onPressedZoomIn,
-            ),
             sizedBoxW16,
-          ],
-        ),
-        sizedBoxH16,
-        Row(
-          children: [
-            Expanded(child: SizedBox.shrink()),
-            RoundButton(
-              icon: icMinus,
-              onPressed: onPressedZoomOut,
-            ),
-            sizedBoxW16,
-          ],
-        ),
-        sizedBoxH16,
-        Row(
-          children: [
-            sizedBoxW16,
-            RoundButton(
+            ButtonRounded(
+              size: 50,
+              radius: 50,
+              backgroundColor: _setColorForTheme(
+                context,
+                light: Theme.of(context).colorScheme.white,
+                dark: Theme.of(context).colorScheme.secondary,
+              ),
               icon: icRefresh,
+              iconColor: Theme.of(context).colorScheme.primary,
+              elevation: 2,
               onPressed: onPressedRefresh,
             ),
             Expanded(child: SizedBox.shrink()),
@@ -59,8 +43,17 @@ class BottomMapButtons extends StatelessWidget {
               onPressed: () {},
             ),
             Expanded(child: SizedBox.shrink()),
-            RoundButton(
+            ButtonRounded(
+              size: 50,
+              radius: 50,
+              backgroundColor: _setColorForTheme(
+                context,
+                light: Theme.of(context).colorScheme.white,
+                dark: Theme.of(context).colorScheme.secondary,
+              ),
               icon: icGeolocation,
+              iconColor: Theme.of(context).colorScheme.primary,
+              elevation: 2,
               onPressed: onPressedGeolocation,
             ),
             sizedBoxW16,
@@ -68,5 +61,14 @@ class BottomMapButtons extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  /// установить цвета в зависимости от темы
+  Color _setColorForTheme(
+    BuildContext context, {
+    required Color light,
+    required Color dark,
+  }) {
+    return Theme.of(context).brightness == Brightness.light ? light : dark;
   }
 }

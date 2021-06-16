@@ -33,9 +33,7 @@ class MainScreen extends StatelessWidget {
         }
       },
       builder: (context, state) {
-        if (state is LocationLoadInProgress) {
-          return Loader(loaderSize: LoaderSize.small);
-        } else if (state is LocationLoadSuccess || state is LocationFailure) {
+        if (state is LocationLoadSuccess || state is LocationFailure) {
           UserLocation? _userLocation;
 
           if (state is LocationLoadSuccess) {
@@ -55,7 +53,10 @@ class MainScreen extends StatelessWidget {
                       userLocation: _userLocation,
                       searchFilter: searchFilter,
                     ),
-                    MapScreen(),
+                    MapScreen(
+                      userLocation: _userLocation,
+                      searchFilter: searchFilter,
+                    ),
                     VisitingScreen(),
                     SettingsScreen(),
                   ],
@@ -68,7 +69,9 @@ class MainScreen extends StatelessWidget {
           );
         }
 
-        return Loader(loaderSize: LoaderSize.small);
+        return Scaffold(
+          body: Loader(loaderSize: LoaderSize.small),
+        );
       },
     );
   }

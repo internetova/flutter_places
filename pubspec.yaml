@@ -54,6 +54,7 @@ flutter:
     - res/icons/tutorial/
     - res/icons/empty_pages/
     - res/icons/loader/
+    - res/icons/map/
     - res/test_data/
 
   fonts:

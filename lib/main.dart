@@ -98,6 +98,7 @@ class App extends StatelessWidget {
       ],
       child: MultiBlocProvider(
         providers: [
+          /// получение настроек приложения
           BlocProvider<SettingsAppCubit>(
             create: (context) => SettingsAppCubit(
               context.read<SettingsInteractor>(),
@@ -126,24 +127,27 @@ class App extends StatelessWidget {
                       providers: [
                         /// запрос геолокации
                         BlocProvider<LocationBloc>(
-                          create: (context) =>
-                              LocationBloc()..add(LocationStarted()),
+                          create: (context) => LocationBloc(),
                         ),
+
                         /// переключение страниц в нижней навигации
                         BlocProvider<MainPagesCubit>(
                           create: (_) => MainPagesCubit(),
                         ),
+
                         /// для главного экрана с местами - запрос мест
                         BlocProvider<PlaceListBloc>(
                           create: (_) => PlaceListBloc(
                             context.read<PlaceInteractor>(),
                           ),
                         ),
+
                         /// для главного экрана с местами -
                         /// показывает / скрывает кнопку Добавить новое место
                         BlocProvider<NewPlaceButtonCubit>(
                           create: (_) => NewPlaceButtonCubit(),
                         ),
+
                         /// для экрана с Избранным
                         BlocProvider<PlannedPlacesBloc>(
                           create: (_) => PlannedPlacesBloc(

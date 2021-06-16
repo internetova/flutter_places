@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:places/ui/components/button%20_rounded_small.dart';
+import 'package:places/ui/components/button_rounded.dart';
 import 'package:places/ui/components/icon_svg.dart';
 import 'package:places/ui/res/assets.dart';
 import 'package:places/ui/res/sizes.dart';
@@ -60,7 +60,7 @@ class SearchBarStatic extends StatelessWidget {
           Positioned(
             top: 0,
             right: 0,
-            child: ButtonRoundedSmall(
+            child: ButtonRounded(
               size: 40,
               radius: radiusButtonSmall,
               backgroundColor: Theme.of(context).primaryColorLight,

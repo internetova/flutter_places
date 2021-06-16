@@ -3,4 +3,5 @@
 /// [search] - для главной страницы
 /// [planned] - в избранном, дата поездки запланирована
 /// [visited] - в избранном, уже посетил
-enum CardType { search, planned, visited }
+/// [map] - превью на карте
+enum CardType { search, planned, visited, map }

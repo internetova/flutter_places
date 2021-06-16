@@ -34,8 +34,12 @@ const icBucket = '$_baseResPath/bucket.svg';
 /// для карты
 const icGeolocation = '$_baseResPath/geolocation.svg';
 const icRefresh = '$_baseResPath/refresh.svg';
-const icIAmHereWhite = '$_baseResPath/map/i_am_here_white.png';
-const icIAmHereBlack = '$_baseResPath/map/i_am_here_black.png';
+const icUserHereLight = '$_baseResPath/map/user_light.png';
+const icUserHereDark = '$_baseResPath/map/user_dark.png';
+const icPlaceMarkLight = '$_baseResPath/map/pm_light.png';
+const icPlaceMarkDark = '$_baseResPath/map/pm_dark.png';
+const icPlaceMarkActiveLight = '$_baseResPath/map/pm_active_light.png';
+const icPlaceMarkActiveDark = '$_baseResPath/map/pm_active_dark.png';
 
 /// пустые страницы (результат не найден) и ошибки
 const icEmptyPlanned = '$_baseResPath/empty_pages/card.svg';

@@ -174,10 +174,10 @@ class AppRoutes {
 
   /// перейти на экран детальной информации
   static Future<Object?> goPlaceDetailsScreen(
-      BuildContext context, {
-        required Place card,
-        required CardType cardType,
-      }) {
+    BuildContext context, {
+    required Place card,
+    required CardType cardType,
+  }) {
     return Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) => BlocProvider<DetailsSliderCubit>(

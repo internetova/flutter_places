@@ -10,6 +10,7 @@ import 'package:places/blocs/visiting_screen/visited/visited_places_bloc.dart';
 import 'package:places/data/interactor/place_interactor.dart';
 import 'package:places/data/model/place.dart';
 import 'package:places/data/model/card_type.dart';
+import 'package:places/ui/components/button_rounded.dart';
 import 'package:places/ui/components/icon_action_button.dart';
 import 'package:places/ui/res/app_routes.dart';
 import 'package:places/ui/res/sizes.dart';
@@ -48,7 +49,7 @@ class PlaceCard extends StatelessWidget {
         place: card,
       ),
       child: AspectRatio(
-        aspectRatio: 3 / 2,
+        aspectRatio: cardType == CardType.map ? 30 / 17 : 3 / 2,
         child: Material(
           borderRadius: BorderRadius.circular(radiusCard),
           clipBehavior: Clip.antiAlias,
@@ -71,7 +72,10 @@ class PlaceCard extends StatelessWidget {
                       ),
                     ],
                   ),
-                  CardContent(card: card, cardType: cardType),
+                  if (cardType != CardType.map)
+                    CardContent(card: card, cardType: cardType),
+                  if (cardType == CardType.map)
+                    CardContentMap(card: card, cardType: cardType),
                 ],
               ),
               Positioned.fill(
@@ -225,7 +229,7 @@ class CardActions extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          if (cardType == CardType.search)
+          if (cardType == CardType.search || cardType == CardType.map)
             ..._buildActionsSearch(context) as Iterable<Widget>,
           if (cardType == CardType.planned)
             ..._buildActionsPlanned(context) as Iterable<Widget>,
@@ -389,6 +393,50 @@ class CardContent extends StatelessWidget {
               height: 12,
             ),
           ],
+        ],
+      ),
+    );
+  }
+}
+
+/// контент карточки для показа на карте
+class CardContentMap extends StatelessWidget {
+  final Place card;
+  final CardType cardType;
+
+  const CardContentMap({
+    Key? key,
+    required this.card,
+    required this.cardType,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            child: Text(
+              card.name,
+              style: Theme.of(context).textTheme.headline5,
+              overflow: TextOverflow.ellipsis,
+              maxLines: 2,
+            ),
+          ),
+          sizedBoxW8,
+          ButtonRounded(
+            backgroundColor: Theme.of(context).accentColor,
+            size: heightBigButton,
+            radius: radiusCard,
+            icon: icGo,
+            iconColor: Theme.of(context).colorScheme.white,
+            onPressed: () {
+              // todo Построить маршрут
+              print('Построить маршрут');
+            },
+          ),
         ],
       ),
     );

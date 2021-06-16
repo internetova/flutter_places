@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:places/ui/components/icon_svg.dart';
 
-/// элемент интерфейса - небольшая закругленная квдартная кнопка,
-/// используется в поле поиска, как кнопка назад с детальной страницы
-class ButtonRoundedSmall extends StatelessWidget {
+/// элемент интерфейса - небольшая закругленная квдартная или круглая кнопка,
+/// используется в поле поиска, как кнопка назад с детальной страницы, на карте
+class ButtonRounded extends StatelessWidget {
   final double size;
   final Color backgroundColor;
   final double radius;
   final String icon;
   final Color iconColor;
   final VoidCallback onPressed;
+  final double? elevation;
 
-  const ButtonRoundedSmall({
+  const ButtonRounded({
     Key? key,
     required this.size,
     required this.backgroundColor,
@@ -19,6 +20,7 @@ class ButtonRoundedSmall extends StatelessWidget {
     required this.icon,
     required this.iconColor,
     required this.onPressed,
+    this.elevation,
   }) : super(key: key);
 
   @override
@@ -36,6 +38,7 @@ class ButtonRoundedSmall extends StatelessWidget {
               Radius.circular(radius),
             ),
           ),
+          elevation: elevation,
         ),
         child: IconSvg(
           icon: icon,
