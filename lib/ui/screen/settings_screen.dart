@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:places/blocs/settings_app/settings_app_cubit.dart';
+import 'package:places/ui/components/app_bottom_navigation_bar.dart';
 import 'package:places/ui/res/app_routes.dart';
 import 'package:places/ui/res/assets.dart';
 import 'package:places/ui/res/strings.dart';
@@ -33,6 +34,7 @@ class SettingsScreen extends StatelessWidget {
           ),
         ),
       ),
+      bottomNavigationBar: const AppBottomNavigationBar(current: 3),
     );
   }
 

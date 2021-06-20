@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:io';
-import 'dart:math';
 
 import 'package:dio/dio.dart';
 import 'package:places/data/dto/place_dto.dart';
@@ -111,9 +110,9 @@ class PlaceInteractor {
     /// todo это для тестирования карточки Посетил, потом удалить
     /// ‼️ беру рандомную карточку из загруженных с сервера и добавляю ее
     /// в избранные Посетил
-    final int randomPlace = Random().nextInt(uiPlaces.length);
-    await localRepository.addNewPlace(
-        Place.switchFavoriteStatusVisited(place: uiPlaces[randomPlace]));
+    // final int randomPlace = Random().nextInt(uiPlaces.length);
+    // await localRepository.addNewPlace(
+    //     Place.switchFavoriteStatusVisited(place: uiPlaces[randomPlace]));
 
     /// сохраняем данные с сервера в локальную память типа кэш
     await localRepository.addCachePlacesAll(uiPlaces);

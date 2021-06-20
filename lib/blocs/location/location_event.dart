@@ -5,13 +5,8 @@ part of 'location_bloc.dart';
 abstract class LocationEvent {}
 
 /// определение позиции
-/// [isObserver] - если true, то следим за изменением геопозиции,
 /// если нет - делаем разовый запрос
-class LocationStarted extends LocationEvent {
-  final bool isObserver;
-
-  LocationStarted({this.isObserver = false});
-}
+class LocationStarted extends LocationEvent {}
 
 /// текущие данные позиции
 class LocationChanged extends LocationEvent {

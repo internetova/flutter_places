@@ -66,9 +66,8 @@ class InformDialogWidget extends StatelessWidget {
       actions: [
         TextButton(
           onPressed: () {
-            AppRoutes.goMainScreen(
+            AppRoutes.goPlaceListScreen(
               context,
-              pageIndex: 0,
               searchFilter: context.read<SettingsAppCubit>().state.searchFilter,
             );
           },

@@ -3,19 +3,20 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:places/blocs/location/location_bloc.dart';
+import 'package:places/blocs/map/selected_place/selected_place_cubit.dart';
 import 'package:places/blocs/place_list_screen/place_list/place_list_bloc.dart';
 import 'package:places/blocs/settings_app/settings_app_cubit.dart';
-import 'package:places/data/model/card_type.dart';
 import 'package:places/data/model/place.dart';
 import 'package:places/data/model/search_filter.dart';
 import 'package:places/data/model/user_location.dart';
+import 'package:places/ui/components/app_bottom_navigation_bar.dart';
 import 'package:places/ui/components/search_bar_static.dart';
 import 'package:places/ui/res/app_routes.dart';
 import 'package:places/ui/res/assets.dart';
 import 'package:places/ui/res/sizes.dart';
 import 'package:places/ui/res/strings.dart';
 import 'package:places/ui/screen/map/widgets/bottom_map_buttons.dart';
-import 'package:places/ui/screen/map/widgets/place_card_map_bottom_sheet.dart';
+import 'package:places/ui/widgets/empty_page.dart';
 import 'package:places/ui/widgets/inform_dialog_widget.dart';
 import 'package:places/ui/widgets/loader.dart';
 import 'package:yandex_mapkit/yandex_mapkit.dart';
@@ -24,12 +25,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 /// экран с яндекс картой
 class MapScreen extends StatefulWidget {
   final SearchFilter searchFilter;
-  final UserLocation? userLocation;
 
   MapScreen({
     Key? key,
     required this.searchFilter,
-    this.userLocation,
   }) : super(key: key);
 
   @override
@@ -37,23 +36,93 @@ class MapScreen extends StatefulWidget {
 }
 
 class _MapScreenState extends State<MapScreen> {
-  final Completer<YandexMapController> _completer = Completer();
+  YandexMapController? controller;
+
+  late final SettingsAppCubit _settingsAppCubit;
+  late final LocationBloc _locationBloc;
+  late final PlaceListBloc _placeListBloc;
+  late final SelectedPlaceCubit _selectedPlaceCubit;
+
+  UserLocation? _userLocation;
+  late SearchFilter _searchFilter;
+
+  /// загруженный список мест
   List<Place>? _places;
+
+  /// последнее выбранное место - зелёный маркер
+  Place? _selectedPlace;
+
+  /// предыдущая и последняя выбранные отметки на карте - для удаления
+  /// предыдущего зеленого маркера
+  final List<Placemark> _selectedPlacemarks = [];
+
+  @override
+  void initState() {
+    _settingsAppCubit = context.read<SettingsAppCubit>();
+    _locationBloc = context.read<LocationBloc>();
+    _placeListBloc = context.read<PlaceListBloc>();
+    _selectedPlaceCubit = context.read<SelectedPlaceCubit>();
+
+    _searchFilter = widget.searchFilter;
+
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: _BuildAppBar(
-        searchFilter: widget.searchFilter,
-        userLocation: widget.userLocation,
+        onTapSearch: _onTapSearch,
+        onPressedFilter: _onPressedFilter,
       ),
-      body: BlocBuilder<PlaceListBloc, PlaceListState>(
+      body: BlocBuilder<LocationBloc, LocationState>(
         builder: (context, state) {
-          if (state is PlaceListLoadSuccess) {
-            _places = state.placesList;
+          if (state is LocationLoadSuccess || state is LocationFailure) {
+            if (state is LocationLoadSuccess) {
+              _userLocation = UserLocation(
+                lat: state.position.latitude,
+                lng: state.position.longitude,
+              );
 
-            return YandexMap(
-              onMapCreated: _onMapCreated,
+              _placeListBloc.add(
+                PlaceListRequested(
+                  userLocation: _userLocation,
+                  filter: _searchFilter,
+                ),
+              );
+            } else if (state is LocationFailure) {
+              _placeListBloc.add(
+                PlaceListRequested(),
+              );
+            }
+
+            return BlocBuilder<PlaceListBloc, PlaceListState>(
+              builder: (context, state) {
+                if (state is PlaceListLoadSuccess ||
+                    state is LocalPlaceListLoadSuccess) {
+                  if (state is PlaceListLoadSuccess) {
+                    _places = state.placesList;
+                  }
+
+                  if (state is LocalPlaceListLoadSuccess) {
+                    _places = state.placesList;
+                  }
+
+                  return YandexMap(
+                    onMapCreated: _onMapCreated,
+                  );
+                }
+
+                if (state is PlaceListLoadFailure) {
+                  return EmptyPage(
+                    icon: appNetworkException['emptyScreenIcon']!,
+                    header: appNetworkException['emptyScreenHeader']!,
+                    text: appNetworkException['emptyScreenText']!,
+                  );
+                }
+
+                return Loader(loaderSize: LoaderSize.small);
+              },
             );
           }
 
@@ -61,38 +130,44 @@ class _MapScreenState extends State<MapScreen> {
         },
       ),
       floatingActionButton: BottomMapButtons(
-        onPressedRefresh: () => _onPressedRefresh,
-        onPressedGeolocation: _onPressedGeolocation,
+        onPressedRefresh: _onPressedRefresh,
+        onPressedGeolocation: () async {
+          _onPressedGeolocation(controller!);
+        },
+        place: _selectedPlace,
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      bottomNavigationBar: const AppBottomNavigationBar(current: 1),
     );
   }
 
   /// создаём карту
-  Future<void> _onMapCreated(YandexMapController controller) async {
-    _completer.complete(controller);
+  Future<void> _onMapCreated(YandexMapController yandexMapController) async {
+    controller = yandexMapController;
 
     /// логотип яндекса
-    controller.logoAlignment(
+    await controller!.logoAlignment(
       horizontal: HorizontalAlignment.left,
       vertical: VerticalAlignment.top,
     );
 
     /// тема карты
-    /// todo del
-    print(
-        '---------ТЕМА-------- ${context.read<SettingsAppCubit>().state.isDark}');
-    controller.toggleNightMode(
+    await controller!.toggleNightMode(
         enabled: context.read<SettingsAppCubit>().state.isDark);
 
-    _loadPlaces(places: _places!);
-    _setBoundsPlaces(places: _places!);
+    /// стиль карты
+    await controller!.setMapStyle(
+        style: context.read<SettingsAppCubit>().state.isDark
+            ? mapDarkStyle
+            : mapLightStyle);
+
+    _loadPlaces(controller!, places: _places!);
+    _setBoundsPlaces(controller!, places: _places!);
   }
 
   /// загрузить места
-  Future<void> _loadPlaces({required List<Place> places}) async {
-    YandexMapController controller = await _completer.future;
-
+  Future<void> _loadPlaces(YandexMapController controller,
+      {required List<Place> places}) async {
     for (var i = 0; i < places.length; i++) {
       final Placemark _placemark = Placemark(
         point: Point(latitude: places[i].lat, longitude: places[i].lng),
@@ -101,8 +176,6 @@ class _MapScreenState extends State<MapScreen> {
             controller,
             place: places[i],
           );
-
-          _showCardPlace();
         },
         style: PlacemarkStyle(
           iconName:
@@ -127,34 +200,28 @@ class _MapScreenState extends State<MapScreen> {
       style: PlacemarkStyle(
         iconName: _getIconForTheme(
             light: icPlaceMarkActiveLight, dark: icPlaceMarkActiveDark),
-        scale: 2,
+        scale: 1.5,
         opacity: 1,
       ),
     );
 
     controller.addPlacemark(_selectedPlacemark);
 
-    await showModalBottomSheet(
-      context: context,
-      builder: (_) {
-        return PlaceCardMapBottomSheet(
-          place: place,
-          cardType: CardType.map,
-        );
-      },
-    );
+    /// для отображения карточки места
+    _selectedPlace = place;
+    _selectedPlaceCubit.selectedPlace(place);
 
-    /// удаляем зелёную метку
-    controller.removePlacemark(controller.placemarks.last);
+    /// для удаления предыдущей зеленой отметки
+    _selectedPlacemarks.add(_selectedPlacemark);
+    if (_selectedPlacemarks.length > 1) {
+      controller.removePlacemark(_selectedPlacemarks.first);
+      _selectedPlacemarks.removeAt(0);
+    }
   }
 
-  /// показать карточку места
-  Future<void> _showCardPlace() async {}
-
   /// устанавливаем границу карты для отображения всех мест
-  Future<void> _setBoundsPlaces({required List<Place> places}) async {
-    YandexMapController controller = await _completer.future;
-
+  Future<void> _setBoundsPlaces(YandexMapController controller,
+      {required List<Place> places}) async {
     controller.setBounds(
       southWestPoint: Point(
         latitude: places.map((e) => e.lat).reduce(min),
@@ -170,11 +237,9 @@ class _MapScreenState extends State<MapScreen> {
   }
 
   /// показать где я
-  Future<void> _onPressedGeolocation() async {
-    YandexMapController controller = await _completer.future;
-
-    if (widget.userLocation == null) {
-      context.read<LocationBloc>().add(LocationStarted());
+  Future<void> _onPressedGeolocation(YandexMapController controller) async {
+    if (_userLocation == null) {
+      _locationBloc.add(LocationStarted());
     }
 
     controller.showUserLayer(
@@ -182,6 +247,17 @@ class _MapScreenState extends State<MapScreen> {
       arrowName: _getIconForTheme(light: icUserHereLight, dark: icUserHereDark),
       accuracyCircleFillColor: Theme.of(context).accentColor.withOpacity(0.5),
     );
+
+    if (_userLocation != null) {
+      controller.move(
+        point: Point(
+          latitude: _userLocation!.lat,
+          longitude: _userLocation!.lng,
+        ),
+      );
+
+      controller.zoomOut();
+    }
   }
 
   /// файл (png) иконки в зависимости от темы
@@ -193,21 +269,74 @@ class _MapScreenState extends State<MapScreen> {
   }
 
   /// обновить данные
-  void _onPressedRefresh() {
-    // todo del
-    print('_onPressedRefresh');
+  Future<void> _onPressedRefresh() async {
+    _placeListBloc.add(
+      PlaceListRequested(
+        userLocation: _userLocation,
+        filter: _searchFilter,
+      ),
+    );
+  }
+
+  /// передаем текущий фильтр на экран поиска
+  void _onTapSearch() {
+    AppRoutes.goSearchScreen(
+      context,
+      filter: _searchFilter,
+      userLocation: _userLocation,
+    );
+  }
+
+  /// переход на экран фильтра
+  /// настройки фильтра возвращаем сюда и фильтруем данные
+  Future<void> _onPressedFilter() async {
+    /// для фильтра используется радиус поиска, поэтому, если геопозиция
+    /// отключена, то вместо перехода на экран фильтра покажем окно
+    /// с предупреждением о необходимости включения геопозиции и при закрытии
+    /// окна запросим разрешение на геопозицию
+    if (_userLocation != null) {
+      final SearchFilter _newFilter = await AppRoutes.goFiltersScreen(
+        context,
+        filter: widget.searchFilter,
+        userLocation: _userLocation!,
+      ) as SearchFilter;
+
+      _settingsAppCubit.updateSearchFilter(_newFilter);
+
+      _placeListBloc.add(
+        PlaceListRequested(
+          userLocation: _userLocation,
+          filter: _newFilter,
+        ),
+      );
+    } else {
+      showDialog(
+          context: context,
+          builder: (_) {
+            return InformDialogWidget(
+              header: appException,
+              text: appLocationPermissionDenied,
+              informDialogType: InformDialogType.error,
+              onPressed: () {
+                /// запросим данные геолокации
+                _locationBloc.add(LocationStarted());
+                Navigator.of(context).pop();
+              },
+            );
+          });
+    }
   }
 }
 
 /// AppBar
 class _BuildAppBar extends StatelessWidget implements PreferredSizeWidget {
-  final SearchFilter searchFilter;
-  final UserLocation? userLocation;
+  final VoidCallback onTapSearch;
+  final VoidCallback onPressedFilter;
 
   const _BuildAppBar({
     Key? key,
-    required this.searchFilter,
-    this.userLocation,
+    required this.onTapSearch,
+    required this.onPressedFilter,
   }) : super(key: key);
 
   @override
@@ -227,55 +356,14 @@ class _BuildAppBar extends StatelessWidget implements PreferredSizeWidget {
               ),
               sizedBoxH24,
               SearchBarStatic(
-                onTapSearch: () {},
-                onPressedFilter: () => _onPressedFilter(context),
+                onTapSearch: onTapSearch,
+                onPressedFilter: onPressedFilter,
               ),
             ],
           ),
         ),
       ),
     );
-  }
-
-  /// переход на экран фильтра
-  /// настройки фильтра возвращаем сюда и фильтруем данные
-  Future<void> _onPressedFilter(BuildContext context) async {
-    print('_onPressedFilter'); // todo del
-    /// для фильтра используется радиус поиска, поэтому, если геопозиция
-    /// отключена, то вместо перехода на экран фильтра покажем окно
-    /// с предупреждением о необходимости включения геопозиции и при закрытии
-    /// окна запросим разрешение на геопозицию
-    if (userLocation != null) {
-      final SearchFilter _newFilter = await AppRoutes.goFiltersScreen(
-        context,
-        filter: searchFilter,
-        userLocation: userLocation!,
-      ) as SearchFilter;
-
-      context.read<SettingsAppCubit>().updateSearchFilter(_newFilter);
-
-      context.read<PlaceListBloc>().add(
-            PlaceListRequested(
-              userLocation: userLocation,
-              filter: _newFilter,
-            ),
-          );
-    } else {
-      showDialog(
-          context: context,
-          builder: (_) {
-            return InformDialogWidget(
-              header: appException,
-              text: appLocationPermissionDenied,
-              informDialogType: InformDialogType.error,
-              onPressed: () {
-                /// запросим данные геолокации
-                context.read<LocationBloc>().add(LocationStarted());
-                Navigator.of(context).pop();
-              },
-            );
-          });
-    }
   }
 
   @override

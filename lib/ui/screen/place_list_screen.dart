@@ -8,6 +8,7 @@ import 'package:places/data/model/search_filter.dart';
 import 'package:places/data/model/place.dart';
 import 'package:places/data/model/card_type.dart';
 import 'package:places/data/model/user_location.dart';
+import 'package:places/ui/components/app_bottom_navigation_bar.dart';
 import 'package:places/ui/res/app_routes.dart';
 import 'package:places/ui/components/button_gradient.dart';
 import 'package:places/ui/res/sizes.dart';
@@ -23,12 +24,10 @@ import 'package:provider/provider.dart';
 /// главная страница
 class PlaceListScreen extends StatefulWidget {
   final SearchFilter searchFilter;
-  final UserLocation? userLocation;
 
   const PlaceListScreen({
     Key? key,
     required this.searchFilter,
-    this.userLocation,
   }) : super(key: key);
 
   @override
@@ -41,6 +40,9 @@ class _PlaceListScreenState extends State<PlaceListScreen>
   late final LocationBloc _locationBloc;
   late final PlaceListBloc _placeListBloc;
 
+  UserLocation? _userLocation;
+  late SearchFilter _searchFilter;
+
   /// анимация кнопки создания нового места
   late final AnimationController _animationController;
   late final Animation<Offset> _buttonAnimation;
@@ -51,12 +53,7 @@ class _PlaceListScreenState extends State<PlaceListScreen>
     _locationBloc = context.read<LocationBloc>();
     _placeListBloc = context.read<PlaceListBloc>();
 
-    _placeListBloc.add(
-      PlaceListRequested(
-        userLocation: widget.userLocation,
-        filter: widget.searchFilter,
-      ),
-    );
+    _searchFilter = widget.searchFilter;
 
     _animationController = AnimationController(
       vsync: this,
@@ -86,85 +83,138 @@ class _PlaceListScreenState extends State<PlaceListScreen>
 
   @override
   Widget build(BuildContext context) {
-    return OrientationBuilder(
-      builder: (BuildContext context, Orientation orientation) {
-        return Scaffold(
-          body: SafeArea(
-            child: CustomScrollView(
-              slivers: [
-                _buildSliverAppBar(orientation),
-                SliverPadding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal:
-                        orientation == Orientation.portrait ? 16.0 : 34.0,
-                  ),
-                  sliver: BlocBuilder<PlaceListBloc, PlaceListState>(
-                    builder: (context, state) {
-                      if (state is PlaceListLoadSuccess) {
-                        context.read<NewPlaceButtonCubit>().show();
+    return RefreshIndicator(
+      onRefresh: () => _refreshPlaces(context),
+      child: OrientationBuilder(
+        builder: (BuildContext context, Orientation orientation) {
+          return Scaffold(
+            body: SafeArea(
+              child: CustomScrollView(
+                slivers: [
+                  _buildSliverAppBar(orientation),
+                  SliverPadding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal:
+                          orientation == Orientation.portrait ? 16.0 : 34.0,
+                    ),
+                    sliver: BlocBuilder<LocationBloc, LocationState>(
+                      builder: (context, state) {
+                        if (state is LocationLoadSuccess ||
+                            state is LocationFailure) {
+                          if (state is LocationLoadSuccess) {
+                            _userLocation = UserLocation(
+                              lat: state.position.latitude,
+                              lng: state.position.longitude,
+                            );
 
-                        if (state.placesList.isEmpty) {
-                          return SliverToBoxAdapter(
-                            child: EmptyPage(
-                              icon: placeListEmpty['emptyScreenIcon']!,
-                              header: placeListEmpty['emptyScreenHeader']!,
-                              text: placeListEmpty['emptyScreenText']!,
-                            ),
-                          );
-                        } else {
-                          return _buildListCard(
-                            orientation,
-                            data: state.placesList,
-                            updateCurrentList: _updateList,
+                            _placeListBloc.add(
+                              PlaceListRequested(
+                                userLocation: _userLocation,
+                                filter: _searchFilter,
+                              ),
+                            );
+                          } else if (state is LocationFailure) {
+                            _placeListBloc.add(
+                              PlaceListRequested(),
+                            );
+                          }
+
+                          return BlocBuilder<PlaceListBloc, PlaceListState>(
+                            builder: (context, state) {
+                              if (state is PlaceListLoadSuccess) {
+                                context.read<NewPlaceButtonCubit>().show();
+
+                                if (state.placesList.isEmpty) {
+                                  return SliverToBoxAdapter(
+                                    child: EmptyPage(
+                                      icon: placeListEmpty['emptyScreenIcon']!,
+                                      header:
+                                          placeListEmpty['emptyScreenHeader']!,
+                                      text: placeListEmpty['emptyScreenText']!,
+                                    ),
+                                  );
+                                } else {
+                                  return _buildListCard(
+                                    orientation,
+                                    data: state.placesList,
+                                    updateCurrentList: _updateList,
+                                  );
+                                }
+                              }
+
+                              if (state is LocalPlaceListLoadSuccess) {
+                                context.read<NewPlaceButtonCubit>().show();
+                                return _buildListCard(
+                                  orientation,
+                                  data: state.placesList,
+                                  updateCurrentList: _updateList,
+                                );
+                              }
+
+                              if (state is PlaceListLoadFailure) {
+                                context.read<NewPlaceButtonCubit>().hide();
+                                return SliverFillRemaining(
+                                  child: EmptyPage(
+                                    icon:
+                                        appNetworkException['emptyScreenIcon']!,
+                                    header: appNetworkException[
+                                        'emptyScreenHeader']!,
+                                    text:
+                                        appNetworkException['emptyScreenText']!,
+                                  ),
+                                );
+                              }
+
+                              return const SliverToBoxAdapter(
+                                child: Padding(
+                                  padding: const EdgeInsets.only(top: 40.0),
+                                  child: Loader(
+                                    loaderSize: LoaderSize.small,
+                                  ),
+                                ),
+                              );
+                            },
                           );
                         }
-                      }
 
-                      if (state is LocalPlaceListLoadSuccess) {
-                        context.read<NewPlaceButtonCubit>().show();
-                        return _buildListCard(
-                          orientation,
-                          data: state.placesList,
-                          updateCurrentList: _updateList,
-                        );
-                      }
-
-                      if (state is PlaceListLoadFailure) {
-                        context.read<NewPlaceButtonCubit>().hide();
-                        return SliverFillRemaining(
-                          child: EmptyPage(
-                              icon: appNetworkException['emptyScreenIcon']!,
-                              header: appNetworkException['emptyScreenHeader']!,
-                              text: appNetworkException['emptyScreenText']!),
-                        );
-                      }
-
-                      return const SliverToBoxAdapter(
-                        child: Padding(
-                          padding: const EdgeInsets.only(top: 40.0),
-                          child: Loader(
-                            loaderSize: LoaderSize.small,
+                        return const SliverToBoxAdapter(
+                          child: Padding(
+                            padding: const EdgeInsets.only(top: 40.0),
+                            child: Loader(
+                              loaderSize: LoaderSize.small,
+                            ),
                           ),
-                        ),
-                      );
-                    },
-                  ),
-                ),
-              ],
-            ),
-          ),
-          floatingActionButton: BlocBuilder<NewPlaceButtonCubit, bool>(
-              builder: (context, state) => SlideTransition(
-                    position: _buttonAnimation,
-                    child: ButtonGradient(
-                      onPressed: _onPressedAddNewCard,
-                      isEnabled: state,
+                        );
+                      },
                     ),
-                  )),
-          floatingActionButtonLocation:
-              FloatingActionButtonLocation.centerFloat,
-        );
-      },
+                  ),
+                ],
+              ),
+            ),
+            floatingActionButton: BlocBuilder<NewPlaceButtonCubit, bool>(
+                builder: (context, state) => SlideTransition(
+                      position: _buttonAnimation,
+                      child: ButtonGradient(
+                        onPressed: _onPressedAddNewCard,
+                        isEnabled: state,
+                      ),
+                    )),
+            floatingActionButtonLocation:
+                FloatingActionButtonLocation.centerFloat,
+            bottomNavigationBar: const AppBottomNavigationBar(current: 0),
+          );
+        },
+      ),
+    );
+  }
+
+  /// обновить места
+  Future<void> _refreshPlaces(BuildContext context) async {
+    _placeListBloc.add(
+      PlaceListRequested(
+        userLocation: _userLocation,
+        filter: _searchFilter,
+      ),
     );
   }
 
@@ -218,31 +268,30 @@ class _PlaceListScreenState extends State<PlaceListScreen>
   void _onTapSearch() {
     AppRoutes.goSearchScreen(
       context,
-      filter: widget.searchFilter,
-      userLocation: widget.userLocation,
+      filter: _searchFilter,
+      userLocation: _userLocation,
     );
   }
 
   /// переход на экран фильтра
   /// настройки фильтра возвращаем сюда и фильтруем данные
   Future<void> _onPressedFilter() async {
-    print('_onPressedFilter'); // todo del
     /// для фильтра используется радиус поиска, поэтому, если геопозиция
     /// отключена, то вместо перехода на экран фильтра покажем окно
     /// с предупреждением о необходимости включения геопозиции и при закрытии
     /// окна запросим разрешение на геопозицию
-    if (widget.userLocation != null) {
+    if (_userLocation != null) {
       final SearchFilter _newFilter = await AppRoutes.goFiltersScreen(
         context,
         filter: widget.searchFilter,
-        userLocation: widget.userLocation!,
+        userLocation: _userLocation!,
       ) as SearchFilter;
 
       _settingsAppCubit.updateSearchFilter(_newFilter);
 
       _placeListBloc.add(
         PlaceListRequested(
-          userLocation: widget.userLocation,
+          userLocation: _userLocation,
           filter: _newFilter,
         ),
       );

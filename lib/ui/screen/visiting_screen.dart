@@ -4,6 +4,7 @@ import 'package:places/blocs/visiting_screen/planned/planned_places_bloc.dart';
 import 'package:places/blocs/visiting_screen/visited/visited_places_bloc.dart';
 import 'package:places/data/model/place.dart';
 import 'package:places/data/model/card_type.dart';
+import 'package:places/ui/components/app_bottom_navigation_bar.dart';
 import 'package:places/ui/res/strings.dart';
 import 'package:places/ui/widgets/empty_page.dart';
 import 'package:places/ui/widgets/loader.dart';
@@ -146,8 +147,7 @@ class _VisitingScreenState extends State<VisitingScreen>
           }),
         ],
       ),
-      // todo del
-      // bottomNavigationBar: const MainBottomNavigationBar(current: 2),
+      bottomNavigationBar: const AppBottomNavigationBar(current: 2),
     );
   }
 

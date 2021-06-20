@@ -59,7 +59,8 @@ const Map<String, String> appNetworkException = {
 const Map<String, String> placeListEmpty = {
   'emptyScreenIcon': icSearch,
   'emptyScreenHeader': 'Пусто',
-  'emptyScreenText': 'Ничего не найдено.\n\nПопробуйте изменить\nпараметры фильтра поиска.',
+  'emptyScreenText':
+      'Ничего не найдено.\n\nПопробуйте изменить\nпараметры фильтра поиска.',
 };
 
 /// Ошибки и исключения
@@ -67,9 +68,12 @@ const appException = 'Ошибка!';
 const appExceptionNoInternetConnection = 'Нет интернет соединения.';
 const appExceptionUnknownError = 'Неизвестная ошибка.';
 const appExceptionNoImageSelected = 'Не выбрано изображение.';
-const appLocationServiceNotEnabled = 'Службы определения местоположения отключены.';
-const appLocationPermissionDenied = 'Доступ на определение местоложения запрещён. Для корректной работы сервиса включите геолокацию.';
-const appLocationPermissionDeniedForever = 'Доступ на определение местоложения запрещён навсегда. Мы не можем запрашивать разрешение.';
+const appLocationServiceNotEnabled =
+    'Службы определения местоположения отключены.';
+const appLocationPermissionDenied =
+    'Доступ на определение местоложения запрещён. Для корректной работы сервиса включите геолокацию.';
+const appLocationPermissionDeniedForever =
+    'Доступ на определение местоложения запрещён навсегда. Мы не можем запрашивать разрешение.';
 
 /// экран фильтров
 const filterClearFilters = 'Очистить';
@@ -163,8 +167,29 @@ const placeTypeCodeCafe = 'cafe';
 const placeTypeNameCafe = 'Кафе';
 const placeTypeCodeTemple = 'temple'; // TODO: нет иконки
 const placeTypeNameTemple = 'Храм';
-const placeTypeCodeMonument = 'monument';// TODO: нет иконки
+const placeTypeCodeMonument = 'monument'; // TODO: нет иконки
 const placeTypeNameMonument = 'Памятник';
 
 /// карта
 const mapAppBarTitle = 'Карта';
+const String mapLightStyle = '''
+    [
+      {
+        "stylers": {
+          "saturation": -1,
+          "lightness": 0
+        }
+      }
+    ]
+  ''';
+const String mapDarkStyle = '''
+    [
+      {
+        "stylers": {
+          "hue": "#21222C",
+          "saturation": 0,
+          "lightness": 0.1
+        }
+      }
+    ]
+  ''';

@@ -11,8 +11,9 @@ abstract class PlaceListEvent extends Equatable {
 class PlaceListRequested extends PlaceListEvent {
   final UserLocation? userLocation;
   final SearchFilter? filter;
+  final bool isNewRequest;
 
-  PlaceListRequested({this.userLocation, this.filter});
+  PlaceListRequested({this.userLocation, this.filter, this.isNewRequest = true});
 
   @override
   List<Object?> get props => [userLocation, filter];
