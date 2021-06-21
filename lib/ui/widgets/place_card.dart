@@ -17,6 +17,7 @@ import 'package:places/ui/res/sizes.dart';
 import 'package:places/ui/res/strings.dart';
 import 'package:places/ui/res/assets.dart';
 import 'package:places/ui/res/themes.dart';
+import 'package:places/ui/utilities/ui_utilities.dart';
 import 'package:places/ui/widgets/reminder_time_ios.dart';
 import 'package:places/ui/widgets/place_details_bottom_sheet.dart';
 
@@ -53,7 +54,11 @@ class PlaceCard extends StatelessWidget {
         child: Material(
           borderRadius: BorderRadius.circular(radiusCard),
           clipBehavior: Clip.antiAlias,
-          color: Theme.of(context).primaryColorLight,
+          color: cardType == CardType.map
+              ? UiUtilities.setColorForTheme(context,
+                  light: Theme.of(context).colorScheme.white,
+                  dark: Theme.of(context).colorScheme.secondary)
+              : Theme.of(context).primaryColorLight,
           child: Stack(
             children: [
               Column(
@@ -93,10 +98,16 @@ class PlaceCard extends StatelessWidget {
                 ),
               ),
               Positioned(
-                top: 8,
+                top: 38,
                 right: 16,
                 child: CardActions(card: card, cardType: cardType),
               ),
+              if (cardType == CardType.map)
+                Positioned(
+                  top: 112,
+                  right: 16,
+                  child: _BuildRouteButton(card: card),
+                ),
             ],
           ),
         ),
@@ -426,19 +437,31 @@ class CardContentMap extends StatelessWidget {
             ),
           ),
           sizedBoxW8,
-          ButtonRounded(
-            backgroundColor: Theme.of(context).accentColor,
-            size: heightBigButton,
-            radius: radiusCard,
-            icon: icGo,
-            iconColor: Theme.of(context).colorScheme.white,
-            onPressed: () {
-              // todo Построить маршрут
-              print('Построить маршрут');
-            },
-          ),
+          const SizedBox(width: heightBigButton),
         ],
       ),
+    );
+  }
+}
+
+/// кнопка Построить маршрут на карточке места на карте
+class _BuildRouteButton extends StatelessWidget {
+  final Place card;
+
+  const _BuildRouteButton({Key? key, required this.card}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return ButtonRounded(
+      backgroundColor: Theme.of(context).accentColor,
+      size: heightBigButton,
+      radius: radiusCard,
+      icon: icGo,
+      iconColor: Theme.of(context).colorScheme.white,
+      onPressed: () {
+        // todo Построить маршрут
+        print('Построить маршрут');
+      },
     );
   }
 }

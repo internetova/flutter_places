@@ -16,6 +16,7 @@ import 'package:places/ui/res/assets.dart';
 import 'package:places/ui/res/sizes.dart';
 import 'package:places/ui/res/strings.dart';
 import 'package:places/ui/screen/map/widgets/bottom_map_buttons.dart';
+import 'package:places/ui/utilities/ui_utilities.dart';
 import 'package:places/ui/widgets/empty_page.dart';
 import 'package:places/ui/widgets/inform_dialog_widget.dart';
 import 'package:places/ui/widgets/loader.dart';
@@ -134,6 +135,7 @@ class _MapScreenState extends State<MapScreen> {
         onPressedGeolocation: () async {
           _onPressedGeolocation(controller!);
         },
+        onPressedAddNewCard: _onPressedAddNewCard,
         place: _selectedPlace,
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
@@ -178,8 +180,8 @@ class _MapScreenState extends State<MapScreen> {
           );
         },
         style: PlacemarkStyle(
-          iconName:
-              _getIconForTheme(light: icPlaceMarkLight, dark: icPlaceMarkDark),
+          iconName: UiUtilities.setIconForTheme(context,
+              light: icPlaceMarkLight, dark: icPlaceMarkDark),
           scale: 2,
           opacity: 1,
         ),
@@ -198,7 +200,7 @@ class _MapScreenState extends State<MapScreen> {
     final Placemark _selectedPlacemark = Placemark(
       point: Point(latitude: place.lat, longitude: place.lng),
       style: PlacemarkStyle(
-        iconName: _getIconForTheme(
+        iconName: UiUtilities.setIconForTheme(context,
             light: icPlaceMarkActiveLight, dark: icPlaceMarkActiveDark),
         scale: 1.5,
         opacity: 1,
@@ -243,8 +245,10 @@ class _MapScreenState extends State<MapScreen> {
     }
 
     controller.showUserLayer(
-      iconName: _getIconForTheme(light: icUserHereLight, dark: icUserHereDark),
-      arrowName: _getIconForTheme(light: icUserHereLight, dark: icUserHereDark),
+      iconName: UiUtilities.setIconForTheme(context,
+          light: icUserHereLight, dark: icUserHereDark),
+      arrowName: UiUtilities.setIconForTheme(context,
+          light: icUserHereLight, dark: icUserHereDark),
       accuracyCircleFillColor: Theme.of(context).accentColor.withOpacity(0.5),
     );
 
@@ -260,14 +264,6 @@ class _MapScreenState extends State<MapScreen> {
     }
   }
 
-  /// файл (png) иконки в зависимости от темы
-  String _getIconForTheme({
-    required String light,
-    required String dark,
-  }) {
-    return Theme.of(context).brightness == Brightness.light ? light : dark;
-  }
-
   /// обновить данные
   Future<void> _onPressedRefresh() async {
     _placeListBloc.add(
@@ -276,6 +272,11 @@ class _MapScreenState extends State<MapScreen> {
         filter: _searchFilter,
       ),
     );
+  }
+
+  /// нажатие на градиентную кнопку - переходим на экран добавления места
+  void _onPressedAddNewCard() {
+    AppRoutes.goAddPlaceScreen(context);
   }
 
   /// передаем текущий фильтр на экран поиска

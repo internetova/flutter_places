@@ -9,12 +9,14 @@ import 'package:places/ui/res/assets.dart';
 import 'package:places/ui/res/sizes.dart';
 import 'package:places/ui/res/themes.dart';
 import 'package:places/ui/screen/map/widgets/place_card_map.dart';
+import 'package:places/ui/utilities/ui_utilities.dart';
 
 /// кнопки внизу карты - геопозиция, добавить новое место, обновить данные,
 /// карточка выбранного места
 class BottomMapButtons extends StatelessWidget {
   final VoidCallback onPressedRefresh;
   final VoidCallback onPressedGeolocation;
+  final VoidCallback onPressedAddNewCard;
   final Place? place;
 
   const BottomMapButtons({
@@ -22,6 +24,7 @@ class BottomMapButtons extends StatelessWidget {
     required this.onPressedRefresh,
     required this.onPressedGeolocation,
     this.place,
+    required this.onPressedAddNewCard,
   }) : super(key: key);
 
   @override
@@ -37,7 +40,7 @@ class BottomMapButtons extends StatelessWidget {
                 ButtonRounded(
                   size: 50,
                   radius: 50,
-                  backgroundColor: _setColorForTheme(
+                  backgroundColor: UiUtilities.setColorForTheme(
                     context,
                     light: Theme.of(context).colorScheme.white,
                     dark: Theme.of(context).colorScheme.secondary,
@@ -51,13 +54,13 @@ class BottomMapButtons extends StatelessWidget {
                 if (state.place == null)
                   ButtonGradient(
                     isEnabled: true,
-                    onPressed: () {},
+                    onPressed: onPressedAddNewCard,
                   ),
                 Expanded(child: SizedBox.shrink()),
                 ButtonRounded(
                   size: 50,
                   radius: 50,
-                  backgroundColor: _setColorForTheme(
+                  backgroundColor: UiUtilities.setColorForTheme(
                     context,
                     light: Theme.of(context).colorScheme.white,
                     dark: Theme.of(context).colorScheme.secondary,
@@ -79,14 +82,5 @@ class BottomMapButtons extends StatelessWidget {
         );
       },
     );
-  }
-
-  /// установить цвета в зависимости от темы
-  Color _setColorForTheme(
-    BuildContext context, {
-    required Color light,
-    required Color dark,
-  }) {
-    return Theme.of(context).brightness == Brightness.light ? light : dark;
   }
 }
