@@ -17,7 +17,7 @@ import 'package:places/ui/res/sizes.dart';
 import 'package:places/ui/res/strings.dart';
 import 'package:places/ui/res/assets.dart';
 import 'package:places/ui/res/themes.dart';
-import 'package:places/ui/utilities/ui_utilities.dart';
+import 'package:places/ui/utilities/ui_utils.dart';
 import 'package:places/ui/widgets/reminder_time_ios.dart';
 import 'package:places/ui/widgets/place_details_bottom_sheet.dart';
 
@@ -55,7 +55,7 @@ class PlaceCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(radiusCard),
           clipBehavior: Clip.antiAlias,
           color: cardType == CardType.map
-              ? UiUtilities.setColorForTheme(context,
+              ? UiUtils.setColorForTheme(context,
                   light: Theme.of(context).colorScheme.white,
                   dark: Theme.of(context).colorScheme.secondary)
               : Theme.of(context).primaryColorLight,

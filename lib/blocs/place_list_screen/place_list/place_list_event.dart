@@ -9,7 +9,7 @@ abstract class PlaceListEvent extends Equatable {
 /// если геопозиция запрещена, то запрашиваем все данные
 /// иначе делаем запрос с фильтром
 class PlaceListRequested extends PlaceListEvent {
-  final UserLocation? userLocation;
+  final ObjectPosition? userLocation;
   final SearchFilter? filter;
   final bool isNewRequest;
 

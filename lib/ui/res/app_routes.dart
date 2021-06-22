@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:places/blocs/add_place_screen/fields/fields_bloc.dart';
+import 'package:places/blocs/add_place_screen/fields/fields_cubit.dart';
 import 'package:places/blocs/add_place_screen/form/add_form_bloc.dart';
 import 'package:places/blocs/add_place_screen/user_images/user_images_cubit.dart';
 import 'package:places/blocs/buttons/new_place_button_cubit.dart';
@@ -18,7 +18,7 @@ import 'package:places/data/interactor/search_interactor.dart';
 import 'package:places/data/model/card_type.dart';
 import 'package:places/data/model/place.dart';
 import 'package:places/data/model/search_filter.dart';
-import 'package:places/data/model/user_location.dart';
+import 'package:places/data/model/object_position.dart';
 import 'package:places/ui/screen/add_place_screen/add_place_screen.dart';
 import 'package:places/ui/screen/filters_screen.dart';
 import 'package:places/ui/screen/map/map_screen.dart';
@@ -118,13 +118,13 @@ class AppRoutes {
   }
 
   /// перейти на экран добавления нового места
-  static Future<Object?> goAddPlaceScreen(BuildContext context) {
+  static Future<Object?> goAddPlaceScreen(BuildContext context, ObjectPosition? userLocation) {
     return Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) => MultiBlocProvider(
           providers: [
-            BlocProvider<FieldsBloc>(
-              create: (_) => FieldsBloc(),
+            BlocProvider<FieldsCubit>(
+              create: (_) => FieldsCubit(),
             ),
             BlocProvider<UserImagesCubit>(
               create: (_) => UserImagesCubit(),
@@ -133,7 +133,7 @@ class AppRoutes {
               create: (_) => AddFormBloc(context.read<PlaceInteractor>()),
             ),
           ],
-          child: AddPlaceScreen(),
+          child: AddPlaceScreen(userPosition: userLocation),
         ),
       ),
     );
@@ -143,7 +143,7 @@ class AppRoutes {
   /// если геолокация недоступна, то ищем по всей базе
   static Future<Object?> goSearchScreen(
     BuildContext context, {
-    UserLocation? userLocation,
+    ObjectPosition? userLocation,
     required SearchFilter filter,
   }) {
     return Navigator.of(context).push(
@@ -164,7 +164,7 @@ class AppRoutes {
   /// если геолокация недоступна, то ищем по всей базе
   static Future<Object?> goFiltersScreen(
     BuildContext context, {
-    required UserLocation userLocation,
+    required ObjectPosition userLocation,
     required SearchFilter filter,
   }) {
     return Navigator.of(context).push(

@@ -6,7 +6,7 @@ import 'package:places/data/model/card_type.dart';
 import 'package:places/data/model/search_filter.dart';
 import 'package:places/data/model/place.dart';
 import 'package:places/data/model/search_history_item.dart';
-import 'package:places/data/model/user_location.dart';
+import 'package:places/data/model/object_position.dart';
 import 'package:places/ui/components/button_text.dart';
 import 'package:places/ui/components/card_square_img.dart';
 import 'package:places/ui/res/assets.dart';
@@ -20,7 +20,7 @@ import 'package:places/ui/widgets/search_bar.dart';
 
 /// экран поиска
 class SearchScreen extends StatefulWidget {
-  final UserLocation? userLocation;
+  final ObjectPosition? userLocation;
   final SearchFilter filter;
 
   const SearchScreen({

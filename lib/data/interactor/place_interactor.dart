@@ -5,7 +5,7 @@ import 'package:dio/dio.dart';
 import 'package:places/data/dto/place_dto.dart';
 import 'package:places/data/model/place.dart';
 import 'package:places/data/model/search_filter.dart';
-import 'package:places/data/model/user_location.dart';
+import 'package:places/data/model/object_position.dart';
 import 'package:places/data/repository/api_place_repository.dart';
 import 'package:places/data/repository/local_place_repository.dart';
 
@@ -26,7 +26,7 @@ class PlaceInteractor {
   /// на странице фильтра на кнопке надо выводить только количество найденных мест
   /// без какой-либо обработки, поэтому используем "чистый" результат
   Future<List<PlaceDto>> getPlaces({
-    required UserLocation userLocation,
+    required ObjectPosition userLocation,
     required SearchFilter filter,
   }) =>
       apiRepository.getPlaces(
@@ -41,7 +41,7 @@ class PlaceInteractor {
   /// запрос только по фильтру
   /// (поиск по ключевым словам перенесен в [SearchInteractor])
   Future<List<Place>> getFilteredPlace({
-    required UserLocation userLocation,
+    required ObjectPosition userLocation,
     required SearchFilter filter,
   }) async {
     try {

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:places/data/model/user_location.dart';
+import 'package:places/data/model/object_position.dart';
 
 /// размеры элементов
 const double radiusCard = 12;
@@ -61,7 +61,7 @@ final List<String> searchFilterTypeFilter = [
 ];
 
 /// Красная площадь
-final defaultLocation = UserLocation(
+final defaultPosition = ObjectPosition(
   lat: 55.754194,
   lng: 37.620139,
 );

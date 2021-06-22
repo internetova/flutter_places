@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 /// вспомогательные методы для работы с ui
-class UiUtilities {
-  UiUtilities._();
+class UiUtils {
+  UiUtils._();
 
   /// установить цвета в зависимости от темы
   static Color setColorForTheme(

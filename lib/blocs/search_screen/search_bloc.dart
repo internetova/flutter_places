@@ -6,7 +6,7 @@ import 'package:places/data/interactor/search_interactor.dart';
 import 'package:places/data/model/place.dart';
 import 'package:places/data/model/search_filter.dart';
 import 'package:places/data/model/search_history_item.dart';
-import 'package:places/data/model/user_location.dart';
+import 'package:places/data/model/object_position.dart';
 import 'package:rxdart/rxdart.dart';
 
 part 'search_event.dart';

@@ -5,7 +5,7 @@ import 'package:equatable/equatable.dart';
 import 'package:places/data/interactor/place_interactor.dart';
 import 'package:places/data/model/place.dart';
 import 'package:places/data/model/search_filter.dart';
-import 'package:places/data/model/user_location.dart';
+import 'package:places/data/model/object_position.dart';
 
 part 'place_list_event.dart';
 

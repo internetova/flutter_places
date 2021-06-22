@@ -8,7 +8,7 @@ import 'package:places/blocs/place_list_screen/place_list/place_list_bloc.dart';
 import 'package:places/blocs/settings_app/settings_app_cubit.dart';
 import 'package:places/data/model/place.dart';
 import 'package:places/data/model/search_filter.dart';
-import 'package:places/data/model/user_location.dart';
+import 'package:places/data/model/object_position.dart';
 import 'package:places/ui/components/app_bottom_navigation_bar.dart';
 import 'package:places/ui/components/search_bar_static.dart';
 import 'package:places/ui/res/app_routes.dart';
@@ -16,7 +16,7 @@ import 'package:places/ui/res/assets.dart';
 import 'package:places/ui/res/sizes.dart';
 import 'package:places/ui/res/strings.dart';
 import 'package:places/ui/screen/map/widgets/bottom_map_buttons.dart';
-import 'package:places/ui/utilities/ui_utilities.dart';
+import 'package:places/ui/utilities/ui_utils.dart';
 import 'package:places/ui/widgets/empty_page.dart';
 import 'package:places/ui/widgets/inform_dialog_widget.dart';
 import 'package:places/ui/widgets/loader.dart';
@@ -44,7 +44,7 @@ class _MapScreenState extends State<MapScreen> {
   late final PlaceListBloc _placeListBloc;
   late final SelectedPlaceCubit _selectedPlaceCubit;
 
-  UserLocation? _userLocation;
+  ObjectPosition? _userLocation;
   late SearchFilter _searchFilter;
 
   /// загруженный список мест
@@ -80,7 +80,7 @@ class _MapScreenState extends State<MapScreen> {
         builder: (context, state) {
           if (state is LocationLoadSuccess || state is LocationFailure) {
             if (state is LocationLoadSuccess) {
-              _userLocation = UserLocation(
+              _userLocation = ObjectPosition(
                 lat: state.position.latitude,
                 lng: state.position.longitude,
               );
@@ -180,7 +180,7 @@ class _MapScreenState extends State<MapScreen> {
           );
         },
         style: PlacemarkStyle(
-          iconName: UiUtilities.setIconForTheme(context,
+          iconName: UiUtils.setIconForTheme(context,
               light: icPlaceMarkLight, dark: icPlaceMarkDark),
           scale: 2,
           opacity: 1,
@@ -200,7 +200,7 @@ class _MapScreenState extends State<MapScreen> {
     final Placemark _selectedPlacemark = Placemark(
       point: Point(latitude: place.lat, longitude: place.lng),
       style: PlacemarkStyle(
-        iconName: UiUtilities.setIconForTheme(context,
+        iconName: UiUtils.setIconForTheme(context,
             light: icPlaceMarkActiveLight, dark: icPlaceMarkActiveDark),
         scale: 1.5,
         opacity: 1,
@@ -245,9 +245,9 @@ class _MapScreenState extends State<MapScreen> {
     }
 
     controller.showUserLayer(
-      iconName: UiUtilities.setIconForTheme(context,
+      iconName: UiUtils.setIconForTheme(context,
           light: icUserHereLight, dark: icUserHereDark),
-      arrowName: UiUtilities.setIconForTheme(context,
+      arrowName: UiUtils.setIconForTheme(context,
           light: icUserHereLight, dark: icUserHereDark),
       accuracyCircleFillColor: Theme.of(context).accentColor.withOpacity(0.5),
     );
@@ -276,7 +276,7 @@ class _MapScreenState extends State<MapScreen> {
 
   /// нажатие на градиентную кнопку - переходим на экран добавления места
   void _onPressedAddNewCard() {
-    AppRoutes.goAddPlaceScreen(context);
+    AppRoutes.goAddPlaceScreen(context, _userLocation);
   }
 
   /// передаем текущий фильтр на экран поиска

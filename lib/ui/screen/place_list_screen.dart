@@ -7,7 +7,7 @@ import 'package:places/blocs/settings_app/settings_app_cubit.dart';
 import 'package:places/data/model/search_filter.dart';
 import 'package:places/data/model/place.dart';
 import 'package:places/data/model/card_type.dart';
-import 'package:places/data/model/user_location.dart';
+import 'package:places/data/model/object_position.dart';
 import 'package:places/ui/components/app_bottom_navigation_bar.dart';
 import 'package:places/ui/res/app_routes.dart';
 import 'package:places/ui/components/button_gradient.dart';
@@ -40,7 +40,7 @@ class _PlaceListScreenState extends State<PlaceListScreen>
   late final LocationBloc _locationBloc;
   late final PlaceListBloc _placeListBloc;
 
-  UserLocation? _userLocation;
+  ObjectPosition? _userLocation;
   late SearchFilter _searchFilter;
 
   /// анимация кнопки создания нового места
@@ -102,7 +102,7 @@ class _PlaceListScreenState extends State<PlaceListScreen>
                         if (state is LocationLoadSuccess ||
                             state is LocationFailure) {
                           if (state is LocationLoadSuccess) {
-                            _userLocation = UserLocation(
+                            _userLocation = ObjectPosition(
                               lat: state.position.latitude,
                               lng: state.position.longitude,
                             );
@@ -261,7 +261,7 @@ class _PlaceListScreenState extends State<PlaceListScreen>
 
   /// нажатие на градиентную кнопку - переходим на экран добавления места
   void _onPressedAddNewCard() {
-    AppRoutes.goAddPlaceScreen(context);
+    AppRoutes.goAddPlaceScreen(context, _userLocation);
   }
 
   /// передаем текущий фильтр на экран поиска

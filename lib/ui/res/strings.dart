@@ -89,9 +89,10 @@ const titleScreenSettings = Text(
 const itemThemeDark = 'Тёмная тема';
 const itemTutorial = 'Смотреть туториал';
 
-/// экран выбора категорий для добавления нового места
+/// экран выбора категорий и позиции места для добавления нового места
 const titleAppBarSelectCategoryScreen = 'Категория';
-const titleButtonSaveSelectCategoryScreen = 'СОХРАНИТЬ';
+const titleAppBarSelectPositionScreen = 'Позиция на карте';
+const titleButtonSave = 'СОХРАНИТЬ';
 
 /// экран добавления нового  места
 const titleAppBarAddSightScreen = 'Новое место';

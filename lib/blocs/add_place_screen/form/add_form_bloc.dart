@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
-import 'package:places/blocs/add_place_screen/fields/fields_bloc.dart';
+import 'package:places/blocs/add_place_screen/fields/fields_cubit.dart';
 import 'package:places/blocs/add_place_screen/user_images/user_images_cubit.dart';
 import 'package:places/data/dto/place_dto.dart';
 import 'package:places/data/interactor/place_interactor.dart';

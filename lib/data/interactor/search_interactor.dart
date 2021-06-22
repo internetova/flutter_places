@@ -3,7 +3,7 @@ import 'package:places/data/dto/place_dto.dart';
 import 'package:places/data/model/place.dart';
 import 'package:places/data/model/search_filter.dart';
 import 'package:places/data/model/search_history_item.dart';
-import 'package:places/data/model/user_location.dart';
+import 'package:places/data/model/object_position.dart';
 import 'package:places/data/repository/api_place_repository.dart';
 import 'package:places/data/repository/local_place_repository.dart';
 
@@ -22,7 +22,7 @@ class SearchInteractor {
 
   /// получить результаты поиска
   Future<List<Place>> getSearchResult({
-    UserLocation? userLocation,
+    ObjectPosition? userLocation,
     SearchFilter? filter,
     required String keywords,
   }) async {

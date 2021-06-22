@@ -11,7 +11,7 @@ import 'package:places/data/dto/place_dto.dart';
 import 'package:places/data/dto/places_filter_request_dto.dart';
 import 'package:places/data/exceptions/network_exception.dart';
 import 'package:places/data/model/search_filter.dart';
-import 'package:places/data/model/user_location.dart';
+import 'package:places/data/model/object_position.dart';
 import 'package:places/data/repository/place_repository.dart';
 import 'package:places/data/res/error_response_strings.dart';
 
@@ -26,7 +26,7 @@ class ApiPlaceRepository implements PlaceRepository<PlaceDto> {
   /// [nameFilter] может быть null - текстовый поиск по полю name
   /// [keywords] - ключевые слова для поиска
   Future<List<PlaceDto>> getPlaces({
-    UserLocation? userLocation,
+    ObjectPosition? userLocation,
     SearchFilter? filter,
     String? keywords,
   }) async {

@@ -1,10 +1,10 @@
 /// для хранения координат
-/// текущая локация пользователя
-class UserLocation {
+/// текущая позиция пользователя или места
+class ObjectPosition {
   final double lat;
   final double lng;
 
-  UserLocation({
+  ObjectPosition({
     required this.lat,
     required this.lng,
   });

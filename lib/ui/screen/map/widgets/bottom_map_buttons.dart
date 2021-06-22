@@ -9,7 +9,7 @@ import 'package:places/ui/res/assets.dart';
 import 'package:places/ui/res/sizes.dart';
 import 'package:places/ui/res/themes.dart';
 import 'package:places/ui/screen/map/widgets/place_card_map.dart';
-import 'package:places/ui/utilities/ui_utilities.dart';
+import 'package:places/ui/utilities/ui_utils.dart';
 
 /// кнопки внизу карты - геопозиция, добавить новое место, обновить данные,
 /// карточка выбранного места
@@ -40,7 +40,7 @@ class BottomMapButtons extends StatelessWidget {
                 ButtonRounded(
                   size: 50,
                   radius: 50,
-                  backgroundColor: UiUtilities.setColorForTheme(
+                  backgroundColor: UiUtils.setColorForTheme(
                     context,
                     light: Theme.of(context).colorScheme.white,
                     dark: Theme.of(context).colorScheme.secondary,
@@ -60,7 +60,7 @@ class BottomMapButtons extends StatelessWidget {
                 ButtonRounded(
                   size: 50,
                   radius: 50,
-                  backgroundColor: UiUtilities.setColorForTheme(
+                  backgroundColor: UiUtils.setColorForTheme(
                     context,
                     light: Theme.of(context).colorScheme.white,
                     dark: Theme.of(context).colorScheme.secondary,

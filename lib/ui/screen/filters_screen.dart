@@ -4,7 +4,7 @@ import 'package:places/blocs/filters_screen/button/filter_button_cubit.dart';
 import 'package:places/blocs/filters_screen/filter/filter_cubit.dart';
 import 'package:places/data/model/search_filter.dart';
 import 'package:places/data/model/place_type.dart';
-import 'package:places/data/model/user_location.dart';
+import 'package:places/data/model/object_position.dart';
 import 'package:places/ui/components/button_save.dart';
 import 'package:places/ui/components/icon_leading_appbar.dart';
 import 'package:places/ui/res/assets.dart';
@@ -18,7 +18,7 @@ import 'package:places/ui/widgets/filter_category_item.dart';
 /// сервер принимает только одно расстояние - радиус, поэтому
 /// Range слайдер переделала в слайдер
 class FiltersScreen extends StatefulWidget {
-  final UserLocation userLocation;
+  final ObjectPosition userLocation;
   final SearchFilter filter;
 
   const FiltersScreen({
