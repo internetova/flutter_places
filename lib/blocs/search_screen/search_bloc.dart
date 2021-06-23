@@ -53,7 +53,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
 
     try {
       final placesList = await _searchInteractor.getSearchResult(
-        userLocation: event.userLocation,
+        userPosition: event.userPosition,
         filter: event.filter,
         keywords: event.keywords,
       );
@@ -114,7 +114,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
         .listen((queryString) {
       add(
         GetSearchResult(
-          userLocation: event.userLocation,
+          userPosition: event.userPosition,
           filter: event.filter,
           keywords: queryString,
         ),

@@ -22,13 +22,13 @@ class SearchInteractor {
 
   /// получить результаты поиска
   Future<List<Place>> getSearchResult({
-    ObjectPosition? userLocation,
+    ObjectPosition? userPosition,
     SearchFilter? filter,
     required String keywords,
   }) async {
     try {
       final placesDto = await apiRepository.getPlaces(
-        userLocation: userLocation,
+        userPosition: userPosition,
         filter: filter,
         keywords: keywords,
       );
@@ -39,7 +39,7 @@ class SearchInteractor {
       }
 
       /// отсортировали по удаленности, дистанцию отдал сервер
-      if (userLocation != null && placesDto.length > 1) {
+      if (userPosition != null && placesDto.length > 1) {
         _sortByDistance(placesDto);
       }
 

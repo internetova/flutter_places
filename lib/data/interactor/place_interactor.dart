@@ -30,7 +30,7 @@ class PlaceInteractor {
     required SearchFilter filter,
   }) =>
       apiRepository.getPlaces(
-        userLocation: userLocation,
+        userPosition: userLocation,
         filter: filter,
       );
 
@@ -47,7 +47,7 @@ class PlaceInteractor {
     try {
       /// получили данные из Api
       final placesDto = await apiRepository.getPlaces(
-        userLocation: userLocation,
+        userPosition: userLocation,
         filter: filter,
       );
 

@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:places/blocs/search_screen/last_query/last_query_cubit.dart';
 import 'package:places/blocs/search_screen/search_bloc.dart';
+import 'package:places/data/interactor/place_interactor.dart';
 import 'package:places/data/model/card_type.dart';
 import 'package:places/data/model/search_filter.dart';
 import 'package:places/data/model/place.dart';
@@ -11,11 +12,11 @@ import 'package:places/data/model/object_position.dart';
 import 'package:places/ui/components/button_text.dart';
 import 'package:places/ui/components/card_square_img.dart';
 import 'package:places/ui/components/icon_leading_appbar.dart';
+import 'package:places/ui/res/app_routes.dart';
 import 'package:places/ui/res/assets.dart';
 import 'package:places/ui/res/sizes.dart';
 import 'package:places/ui/res/strings.dart';
 import 'package:places/ui/res/themes.dart';
-import 'package:places/ui/screen/place_details_screen.dart';
 import 'package:places/ui/widgets/empty_page.dart';
 import 'package:places/ui/widgets/loader.dart';
 import 'package:places/ui/widgets/search_bar.dart';
@@ -36,7 +37,6 @@ class SearchScreen extends StatefulWidget {
 }
 
 class _SearchScreenState extends State<SearchScreen> {
-  /// последний отправленный запрос
   TextEditingController _searchController = TextEditingController();
 
   @override
@@ -48,7 +48,7 @@ class _SearchScreenState extends State<SearchScreen> {
     /// старт поиска при изменении текста в поле запроса
     context.read<SearchBloc>().add(
           StartSearchFromTextField(
-            userLocation: widget.userPosition,
+            userPosition: widget.userPosition,
             filter: widget.filter,
           ),
         );
@@ -78,6 +78,7 @@ class _SearchScreenState extends State<SearchScreen> {
             return _BuildSearchHistory(
               data: state.result,
               controller: _searchController,
+              userPosition: widget.userPosition,
               filter: widget.filter,
               lastSearch: context.read<LastQueryCubit>().state.lastQuery,
             );
@@ -121,7 +122,7 @@ class _SearchScreenState extends State<SearchScreen> {
 
       context.read<SearchBloc>().add(
             GetSearchResult(
-              userLocation: widget.userPosition,
+              userPosition: widget.userPosition,
               filter: widget.filter,
               keywords: _searchController.text,
             ),
@@ -280,14 +281,11 @@ class _BuildSearchItem extends StatelessWidget {
         style: Theme.of(context).textTheme.bodyText2,
       ),
       onTap: () {
-        Navigator.push(
+        AppRoutes.goPlaceDetailsScreen(
           context,
-          MaterialPageRoute(
-            builder: (context) => PlaceDetailsScreen(
-              card: card,
-              cardType: CardType.search,
-            ),
-          ),
+          context.read<PlaceInteractor>(),
+          place: card,
+          cardType: CardType.search,
         );
       },
     );
@@ -476,7 +474,7 @@ class _BuildSearchHistory extends StatelessWidget {
 
                     context.read<SearchBloc>().add(
                           GetSearchResult(
-                            userLocation: userPosition,
+                            userPosition: userPosition,
                             filter: filter,
                             keywords: controller.text,
                           ),

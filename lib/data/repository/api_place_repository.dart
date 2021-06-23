@@ -26,14 +26,14 @@ class ApiPlaceRepository implements PlaceRepository<PlaceDto> {
   /// [nameFilter] может быть null - текстовый поиск по полю name
   /// [keywords] - ключевые слова для поиска
   Future<List<PlaceDto>> getPlaces({
-    ObjectPosition? userLocation,
+    ObjectPosition? userPosition,
     SearchFilter? filter,
     String? keywords,
   }) async {
     late Map<String, dynamic> data;
 
     /// геолокация отключена - ищем по всей базе
-    if (userLocation == null) {
+    if (userPosition == null) {
       data = PlacesFilterRequestDto(
         nameFilter: keywords != null ? keywords.trim() : null,
       ).toJson();
@@ -41,8 +41,8 @@ class ApiPlaceRepository implements PlaceRepository<PlaceDto> {
       /// иначе передаем фильтр и локацию пользователя
     } else {
       data = PlacesFilterRequestDto(
-        lat: userLocation.lat,
-        lng: userLocation.lng,
+        lat: userPosition.lat,
+        lng: userPosition.lng,
         radius: filter?.radius,
         typeFilter: filter?.typeFilter,
         nameFilter: keywords != null ? keywords.trim() : null,
