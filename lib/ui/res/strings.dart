@@ -127,7 +127,7 @@ const addNewSightAlertDialogCancel = 'ОТМЕНА';
 
 /// Поиск
 const searchHintText = 'Поиск';
-const searchAppBarTitle = 'Список интересных мест';
+const searchAppBarTitle = 'Поиск';
 const searchEmptyHeader = 'Ничего не найдено.';
 const searchEmptyText = 'Попробуйте изменить параметры\nпоиска';
 const searchError = 'Ошибка';

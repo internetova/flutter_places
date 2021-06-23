@@ -9,6 +9,7 @@ import 'package:places/blocs/filters_screen/filter/filter_cubit.dart';
 import 'package:places/blocs/map/selected_place/selected_place_cubit.dart';
 import 'package:places/blocs/onboarding_screen/onboarding_cubit.dart';
 import 'package:places/blocs/place_details_screen/details_slider/details_slider_cubit.dart';
+import 'package:places/blocs/search_screen/last_query/last_query_cubit.dart';
 import 'package:places/blocs/search_screen/search_bloc.dart';
 import 'package:places/blocs/visiting_screen/planned/planned_places_bloc.dart';
 import 'package:places/blocs/visiting_screen/visited/visited_places_bloc.dart';
@@ -118,7 +119,8 @@ class AppRoutes {
   }
 
   /// перейти на экран добавления нового места
-  static Future<Object?> goAddPlaceScreen(BuildContext context, ObjectPosition? userLocation) {
+  static Future<Object?> goAddPlaceScreen(
+      BuildContext context, ObjectPosition? userLocation) {
     return Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) => MultiBlocProvider(
@@ -148,11 +150,18 @@ class AppRoutes {
   }) {
     return Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (context) => BlocProvider<SearchBloc>(
-          create: (_) => SearchBloc(context.read<SearchInteractor>())
-            ..add(GetSearchHistory()),
+        builder: (context) => MultiBlocProvider(
+          providers: [
+            BlocProvider<SearchBloc>(
+              create: (_) => SearchBloc(context.read<SearchInteractor>())
+                ..add(GetSearchHistory()),
+            ),
+            BlocProvider<LastQueryCubit>(
+              create: (_) => LastQueryCubit(),
+            ),
+          ],
           child: SearchScreen(
-            userLocation: userLocation,
+            userPosition: userLocation,
             filter: filter,
           ),
         ),
