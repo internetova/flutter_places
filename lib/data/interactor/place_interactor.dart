@@ -159,6 +159,11 @@ class PlaceInteractor {
   Future<bool> toggleFavorites(Place place) =>
       localRepository.toggleFavorite(place);
 
+
+  /// обновить избранное (например, дату посещения перепланировать,
+  /// перенести в посещённые)
+  Future<void> moveToVisited(Place place) => localRepository.updatePlace(place);
+
   /// загрузка фото
   Future<String> uploadFile(File image) => apiRepository.uploadFile(image);
 }

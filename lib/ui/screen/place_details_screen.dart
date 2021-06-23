@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:places/blocs/buttons/favorites_button_cubit.dart';
+import 'package:places/blocs/map/move%20_to_visited/move_to_visited_cubit.dart';
 import 'package:places/blocs/place_details_screen/details_slider/details_slider_cubit.dart';
 import 'package:places/data/interactor/place_interactor.dart';
 import 'package:places/data/model/card_type.dart';
@@ -12,6 +13,7 @@ import 'package:places/ui/res/strings.dart';
 import 'package:places/ui/res/assets.dart';
 import 'package:places/ui/widgets/place_details_slider.dart';
 import 'package:places/ui/res/themes.dart';
+import 'package:maps_launcher/maps_launcher.dart';
 
 /// экран с подробным описанием карточки / достопримечательности
 /// [cardType] добавила откуда перешли на страницу, чтобы корректно работала
@@ -121,30 +123,39 @@ class PlaceDetailsScreen extends StatelessWidget {
 class _BuildRouteButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return TextButton(
-      onPressed: () {
-        print('onPressed Построить маршрут');
+    return BlocBuilder<MoveToVisitedCubit, MoveToVisitedState>(
+      builder: (context, state) {
+        return TextButton(
+          onPressed: () {
+            if (state.place.cardType != CardType.visited) {
+              context.read<MoveToVisitedCubit>().addToVisited(state.place);
+            }
+
+            MapsLauncher.launchCoordinates(
+                state.place.lat, state.place.lng, state.place.name);
+          },
+          style: TextButton.styleFrom(
+            backgroundColor: Theme.of(context).accentColor,
+            minimumSize: Size(double.infinity, heightBigButton),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(
+                Radius.circular(radiusCard),
+              ),
+            ),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              IconSvg(icon: icGo),
+              sizedBoxW8,
+              Text(
+                buttonTitleBuildRoute,
+                style: Theme.of(context).textTheme.button,
+              ),
+            ],
+          ),
+        );
       },
-      style: TextButton.styleFrom(
-        backgroundColor: Theme.of(context).accentColor,
-        minimumSize: Size(double.infinity, heightBigButton),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(
-            Radius.circular(radiusCard),
-          ),
-        ),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          IconSvg(icon: icGo),
-          sizedBoxW8,
-          Text(
-            buttonTitleBuildRoute,
-            style: Theme.of(context).textTheme.button,
-          ),
-        ],
-      ),
     );
   }
 }
@@ -153,54 +164,56 @@ class _BuildRouteButton extends StatelessWidget {
 class _BuildRouteButtonFinish extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(
-          child: Container(
-            height: heightBigButton,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.all(
-                Radius.circular(radiusCard),
+    return BlocBuilder<MoveToVisitedCubit, MoveToVisitedState>(
+      builder: (context, state) {
+        return Row(
+          children: [
+            Expanded(
+              child: Container(
+                height: heightBigButton,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(radiusCard),
+                  ),
+                  color: Theme.of(context).primaryColorLight,
+                ),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: SizedBox.shrink(),
+                    ),
+                    IconSvg(
+                      icon: icTick,
+                      color: Theme.of(context).accentColor,
+                    ),
+                    sizedBoxW8,
+                    Text(
+                      buttonTitleBuildRouteFinish,
+                      style: Theme.of(context)
+                          .textTheme
+                          .button!
+                          .copyWith(color: Theme.of(context).accentColor),
+                    ),
+                    Expanded(
+                      child: SizedBox.shrink(),
+                    ),
+                  ],
+                ),
               ),
-              color: Theme.of(context).primaryColorLight,
             ),
-            child: Row(
-              children: [
-                Expanded(
-                  child: SizedBox.shrink(),
-                ),
-                IconSvg(
-                  icon: icTick,
-                  color: Theme.of(context).accentColor,
-                ),
-                sizedBoxW8,
-                Text(
-                  buttonTitleBuildRouteFinish,
-                  style: Theme.of(context)
-                      .textTheme
-                      .button!
-                      .copyWith(color: Theme.of(context).accentColor),
-                ),
-                Expanded(
-                  child: SizedBox.shrink(),
-                ),
-              ],
+            sizedBoxW16,
+            ButtonRounded(
+              backgroundColor: Theme.of(context).accentColor,
+              size: heightBigButton,
+              radius: radiusCard,
+              icon: icGo,
+              iconColor: Theme.of(context).colorScheme.white,
+              onPressed: () => MapsLauncher.launchCoordinates(
+                  state.place.lat, state.place.lng, state.place.name),
             ),
-          ),
-        ),
-        sizedBoxW16,
-        ButtonRounded(
-          backgroundColor: Theme.of(context).accentColor,
-          size: heightBigButton,
-          radius: radiusCard,
-          icon: icGo,
-          iconColor: Theme.of(context).colorScheme.white,
-          onPressed: () {
-            // todo Построить маршрут
-            print('Построить маршрут');
-          },
-        ),
-      ],
+          ],
+        );
+      },
     );
   }
 }
@@ -211,6 +224,7 @@ class _BuildPlanButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextButton(
       onPressed: () {
+        /// todo
         print('onTaped Запланировать');
       },
       style: TextButton.styleFrom(
@@ -309,6 +323,7 @@ class _BuildShareButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextButton(
       onPressed: () {
+        /// todo
         print('onTaped Поделиться');
       },
       style: TextButton.styleFrom(

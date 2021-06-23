@@ -6,6 +6,7 @@ import 'package:places/blocs/add_place_screen/user_images/user_images_cubit.dart
 import 'package:places/blocs/buttons/new_place_button_cubit.dart';
 import 'package:places/blocs/filters_screen/button/filter_button_cubit.dart';
 import 'package:places/blocs/filters_screen/filter/filter_cubit.dart';
+import 'package:places/blocs/map/move%20_to_visited/move_to_visited_cubit.dart';
 import 'package:places/blocs/map/selected_place/selected_place_cubit.dart';
 import 'package:places/blocs/onboarding_screen/onboarding_cubit.dart';
 import 'package:places/blocs/place_details_screen/details_slider/details_slider_cubit.dart';
@@ -200,15 +201,23 @@ class AppRoutes {
 
   /// перейти на экран детальной информации
   static Future<Object?> goPlaceDetailsScreen(
-    BuildContext context, {
-    required Place card,
+    BuildContext context,
+    PlaceInteractor interactor, {
+    required Place place,
     required CardType cardType,
   }) {
     return Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (context) => BlocProvider<DetailsSliderCubit>(
-          create: (_) => DetailsSliderCubit(),
-          child: PlaceDetailsScreen(card: card, cardType: cardType),
+        builder: (context) => MultiBlocProvider(
+          providers: [
+            BlocProvider<DetailsSliderCubit>(
+              create: (_) => DetailsSliderCubit(),
+            ),
+            BlocProvider<MoveToVisitedCubit>(
+              create: (_) => MoveToVisitedCubit(interactor, place: place),
+            ),
+          ],
+          child: PlaceDetailsScreen(card: place, cardType: cardType),
         ),
       ),
     );

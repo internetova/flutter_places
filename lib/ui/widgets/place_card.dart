@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:places/blocs/buttons/favorites_button_cubit.dart';
+import 'package:places/blocs/map/move%20_to_visited/move_to_visited_cubit.dart';
 import 'package:places/blocs/visiting_screen/planned/planned_places_bloc.dart';
 import 'package:places/blocs/visiting_screen/visited/visited_places_bloc.dart';
 import 'package:places/data/interactor/place_interactor.dart';
@@ -20,6 +21,7 @@ import 'package:places/ui/res/themes.dart';
 import 'package:places/ui/utilities/ui_utils.dart';
 import 'package:places/ui/widgets/reminder_time_ios.dart';
 import 'package:places/ui/widgets/place_details_bottom_sheet.dart';
+import 'package:maps_launcher/maps_launcher.dart';
 
 /// карточка интересного места
 /// в зависимости от места показа карточки - Список поиска, в Избранном
@@ -44,11 +46,21 @@ class PlaceCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<FavoritesButtonCubit>(
-      create: (_) => FavoritesButtonCubit(
-        context.read<PlaceInteractor>(),
-        place: card,
-      ),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<FavoritesButtonCubit>(
+          create: (_) => FavoritesButtonCubit(
+            context.read<PlaceInteractor>(),
+            place: card,
+          ),
+        ),
+        BlocProvider<MoveToVisitedCubit>(
+          create: (_) => MoveToVisitedCubit(
+            context.read<PlaceInteractor>(),
+            place: card,
+          ),
+        ),
+      ],
       child: AspectRatio(
         aspectRatio: cardType == CardType.map ? 30 / 17 : 3 / 2,
         child: Material(
@@ -88,7 +100,8 @@ class PlaceCard extends StatelessWidget {
                   type: MaterialType.transparency,
                   child: InkWell(
                     onTap: () {
-                      _showDetailsScreen(context, card, cardType);
+                      _showDetailsScreen(context,
+                          context.read<PlaceInteractor>(), card, cardType);
                       // todo отключила боттомшит на главной странице
                       // cardType == CardType.search
                       //     ? _showDetailsBottomSheet(context)
@@ -98,7 +111,7 @@ class PlaceCard extends StatelessWidget {
                 ),
               ),
               Positioned(
-                top: 38,
+                top: 8,
                 right: 16,
                 child: CardActions(card: card, cardType: cardType),
               ),
@@ -106,7 +119,7 @@ class PlaceCard extends StatelessWidget {
                 Positioned(
                   top: 112,
                   right: 16,
-                  child: _BuildRouteButton(card: card),
+                  child: _BuildRouteButton(place: card),
                 ),
             ],
           ),
@@ -140,12 +153,14 @@ class PlaceCard extends StatelessWidget {
   /// [cardType] - для формирования тега Hero
   Future<void> _showDetailsScreen(
     BuildContext context,
+    PlaceInteractor interactor,
     Place card,
     CardType cardType,
   ) async {
     await AppRoutes.goPlaceDetailsScreen(
       context,
-      card: card,
+      interactor,
+      place: card,
       cardType: cardType,
     );
 
@@ -446,21 +461,29 @@ class CardContentMap extends StatelessWidget {
 
 /// кнопка Построить маршрут на карточке места на карте
 class _BuildRouteButton extends StatelessWidget {
-  final Place card;
+  final Place place;
 
-  const _BuildRouteButton({Key? key, required this.card}) : super(key: key);
+  const _BuildRouteButton({Key? key, required this.place}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return ButtonRounded(
-      backgroundColor: Theme.of(context).accentColor,
-      size: heightBigButton,
-      radius: radiusCard,
-      icon: icGo,
-      iconColor: Theme.of(context).colorScheme.white,
-      onPressed: () {
-        // todo Построить маршрут
-        print('Построить маршрут');
+    return BlocBuilder<MoveToVisitedCubit, MoveToVisitedState>(
+      builder: (context, state) {
+        return ButtonRounded(
+          backgroundColor: Theme.of(context).accentColor,
+          size: heightBigButton,
+          radius: radiusCard,
+          icon: icGo,
+          iconColor: Theme.of(context).colorScheme.white,
+          onPressed: () {
+            if (state.place.cardType != CardType.visited) {
+              context.read<MoveToVisitedCubit>().addToVisited(state.place);
+            }
+
+            MapsLauncher.launchCoordinates(
+                state.place.lat, state.place.lng, state.place.name);
+          },
+        );
       },
     );
   }

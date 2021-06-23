@@ -32,7 +32,8 @@ class LocalPlaceRepository implements PlaceRepository<Place> {
   }
 
   /// добавить список мест в кэш
-  Future<void> addCachePlacesAll(List<Place> places) => _appDb.addCachePlacesAll(places);
+  Future<void> addCachePlacesAll(List<Place> places) =>
+      _appDb.addCachePlacesAll(places);
 
   /// очистить кэшированный список мест
   Future<void> clearCachePlaces() => _appDb.clearCachePlaces();
@@ -43,7 +44,6 @@ class LocalPlaceRepository implements PlaceRepository<Place> {
     List<Place> places = [];
 
     rows.forEach((row) => places.add(row.place));
-    print('LocalRepository getPlannedPlaces (${places.length} шт.): $places');
 
     return places;
   }
@@ -54,7 +54,6 @@ class LocalPlaceRepository implements PlaceRepository<Place> {
     List<Place> places = [];
 
     rows.forEach((row) => places.add(row.place));
-    print('LocalRepository getVisitedPlaces (${places.length} шт.): $places');
 
     return places;
   }
@@ -72,16 +71,14 @@ class LocalPlaceRepository implements PlaceRepository<Place> {
   @override
   Future<void> addNewPlace(Place place) async {
     await _appDb.addToFavorites(place);
-    await _appDb.updateCachePlacesItem(Place.switchFavoriteStatusPlanned(
-        place: place, isFav: true));
+    await _appDb.updateCachePlacesItem(place);
   }
 
   /// удалить из избранного
   @override
   Future<void> removePlace(Place place) async {
     await _appDb.removeFromFavorites(place);
-    await _appDb.updateCachePlacesItem(Place.switchFavoriteStatusPlanned(
-        place: place, isFav: false));
+    await _appDb.updateCachePlacesItem(place);
   }
 
   /// переключатель кнопки Избранное
