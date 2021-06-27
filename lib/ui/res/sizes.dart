@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:places/data/model/object_position.dart';
 
 /// размеры элементов
 const double radiusCard = 12;
+const double radiusButtonSmall = 10;
 const double radiusButton = 12;
 const double radiusInput = 8;
 const double radiusSearchInput = 12;
@@ -13,8 +15,10 @@ const double widthButtonAddNewCard = 177;
 const double radiusButtonAddNewCard = 24;
 const double cardSizeSquareImgBig = 72;
 const double splashRadiusSmall = 18;
+const double splashRadiusMedium = 28;
 
 /// частые отступы
+const sizedBoxW4 = SizedBox(width: 4);
 const sizedBoxW8 = SizedBox(width: 8);
 const sizedBoxW12 = SizedBox(width: 12);
 const sizedBoxW16 = SizedBox(width: 16);
@@ -55,3 +59,9 @@ final List<String> searchFilterTypeFilter = [
   'restaurant',
   'hotel',
 ];
+
+/// Красная площадь
+final defaultPosition = ObjectPosition(
+  lat: 55.754194,
+  lng: 37.620139,
+);

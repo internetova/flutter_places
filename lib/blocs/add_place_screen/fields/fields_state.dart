@@ -1,4 +1,4 @@
-part of 'fields_bloc.dart';
+part of 'fields_cubit.dart';
 
 /// состояния полей формы добавления нового места
 class FieldsState extends Equatable {
@@ -29,8 +29,6 @@ class FieldsState extends Equatable {
       validateCoordinates(fieldLat) == null &&
       validateCoordinates(fieldLng) == null &&
       validateDetails(fieldDescription) == null;
-
-  final fieldCategoryController = TextEditingController();
 
   /// данные формы на старте
   FieldsState({
@@ -84,8 +82,8 @@ class FieldsState extends Equatable {
 
   String? validateDetails(String? value) {
     if (value!.isEmpty) return errorEmptyDetails;
-    if (value.length < 100) return errorShortDetails;
-    if (value.length > 300) return errorLongDetails;
+    if (value.length < 50) return errorShortDetails;
+    if (value.length > 700) return errorLongDetails;
 
     return null;
   }
@@ -98,4 +96,4 @@ class FieldsState extends Equatable {
 
 /// регулярные выражения
 final _namePattern = RegExp(r'^[a-zа-яA-ZА-Я0-9 ]+$');
-final _coordinatesPattern = RegExp(r'^-?[0-9]{1,3}(?:\.[0-9]{1,10})?$');
+final _coordinatesPattern = RegExp(r'^-?[0-9]{1,3}(?:\.[0-9]{1,20})?$');

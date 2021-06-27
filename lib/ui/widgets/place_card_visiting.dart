@@ -62,7 +62,6 @@ class DismissBackgroundCard extends StatelessWidget {
     return AspectRatio(
       aspectRatio: 3 / 2,
       child: Container(
-        margin: const EdgeInsets.fromLTRB(16.0, 0, 16.0, 1),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(radiusCard),
           color: Theme.of(context).errorColor,

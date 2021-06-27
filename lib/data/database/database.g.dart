@@ -181,8 +181,8 @@ class $TableSearchHistoryTable extends TableSearchHistory
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
   SearchHistory map(Map<String, dynamic> data, {String? tablePrefix}) {
-    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : null;
-    return SearchHistory.fromData(data, _db, prefix: effectivePrefix);
+    return SearchHistory.fromData(data, _db,
+        prefix: tablePrefix != null ? '$tablePrefix.' : null);
   }
 
   @override
@@ -407,8 +407,8 @@ class $TableFavoritesTable extends TableFavorites
   Set<GeneratedColumn> get $primaryKey => {placeId};
   @override
   Favorites map(Map<String, dynamic> data, {String? tablePrefix}) {
-    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : null;
-    return Favorites.fromData(data, _db, prefix: effectivePrefix);
+    return Favorites.fromData(data, _db,
+        prefix: tablePrefix != null ? '$tablePrefix.' : null);
   }
 
   @override
@@ -597,8 +597,8 @@ class $TableCachePlacesTable extends TableCachePlaces
   Set<GeneratedColumn> get $primaryKey => {placeId};
   @override
   CachePlaces map(Map<String, dynamic> data, {String? tablePrefix}) {
-    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : null;
-    return CachePlaces.fromData(data, _db, prefix: effectivePrefix);
+    return CachePlaces.fromData(data, _db,
+        prefix: tablePrefix != null ? '$tablePrefix.' : null);
   }
 
   @override

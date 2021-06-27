@@ -24,11 +24,22 @@ const icArrowLeading = '$_baseResPath/arrow_leading.svg';
 const icView = '$_baseResPath/view.svg';
 const icViewUp = '$_baseResPath/view_up.svg';
 const icPlus = '$_baseResPath/plus.svg';
+const icMinus = '$_baseResPath/minus.svg';
 const icFilter = '$_baseResPath/filter.svg';
 const icSearch = '$_baseResPath/search.svg';
 const icDelete = '$_baseResPath/delete.svg';
 const icClear = '$_baseResPath/clear.svg';
 const icBucket = '$_baseResPath/bucket.svg';
+
+/// для карты
+const icGeolocation = '$_baseResPath/geolocation.svg';
+const icRefresh = '$_baseResPath/refresh.svg';
+const icUserHereLight = '$_baseResPath/map/user_light.png';
+const icUserHereDark = '$_baseResPath/map/user_dark.png';
+const icPlaceMarkLight = '$_baseResPath/map/pm_light.png';
+const icPlaceMarkDark = '$_baseResPath/map/pm_dark.png';
+const icPlaceMarkActiveLight = '$_baseResPath/map/pm_active_light.png';
+const icPlaceMarkActiveDark = '$_baseResPath/map/pm_active_dark.png';
 
 /// пустые страницы (результат не найден) и ошибки
 const icEmptyPlanned = '$_baseResPath/empty_pages/card.svg';

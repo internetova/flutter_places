@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:places/blocs/buttons/new_place_button_cubit.dart';
+import 'package:places/blocs/location/location_bloc.dart';
 import 'package:places/blocs/onboarding_screen/onboarding_cubit.dart';
 import 'package:places/blocs/place_list_screen/place_list/place_list_bloc.dart';
 import 'package:places/blocs/settings_app/settings_app_cubit.dart';
-import 'package:places/blocs/visiting_screen/planned/planned_places_bloc.dart';
-import 'package:places/blocs/visiting_screen/visited/visited_places_bloc.dart';
 import 'package:places/data/api/api_client.dart';
 import 'package:places/data/database/database.dart';
 import 'package:places/data/interactor/favorite_interactor.dart';
@@ -18,11 +17,10 @@ import 'package:places/ui/screen/onboarding_screen.dart';
 import 'package:places/ui/res/app_routes.dart';
 import 'package:places/ui/res/strings.dart';
 import 'package:places/ui/res/themes.dart';
-import 'package:places/ui/screen/settings_screen.dart';
 import 'package:places/ui/screen/place_list_screen.dart';
 import 'package:places/ui/screen/splash_screen.dart';
-import 'package:places/ui/screen/visiting_screen.dart';
 import 'package:provider/provider.dart';
+
 
 void main() {
   runApp(App());
@@ -98,10 +96,23 @@ class App extends StatelessWidget {
       ],
       child: MultiBlocProvider(
         providers: [
+          /// получение настроек приложения
           BlocProvider<SettingsAppCubit>(
             create: (context) => SettingsAppCubit(
               context.read<SettingsInteractor>(),
             )..initState(),
+          ),
+
+          /// запрос геолокации
+          BlocProvider<LocationBloc>(
+            create: (_) => LocationBloc()..add(LocationStarted()),
+          ),
+
+          /// блок для работы со списком мест
+          BlocProvider<PlaceListBloc>(
+            create: (context) => PlaceListBloc(
+              context.read<PlaceInteractor>(),
+            ),
           ),
         ],
         child: BlocBuilder<SettingsAppCubit, SettingsAppState>(
@@ -124,33 +135,13 @@ class App extends StatelessWidget {
                     ),
                 AppRoutes.home: (context) => MultiBlocProvider(
                       providers: [
-                        BlocProvider<PlaceListBloc>(
-                          create: (_) => PlaceListBloc(
-                            context.read<PlaceInteractor>(),
-                          ),
-                        ),
+                        /// показывает / скрывает кнопку Добавить новое место
                         BlocProvider<NewPlaceButtonCubit>(
                           create: (_) => NewPlaceButtonCubit(),
                         ),
                       ],
-                      child: PlaceListScreen(),
+                      child: PlaceListScreen(searchFilter: state.searchFilter),
                     ),
-                AppRoutes.visiting: (context) => MultiBlocProvider(
-                      providers: [
-                        BlocProvider<PlannedPlacesBloc>(
-                          create: (_) => PlannedPlacesBloc(
-                            context.read<FavoriteInteractor>(),
-                          )..add(PlannedPlacesLoad()),
-                        ),
-                        BlocProvider<VisitedPlacesBloc>(
-                          create: (_) => VisitedPlacesBloc(
-                            context.read<FavoriteInteractor>(),
-                          )..add(VisitedPlacesLoad()),
-                        )
-                      ],
-                      child: VisitingScreen(),
-                    ),
-                AppRoutes.settings: (context) => SettingsScreen(),
               },
             );
           },

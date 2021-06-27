@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:places/blocs/settings_app/settings_app_cubit.dart';
 import 'package:places/ui/res/app_routes.dart';
 import 'package:places/ui/res/assets.dart';
 import 'package:places/ui/res/strings.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 /// BottomNavigationBar приложения
-class MainBottomNavigationBar extends StatelessWidget {
+class AppBottomNavigationBar extends StatelessWidget {
   final int current;
 
-  const MainBottomNavigationBar({Key? key, required this.current})
+  const AppBottomNavigationBar({Key? key, required this.current})
       : super(key: key);
 
   @override
@@ -18,16 +20,22 @@ class MainBottomNavigationBar extends StatelessWidget {
       onTap: (current) {
         switch (current) {
           case 0:
-            Navigator.of(context).pushReplacementNamed(AppRoutes.home);
+            AppRoutes.goPlaceListScreen(
+              context,
+              searchFilter: context.read<SettingsAppCubit>().state.searchFilter,
+            );
             break;
           case 1:
-            print('onTaped Карта');
+            AppRoutes.goMapScreen(
+              context,
+              searchFilter: context.read<SettingsAppCubit>().state.searchFilter,
+            );
             break;
           case 2:
-            Navigator.of(context).pushReplacementNamed(AppRoutes.visiting);
+            AppRoutes.goVisitingScreen(context);
             break;
           case 3:
-            Navigator.of(context).pushReplacementNamed(AppRoutes.settings);
+            AppRoutes.goSettingsScreen(context);
             break;
         }
       },

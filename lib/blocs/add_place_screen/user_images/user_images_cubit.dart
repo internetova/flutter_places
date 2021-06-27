@@ -1,19 +1,42 @@
+import 'dart:io';
+
 import 'package:bloc/bloc.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:places/ui/utilities/test_images_data.dart';
+import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:places/ui/res/strings.dart';
 
 part 'user_images_state.dart';
 
 class UserImagesCubit extends Cubit<UserImagesState> {
   UserImagesCubit() : super(UserImagesState([]));
 
-  /// сюда сохраним тестовые фотографии для загрузки
-  List<TestImage> _userImages = [];
+  final picker = ImagePicker();
+
+  /// сюда сохраним фотографии для загрузки
+  List<File> _userImages = [];
 
   /// onTap по кнопке Добавить фото (+)
-  void addImg() {
-    _userImages.add(TestImagesData.getRandomItem());
+  void addImg(BuildContext context, {required ImageSource source}) async {
+    await _getImage(source: source);
     emit(UserImagesState(_userImages));
+
+    Navigator.pop(context);
+  }
+
+  /// загрузить изображение
+  Future _getImage({required ImageSource source}) async {
+    final pickedFile = await picker.getImage(
+      source: source,
+      imageQuality: 80,
+      maxHeight: 800,
+      maxWidth: 800,
+    );
+
+    if (pickedFile != null) {
+      _userImages.add(File(pickedFile.path));
+    } else {
+      throw Exception(appExceptionNoImageSelected);
+    }
   }
 
   /// onTap или смахивание вверх по карточке с фото

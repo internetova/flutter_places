@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:places/blocs/add_place_screen/fields/fields_cubit.dart';
 import 'package:places/blocs/add_place_screen/select_category/select_category_cubit.dart';
 import 'package:places/data/model/place_type.dart';
+import 'package:places/ui/components/app_bar_standard.dart';
 import 'package:places/ui/components/button_save.dart';
-import 'package:places/ui/components/icon_leading_appbar.dart';
 import 'package:places/ui/components/icon_svg.dart';
 import 'package:places/ui/res/assets.dart';
 import 'package:places/ui/res/sizes.dart';
@@ -29,13 +30,16 @@ class _SelectCategoryScreenState extends State<SelectCategoryScreen> {
     return BlocBuilder<SelectCategoryCubit, SelectCategoryState>(
       builder: (context, state) {
         return Scaffold(
-          appBar: _buildSelectCategoryAppBar() as PreferredSizeWidget?,
+          appBar: AppBarStandard(
+            title: titleAppBarSelectCategoryScreen,
+            onPressedBack: _back,
+          ),
           body: _buildCategories(),
           floatingActionButton: AnimatedSwitcher(
             duration: milliseconds300,
             child: ButtonSave(
               key: ValueKey(state),
-              title: titleButtonSaveSelectCategoryScreen,
+              title: titleButtonSave,
               isButtonEnabled: state.isButtonEnabled,
               onPressed: state.isButtonEnabled ? _onPressedSave : null,
             ),
@@ -48,23 +52,14 @@ class _SelectCategoryScreenState extends State<SelectCategoryScreen> {
     );
   }
 
-  void _onPressedSave () {
-      Navigator.pop(context, context.read<SelectCategoryCubit>().state.selectedCategory);
-  }
+  void _onPressedSave() {
+    final String _newCategory =
+        context.read<SelectCategoryCubit>().state.selectedCategory;
 
-  /// AppBar
-  Widget _buildSelectCategoryAppBar() => AppBar(
-        toolbarHeight: toolbarHeightStandard,
-        leading: SmallLeadingIcon(
-          icon: icArrow,
-          onPressed: _back,
-        ),
-        leadingWidth: 64,
-        title: Text(
-          titleAppBarSelectCategoryScreen,
-        ),
-        centerTitle: true,
-      );
+    context.read<FieldsCubit>().categoryChanged(_newCategory);
+
+    Navigator.pop(context, _newCategory);
+  }
 
   /// категории
   Widget _buildCategories() => SingleChildScrollView(

@@ -3,6 +3,7 @@ import 'package:places/data/dto/place_dto.dart';
 import 'package:places/data/model/place.dart';
 import 'package:places/data/model/search_filter.dart';
 import 'package:places/data/model/search_history_item.dart';
+import 'package:places/data/model/object_position.dart';
 import 'package:places/data/repository/api_place_repository.dart';
 import 'package:places/data/repository/local_place_repository.dart';
 
@@ -20,11 +21,17 @@ class SearchInteractor {
   });
 
   /// получить результаты поиска
-  Future<List<Place>> getSearchResult(
-      {required SearchFilter filter, required String keywords}) async {
+  Future<List<Place>> getSearchResult({
+    ObjectPosition? userPosition,
+    SearchFilter? filter,
+    required String keywords,
+  }) async {
     try {
-      final placesDto =
-          await apiRepository.getPlaces(filter: filter, keywords: keywords);
+      final placesDto = await apiRepository.getPlaces(
+        userPosition: userPosition,
+        filter: filter,
+        keywords: keywords,
+      );
 
       /// сохраним удачный поисковый запрос в базе данных
       if (placesDto.isNotEmpty) {
@@ -32,7 +39,7 @@ class SearchInteractor {
       }
 
       /// отсортировали по удаленности, дистанцию отдал сервер
-      if (placesDto.length > 1) {
+      if (userPosition != null && placesDto.length > 1) {
         _sortByDistance(placesDto);
       }
 

@@ -4,7 +4,7 @@ import 'package:places/blocs/visiting_screen/planned/planned_places_bloc.dart';
 import 'package:places/blocs/visiting_screen/visited/visited_places_bloc.dart';
 import 'package:places/data/model/place.dart';
 import 'package:places/data/model/card_type.dart';
-import 'package:places/ui/components/bottom_navigationbar.dart';
+import 'package:places/ui/components/app_bottom_navigation_bar.dart';
 import 'package:places/ui/res/strings.dart';
 import 'package:places/ui/widgets/empty_page.dart';
 import 'package:places/ui/widgets/loader.dart';
@@ -25,8 +25,8 @@ class _VisitingScreenState extends State<VisitingScreen>
   @override
   void initState() {
     _tabController = TabController(length: 2, vsync: this);
-    _plannedPlacesBloc = BlocProvider.of<PlannedPlacesBloc>(context);
-    _visitedPlacesBloc = BlocProvider.of<VisitedPlacesBloc>(context);
+    _plannedPlacesBloc = context.read<PlannedPlacesBloc>();
+    _visitedPlacesBloc = context.read<VisitedPlacesBloc>();
 
     /// обновляем данные при переходе на соответствующую вкладку
     _tabController.addListener(() {
@@ -147,7 +147,7 @@ class _VisitingScreenState extends State<VisitingScreen>
           }),
         ],
       ),
-      bottomNavigationBar: const MainBottomNavigationBar(current: 2),
+      bottomNavigationBar: const AppBottomNavigationBar(current: 2),
     );
   }
 

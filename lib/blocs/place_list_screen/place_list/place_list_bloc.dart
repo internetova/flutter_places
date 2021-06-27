@@ -5,6 +5,7 @@ import 'package:equatable/equatable.dart';
 import 'package:places/data/interactor/place_interactor.dart';
 import 'package:places/data/model/place.dart';
 import 'package:places/data/model/search_filter.dart';
+import 'package:places/data/model/object_position.dart';
 
 part 'place_list_event.dart';
 
@@ -29,9 +30,21 @@ class PlaceListBloc extends Bloc<PlaceListEvent, PlaceListState> {
   Stream<PlaceListState> _placeListRequested(PlaceListRequested event) async* {
     yield PlaceListLoading();
 
+    // todo del
+    print('----------_placeListRequested  из сети');
+
     try {
-      final placesList =
-          await _interactor.getFilteredPlace(filter: event.filter);
+      late final List<Place> placesList;
+
+      if (event.userLocation != null && event.filter != null) {
+        placesList = await _interactor.getFilteredPlace(
+          userLocation: event.userLocation!,
+          filter: event.filter!,
+        );
+      } else {
+        placesList = await _interactor.getAllPlace();
+      }
+
       yield PlaceListLoadSuccess(placesList);
     } catch (_) {
       yield PlaceListLoadFailure();
@@ -42,6 +55,9 @@ class PlaceListBloc extends Bloc<PlaceListEvent, PlaceListState> {
   /// обрабатываем запрос данных из локального хранилища
   Stream<PlaceListState> _localPlaceListRequested() async* {
     yield PlaceListLoading();
+
+    // todo del
+    print('----------_localPlaceListRequested  из локального хранилища');
 
     try {
       final placesList = await _interactor.getCachePlaces();

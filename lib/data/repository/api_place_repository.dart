@@ -1,14 +1,19 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:http_parser/http_parser.dart';
+import 'package:mime_type/mime_type.dart';
 import 'package:places/data/api/api_client.dart';
 import 'package:places/data/api/api_constants.dart';
 import 'package:places/data/dto/place_dto.dart';
 import 'package:places/data/dto/places_filter_request_dto.dart';
 import 'package:places/data/exceptions/network_exception.dart';
 import 'package:places/data/model/search_filter.dart';
+import 'package:places/data/model/object_position.dart';
 import 'package:places/data/repository/place_repository.dart';
+import 'package:places/data/res/error_response_strings.dart';
 
 /// УДАЛЁННЫЙ РЕПОЗИТОРИЙ
 /// запрос данных с сервера
@@ -20,22 +25,50 @@ class ApiPlaceRepository implements PlaceRepository<PlaceDto> {
   /// запрашивает данные согласно фильтру юзера
   /// [nameFilter] может быть null - текстовый поиск по полю name
   /// [keywords] - ключевые слова для поиска
-  Future<List<PlaceDto>> getPlaces(
-      {required SearchFilter filter, String? keywords}) async {
-    final data = PlacesFilterRequestDto(
-      lat: filter.userLocation.lat,
-      lng: filter.userLocation.lng,
-      radius: filter.radius,
-      typeFilter: filter.typeFilter,
-      nameFilter: keywords != null ? keywords.trim() : null,
-    ).toJson();
+  Future<List<PlaceDto>> getPlaces({
+    ObjectPosition? userPosition,
+    SearchFilter? filter,
+    String? keywords,
+  }) async {
+    late Map<String, dynamic> data;
+
+    /// геолокация отключена - ищем по всей базе
+    if (userPosition == null) {
+      data = PlacesFilterRequestDto(
+        nameFilter: keywords != null ? keywords.trim() : null,
+      ).toJson();
+
+      /// иначе передаем фильтр и локацию пользователя
+    } else {
+      data = PlacesFilterRequestDto(
+        lat: userPosition.lat,
+        lng: userPosition.lng,
+        radius: filter?.radius,
+        typeFilter: filter?.typeFilter,
+        nameFilter: keywords != null ? keywords.trim() : null,
+      ).toJson();
+    }
+
+    // todo
+    print('-------data Post запрос: $data');
 
     final response = await _client.post(
       ApiConstants.filteredPlacesUrl,
       data: jsonEncode(data),
     );
 
-    final places = (response.data as List).map((e) => PlaceDto.fromJson(e)).toList();
+    final places =
+        (response.data as List).map((e) => PlaceDto.fromJson(e)).toList();
+
+    return places;
+  }
+
+  /// запросить все места без фильтра если нет доступа к геолокации
+  Future<List<PlaceDto>> getAllPlaces() async {
+    final response = await _client.get(ApiConstants.placesUrl);
+
+    final places =
+        (response.data as List).map((e) => PlaceDto.fromJson(e)).toList();
 
     return places;
   }
@@ -61,13 +94,35 @@ class ApiPlaceRepository implements PlaceRepository<PlaceDto> {
     return newPlace;
   }
 
-  /// добавить список мест для теста с моковыми данными
-  /// todo это для теста, потом удалить
-  Future<void> addPlacesList(List<PlaceDto> data) async {
-    data.forEach(addNewPlace);
+  /// загрузка фото
+  Future<String> uploadFile(File image) async {
+    String? filename = image.path.split('/').last;
+
+    /// тип загружаемых данных
+    String? mimeType = mime(filename);
+    String? mimee = mimeType?.split('/')[0];
+    String? type = mimeType?.split('/')[1];
+
+    if (mimeType != null) {
+      FormData formData = FormData.fromMap({
+        'image': await MultipartFile.fromFile(
+          image.path,
+          filename: filename,
+          contentType: MediaType(mimee!, type!),
+        ),
+      });
+
+      final response = await _client.post(
+        ApiConstants.uploadFileUrl,
+        data: formData,
+      );
+
+      return '${ApiConstants.baseUrl}/${response.headers['location']?.first}';
+    } else {
+      throw Exception(ErrorResponseStrings.eMimeType);
+    }
   }
 
-  /// ‼️❓ ДЛЯ теста
   /// удалить место
   @override
   Future<void> removePlace(PlaceDto place) =>
@@ -85,7 +140,8 @@ class ApiPlaceRepository implements PlaceRepository<PlaceDto> {
   }
 
   /// todo проверим есть ли доступ в сеть 🤓
-  Future<Response> testNetwork() => _client.get('${ApiConstants.placesUrl}?count=1');
+  Future<Response> testNetwork() =>
+      _client.get('${ApiConstants.placesUrl}?count=1');
 
   /// обработка ошибок
   NetworkException getNetworkException(DioError error) =>

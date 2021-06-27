@@ -5,20 +5,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:places/blocs/buttons/favorites_button_cubit.dart';
-import 'package:places/blocs/place_details_screen/details_slider/details_slider_cubit.dart';
+import 'package:places/blocs/map/move_to_visited/move_to_visited_cubit.dart';
 import 'package:places/blocs/visiting_screen/planned/planned_places_bloc.dart';
 import 'package:places/blocs/visiting_screen/visited/visited_places_bloc.dart';
 import 'package:places/data/interactor/place_interactor.dart';
 import 'package:places/data/model/place.dart';
 import 'package:places/data/model/card_type.dart';
+import 'package:places/ui/components/button_rounded.dart';
 import 'package:places/ui/components/icon_action_button.dart';
+import 'package:places/ui/res/app_routes.dart';
 import 'package:places/ui/res/sizes.dart';
 import 'package:places/ui/res/strings.dart';
 import 'package:places/ui/res/assets.dart';
 import 'package:places/ui/res/themes.dart';
-import 'package:places/ui/screen/place_details_screen.dart';
+import 'package:places/ui/utilities/ui_utils.dart';
 import 'package:places/ui/widgets/reminder_time_ios.dart';
 import 'package:places/ui/widgets/place_details_bottom_sheet.dart';
+import 'package:maps_launcher/maps_launcher.dart';
 
 /// карточка интересного места
 /// в зависимости от места показа карточки - Список поиска, в Избранном
@@ -34,33 +37,50 @@ class PlaceCard extends StatelessWidget {
   final CardType cardType;
   final VoidCallback updateCurrentList;
 
-  PlaceCard(
-      {Key? key,
-      required this.card,
-      required this.cardType,
-      required this.updateCurrentList})
-      : super(key: key);
+  PlaceCard({
+    Key? key,
+    required this.card,
+    required this.cardType,
+    required this.updateCurrentList,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<FavoritesButtonCubit>(
-      create: (_) => FavoritesButtonCubit(
-        context.read<PlaceInteractor>(),
-        place: card,
-      ),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<FavoritesButtonCubit>(
+          create: (_) => FavoritesButtonCubit(
+            context.read<PlaceInteractor>(),
+            place: card,
+          ),
+        ),
+        BlocProvider<MoveToVisitedCubit>(
+          create: (_) => MoveToVisitedCubit(
+            context.read<PlaceInteractor>(),
+            place: card,
+          ),
+        ),
+      ],
       child: AspectRatio(
-        aspectRatio: 3 / 2,
+        aspectRatio: cardType == CardType.map ? 30 / 17 : 3 / 2,
         child: Material(
           borderRadius: BorderRadius.circular(radiusCard),
           clipBehavior: Clip.antiAlias,
-          color: Theme.of(context).primaryColorLight,
+          color: cardType == CardType.map
+              ? UiUtils.setColorForTheme(context,
+                  light: Theme.of(context).colorScheme.white,
+                  dark: Theme.of(context).colorScheme.secondary)
+              : Theme.of(context).primaryColorLight,
           child: Stack(
             children: [
               Column(
                 children: [
                   Stack(
                     children: [
-                      CardImagePreview(imgUrl: card.urls.first),
+                      CardImagePreview(
+                        imgUrl: card.urls.first,
+                        cardType: cardType,
+                      ),
                       Positioned(
                         top: 8,
                         left: 16,
@@ -69,7 +89,10 @@ class PlaceCard extends StatelessWidget {
                       ),
                     ],
                   ),
-                  CardContent(card: card, cardType: cardType),
+                  if (cardType != CardType.map)
+                    CardContent(card: card, cardType: cardType),
+                  if (cardType == CardType.map)
+                    CardContentMap(card: card, cardType: cardType),
                 ],
               ),
               Positioned.fill(
@@ -77,7 +100,8 @@ class PlaceCard extends StatelessWidget {
                   type: MaterialType.transparency,
                   child: InkWell(
                     onTap: () {
-                      _showDetailsScreen(context);
+                      _showDetailsScreen(context,
+                          context.read<PlaceInteractor>(), card, cardType);
                       // todo отключила боттомшит на главной странице
                       // cardType == CardType.search
                       //     ? _showDetailsBottomSheet(context)
@@ -91,6 +115,12 @@ class PlaceCard extends StatelessWidget {
                 right: 16,
                 child: CardActions(card: card, cardType: cardType),
               ),
+              if (cardType == CardType.map)
+                Positioned(
+                  top: 112,
+                  right: 16,
+                  child: _BuildRouteButton(place: card),
+                ),
             ],
           ),
         ),
@@ -104,7 +134,10 @@ class PlaceCard extends StatelessWidget {
     await showModalBottomSheet(
       context: context,
       builder: (_) {
-        return PlaceDetailsBottomSheet(card: card);
+        return PlaceDetailsBottomSheet(
+          card: card,
+          cardType: cardType,
+        );
       },
       isScrollControlled: true,
       isDismissible: true,
@@ -117,14 +150,18 @@ class PlaceCard extends StatelessWidget {
   }
 
   /// перейти на отдельный экран с деталями
-  Future<void> _showDetailsScreen(BuildContext context) async {
-    await Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => BlocProvider<DetailsSliderCubit>(
-          create: (_) => DetailsSliderCubit(),
-          child: PlaceDetails(card: card),
-        ),
-      ),
+  /// [cardType] - для формирования тега Hero
+  Future<void> _showDetailsScreen(
+    BuildContext context,
+    PlaceInteractor interactor,
+    Place card,
+    CardType cardType,
+  ) async {
+    await AppRoutes.goPlaceDetailsScreen(
+      context,
+      interactor,
+      place: card,
+      cardType: cardType,
     );
 
     /// после возвращения с экрана с подробностями обновляем список карточек,
@@ -136,12 +173,15 @@ class PlaceCard extends StatelessWidget {
 
 /// загружает картинку-превью карточки
 /// берёт первую из списка картинок
+/// [cardType] - для формирования тега Hero
 class CardImagePreview extends StatelessWidget {
   final String imgUrl;
+  final CardType cardType;
 
   const CardImagePreview({
     Key? key,
     required this.imgUrl,
+    required this.cardType,
   }) : super(key: key);
 
   @override
@@ -150,7 +190,9 @@ class CardImagePreview extends StatelessWidget {
       width: double.infinity,
       height: 96,
       child: Hero(
-        tag: imgUrl,
+        tag: cardType == CardType.search
+            ? 'fromSearch$imgUrl'
+            : 'fromFavorites$imgUrl',
         child: Image.network(
           imgUrl,
           fit: BoxFit.cover,
@@ -213,7 +255,7 @@ class CardActions extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          if (cardType == CardType.search)
+          if (cardType == CardType.search || cardType == CardType.map)
             ..._buildActionsSearch(context) as Iterable<Widget>,
           if (cardType == CardType.planned)
             ..._buildActionsPlanned(context) as Iterable<Widget>,
@@ -376,13 +418,73 @@ class CardContent extends StatelessWidget {
             SizedBox(
               height: 12,
             ),
-            Text(
-              'закрыто до 09:00', // временно
-              style: Theme.of(context).textTheme.bodyText2,
-            ),
           ],
         ],
       ),
+    );
+  }
+}
+
+/// контент карточки для показа на карте
+class CardContentMap extends StatelessWidget {
+  final Place card;
+  final CardType cardType;
+
+  const CardContentMap({
+    Key? key,
+    required this.card,
+    required this.cardType,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            child: Text(
+              card.name,
+              style: Theme.of(context).textTheme.headline5,
+              overflow: TextOverflow.ellipsis,
+              maxLines: 2,
+            ),
+          ),
+          sizedBoxW8,
+          const SizedBox(width: heightBigButton),
+        ],
+      ),
+    );
+  }
+}
+
+/// кнопка Построить маршрут на карточке места на карте
+class _BuildRouteButton extends StatelessWidget {
+  final Place place;
+
+  const _BuildRouteButton({Key? key, required this.place}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<MoveToVisitedCubit, MoveToVisitedState>(
+      builder: (context, state) {
+        return ButtonRounded(
+          backgroundColor: Theme.of(context).accentColor,
+          size: heightBigButton,
+          radius: radiusCard,
+          icon: icGo,
+          iconColor: Theme.of(context).colorScheme.white,
+          onPressed: () {
+            if (state.place.cardType != CardType.visited) {
+              context.read<MoveToVisitedCubit>().addToVisited(state.place);
+            }
+
+            MapsLauncher.launchCoordinates(
+                state.place.lat, state.place.lng, state.place.name);
+          },
+        );
+      },
     );
   }
 }

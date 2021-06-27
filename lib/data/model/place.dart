@@ -48,7 +48,7 @@ class Place extends Equatable {
             json['distance'] != null ? json['distance'] as double? : null,
         isFavorite = json['isFavorite'] as bool,
         cardType = CardType.values.elementAt(json['cardType']),
-        date = json['date'] != null ? json['date'] : null;
+        date = json['date'] != null ? json['date'] as DateTime : null;
 
   Map<String, dynamic> toJson() => {
         'id': id,
@@ -138,8 +138,7 @@ class Place extends Equatable {
   }
 
   /// переносим место в посещённые
-  static Place switchFavoriteStatusVisited(
-      {required Place place}) {
+  static Place switchFavoriteStatusVisited({required Place place}) {
     return Place(
       id: place.id,
       lat: place.lat,
@@ -154,7 +153,6 @@ class Place extends Equatable {
       date: place.date,
     );
   }
-  
 
   /// получить название типа места по коду
   /// т.к. сервер отдаёт только код

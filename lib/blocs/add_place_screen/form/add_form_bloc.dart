@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
-import 'package:places/blocs/add_place_screen/fields/fields_bloc.dart';
+import 'package:places/blocs/add_place_screen/fields/fields_cubit.dart';
 import 'package:places/blocs/add_place_screen/user_images/user_images_cubit.dart';
 import 'package:places/data/dto/place_dto.dart';
 import 'package:places/data/interactor/place_interactor.dart';
@@ -28,15 +28,27 @@ class AddFormBloc extends Bloc<AddFormEvent, AddFormState> {
 
       try {
         // todo потом удалить
-        await Future.delayed(Duration(seconds: 1));
+        await Future.delayed(Duration(seconds: 3));
 
-        /// TODO: загрузка фото
-        /// временно
+        /// когда все поля формы заполнены
+        /// 1. Загружаем фото на сервер
+        /// 2. Записываем адреса в список загруженных фото
+        /// 3. Формируем место PlaceDto
+        /// 4. Добавляем место на сервер
+
         /// данные о фото берём из [UserImagesState imagesState]
-        const _images = [
-          'https://picsum.photos/1000/600?random=1',
-          'https://picsum.photos/1000/600?random=2',
-        ];
+        final _imagesToUpload = event.imagesState.userImages;
+
+        /// загруженные фото
+        List<String> _imagesUploaded = [];
+
+        /// загружаем фото на сервер и возвращаем адреса
+        /// todo раскоментировать
+        /// закоментировала чтобы не сорить на сервере
+        // for (var i = 0; i < _imagesToUpload.length; i++) {
+        //   _imagesUploaded
+        //       .add(await placeInteractor.uploadFile(_imagesToUpload[i]));
+        // }
 
         /// сюда сохраним данные полей формы
         PlaceDto newPlace = PlaceDto(
@@ -45,7 +57,7 @@ class AddFormBloc extends Bloc<AddFormEvent, AddFormState> {
           lat: double.tryParse(event.fieldsState.fieldLat) as double,
           lng: double.tryParse(event.fieldsState.fieldLng) as double,
           description: event.fieldsState.fieldDescription,
-          urls: _images,
+          urls: _imagesUploaded,
         );
 
         /// и потом отправим на сервер

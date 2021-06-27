@@ -19,7 +19,7 @@ class TitleLeadingAppBar extends StatelessWidget {
             .copyWith(color: Theme.of(context).colorScheme.secondary2),
       ),
       onPressed: () {
-        Navigator.pop(context);
+        Navigator.of(context).pop();
       },
     );
   }

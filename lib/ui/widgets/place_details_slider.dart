@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:places/blocs/place_details_screen/details_slider/details_slider_cubit.dart';
-import 'package:places/ui/components/icon_svg.dart';
+import 'package:places/data/model/card_type.dart';
+import 'package:places/ui/components/button_rounded.dart';
 import 'package:places/ui/res/assets.dart';
 import 'package:places/ui/res/sizes.dart';
 
@@ -9,14 +10,17 @@ import 'package:places/ui/res/sizes.dart';
 enum WhereShowSlider { screen, bottomSheet }
 
 /// слайдер фотографий
+/// [cardType] - для формирования тега Hero
 class PlaceDetailsSlider extends StatelessWidget {
   final List<String> images;
   final WhereShowSlider whereShowSlider;
+  final CardType cardType;
 
   const PlaceDetailsSlider({
     Key? key,
     required this.images,
     required this.whereShowSlider,
+    required this.cardType,
   }) : super(key: key);
 
   @override
@@ -25,30 +29,35 @@ class PlaceDetailsSlider extends StatelessWidget {
       builder: (context, state) {
         return LayoutBuilder(
           builder: (context, constraints) {
-            return Stack(
-              children: [
-                _ListSliderItems(
-                  images: images,
-                ),
-                Positioned(
-                  bottom: 0,
-                  child: ConstrainedBox(
-                    constraints: BoxConstraints.tight(
-                      Size(constraints.maxWidth, 8.0),
-                    ),
-                    child: _ProgressIndicatorImages(
-                      data: images,
-                      currentIndex: state.currentPage,
-                    ),
+            return Hero(
+              tag: cardType == CardType.search
+                  ? 'fromSearch${images.first}'
+                  : 'fromFavorites${images.first}',
+              child: Stack(
+                children: [
+                  _ListSliderItems(
+                    images: images,
                   ),
-                ),
-                if (whereShowSlider == WhereShowSlider.screen)
                   Positioned(
-                    top: 36,
-                    left: 16,
-                    child: _ButtonBack(),
+                    bottom: 0,
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints.tight(
+                        Size(constraints.maxWidth, 8.0),
+                      ),
+                      child: _ProgressIndicatorImages(
+                        data: images,
+                        currentIndex: state.currentPage,
+                      ),
+                    ),
                   ),
-              ],
+                  if (whereShowSlider == WhereShowSlider.screen)
+                    Positioned(
+                      top: 36,
+                      left: 16,
+                      child: _ButtonBack(),
+                    ),
+                ],
+              ),
             );
           },
         );
@@ -61,29 +70,15 @@ class PlaceDetailsSlider extends StatelessWidget {
 class _ButtonBack extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return ConstrainedBox(
-      constraints: BoxConstraints.tight(
-        Size(32.0, 32.0),
-      ),
-      child: TextButton(
-        style: TextButton.styleFrom(
-          padding: EdgeInsets.zero,
-          backgroundColor: Theme.of(context).primaryColor,
-          minimumSize: Size.fromHeight(heightBigButton),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(
-              Radius.circular(10),
-            ),
-          ),
-        ),
-        child: IconSvg(
-          icon: icArrow,
-          color: Theme.of(context).colorScheme.onPrimary,
-        ),
-        onPressed: () {
-          Navigator.of(context).pop();
-        },
-      ),
+    return ButtonRounded(
+      size: 32,
+      radius: radiusButtonSmall,
+      backgroundColor: Theme.of(context).primaryColor,
+      icon: icArrow,
+      iconColor: Theme.of(context).colorScheme.onPrimary,
+      onPressed: () {
+        Navigator.of(context).pop();
+      },
     );
   }
 }
@@ -185,11 +180,8 @@ class _ListSliderItems extends StatelessWidget {
       controller: _controller,
       itemCount: images.length,
       itemBuilder: (BuildContext context, int index) {
-        return Hero(
-          tag: images[0],
-          child: _SliderItem(
-            url: images[index],
-          ),
+        return _SliderItem(
+          url: images[index],
         );
       },
     );

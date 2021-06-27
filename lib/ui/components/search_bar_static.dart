@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:places/ui/components/button_rounded.dart';
 import 'package:places/ui/components/icon_svg.dart';
 import 'package:places/ui/res/assets.dart';
 import 'package:places/ui/res/sizes.dart';
@@ -9,13 +10,13 @@ import 'package:places/ui/res/themes.dart';
 /// декоративный - выполняет роль перехода на другие экраны:
 /// поиск и настройка фильтра
 class SearchBarStatic extends StatelessWidget {
-  final VoidCallback? onTapSearch;
-  final VoidCallback? onPressedFilter;
+  final VoidCallback onTapSearch;
+  final VoidCallback onPressedFilter;
 
   const SearchBarStatic({
     Key? key,
-    this.onTapSearch,
-    this.onPressedFilter,
+    required this.onTapSearch,
+    required this.onPressedFilter,
   }) : super(key: key);
 
   @override
@@ -57,18 +58,15 @@ class SearchBarStatic extends StatelessWidget {
             ),
           ),
           Positioned(
-            top: 4,
-            bottom: 4,
+            top: 0,
             right: 0,
-            child: IconButton(
-              padding: EdgeInsets.zero,
-              icon: IconSvg(
-                icon: icFilter,
-                color: Theme.of(context).accentColor,
-              ),
+            child: ButtonRounded(
+              size: 40,
+              radius: radiusButtonSmall,
+              backgroundColor: Theme.of(context).primaryColorLight,
+              icon: icFilter,
+              iconColor: Theme.of(context).accentColor,
               onPressed: onPressedFilter,
-              splashRadius: splashRadiusSmall,
-              splashColor: Theme.of(context).accentColor.withOpacity(0.25),
             ),
           ),
         ],

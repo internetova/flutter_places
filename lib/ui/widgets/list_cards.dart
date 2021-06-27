@@ -77,7 +77,7 @@ class ListCardsLandscape extends StatelessWidget {
           crossAxisCount: 2,
           crossAxisSpacing: 36.0,
           mainAxisSpacing: 16.0,
-          childAspectRatio: 3 / 2,
+          childAspectRatio: 30 / 24,
         ),
       );
 }

@@ -38,7 +38,7 @@ class SearchBar extends StatelessWidget {
           data: Theme.of(context).copyWith(
             inputDecorationTheme: InputDecorationTheme(
               contentPadding:
-                  const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                  const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
               hintStyle: Theme.of(context)
                   .primaryTextTheme
                   .subtitle1!
@@ -53,7 +53,7 @@ class SearchBar extends StatelessWidget {
             textInputAction: TextInputAction.search,
             style: Theme.of(context).primaryTextTheme.subtitle1,
             decoration: InputDecoration(
-              contentPadding: const EdgeInsets.symmetric(vertical: 8),
+              contentPadding: const EdgeInsets.symmetric(vertical: 10),
               border: InputBorder.none,
               hintText: searchHintText,
               counterText: '',

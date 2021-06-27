@@ -1,6 +1,5 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter/material.dart';
 import 'package:places/ui/res/strings.dart';
 
 part 'select_category_state.dart';
@@ -12,8 +11,6 @@ class SelectCategoryCubit extends Cubit<SelectCategoryState> {
       : super(SelectCategoryState(
           selectedCategory: emptyCategory,
         ));
-
-  final fieldCategory = TextEditingController();
 
   void onTap(String category) {
     if (category != emptyCategory && category.length > 0) {

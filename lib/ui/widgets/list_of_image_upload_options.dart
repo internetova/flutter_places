@@ -1,34 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:places/blocs/add_place_screen/user_images/user_images_cubit.dart';
 import 'package:places/ui/components/icon_svg.dart';
-import 'package:places/ui/res/assets.dart';
-import 'package:places/ui/res/strings.dart';
 import 'package:places/ui/res/themes.dart';
-
-/// вариант загрузки фото
-class ImageUploadItem {
-  final String icon;
-  final String name;
-
-  const ImageUploadItem({
-    required this.icon,
-    required this.name,
-  });
-}
-
-/// список вариантов загрузки фотографий
-const List<ImageUploadItem> _dataImageUploadItems = const [
-  ImageUploadItem(icon: icCamera, name: imageUploadCamera),
-  ImageUploadItem(icon: icPhoto, name: imageUploadPhoto),
-  ImageUploadItem(icon: icFail, name: imageUploadFail),
-];
+import 'package:places/ui/widgets/choice_of_loading_images.dart';
 
 /// список вариантов загрузки изображений для экрана добавления нового места
 class ListOfImageUploadOptions extends StatelessWidget {
   final List<ImageUploadItem> data;
+  final UserImagesCubit imagesCubit;
 
   const ListOfImageUploadOptions({
     Key? key,
-    this.data = _dataImageUploadItems,
+    required this.data,
+    required this.imagesCubit,
   }) : super(key: key);
 
   @override
@@ -40,6 +24,7 @@ class ListOfImageUploadOptions extends StatelessWidget {
         return _ImageUploadItemWidget(
           icon: data[index].icon,
           name: data[index].name,
+          onTap: () => imagesCubit.addImg(context, source: data[index].source),
         );
       },
       separatorBuilder: (BuildContext context, int index) {
@@ -55,13 +40,13 @@ class ListOfImageUploadOptions extends StatelessWidget {
 class _ImageUploadItemWidget extends StatelessWidget {
   final String icon;
   final String name;
-  final VoidCallback? onTap;
+  final VoidCallback onTap;
 
   const _ImageUploadItemWidget({
     Key? key,
     required this.icon,
     required this.name,
-    this.onTap,
+    required this.onTap,
   }) : super(key: key);
 
   @override
