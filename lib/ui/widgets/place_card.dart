@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:places/blocs/buttons/favorites_button_cubit.dart';
-import 'package:places/blocs/map/move%20_to_visited/move_to_visited_cubit.dart';
+import 'package:places/blocs/map/move_to_visited/move_to_visited_cubit.dart';
 import 'package:places/blocs/visiting_screen/planned/planned_places_bloc.dart';
 import 'package:places/blocs/visiting_screen/visited/visited_places_bloc.dart';
 import 'package:places/data/interactor/place_interactor.dart';

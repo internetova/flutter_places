@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:places/blocs/buttons/favorites_button_cubit.dart';
-import 'package:places/blocs/map/move%20_to_visited/move_to_visited_cubit.dart';
+import 'package:places/blocs/map/move_to_visited/move_to_visited_cubit.dart';
 import 'package:places/blocs/place_details_screen/details_slider/details_slider_cubit.dart';
 import 'package:places/data/interactor/place_interactor.dart';
 import 'package:places/data/model/card_type.dart';

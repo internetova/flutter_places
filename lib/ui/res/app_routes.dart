@@ -6,7 +6,7 @@ import 'package:places/blocs/add_place_screen/user_images/user_images_cubit.dart
 import 'package:places/blocs/buttons/new_place_button_cubit.dart';
 import 'package:places/blocs/filters_screen/button/filter_button_cubit.dart';
 import 'package:places/blocs/filters_screen/filter/filter_cubit.dart';
-import 'package:places/blocs/map/move%20_to_visited/move_to_visited_cubit.dart';
+import 'package:places/blocs/map/move_to_visited/move_to_visited_cubit.dart';
 import 'package:places/blocs/map/selected_place/selected_place_cubit.dart';
 import 'package:places/blocs/onboarding_screen/onboarding_cubit.dart';
 import 'package:places/blocs/place_details_screen/details_slider/details_slider_cubit.dart';

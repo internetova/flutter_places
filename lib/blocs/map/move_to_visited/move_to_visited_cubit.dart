@@ -13,16 +13,8 @@ class MoveToVisitedCubit extends Cubit<MoveToVisitedState> {
   MoveToVisitedCubit(this._interactor, {required this.place})
       : super(MoveToVisitedState(place));
 
-  /// если место в запланированных, то обновим информацию в локальной бд
-  void moveToVisited(Place place) {
-    final Place visitedPlace = Place.switchFavoriteStatusVisited(
-      place: place);
-
-    _interactor.moveToVisited(visitedPlace);
-    emit(MoveToVisitedState(visitedPlace));
-  }
-
   /// если места в избранных нет, то добавим новое место в бд
+  /// или обновим существующее
   void addToVisited(Place place) {
     final Place visitedPlace = Place.switchFavoriteStatusVisited(
       place: place);
