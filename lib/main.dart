@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show DeviceOrientation, SystemChrome;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:places/blocs/buttons/new_place_button_cubit.dart';
 import 'package:places/blocs/location/location_bloc.dart';
@@ -23,6 +24,12 @@ import 'package:provider/provider.dart';
 
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown
+  ]);
+
   runApp(App());
 }
 
