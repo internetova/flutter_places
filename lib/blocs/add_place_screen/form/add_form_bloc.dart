@@ -27,9 +27,6 @@ class AddFormBloc extends Bloc<AddFormEvent, AddFormState> {
       yield AddFormSubmitting();
 
       try {
-        // todo потом удалить
-        await Future.delayed(Duration(seconds: 3));
-
         /// когда все поля формы заполнены
         /// 1. Загружаем фото на сервер
         /// 2. Записываем адреса в список загруженных фото
@@ -43,8 +40,6 @@ class AddFormBloc extends Bloc<AddFormEvent, AddFormState> {
         List<String> _imagesUploaded = [];
 
         /// загружаем фото на сервер и возвращаем адреса
-        /// todo раскоментировать
-        /// закоментировала чтобы не сорить на сервере
         for (var i = 0; i < _imagesToUpload.length; i++) {
           _imagesUploaded
               .add(await placeInteractor.uploadFile(_imagesToUpload[i]));
@@ -61,8 +56,6 @@ class AddFormBloc extends Bloc<AddFormEvent, AddFormState> {
         );
 
         /// и потом отправим на сервер
-        /// todo раскоментировать
-        /// закоментировала чтобы не сорить на сервере
         await placeInteractor.addNewPlace(newPlace);
 
         /// подтверждаем сохранение данных

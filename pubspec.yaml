@@ -58,7 +58,6 @@ flutter:
     - res/icons/empty_pages/
     - res/icons/loader/
     - res/icons/map/
-    - res/test_data/
 
   fonts:
     - family: Roboto
