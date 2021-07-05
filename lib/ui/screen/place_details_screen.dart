@@ -14,6 +14,7 @@ import 'package:places/ui/res/assets.dart';
 import 'package:places/ui/widgets/place_details_slider.dart';
 import 'package:places/ui/res/themes.dart';
 import 'package:maps_launcher/maps_launcher.dart';
+import 'package:share_plus/share_plus.dart';
 
 /// экран с подробным описанием карточки / достопримечательности
 /// [cardType] добавила откуда перешли на страницу, чтобы корректно работала
@@ -95,7 +96,7 @@ class PlaceDetailsScreen extends StatelessWidget {
                             children: [
                               Expanded(
                                 child: card.cardType == CardType.visited
-                                    ? _BuildShareButton()
+                                    ? _BuildShareButton(place: card)
                                     : _BuildPlanButton(),
                               ),
                               Expanded(
@@ -319,12 +320,16 @@ class _BuildFavoritesButtonStatic extends StatelessWidget {
 
 /// кнопка Поделиться
 class _BuildShareButton extends StatelessWidget {
+  final Place place;
+
+  const _BuildShareButton({Key? key, required this.place}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return TextButton(
       onPressed: () {
-        /// todo
-        print('onTaped Поделиться');
+        Share.share(
+            '${place.name}\n\n${place.description}\n\nhttps://yandex.ru/maps/?whatshere[point]=${place.lng},${place.lat}&whatshere[zoom]=13');
       },
       style: TextButton.styleFrom(
         minimumSize: Size.fromHeight(40),

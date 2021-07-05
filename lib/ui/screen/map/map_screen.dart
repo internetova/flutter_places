@@ -48,7 +48,7 @@ class _MapScreenState extends State<MapScreen> {
   late SearchFilter _searchFilter;
 
   /// загруженный список мест
-  List<Place>? _places;
+  List<Place> _places = [];
 
   /// последнее выбранное место - зелёный маркер
   Place? _selectedPlace;
@@ -163,8 +163,12 @@ class _MapScreenState extends State<MapScreen> {
             ? mapDarkStyle
             : mapLightStyle);
 
-    _loadPlaces(controller!, places: _places!);
-    _setBoundsPlaces(controller!, places: _places!);
+    if (_places.isNotEmpty) {
+      _loadPlaces(controller!, places: _places);
+      _setBoundsPlaces(controller!, places: _places);
+    } else {
+      emptyResult();
+    }
   }
 
   /// загрузить места
@@ -326,6 +330,22 @@ class _MapScreenState extends State<MapScreen> {
             );
           });
     }
+  }
+
+  /// если список мест пуст покажем окно
+  void emptyResult() {
+    showDialog(
+        context: context,
+        builder: (_) {
+          return InformDialogWidget(
+            header: searchEmptyHeader,
+            text: searchEmptyText,
+            informDialogType: InformDialogType.error,
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          );
+        });
   }
 }
 

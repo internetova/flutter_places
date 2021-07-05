@@ -45,10 +45,10 @@ class AddFormBloc extends Bloc<AddFormEvent, AddFormState> {
         /// загружаем фото на сервер и возвращаем адреса
         /// todo раскоментировать
         /// закоментировала чтобы не сорить на сервере
-        // for (var i = 0; i < _imagesToUpload.length; i++) {
-        //   _imagesUploaded
-        //       .add(await placeInteractor.uploadFile(_imagesToUpload[i]));
-        // }
+        for (var i = 0; i < _imagesToUpload.length; i++) {
+          _imagesUploaded
+              .add(await placeInteractor.uploadFile(_imagesToUpload[i]));
+        }
 
         /// сюда сохраним данные полей формы
         PlaceDto newPlace = PlaceDto(
@@ -63,7 +63,7 @@ class AddFormBloc extends Bloc<AddFormEvent, AddFormState> {
         /// и потом отправим на сервер
         /// todo раскоментировать
         /// закоментировала чтобы не сорить на сервере
-        // await placeInteractor.addNewPlace(newPlace);
+        await placeInteractor.addNewPlace(newPlace);
 
         /// подтверждаем сохранение данных
         showDialog(
