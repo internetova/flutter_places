@@ -59,12 +59,25 @@ android {
             storePassword keystoreProperties['storePassword']
         }
     }
+
     buildTypes {
         release {
             signingConfig signingConfigs.release
         }
     }
 
+    flavorDimensions 'release-type'
+
+    productFlavors {
+        dev {
+            dimension 'release-type'
+            applicationIdSuffix '.dev'
+        }
+
+        prod {
+            dimension 'release-type'
+        }
+    }
 }
 
 flutter {
