@@ -21,6 +21,7 @@ import 'package:places/data/model/card_type.dart';
 import 'package:places/data/model/place.dart';
 import 'package:places/data/model/search_filter.dart';
 import 'package:places/data/model/object_position.dart';
+import 'package:places/environment/environment.dart';
 import 'package:places/ui/screen/add_place_screen/add_place_screen.dart';
 import 'package:places/ui/screen/filters_screen.dart';
 import 'package:places/ui/screen/map/map_screen.dart';
@@ -63,7 +64,11 @@ class AppRoutes {
               create: (_) => NewPlaceButtonCubit(),
             ),
           ],
-          child: PlaceListScreen(searchFilter: searchFilter),
+          child: PlaceListScreen(
+            searchFilter: searchFilter,
+            envDebugAppBarLabel:
+                Environment.instance.buildConfig.envDebugAppBarLabel,
+          ),
         ),
       ),
     );

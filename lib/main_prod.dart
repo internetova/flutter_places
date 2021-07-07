@@ -17,9 +17,9 @@ void main() {
 }
 
 void _defineEnvironment({required BuildConfig buildConfig}) {
-  Environment.init(buildConfig, BuildType.dev);
+  Environment.init(buildConfig, BuildType.prod);
 }
 
 BuildConfig _setUpConfig() {
-  return BuildConfig(envDebugAppBarLabel: 'Debug сборка app');
+  return BuildConfig();
 }
