@@ -352,7 +352,7 @@ class _SliverAppBarPortrait extends StatelessWidget {
             duration: milliseconds300,
             opacity: top == 56.0 ? 1.0 : 0.0,
             child: Text(
-              searchAppBarTitle,
+              appBarTitleSmall,
               style: Theme.of(context).textTheme.headline6!.copyWith(
                     color: Theme.of(context).colorScheme.primary,
                   ),
@@ -424,7 +424,7 @@ class _SliverAppBarLandscape extends StatelessWidget {
       title: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
         child: Text(
-          searchAppBarTitle,
+          appBarTitleSmall,
           style: Theme.of(context).textTheme.headline6!.copyWith(
                 color: Theme.of(context).colorScheme.primary,
               ),

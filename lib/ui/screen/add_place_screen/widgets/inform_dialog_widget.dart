@@ -49,7 +49,7 @@ class InformDialogWidget extends StatelessWidget {
             style: Theme.of(context).primaryTextTheme.subtitle1,
           ),
           Text(
-            '${description.substring(0, 100)} ...',
+            '${description.substring(0, 50)} ...',
             style: Theme.of(context).primaryTextTheme.subtitle1,
           ),
           sizedBoxH12,
