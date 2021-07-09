@@ -134,32 +134,21 @@ class $TableSearchHistoryTable extends TableSearchHistory
   final String? _alias;
   $TableSearchHistoryTable(this._db, [this._alias]);
   final VerificationMeta _idMeta = const VerificationMeta('id');
-  @override
-  late final GeneratedIntColumn id = _constructId();
-  GeneratedIntColumn _constructId() {
-    return GeneratedIntColumn('id', $tableName, false,
-        hasAutoIncrement: true, declaredAsPrimaryKey: true);
-  }
-
+  late final GeneratedColumn<int?> id = GeneratedColumn<int?>(
+      'id', aliasedName, false,
+      typeName: 'INTEGER',
+      requiredDuringInsert: false,
+      defaultConstraints: 'PRIMARY KEY AUTOINCREMENT');
   final VerificationMeta _requestMeta = const VerificationMeta('request');
-  @override
-  late final GeneratedTextColumn request = _constructRequest();
-  GeneratedTextColumn _constructRequest() {
-    return GeneratedTextColumn(
-      'request',
-      $tableName,
-      false,
-    );
-  }
-
+  late final GeneratedColumn<String?> request = GeneratedColumn<String?>(
+      'request', aliasedName, false,
+      typeName: 'TEXT', requiredDuringInsert: true);
   @override
   List<GeneratedColumn> get $columns => [id, request];
   @override
-  $TableSearchHistoryTable get asDslTable => this;
+  String get aliasedName => _alias ?? 'table_search_history';
   @override
-  String get $tableName => _alias ?? 'table_search_history';
-  @override
-  final String actualTableName = 'table_search_history';
+  String get actualTableName => 'table_search_history';
   @override
   VerificationContext validateIntegrity(Insertable<SearchHistory> instance,
       {bool isInserting = false}) {
@@ -349,46 +338,25 @@ class $TableFavoritesTable extends TableFavorites
   final String? _alias;
   $TableFavoritesTable(this._db, [this._alias]);
   final VerificationMeta _placeIdMeta = const VerificationMeta('placeId');
-  @override
-  late final GeneratedIntColumn placeId = _constructPlaceId();
-  GeneratedIntColumn _constructPlaceId() {
-    return GeneratedIntColumn(
-      'place_id',
-      $tableName,
-      false,
-    );
-  }
-
+  late final GeneratedColumn<int?> placeId = GeneratedColumn<int?>(
+      'place_id', aliasedName, false,
+      typeName: 'INTEGER', requiredDuringInsert: false);
   final VerificationMeta _placeMeta = const VerificationMeta('place');
-  @override
-  late final GeneratedTextColumn place = _constructPlace();
-  GeneratedTextColumn _constructPlace() {
-    return GeneratedTextColumn(
-      'place',
-      $tableName,
-      false,
-    );
-  }
-
+  late final GeneratedColumnWithTypeConverter<Place, String?> place =
+      GeneratedColumn<String?>('place', aliasedName, false,
+              typeName: 'TEXT', requiredDuringInsert: true)
+          .withConverter<Place>($TableFavoritesTable.$converter0);
   final VerificationMeta _cardTypeMeta = const VerificationMeta('cardType');
-  @override
-  late final GeneratedIntColumn cardType = _constructCardType();
-  GeneratedIntColumn _constructCardType() {
-    return GeneratedIntColumn(
-      'card_type',
-      $tableName,
-      false,
-    );
-  }
-
+  late final GeneratedColumnWithTypeConverter<CardType, int?> cardType =
+      GeneratedColumn<int?>('card_type', aliasedName, false,
+              typeName: 'INTEGER', requiredDuringInsert: true)
+          .withConverter<CardType>($TableFavoritesTable.$converter1);
   @override
   List<GeneratedColumn> get $columns => [placeId, place, cardType];
   @override
-  $TableFavoritesTable get asDslTable => this;
+  String get aliasedName => _alias ?? 'table_favorites';
   @override
-  String get $tableName => _alias ?? 'table_favorites';
-  @override
-  final String actualTableName = 'table_favorites';
+  String get actualTableName => 'table_favorites';
   @override
   VerificationContext validateIntegrity(Insertable<Favorites> instance,
       {bool isInserting = false}) {
@@ -551,35 +519,20 @@ class $TableCachePlacesTable extends TableCachePlaces
   final String? _alias;
   $TableCachePlacesTable(this._db, [this._alias]);
   final VerificationMeta _placeIdMeta = const VerificationMeta('placeId');
-  @override
-  late final GeneratedIntColumn placeId = _constructPlaceId();
-  GeneratedIntColumn _constructPlaceId() {
-    return GeneratedIntColumn(
-      'place_id',
-      $tableName,
-      false,
-    );
-  }
-
+  late final GeneratedColumn<int?> placeId = GeneratedColumn<int?>(
+      'place_id', aliasedName, false,
+      typeName: 'INTEGER', requiredDuringInsert: false);
   final VerificationMeta _placeMeta = const VerificationMeta('place');
-  @override
-  late final GeneratedTextColumn place = _constructPlace();
-  GeneratedTextColumn _constructPlace() {
-    return GeneratedTextColumn(
-      'place',
-      $tableName,
-      false,
-    );
-  }
-
+  late final GeneratedColumnWithTypeConverter<Place, String?> place =
+      GeneratedColumn<String?>('place', aliasedName, false,
+              typeName: 'TEXT', requiredDuringInsert: true)
+          .withConverter<Place>($TableCachePlacesTable.$converter0);
   @override
   List<GeneratedColumn> get $columns => [placeId, place];
   @override
-  $TableCachePlacesTable get asDslTable => this;
+  String get aliasedName => _alias ?? 'table_cache_places';
   @override
-  String get $tableName => _alias ?? 'table_cache_places';
-  @override
-  final String actualTableName = 'table_cache_places';
+  String get actualTableName => 'table_cache_places';
   @override
   VerificationContext validateIntegrity(Insertable<CachePlaces> instance,
       {bool isInserting = false}) {
