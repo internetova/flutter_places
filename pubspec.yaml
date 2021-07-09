@@ -37,12 +37,20 @@ dependencies:
   yandex_mapkit: ^1.0.0
   maps_launcher: ^2.0.0
 
+  share_plus: ^2.1.4
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
   moor_generator: ^4.3.1
-  build_runner: ^2.0.4
+  build_runner: ^2.0.5
+  flutter_launcher_icons: ^0.9.0
+
+flutter_icons:
+  android: true
+  ios: false
+  image_path: 'res/icons/app_dev.png'
 
 flutter:
 
@@ -56,7 +64,6 @@ flutter:
     - res/icons/empty_pages/
     - res/icons/loader/
     - res/icons/map/
-    - res/test_data/
 
   fonts:
     - family: Roboto

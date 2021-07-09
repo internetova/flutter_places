@@ -5,6 +5,7 @@ import 'package:places/ui/res/assets.dart';
 /// Текстовые контстанты
 /// place_list_screen
 const appBarTitle = 'Список\nинтересных мест';
+const appBarTitleSmall = 'Интересные места';
 const titleButtonAddNewCard = 'НОВОЕ МЕСТО';
 const appTitle = 'Places';
 

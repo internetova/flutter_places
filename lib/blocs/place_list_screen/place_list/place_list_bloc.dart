@@ -30,9 +30,6 @@ class PlaceListBloc extends Bloc<PlaceListEvent, PlaceListState> {
   Stream<PlaceListState> _placeListRequested(PlaceListRequested event) async* {
     yield PlaceListLoading();
 
-    // todo del
-    print('----------_placeListRequested  из сети');
-
     try {
       late final List<Place> placesList;
 
@@ -55,9 +52,6 @@ class PlaceListBloc extends Bloc<PlaceListEvent, PlaceListState> {
   /// обрабатываем запрос данных из локального хранилища
   Stream<PlaceListState> _localPlaceListRequested() async* {
     yield PlaceListLoading();
-
-    // todo del
-    print('----------_localPlaceListRequested  из локального хранилища');
 
     try {
       final placesList = await _interactor.getCachePlaces();

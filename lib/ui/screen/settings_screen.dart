@@ -26,9 +26,9 @@ class SettingsScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              _buildThemeMode(),
+              _BuildThemeMode(),
               Divider(),
-              _buildTutorial(context),
+              _BuildTutorial(),
               Divider(),
             ],
           ),
@@ -37,9 +37,14 @@ class SettingsScreen extends StatelessWidget {
       bottomNavigationBar: const AppBottomNavigationBar(current: 3),
     );
   }
+}
 
-  /// Тёмная тема
-  Widget _buildThemeMode() {
+/// Тёмная тема
+class _BuildThemeMode extends StatelessWidget {
+  const _BuildThemeMode({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
     return BlocBuilder<SettingsAppCubit, SettingsAppState>(
       builder: (context, state) {
         return ListTile(
@@ -58,9 +63,14 @@ class SettingsScreen extends StatelessWidget {
       },
     );
   }
+}
 
-  /// Смотреть туториал
-  Widget _buildTutorial(BuildContext context) {
+/// Смотреть туториал
+class _BuildTutorial extends StatelessWidget {
+  const _BuildTutorial({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
     return ListTile(
       contentPadding: const EdgeInsets.symmetric(horizontal: 0),
       title: Text(
@@ -68,13 +78,14 @@ class SettingsScreen extends StatelessWidget {
         style: Theme.of(context).primaryTextTheme.subtitle1,
       ),
       trailing: IconButton(
-          icon: SvgPicture.asset(
-            icInfo,
-            color: Theme.of(context).accentColor,
-          ),
-          onPressed: () {
-            AppRoutes.goOnboardingScreen(context);
-          }),
+        icon: SvgPicture.asset(
+          icInfo,
+          color: Theme.of(context).accentColor,
+        ),
+        onPressed: () {
+          AppRoutes.goOnboardingScreen(context);
+        },
+      ),
     );
   }
 }

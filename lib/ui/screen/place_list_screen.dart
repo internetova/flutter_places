@@ -22,12 +22,15 @@ import 'package:provider/provider.dart';
 
 /// список интересных мест
 /// главная страница
+/// [envDebugAppBarLabel] - 17.4.2 для дебажной сборки отобразить в аппбаре надпись
 class PlaceListScreen extends StatefulWidget {
   final SearchFilter searchFilter;
+  final String? envDebugAppBarLabel;
 
   const PlaceListScreen({
     Key? key,
     required this.searchFilter,
+    this.envDebugAppBarLabel,
   }) : super(key: key);
 
   @override
@@ -91,7 +94,10 @@ class _PlaceListScreenState extends State<PlaceListScreen>
             body: SafeArea(
               child: CustomScrollView(
                 slivers: [
-                  _buildSliverAppBar(orientation),
+                  _buildSliverAppBar(
+                    orientation,
+                    envDebugAppBarLabel: widget.envDebugAppBarLabel,
+                  ),
                   SliverPadding(
                     padding: EdgeInsets.symmetric(
                       horizontal:
@@ -224,11 +230,13 @@ class _PlaceListScreenState extends State<PlaceListScreen>
   }
 
   /// SliverAppBar в зависимости от ориентации экрана
-  Widget _buildSliverAppBar(Orientation orientation) {
+  Widget _buildSliverAppBar(Orientation orientation,
+      {String? envDebugAppBarLabel}) {
     if (orientation == Orientation.portrait) {
       return _SliverAppBarPortrait(
         onTapSearch: _onTapSearch,
         onPressedFilter: _onPressedFilter,
+        envDebugAppBarLabel: envDebugAppBarLabel,
       );
     } else {
       return _SliverAppBarLandscape(
@@ -318,11 +326,13 @@ class _PlaceListScreenState extends State<PlaceListScreen>
 class _SliverAppBarPortrait extends StatelessWidget {
   final VoidCallback onTapSearch;
   final VoidCallback onPressedFilter;
+  final String? envDebugAppBarLabel;
 
   const _SliverAppBarPortrait({
     Key? key,
     required this.onTapSearch,
     required this.onPressedFilter,
+    this.envDebugAppBarLabel,
   }) : super(key: key);
 
   @override
@@ -342,7 +352,7 @@ class _SliverAppBarPortrait extends StatelessWidget {
             duration: milliseconds300,
             opacity: top == 56.0 ? 1.0 : 0.0,
             child: Text(
-              searchAppBarTitle,
+              appBarTitleSmall,
               style: Theme.of(context).textTheme.headline6!.copyWith(
                     color: Theme.of(context).colorScheme.primary,
                   ),
@@ -375,6 +385,15 @@ class _SliverAppBarPortrait extends StatelessWidget {
                     ),
                   ),
                 ),
+                if (envDebugAppBarLabel != null)
+                  Positioned(
+                    child: Text(
+                      envDebugAppBarLabel!,
+                      style: Theme.of(context).textTheme.caption?.copyWith(
+                            color: Theme.of(context).errorColor,
+                          ),
+                    ),
+                  ),
               ],
             ),
           ),
@@ -405,7 +424,7 @@ class _SliverAppBarLandscape extends StatelessWidget {
       title: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
         child: Text(
-          searchAppBarTitle,
+          appBarTitleSmall,
           style: Theme.of(context).textTheme.headline6!.copyWith(
                 color: Theme.of(context).colorScheme.primary,
               ),

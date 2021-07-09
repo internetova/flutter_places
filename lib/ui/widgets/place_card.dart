@@ -22,6 +22,7 @@ import 'package:places/ui/utilities/ui_utils.dart';
 import 'package:places/ui/widgets/reminder_time_ios.dart';
 import 'package:places/ui/widgets/place_details_bottom_sheet.dart';
 import 'package:maps_launcher/maps_launcher.dart';
+import 'package:share_plus/share_plus.dart';
 
 /// карточка интересного места
 /// в зависимости от места показа карточки - Список поиска, в Избранном
@@ -321,7 +322,8 @@ class CardActions extends StatelessWidget {
   List _buildActionsVisited(BuildContext context) => <Widget>[
         IconActionButton(
           onPressed: () {
-            print('onPressed Поделиться');
+            Share.share(
+                '${card.name}\n\n${card.description}\n\nhttps://yandex.ru/maps/?whatshere[point]=${card.lng},${card.lat}&whatshere[zoom]=13');
           },
           icon: icShare,
         ),

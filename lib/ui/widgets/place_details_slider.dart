@@ -52,7 +52,7 @@ class PlaceDetailsSlider extends StatelessWidget {
                   ),
                   if (whereShowSlider == WhereShowSlider.screen)
                     Positioned(
-                      top: 36,
+                      top: 16,
                       left: 16,
                       child: _ButtonBack(),
                     ),
