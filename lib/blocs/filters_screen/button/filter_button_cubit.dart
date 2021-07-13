@@ -61,6 +61,6 @@ class FilterButtonCubit extends Cubit<FilterButtonState> {
 
   /// сброс кнопки к дефолту
   void clear() {
-    emit(FilterButtonState(isEnabled: false, title: '$filterTitleButton'));
+    emit(FilterButtonState(isEnabled: false, title: filterTitleButton));
   }
 }

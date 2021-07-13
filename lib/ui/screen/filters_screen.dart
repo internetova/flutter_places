@@ -66,71 +66,27 @@ class _FiltersScreenState extends State<FiltersScreen> {
       child: Scaffold(
         body: CustomScrollView(
           slivers: [
-            _buildFilterAppBar(),
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16.0,
-                  vertical: 24.0,
-                ),
-                child: _buildTitleFilter(),
-              ),
+            _BuildFilterAppBar(
+              onPressedBack: _back,
+              onPressedClearFilter: _onClearFilter,
             ),
-            BlocBuilder<FilterCubit, FilterState>(
-              builder: (_, state) {
-                return _buildCategories(
-                  _screenWidth,
-                  _screenHeight,
-                );
-              },
+            // _buildFilterAppBar(),
+            _BuildTitleFilter(),
+            _BuildCategories(
+              width: _screenWidth,
+              height: _screenHeight,
+              catalog: categories,
+              selectedCat: context.read<FilterCubit>().state.mapCategories,
             ),
-            SliverList(
-              delegate: SliverChildListDelegate([
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16.0,
-                    vertical: 24.0,
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _buildHeaderSlider(),
-                      BlocBuilder<FilterCubit, FilterState>(
-                        builder: (_, state) {
-                          return _buildSlider();
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-              ]),
-            ),
-            SliverFillRemaining(
-              hasScrollBody: false,
-              child: Align(
-                alignment: Alignment.bottomCenter,
-                child: BlocBuilder<FilterButtonCubit, FilterButtonState>(
-                  builder: (context, state) {
-                    return AnimatedSwitcher(
-                      duration: milliseconds300,
-                      child: ButtonSave(
-                        key: ValueKey(state),
-                        title: state.title,
-                        isButtonEnabled: state.isEnabled,
-                        onPressed: state.isEnabled ? _showResult : null,
-                      ),
-                    );
-                  },
-                ),
-              ),
-            ),
+            _BuildSliderGroup(),
+            _BuildButtonShowResult(onPressed: _showResult),
           ],
         ),
       ),
     );
   }
 
-  /// кнопка с результатами
+  /// для кнопки с результатами
   void _showResult() {
     final _newSearchFilter = SearchFilter(
       radius: context.read<FilterCubit>().state.radius,
@@ -140,83 +96,132 @@ class _FiltersScreenState extends State<FiltersScreen> {
     Navigator.pop(context, _newSearchFilter);
   }
 
-  /// AppBar
-  Widget _buildFilterAppBar() => SliverAppBar(
-        toolbarHeight: toolbarHeightStandard,
-        leading: SmallLeadingIcon(
-          icon: icArrow,
-          onPressed: _back,
-        ),
-        leadingWidth: 64,
-        elevation: 0,
-        pinned: true,
-        title: Align(
-          alignment: Alignment.centerRight,
-          child: TextButton(
-            onPressed: _onClearFilter,
-            child: Text(
-              filterClearFilters,
-              style: Theme.of(context).textTheme.headline5!.copyWith(
-                    color: Theme.of(context).accentColor,
-                  ),
-            ),
-          ),
-        ),
-      );
-
-  /// Заголовок
-  Widget _buildTitleFilter() => Text(
-        filterTitleCategories,
-        style: Theme.of(context).textTheme.caption!.copyWith(
-              color: Theme.of(context).colorScheme.inactiveBlack,
-            ),
-      );
-
-  /// категории в зависимости от разрешения экрана
-  Widget _buildCategories(double width, double height) {
-    return width <= 375 && height <= 667 // iphone 8
-        ? _categoriesSmallSize(
-            categories,
-            context.read<FilterCubit>().state.mapCategories,
-          )
-        : SliverPadding(
-            padding: const EdgeInsets.symmetric(horizontal: 24.0),
-            sliver: _categoriesNormalSize(
-              categories,
-              context.read<FilterCubit>().state.mapCategories,
-            ),
-          );
+  /// очистка фильтра по кнопке Очистить
+  void _onClearFilter() {
+    context.read<FilterCubit>().clear();
+    context.read<FilterButtonCubit>().clear();
   }
 
-  /// список карточек категорий для нормальных экранов
-  /// показываем карточки гридами
-  Widget _categoriesNormalSize(
-          List<PlaceType> catalog, List<Map<String, dynamic>> selectedCat) =>
-      SliverGrid(
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 3,
-          crossAxisSpacing: 10.0,
-          mainAxisSpacing: 40.0,
-        ),
-        delegate: SliverChildBuilderDelegate(
-          (BuildContext context, int index) {
-            return FilterCategoryItem(
-              placeType: catalog[index],
-              selectedCat: selectedCat[index],
-              onPressed: () {
-                context.read<FilterCubit>().onTap(catalog[index].code);
-              },
-            );
-          },
-          childCount: catalog.length,
-        ),
-      );
+  /// вернуться на предыдущий экран без сохранения
+  void _back() {
+    Navigator.pop(context, widget.filter);
+  }
+}
 
-  /// список карточек категорий для маленьких экранов 375 х 667 iphone 8
-  /// показываем категории в одну прокручиваемую строку
-  Widget _categoriesSmallSize(
-          List<PlaceType> catalog, List<Map<String, dynamic>> selectedCat) =>
-      SliverToBoxAdapter(
+/// AppBar
+class _BuildFilterAppBar extends StatelessWidget {
+  final VoidCallback onPressedBack;
+  final VoidCallback onPressedClearFilter;
+
+  const _BuildFilterAppBar({
+    Key? key,
+    required this.onPressedBack,
+    required this.onPressedClearFilter,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return SliverAppBar(
+      toolbarHeight: toolbarHeightStandard,
+      leading: SmallLeadingIcon(
+        icon: icArrow,
+        onPressed: onPressedBack,
+      ),
+      leadingWidth: 64,
+      elevation: 0,
+      pinned: true,
+      title: Align(
+        alignment: Alignment.centerRight,
+        child: TextButton(
+          onPressed: onPressedClearFilter,
+          child: Text(
+            filterClearFilters,
+            style: Theme.of(context).textTheme.headline5!.copyWith(
+                  color: Theme.of(context).accentColor,
+                ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Заголовок фильтра
+class _BuildTitleFilter extends StatelessWidget {
+  const _BuildTitleFilter({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return SliverToBoxAdapter(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: 16.0,
+          vertical: 24.0,
+        ),
+        child: Text(
+          filterTitleCategories,
+          style: Theme.of(context).textTheme.caption!.copyWith(
+                color: Theme.of(context).colorScheme.inactiveBlack,
+              ),
+        ),
+      ),
+    );
+  }
+}
+
+/// список карточек категорий для нормальных экранов
+/// показываем карточки гридами - SliverGrid
+class _CategoriesNormalSize extends StatelessWidget {
+  final List<PlaceType> catalog;
+  final List<Map<String, dynamic>> selectedCat;
+
+  const _CategoriesNormalSize({
+    Key? key,
+    required this.catalog,
+    required this.selectedCat,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return SliverGrid(
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 3,
+        crossAxisSpacing: 10.0,
+        mainAxisSpacing: 40.0,
+      ),
+      delegate: SliverChildBuilderDelegate(
+        (BuildContext context, int index) {
+          return FilterCategoryItem(
+            placeType: catalog[index],
+            selectedCat: selectedCat[index],
+            onPressed: () {
+              context.read<FilterCubit>().onTap(catalog[index].code);
+            },
+          );
+        },
+        childCount: catalog.length,
+      ),
+    );
+  }
+}
+
+/// список карточек категорий для маленьких экранов 375 х 667 iphone 8
+/// показываем категории в одну прокручиваемую строку - ListView
+class _CategoriesSmallSize extends StatelessWidget {
+  final List<PlaceType> catalog;
+  final List<Map<String, dynamic>> selectedCat;
+
+  const _CategoriesSmallSize({
+    Key? key,
+    required this.catalog,
+    required this.selectedCat,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return SliverPadding(
+      padding: const EdgeInsets.symmetric(horizontal: 24.0),
+      sliver: SliverToBoxAdapter(
         child: Container(
           height: 100.0,
           child: ListView.builder(
@@ -232,54 +237,163 @@ class _FiltersScreenState extends State<FiltersScreen> {
                 );
               }),
         ),
-      );
-
-  /// заголовок для слайдера
-  Widget _buildHeaderSlider() => Padding(
-        padding: const EdgeInsets.fromLTRB(16, 48, 16, 24),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              filterTitleSlider,
-              style: Theme.of(context).primaryTextTheme.subtitle1,
-            ),
-            Text(
-              'до ${_convertMeterToKm(context.watch<FilterCubit>().state.radius)}',
-              style: Theme.of(context).primaryTextTheme.subtitle1!.copyWith(
-                  color: Theme.of(context).colorScheme.secondaryVariant),
-            ),
-          ],
-        ),
-      );
-
-  /// слайдер
-  Widget _buildSlider() => Slider(
-        min: rangeSliderFilterDefault.start,
-        max: rangeSliderFilterDefault.end,
-        value: context.read<FilterCubit>().state.radius,
-        onChanged: (double value) {
-          context.read<FilterCubit>().onChanged(value);
-        },
-      );
-
-  /// очистка фильтра по кнопке Очистить
-  void _onClearFilter() {
-    context.read<FilterCubit>().clear();
-    context.read<FilterButtonCubit>().clear();
-  }
-
-  /// вернуться на предыдущий экран без сохранения
-  void _back() {
-    Navigator.pop(context, widget.filter);
+      ),
+    );
   }
 }
 
-/// для слайдера строка Расстояние метры в километры
+/// категории в зависимости от разрешения экрана
+/// по заданию на разных экранах сделать разное отображение
+/// [width] - ширина экрана
+/// [height] - высота экрана
+/// [catalog] - список типов мест (парк, отель и т.д.)
+/// [selectedCat] - карта с выбранными типами мест
+class _BuildCategories extends StatelessWidget {
+  final double width;
+  final double height;
+  final List<PlaceType> catalog;
+  final List<Map<String, dynamic>> selectedCat;
+
+  const _BuildCategories({
+    Key? key,
+    required this.width,
+    required this.height,
+    required this.catalog,
+    required this.selectedCat,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<FilterCubit, FilterState>(
+      builder: (_, state) {
+        return width <= 375 && height <= 667 // iphone 8
+            ? _CategoriesSmallSize(
+                catalog: catalog,
+                selectedCat: selectedCat,
+              )
+            : _CategoriesNormalSize(
+                catalog: catalog,
+                selectedCat: selectedCat,
+              );
+      },
+    );
+  }
+}
+
+/// группа Слайдер. Включает заголовок с изменяемым расстоянием и сам слайдер
+class _BuildSliderGroup extends StatelessWidget {
+  const _BuildSliderGroup({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return SliverList(
+      delegate: SliverChildListDelegate([
+        Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: 16.0,
+            vertical: 24.0,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _BuildHeaderSlider(),
+              BlocBuilder<FilterCubit, FilterState>(
+                builder: (_, state) {
+                  return _BuildSlider();
+                },
+              ),
+            ],
+          ),
+        ),
+      ]),
+    );
+  }
+}
+
+/// заголовок для слайдера
+class _BuildHeaderSlider extends StatelessWidget {
+  const _BuildHeaderSlider({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 48, 16, 24),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            filterTitleSlider,
+            style: Theme.of(context).primaryTextTheme.subtitle1,
+          ),
+          Text(
+            'до ${_convertMeterToKm(context.watch<FilterCubit>().state.radius)}',
+            style: Theme.of(context).primaryTextTheme.subtitle1!.copyWith(
+                color: Theme.of(context).colorScheme.secondaryVariant),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// для заголовка слайдера строка Расстояние метры в километры
 String _convertMeterToKm(double value) {
   if (value < 1000) {
     return '${value.toStringAsFixed(0)} м';
   } else {
     return '${(value / 1000).toStringAsFixed(2)} км';
+  }
+}
+
+/// слайдер
+class _BuildSlider extends StatelessWidget {
+  const _BuildSlider({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<FilterCubit, FilterState>(
+      builder: (context, state) {
+        return Slider(
+          min: rangeSliderFilterDefault.start,
+          max: rangeSliderFilterDefault.end,
+          value: state.radius,
+          onChanged: (double value) =>
+              context.read<FilterCubit>().onChanged(value),
+        );
+      },
+    );
+  }
+}
+
+/// кнопка показать
+class _BuildButtonShowResult extends StatelessWidget {
+  final VoidCallback onPressed;
+
+  const _BuildButtonShowResult({
+    Key? key,
+    required this.onPressed,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return SliverFillRemaining(
+      hasScrollBody: false,
+      child: Align(
+        alignment: Alignment.bottomCenter,
+        child: BlocBuilder<FilterButtonCubit, FilterButtonState>(
+          builder: (context, state) {
+            return AnimatedSwitcher(
+              duration: milliseconds300,
+              child: ButtonSave(
+                key: ValueKey(state),
+                title: state.title,
+                isButtonEnabled: state.isEnabled,
+                onPressed: state.isEnabled ? onPressed : null,
+              ),
+            );
+          },
+        ),
+      ),
+    );
   }
 }

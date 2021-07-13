@@ -9,4 +9,9 @@ class SearchFilter {
     required this.radius,
     required this.typeFilter,
   });
+
+  @override
+  String toString() {
+    return 'радиус: $radius, категории: $typeFilter';
+  }
 }
