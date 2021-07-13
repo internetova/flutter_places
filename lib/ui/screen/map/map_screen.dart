@@ -302,18 +302,12 @@ class _MapScreenState extends State<MapScreen> {
     if (_userLocation != null) {
       final SearchFilter _newFilter = await AppRoutes.goFiltersScreen(
         context,
-        filter: widget.searchFilter,
+        filter: _searchFilter,
         userLocation: _userLocation!,
       ) as SearchFilter;
 
+      _searchFilter = _newFilter;
       _settingsAppCubit.updateSearchFilter(_newFilter);
-
-      _placeListBloc.add(
-        PlaceListRequested(
-          userLocation: _userLocation,
-          filter: _newFilter,
-        ),
-      );
     } else {
       showDialog(
           context: context,
