@@ -14,40 +14,40 @@ https://disk.yandex.ru/i/e6u_wW6eD_iuow
 ### Скрины
 
 ### Обнобоардинг
-![экран обнобоардинг](docs/light-1.jpeg)
-![экран обнобоардинг](docs/dark-1.jpeg)
+![экран обнобоардинг](docs/light-1.jpg)
+![экран обнобоардинг](docs/dark-1.jpg)
 
 ### Главный экран
-![Главный экран](docs/light-2.jpeg)
-![Главный экран](docs/dark-2.jpeg)
+![Главный экран](docs/light-2.jpg)
+![Главный экран](docs/dark-2.jpg)
 
 ### Фильтр
-![экран Фильтр](docs/light-3.jpeg)
-![экран Фильтр](docs/dark-3.jpeg)
+![экран Фильтр](docs/light-3.jpg)
+![экран Фильтр](docs/dark-3.jpg)
 
 ### Карта
-![экран Карта](docs/light-4.jpeg)
-![экран Карта](docs/dark-4.jpeg)
+![экран Карта](docs/light-4.jpg)
+![экран Карта](docs/dark-4.jpg)
 
 ### Избранное
-![экран Избранное](docs/light-5.jpeg)
-![экран Избранное](docs/dark-5.jpeg)
+![экран Избранное](docs/light-5.jpg)
+![экран Избранное](docs/dark-5.jpg)
 
 ### Поиск
-![экран Поиск](docs/light-6.jpeg)
-![экран Поиск](docs/dark-6.jpeg)
+![экран Поиск](docs/light-6.jpg)
+![экран Поиск](docs/dark-6.jpg)
 
 ### Настройки
-![экран Настройки](docs/light-7.jpeg)
-![экран Настройки](docs/dark-7.jpeg)
+![экран Настройки](docs/light-7.jpg)
+![экран Настройки](docs/dark-7.jpg)
 
 ### Новое место
-![экран Новое место](docs/light-8.jpeg)
-![экран Новое место](docs/dark-8.jpeg)
+![экран Новое место](docs/light-8.jpg)
+![экран Новое место](docs/dark-8.jpg)
 
 ### Подробная информация о месте
-![экран Подробная информация о месте](docs/light-9.jpeg)
-![экран Подробная информация о месте](docs/dark-9.jpeg)
+![экран Подробная информация о месте](docs/light-9.jpg)
+![экран Подробная информация о месте](docs/dark-9.jpg)
 
 ----
 
